@@ -1,0 +1,277 @@
+﻿DEBUG 2019-01-31 13:04:02,448 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2019-01-31 13:04:02,478 [1    ] Abp.Modules.AbpModuleManager             - Found 9 ABP modules in total.
+DEBUG 2019-01-31 13:04:02,598 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.Migrator.ClcMigratorModule, Clc.Migrator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:02,601 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.EntityFrameworkCore.ClcEntityFrameworkModule, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:02,601 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.ClcCoreModule, Clc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:02,605 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:02,606 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:02,606 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:02,606 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:02,607 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:02,607 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:02,611 [1    ] Abp.Modules.AbpModuleManager             - 9 modules loaded.
+DEBUG 2019-01-31 13:04:02,879 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: Clc.EntityFrameworkCore.ClcDbContext, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:03,367 [1    ] Abp.Localization.LocalizationManager     - Initializing 3 localization sources.
+DEBUG 2019-01-31 13:04:03,454 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2019-01-31 13:04:03,509 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2019-01-31 13:04:03,534 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Clc
+INFO  2019-01-31 13:04:03,933 [1    ] Clc.Migrator.Log                         - Host database: server=localhost;database=ClcDb;trusted_connection=True
+INFO  2019-01-31 13:04:03,933 [1    ] Clc.Migrator.Log                         - Continue to migration for this host database and all tenants..? (Y/N): 
+INFO  2019-01-31 13:04:15,655 [1    ] Clc.Migrator.Log                         - Migration canceled.
+DEBUG 2019-01-31 13:04:18,318 [1    ] Abp.Modules.AbpModuleManager             - Shutting down has been started
+DEBUG 2019-01-31 13:04:18,319 [1    ] Abp.Modules.AbpModuleManager             - Shutting down completed.
+DEBUG 2019-01-31 13:04:54,859 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2019-01-31 13:04:54,889 [1    ] Abp.Modules.AbpModuleManager             - Found 9 ABP modules in total.
+DEBUG 2019-01-31 13:04:55,004 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.Migrator.ClcMigratorModule, Clc.Migrator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,007 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.EntityFrameworkCore.ClcEntityFrameworkModule, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,007 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.ClcCoreModule, Clc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,007 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,008 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,008 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,008 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,009 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,009 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,012 [1    ] Abp.Modules.AbpModuleManager             - 9 modules loaded.
+DEBUG 2019-01-31 13:04:55,281 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: Clc.EntityFrameworkCore.ClcDbContext, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-01-31 13:04:55,702 [1    ] Abp.Localization.LocalizationManager     - Initializing 3 localization sources.
+DEBUG 2019-01-31 13:04:55,791 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2019-01-31 13:04:55,844 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2019-01-31 13:04:55,868 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Clc
+INFO  2019-01-31 13:04:56,058 [1    ] Clc.Migrator.Log                         - Host database: server=(localdb)\MSSQLlocalDB;database=ClcDb;trusted_connection=True
+INFO  2019-01-31 13:04:56,058 [1    ] Clc.Migrator.Log                         - Continue to migration for this host database and all tenants..? (Y/N): 
+INFO  2019-01-31 13:05:05,328 [1    ] Clc.Migrator.Log                         - HOST database migration started...
+INFO  2019-01-31 13:05:22,998 [1    ] Clc.Migrator.Log                         - HOST database migration completed.
+INFO  2019-01-31 13:05:22,998 [1    ] Clc.Migrator.Log                         - --------------------------------------------------------
+INFO  2019-01-31 13:05:23,086 [1    ] Clc.Migrator.Log                         - All databases have been migrated.
+DEBUG 2019-01-31 13:05:28,234 [1    ] Abp.Modules.AbpModuleManager             - Shutting down has been started
+DEBUG 2019-01-31 13:05:28,235 [1    ] Abp.Modules.AbpModuleManager             - Shutting down completed.
+DEBUG 2019-02-07 09:38:45,412 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2019-02-07 09:38:45,461 [1    ] Abp.Modules.AbpModuleManager             - Found 9 ABP modules in total.
+DEBUG 2019-02-07 09:38:45,578 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.Migrator.ClcMigratorModule, Clc.Migrator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:45,581 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.EntityFrameworkCore.ClcEntityFrameworkModule, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:45,581 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.ClcCoreModule, Clc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:45,582 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:45,582 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:45,582 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:45,582 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:45,583 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:45,583 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:45,587 [1    ] Abp.Modules.AbpModuleManager             - 9 modules loaded.
+DEBUG 2019-02-07 09:38:45,855 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: Clc.EntityFrameworkCore.ClcDbContext, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:38:46,279 [1    ] Abp.Localization.LocalizationManager     - Initializing 3 localization sources.
+DEBUG 2019-02-07 09:38:46,354 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2019-02-07 09:38:46,410 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2019-02-07 09:38:46,431 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Clc
+INFO  2019-02-07 09:38:46,795 [1    ] Clc.Migrator.Log                         - Host database: server=(localdb)\MSSQLlocalDB;database=ClcDb;trusted_connection=True
+INFO  2019-02-07 09:38:46,795 [1    ] Clc.Migrator.Log                         - Continue to migration for this host database and all tenants..? (Y/N): 
+INFO  2019-02-07 09:38:54,581 [1    ] Clc.Migrator.Log                         - HOST database migration started...
+INFO  2019-02-07 09:39:01,207 [1    ] Clc.Migrator.Log                         - HOST database migration completed.
+INFO  2019-02-07 09:39:01,208 [1    ] Clc.Migrator.Log                         - --------------------------------------------------------
+INFO  2019-02-07 09:39:01,301 [1    ] Clc.Migrator.Log                         - All databases have been migrated.
+DEBUG 2019-02-07 09:39:06,894 [1    ] Abp.Modules.AbpModuleManager             - Shutting down has been started
+DEBUG 2019-02-07 09:39:06,895 [1    ] Abp.Modules.AbpModuleManager             - Shutting down completed.
+DEBUG 2019-02-07 09:51:39,075 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2019-02-07 09:51:39,105 [1    ] Abp.Modules.AbpModuleManager             - Found 9 ABP modules in total.
+DEBUG 2019-02-07 09:51:39,219 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.Migrator.ClcMigratorModule, Clc.Migrator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,222 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.EntityFrameworkCore.ClcEntityFrameworkModule, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,222 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.ClcCoreModule, Clc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,223 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,223 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,223 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,223 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,224 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,224 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,228 [1    ] Abp.Modules.AbpModuleManager             - 9 modules loaded.
+DEBUG 2019-02-07 09:51:39,496 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: Clc.EntityFrameworkCore.ClcDbContext, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-07 09:51:39,927 [1    ] Abp.Localization.LocalizationManager     - Initializing 3 localization sources.
+DEBUG 2019-02-07 09:51:40,002 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2019-02-07 09:51:40,057 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2019-02-07 09:51:40,079 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Clc
+INFO  2019-02-07 09:51:40,264 [1    ] Clc.Migrator.Log                         - Host database: server=(localdb)\MSSQLlocalDB;database=ClcDb;trusted_connection=True
+INFO  2019-02-07 09:51:40,264 [1    ] Clc.Migrator.Log                         - Continue to migration for this host database and all tenants..? (Y/N): 
+INFO  2019-02-07 09:51:43,186 [1    ] Clc.Migrator.Log                         - HOST database migration started...
+INFO  2019-02-07 09:51:46,524 [1    ] Clc.Migrator.Log                         - HOST database migration completed.
+INFO  2019-02-07 09:51:46,525 [1    ] Clc.Migrator.Log                         - --------------------------------------------------------
+INFO  2019-02-07 09:51:46,589 [1    ] Clc.Migrator.Log                         - All databases have been migrated.
+DEBUG 2019-02-16 22:16:02,351 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2019-02-16 22:16:02,404 [1    ] Abp.Modules.AbpModuleManager             - Found 9 ABP modules in total.
+DEBUG 2019-02-16 22:16:02,532 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.Migrator.ClcMigratorModule, Clc.Migrator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:02,535 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.EntityFrameworkCore.ClcEntityFrameworkModule, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:02,536 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.ClcCoreModule, Clc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:02,536 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:02,536 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:02,536 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:02,537 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:02,537 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:02,537 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:02,541 [1    ] Abp.Modules.AbpModuleManager             - 9 modules loaded.
+DEBUG 2019-02-16 22:16:02,870 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: Clc.EntityFrameworkCore.ClcDbContext, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-02-16 22:16:03,497 [1    ] Abp.Localization.LocalizationManager     - Initializing 3 localization sources.
+DEBUG 2019-02-16 22:16:03,681 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2019-02-16 22:16:03,766 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2019-02-16 22:16:03,789 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Clc
+INFO  2019-02-16 22:16:04,114 [1    ] Clc.Migrator.Log                         - Host database: server=(localdb)\MSSQLlocalDB;database=ClcDb;trusted_connection=True
+INFO  2019-02-16 22:16:04,114 [1    ] Clc.Migrator.Log                         - Continue to migration for this host database and all tenants..? (Y/N): 
+INFO  2019-02-16 22:16:15,438 [1    ] Clc.Migrator.Log                         - HOST database migration started...
+INFO  2019-02-16 22:16:29,909 [1    ] Clc.Migrator.Log                         - HOST database migration completed.
+INFO  2019-02-16 22:16:29,910 [1    ] Clc.Migrator.Log                         - --------------------------------------------------------
+INFO  2019-02-16 22:16:30,016 [1    ] Clc.Migrator.Log                         - Tenant database migration started... (1 / 1)
+INFO  2019-02-16 22:16:30,016 [1    ] Clc.Migrator.Log                         - Name              : 中国押运公司
+INFO  2019-02-16 22:16:30,016 [1    ] Clc.Migrator.Log                         - TenancyName       : YY
+INFO  2019-02-16 22:16:30,017 [1    ] Clc.Migrator.Log                         - Tenant Id         : 5
+INFO  2019-02-16 22:16:30,098 [1    ] Clc.Migrator.Log                         - Connection string : Server=(localdb)\MSSQLlocalDB; Database=ClcDb1; Trusted_Connection=True;
+INFO  2019-02-16 22:16:30,746 [1    ] Clc.Migrator.Log                         - Tenant database migration completed. (1 / 1)
+INFO  2019-02-16 22:16:30,747 [1    ] Clc.Migrator.Log                         - --------------------------------------------------------
+INFO  2019-02-16 22:16:30,747 [1    ] Clc.Migrator.Log                         - All databases have been migrated.
+DEBUG 2019-02-16 22:24:12,046 [1    ] Abp.Modules.AbpModuleManager             - Shutting down has been started
+DEBUG 2019-02-16 22:24:12,047 [1    ] Abp.Modules.AbpModuleManager             - Shutting down completed.
+DEBUG 2019-03-02 15:45:51,563 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2019-03-02 15:45:51,666 [1    ] Abp.Modules.AbpModuleManager             - Found 9 ABP modules in total.
+DEBUG 2019-03-02 15:45:51,819 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.Migrator.ClcMigratorModule, Clc.Migrator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:51,824 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.EntityFrameworkCore.ClcEntityFrameworkModule, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:51,825 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.ClcCoreModule, Clc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:51,833 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:51,834 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:51,834 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:51,835 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:51,835 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:51,835 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:51,840 [1    ] Abp.Modules.AbpModuleManager             - 9 modules loaded.
+DEBUG 2019-03-02 15:45:52,290 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: Clc.EntityFrameworkCore.ClcDbContext, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 15:45:53,157 [1    ] Abp.Localization.LocalizationManager     - Initializing 3 localization sources.
+DEBUG 2019-03-02 15:45:53,381 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2019-03-02 15:45:53,480 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2019-03-02 15:45:53,519 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Clc
+INFO  2019-03-02 15:45:53,941 [1    ] Clc.Migrator.Log                         - Host database: server=(localdb)\MSSQLlocalDB;database=ClcDb;trusted_connection=True
+INFO  2019-03-02 15:45:53,941 [1    ] Clc.Migrator.Log                         - Continue to migration for this host database and all tenants..? (Y/N): 
+INFO  2019-03-02 15:46:03,075 [1    ] Clc.Migrator.Log                         - HOST database migration started...
+INFO  2019-03-02 15:46:19,548 [1    ] Clc.Migrator.Log                         - An error occured during migration of host database:
+INFO  2019-03-02 15:46:20,537 [1    ] Clc.Migrator.Log                         - System.Data.SqlClient.SqlException (0x80131904): Introducing FOREIGN KEY constraint 'FK_WarehouseWorks_Warehouses_WarehouseId' on table 'WarehouseWorks' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints.
+Could not create constraint or index. See previous errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean async, Int32 timeout, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean asyncWrite, String methodName)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.Execute(IRelationalConnection connection, DbCommandMethod executeMethod, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Abp.Zero.EntityFrameworkCore.AbpZeroDbMigrator`1.CreateOrMigrate(AbpTenantBase tenant, Action`1 seedAction) in D:\Github\aspnetboilerplate\src\Abp.ZeroCore.EntityFrameworkCore\Zero\EntityFrameworkCore\AbpZeroDbMigrator.cs:line 74
+   at Clc.Migrator.MultiTenantMigrateExecuter.Run(Boolean skipConnVerification) in e:\GitHub\Clc\aspnet-core\src\Clc.Migrator\MultiTenantMigrateExecuter.cs:line 62
+ClientConnectionId:f1b746d0-4d50-4f0b-9a44-33df32a45638
+Error Number:1785,State:0,Class:16
+INFO  2019-03-02 15:46:20,538 [1    ] Clc.Migrator.Log                         - Canceled migrations.
+DEBUG 2019-03-02 16:01:54,210 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2019-03-02 16:01:54,246 [1    ] Abp.Modules.AbpModuleManager             - Found 9 ABP modules in total.
+DEBUG 2019-03-02 16:01:54,373 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.Migrator.ClcMigratorModule, Clc.Migrator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:54,376 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.EntityFrameworkCore.ClcEntityFrameworkModule, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:54,376 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.ClcCoreModule, Clc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:54,377 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:54,377 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:54,377 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:54,377 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:54,378 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:54,378 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:54,382 [1    ] Abp.Modules.AbpModuleManager             - 9 modules loaded.
+DEBUG 2019-03-02 16:01:54,665 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: Clc.EntityFrameworkCore.ClcDbContext, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:01:55,153 [1    ] Abp.Localization.LocalizationManager     - Initializing 3 localization sources.
+DEBUG 2019-03-02 16:01:55,285 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2019-03-02 16:01:55,340 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2019-03-02 16:01:55,365 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Clc
+INFO  2019-03-02 16:01:55,569 [1    ] Clc.Migrator.Log                         - Host database: server=(localdb)\MSSQLlocalDB;database=ClcDb;trusted_connection=True
+INFO  2019-03-02 16:01:55,570 [1    ] Clc.Migrator.Log                         - Continue to migration for this host database and all tenants..? (Y/N): 
+INFO  2019-03-02 16:01:59,867 [1    ] Clc.Migrator.Log                         - HOST database migration started...
+INFO  2019-03-02 16:02:04,545 [1    ] Clc.Migrator.Log                         - An error occured during migration of host database:
+INFO  2019-03-02 16:02:04,587 [1    ] Clc.Migrator.Log                         - System.Data.SqlClient.SqlException (0x80131904): Introducing FOREIGN KEY constraint 'FK_WarehouseTasks_Warehouses_WarehouseId' on table 'WarehouseTasks' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints.
+Could not create constraint or index. See previous errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean async, Int32 timeout, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean asyncWrite, String methodName)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.Execute(IRelationalConnection connection, DbCommandMethod executeMethod, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Abp.Zero.EntityFrameworkCore.AbpZeroDbMigrator`1.CreateOrMigrate(AbpTenantBase tenant, Action`1 seedAction) in D:\Github\aspnetboilerplate\src\Abp.ZeroCore.EntityFrameworkCore\Zero\EntityFrameworkCore\AbpZeroDbMigrator.cs:line 74
+   at Clc.Migrator.MultiTenantMigrateExecuter.Run(Boolean skipConnVerification) in e:\GitHub\Clc\aspnet-core\src\Clc.Migrator\MultiTenantMigrateExecuter.cs:line 62
+ClientConnectionId:9acc1c81-cf03-4203-907f-175cfda0d15e
+Error Number:1785,State:0,Class:16
+INFO  2019-03-02 16:02:04,587 [1    ] Clc.Migrator.Log                         - Canceled migrations.
+DEBUG 2019-03-02 16:21:18,303 [1    ] Abp.Modules.AbpModuleManager             - Shutting down has been started
+DEBUG 2019-03-02 16:21:18,304 [1    ] Abp.Modules.AbpModuleManager             - Shutting down completed.
+DEBUG 2019-03-02 16:24:04,150 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2019-03-02 16:24:04,192 [1    ] Abp.Modules.AbpModuleManager             - Found 9 ABP modules in total.
+DEBUG 2019-03-02 16:24:04,329 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.Migrator.ClcMigratorModule, Clc.Migrator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:04,332 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.EntityFrameworkCore.ClcEntityFrameworkModule, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:04,332 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.ClcCoreModule, Clc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:04,333 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:04,333 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:04,333 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:04,334 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:04,334 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:04,335 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:04,339 [1    ] Abp.Modules.AbpModuleManager             - 9 modules loaded.
+DEBUG 2019-03-02 16:24:04,650 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: Clc.EntityFrameworkCore.ClcDbContext, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 16:24:05,196 [1    ] Abp.Localization.LocalizationManager     - Initializing 3 localization sources.
+DEBUG 2019-03-02 16:24:05,342 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2019-03-02 16:24:05,401 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2019-03-02 16:24:05,428 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Clc
+INFO  2019-03-02 16:24:05,655 [1    ] Clc.Migrator.Log                         - Host database: server=(localdb)\MSSQLlocalDB;database=ClcDb;trusted_connection=True
+INFO  2019-03-02 16:24:05,655 [1    ] Clc.Migrator.Log                         - Continue to migration for this host database and all tenants..? (Y/N): 
+INFO  2019-03-02 16:24:07,486 [1    ] Clc.Migrator.Log                         - HOST database migration started...
+INFO  2019-03-02 16:24:10,552 [1    ] Clc.Migrator.Log                         - An error occured during migration of host database:
+INFO  2019-03-02 16:24:10,600 [1    ] Clc.Migrator.Log                         - System.Data.SqlClient.SqlException (0x80131904): Introducing FOREIGN KEY constraint 'FK_Workers_Depots_DepotId' on table 'Workers' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints.
+Could not create constraint or index. See previous errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean async, Int32 timeout, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean asyncWrite, String methodName)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.Execute(IRelationalConnection connection, DbCommandMethod executeMethod, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Abp.Zero.EntityFrameworkCore.AbpZeroDbMigrator`1.CreateOrMigrate(AbpTenantBase tenant, Action`1 seedAction) in D:\Github\aspnetboilerplate\src\Abp.ZeroCore.EntityFrameworkCore\Zero\EntityFrameworkCore\AbpZeroDbMigrator.cs:line 74
+   at Clc.Migrator.MultiTenantMigrateExecuter.Run(Boolean skipConnVerification) in e:\GitHub\Clc\aspnet-core\src\Clc.Migrator\MultiTenantMigrateExecuter.cs:line 62
+ClientConnectionId:85227c46-cf3f-4d9b-9133-e0f7eecc950f
+Error Number:1785,State:0,Class:16
+INFO  2019-03-02 16:24:10,601 [1    ] Clc.Migrator.Log                         - Canceled migrations.
+DEBUG 2019-03-02 16:35:53,981 [1    ] Abp.Modules.AbpModuleManager             - Shutting down has been started
+DEBUG 2019-03-02 16:35:53,982 [1    ] Abp.Modules.AbpModuleManager             - Shutting down completed.
+DEBUG 2019-03-02 17:04:44,974 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2019-03-02 17:04:45,014 [1    ] Abp.Modules.AbpModuleManager             - Found 9 ABP modules in total.
+DEBUG 2019-03-02 17:04:45,154 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.Migrator.ClcMigratorModule, Clc.Migrator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:45,157 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.EntityFrameworkCore.ClcEntityFrameworkModule, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:45,157 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Clc.ClcCoreModule, Clc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:45,158 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:45,158 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:45,158 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:45,159 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:45,159 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:45,159 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:45,163 [1    ] Abp.Modules.AbpModuleManager             - 9 modules loaded.
+DEBUG 2019-03-02 17:04:45,488 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: Clc.EntityFrameworkCore.ClcDbContext, Clc.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2019-03-02 17:04:46,036 [1    ] Abp.Localization.LocalizationManager     - Initializing 3 localization sources.
+DEBUG 2019-03-02 17:04:46,174 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2019-03-02 17:04:46,235 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2019-03-02 17:04:46,262 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Clc
+INFO  2019-03-02 17:04:46,487 [1    ] Clc.Migrator.Log                         - Host database: server=(localdb)\MSSQLlocalDB;database=ClcDb;trusted_connection=True
+INFO  2019-03-02 17:04:46,487 [1    ] Clc.Migrator.Log                         - Continue to migration for this host database and all tenants..? (Y/N): 
+INFO  2019-03-02 17:04:48,548 [1    ] Clc.Migrator.Log                         - HOST database migration started...
+INFO  2019-03-02 17:04:52,723 [1    ] Clc.Migrator.Log                         - HOST database migration completed.
+INFO  2019-03-02 17:04:52,724 [1    ] Clc.Migrator.Log                         - --------------------------------------------------------
+INFO  2019-03-02 17:04:52,841 [1    ] Clc.Migrator.Log                         - Tenant database migration started... (1 / 1)
+INFO  2019-03-02 17:04:52,842 [1    ] Clc.Migrator.Log                         - Name              : 中国押运公司
+INFO  2019-03-02 17:04:52,842 [1    ] Clc.Migrator.Log                         - TenancyName       : YY
+INFO  2019-03-02 17:04:52,843 [1    ] Clc.Migrator.Log                         - Tenant Id         : 5
+INFO  2019-03-02 17:04:52,881 [1    ] Clc.Migrator.Log                         - Connection string : Server=(localdb)\MSSQLlocalDB; Database=ClcDb1; Trusted_Connection=True;
+INFO  2019-03-02 17:04:53,495 [1    ] Clc.Migrator.Log                         - Tenant database migration completed. (1 / 1)
+INFO  2019-03-02 17:04:53,496 [1    ] Clc.Migrator.Log                         - --------------------------------------------------------
+INFO  2019-03-02 17:04:53,496 [1    ] Clc.Migrator.Log                         - All databases have been migrated.
+DEBUG 2019-03-02 17:04:56,481 [1    ] Abp.Modules.AbpModuleManager             - Shutting down has been started
+DEBUG 2019-03-02 17:04:56,481 [1    ] Abp.Modules.AbpModuleManager             - Shutting down completed.

@@ -1,0 +1,82 @@
+﻿@using Clc.Web.Views.Shared.Components.TopBarTitle
+@using Clc.Web.Views.Shared.Components.SideBarNav
+
+@section Styles {
+    <environment names="Development">
+        <link rel="stylesheet" href="~/view-resources/Views/Home/Home.css" asp-append-version="true" />
+    </environment>
+
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/view-resources/Views/Home/Home.min.css" asp-append-version="true" />
+    </environment>
+
+    <style>
+        #top-bar .title-user { color: white; font-size: large;  margin-left: 45px; }
+    
+    </style>
+}
+
+@section Scripts
+{
+    <environment names="Development">
+        <script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/view-resources/Views/Home/Index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<!-- body -->
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north'" style="height: 52px; line-height: 0px;">
+        <div class="topbar">
+            <div class="bar-left">
+                @await Component.InvokeAsync(typeof(TopBarTitleViewComponent))
+            </div>
+            <div class="bar-right">
+                <a href="/Account/Logout" class="easyui-linkbutton" style="color: white; margin: 10px; " plain="true" iconCls="icon-cancel">退出</a>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'west',split:true,title:'导航菜单'" style="width: 165px; min-width: 100px; height:100%; ">
+        <div id="menu-accordion" class="easyui-accordion" data-options="fit:true, border:false, selected:true">
+            @await Component.InvokeAsync(typeof(SideBarNavViewComponent))
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <div id="main-tab" class="easyui-tabs" data-options="fit:true, border:false">
+            <!--<div title="我的主页" iconcls="pic_209" data-options="fit:true" style="padding: 5px; overflow: hidden; ">
+                <iframe scrolling="auto" frameborder="0" src="" style="width: 100%; height: 100%;"></iframe>
+            </div>-->
+        </div>
+    </div>
+    <!-- status bar -->
+    <div data-options="region:'south'" style="height: 26px; line-height: 0px;">
+        <div class="statusbar">
+            <div class="bar-left">
+                <p class="status-info">Info1</p>
+                <p class="status-info">Info2</p>
+            </div>
+            <div class="bar-right">
+                <i class="status-hint fa fa-home"></i>
+                <p class="status-hint">Clc</p>
+                <p class="status-hint">Copyright 2019</p>
+            </div>
+        </div>        
+    </div>
+    <!-- #END# status bar -->
+</div>
+
+<!-- #END# Body -->
+
+<div id="tab-menu" class="easyui-menu" style="width: 150px;">
+    <div id="tab-menu-refresh" data-options="iconCls:'icon-reload'">刷新</div>
+    <div id="tab-menu-openFrame" data-options="iconCls:'pic_138'">新窗口打开</div>
+    <div class="menu-sep"></div>
+    <div id="tab-menu-close" data-options="iconCls:'icon-remove'">关闭</div>
+    <div id="tab-menu-closeleft" data-options="iconCls:'icon-undo'">关闭左边</div>
+    <div id="tab-menu-closeright" data-options="iconCls:'icon-redo'">关闭右边</div>
+    <div class="menu-sep"></div>
+    <div id="tab-menu-closeother" data-options="iconCls:'pic_101'">关闭其他</div>
+    <div id="tab-menu-closeall" data-options="iconCls:'pic_283'">关闭所有</div>
+</div>

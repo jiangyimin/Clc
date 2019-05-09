@@ -1,0 +1,47 @@
+﻿@using Clc.Configuration
+@using Abp.Configuration.Startup
+@model Clc.Web.Models.Account.LoginFormViewModel
+@inject IMultiTenancyConfig MultiTenancyConfig
+@{
+    ViewBag.Title = "登录";
+}
+
+@section scripts
+{
+    <environment names="Development">
+        <script src="~/view-resources/Views/Account/Login.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/view-resources/Views/Account/Login.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<div id="LoginArea" class="easyui-window login-container" title="登录"
+         data-options="modal:true, iconCls:'icon-lock', closable:false, minimizable:false, maximizable:false">
+    <form id="LoginForm" method="post" novalidate>
+        @if (MultiTenancyConfig.IsEnabled) {
+        <div class="form-group">
+            <input id="TenancyName" class="easyui-textbox" style="width:100%; height: 30px; padding-left:10px;" data-options="prompt:'公司名称'">
+        </div>
+        }
+        <div class="form-group">
+            <input id="UserName" type="text" class="easyui-textbox" name="usernameOrEmailAddress" style="width: 100%; height: 30px; padding-left:10px;"
+                    data-options="prompt:'@L("UserNameOrEmail")', iconCls:'icon-man', iconWidth:38, required:true">
+        </div>
+        <div class="form-group">
+            <input type="password" class="easyui-textbox" name="password" style="width: 100%; height: 30px; padding-left: 10px;"
+                    data-options="prompt:'Password', iconCls:'icon-lock', iconWidth:38, required:true">
+        </div>
+        <div class="form-group">
+            <label style="vertical-align: middle; height:30px;">
+                <input type="checkbox" name="RememberMe" value="true"> @L("RememberMe")
+            </label>
+        </div>
+        <div class="form-group">
+            <button id="LoginButton" type="submit" class="easyui-linkbutton" style="width:100%; height: 30px;"
+                    iconCls="fa fa-sign-in">
+                @L("LogIn")
+            </button>
+        </div>
+    </form>
+</div>
