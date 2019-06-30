@@ -70,8 +70,8 @@ var crud = crud || {};
 
     crud.edit = function (index) {
         var row = _$dg.datagrid('getRows')[index];
-        _$dlg.dialog('open').dialog('setTitle', '编辑');
-        _$fm.form('load', crud.dgDefault.name + '/GetEdit/' + row.id);
+        _$dlg.dialog('open').dialog('setTitle', '编辑');        
+        _$fm.form('load', row); //crud.dgDefault.name + '/GetEdit/' + row.id);
         _action = crud.useSelfSave ? '/MyUpdate' : '/Update';
     };
         

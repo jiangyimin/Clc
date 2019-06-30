@@ -52,7 +52,7 @@ namespace Clc.Web.Controllers
         [DontWrapResult]
         public virtual async Task<JsonResult> GetEdit(TPrimaryKey id)
         {
-            var o = await GetEntity(id);
+            var o = await GetEntityDto(id);
             return Json(o);
         }
 

@@ -23,7 +23,7 @@ body {
     height: 100%;
     padding: 15px;
     background-color: gainsboro;
-    z-index: 99999; 
+    z-index: 9999; 
 }
 
 .login-container {

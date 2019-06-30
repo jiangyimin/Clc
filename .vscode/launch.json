@@ -19,7 +19,7 @@
            "name": ".NET Core Launch (web)",
            "type": "coreclr",
            "request": "launch",
-           "preLaunchTask": "",
+           "preLaunchTask": "build",
            "program": "${workspaceRoot}/aspnet-core/src/Clc.Web.Mvc/bin/Debug/netcoreapp2.2/Clc.Web.Mvc.dll",
            "args": [],
            "cwd": "${workspaceRoot}/aspnet-core/src/Clc.Web.Mvc",

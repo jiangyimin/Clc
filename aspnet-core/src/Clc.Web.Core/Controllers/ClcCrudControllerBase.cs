@@ -59,9 +59,10 @@ namespace Clc.Controllers
             );
         }
 
-        protected async Task<TEntity> GetEntity(TPrimaryKey id)
+        protected async Task<TEntityDto> GetEntityDto(TPrimaryKey id)
         {
-            return await _repository.GetAsync(id);
+            var entity = await _repository.GetAsync(id);
+            return MapToEntityDto(entity);
         }
         
         protected async Task<TEntityDto> CreateEntity(TEntityDto input)
