@@ -17,5 +17,9 @@ namespace Clc.Roles
         Task<GetRoleForEditOutput> GetRoleForEdit(EntityDto input);
 
         Task<ListResultDto<RoleListDto>> GetRolesAsync(GetRolesInput input);
+
+        // Thle Follows is Host Tenant Manage
+        Task CreateTenantRole(string tenancyName, CreateRoleDto input);
+        Task UpdateRolePermissions(string tenancyName, UpdateRolePermissionsInput input);
     }
 }

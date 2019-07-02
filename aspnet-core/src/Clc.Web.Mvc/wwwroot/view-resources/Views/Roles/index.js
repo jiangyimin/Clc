@@ -1,6 +1,7 @@
 (function() {
     $(function() {
         var _roleService = abp.services.app.role;
+        var _userService = abp.services.app.user;
         var _$dg = $('#dgRole');
         var _$dialog = $('#dlg');
         var _$form = _$dialog.find('form');
@@ -65,7 +66,7 @@
             var role = _$form.serializeFormToObject(); //serializeFormToObject is defined in main.js
 
             abp.ui.setBusy(_$dialog);
-            _roleService.createRole(tenancyName, role).done(function () {
+            _roleService.createTenantRole(_tenancyName, role).done(function () {
                 _$dialog.dialog('close');
                 _$dg.datagrid('reload'); 
             }).always(function() {
@@ -88,12 +89,28 @@
                     names.push(rows[i].Name);
 
                 abp.ui.setBusy(_$dialog);
-                _roleService.updateRolePermissions(tenancyName, {RoleId: id, GrantedPermissionNames: names}).done(function () {
+                _roleService.updateRolePermissions(_tenancyName, {RoleId: id, GrantedPermissionNames: names}).done(function () {
                     abp.notify.info("成功授权");
                 }).always(function() {
                     abp.ui.clearBusy(_$dialog);
                 });
             }
+        });
+
+        // resetDefaultUser
+        $('#tb').children('a[name="resetDefaultUser"]').click(function (e) {
+            let row = _$dg.datagrid('getSelected');
+            if (!row) {
+                abp.notify.error("请先选择角色", "", { positionClass : 'toast-top-center'} );
+                return;
+            }
+
+            abp.ui.setBusy(_$dialog);
+            _userService.resetDefaultUser(_tenancyName, row.id).done(function () {
+                abp.notify.info("成功重置角色缺省用户");
+            }).always(function() {
+                abp.ui.clearBusy(_$dialog);
+            });
         });
 
     });

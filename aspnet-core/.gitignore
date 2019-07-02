@@ -22,8 +22,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 
-# Abp App_Data
-[Aa]pp_Data
+# Abp Logs
+[Ll]ogs/
 
 # Visual Studio 2015 cache/options directory
 .vs/
