@@ -10,5 +10,11 @@
             public const string CompanyImageName = "VI.CompanyImageName";
             public const string DepotTitleName = "VI.DepotTitleName";            
         }
+
+        public static class Const
+        {
+            public const string UserDefaultPassword = "Const.UserDefaultPassword";
+            public const string RoleUserDefaultPassword = "Const.RoleUserDefaultPasword";
+        }
     }
 }

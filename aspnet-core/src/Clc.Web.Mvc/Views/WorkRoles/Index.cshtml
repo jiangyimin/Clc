@@ -29,7 +29,7 @@
             abp.services.app.type.getDutyCategories().done(function(d) { crud.setComboBox('#category', d); });
             $('#category').combobox({
                 onSelect: function(rec) {
-                    abp.services.app.type.getDuties(rec.value).done(function(d) { crud.setTagBox('#duties', d); });
+                    // abp.services.app.type.getDuties(rec.value).done(function(d) { crud.setTagBox('#duties', d); });
                 }
             });
         }     
@@ -59,7 +59,7 @@
             </tr>
             <tr>
                 <th><label for="duties">职责列表：</label></th>
-                <td><input id="duties" name="duties" class="easyui-tagbox" data-options="required:true" style="width: 100%"></td>
+                <td><input id="duties" name="duties" class="easyui-textbox" data-options="required:true" style="width: 100%"></td>
             </tr>
         </table>
     </form>

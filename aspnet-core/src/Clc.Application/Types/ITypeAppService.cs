@@ -11,7 +11,7 @@ namespace Tbs.DomainModels
         Task<List<ComboboxItemDto>> GetComboItems(string typeName);
         Task<List<ComboboxItemDto>> GetDutyCategories();
 
-        Task<List<string>> GetDuties(string category);
+        //Task<List<string>> GetDuties(string category);
  
     }
 }

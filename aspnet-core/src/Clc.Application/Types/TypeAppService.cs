@@ -44,15 +44,15 @@ namespace Tbs.DomainModels
             return Task.FromResult<List<ComboboxItemDto>>(lst);            
         }
         
-        public Task<List<string>> GetDuties(string category)
-        {
-            List<string> lst = new List<string>();
-            foreach (var c in _dutyProvider.GetDuties(category)) 
-            {
-                lst.Add(c);
-            }
-            return Task.FromResult<List<string>>(lst);            
-        }
+        //public Task<List<string>> GetDuties(string category)
+        //{
+            //List<string> lst = new List<string>();
+            //foreach (var c in _dutyProvider.GetDuties(category)) 
+            //{
+                //lst.Add(c);
+            //}
+            //return Task.FromResult<List<string>>(lst);            
+        //}
         
     }
 

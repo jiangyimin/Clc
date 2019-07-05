@@ -10,6 +10,7 @@ namespace Clc.Configuration
         {
             List<SettingDefinition> lst = new List<SettingDefinition>();
             lst.AddRange(GetVISettingDefinitions(context));
+            lst.AddRange(GetConstSettingDefinitions(context));
             // return new[]
             // {
             //     new SettingDefinition(AppSettingNames.UiTheme, "red", scopes: SettingScopes.Application | SettingScopes.Tenant | SettingScopes.User, isVisibleToClients: true)
@@ -37,6 +38,24 @@ namespace Clc.Configuration
                     AppSettingNames.VI.DepotTitleName, 
                     "中心", 
                     new FixedLocalizableString("物流中心外显名称"),
+                    scopes: SettingScopes.Tenant
+                )
+            };
+        }
+        private IEnumerable<SettingDefinition> GetConstSettingDefinitions(SettingDefinitionProviderContext context)
+        {
+            return new List<SettingDefinition>
+            {
+                new SettingDefinition(
+                    AppSettingNames.Const.UserDefaultPassword, 
+                    "123456", 
+                    new FixedLocalizableString("用户缺省密码"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Const.RoleUserDefaultPassword, 
+                    "RoleUserDefaultPassword", 
+                    new FixedLocalizableString("角色用户缺省密码"),
                     scopes: SettingScopes.Tenant
                 )
             };

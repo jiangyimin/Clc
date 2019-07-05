@@ -16,10 +16,12 @@ namespace Clc.Types
 
         public DutyProvider()
         {
-            _dutyCategory = new List<string>() {"线路", "物品库", "调度室", "金库", "清分室"};
+            _dutyCategory = new List<string>() {"线路", "物品库", "调度室", "金库"};
             
             _duties = new Dictionary<string, IReadOnlyList<string>>();
             _duties.Add("线路", new List<string>() {"网点交接"});
+            _duties.Add("物品库", new List<string>() {"登录"});
+            _duties.Add("调度室", new List<string>() {"登录"});
 
         }
         public IEnumerable<string> GetDutyCategory()
