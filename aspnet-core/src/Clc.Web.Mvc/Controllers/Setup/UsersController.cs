@@ -29,7 +29,7 @@ namespace Clc.Web.Controllers
         [DontWrapResult]
         public async Task<JsonResult> GridData()
         {
-            var output = await _userAppService.GetAll();
+            var output = await _userAppService.GetAll(new PagedUserResultRequestDto());
             return Json( new { rows = output.Items });
         }
     }

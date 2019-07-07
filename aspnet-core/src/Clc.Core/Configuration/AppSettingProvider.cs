@@ -38,7 +38,8 @@ namespace Clc.Configuration
                     AppSettingNames.VI.DepotTitleName, 
                     "中心", 
                     new FixedLocalizableString("物流中心外显名称"),
-                    scopes: SettingScopes.Tenant
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
                 )
             };
         }
@@ -50,7 +51,8 @@ namespace Clc.Configuration
                     AppSettingNames.Const.UserDefaultPassword, 
                     "123456", 
                     new FixedLocalizableString("用户缺省密码"),
-                    scopes: SettingScopes.Tenant
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
                 ),
                 new SettingDefinition(
                     AppSettingNames.Const.RoleUserDefaultPassword, 

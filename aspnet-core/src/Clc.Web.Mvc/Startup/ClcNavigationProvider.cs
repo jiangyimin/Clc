@@ -50,6 +50,10 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Admin_Vehicles", new FixedLocalizableString("车辆"), url: "Vehicles"))
                     .AddItem(new MenuItemDefinition("Admin_Articles", new FixedLocalizableString("物品"), url: "Articles"))
                     .AddItem(new MenuItemDefinition("Admin_Managers", new FixedLocalizableString("公司管理人员"), url: "Managers"))
+                // Files
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Files, new FixedLocalizableString("档案管理"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Files)
+                    .AddItem(new MenuItemDefinition("Files_Workers", new FixedLocalizableString("人员档案"), url: "WorkerFiles"))
+                    .AddItem(new MenuItemDefinition("Files_Documents", new FixedLocalizableString("文件档案"), url: "Documents"))
                 // Customers
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Customers, new FixedLocalizableString("客户"), icon: "fa fa-th-large", requiredPermissionName: PermissionNames.Pages_Customers)
                     .AddItem(new MenuItemDefinition("Admin_Outlets", new FixedLocalizableString("网点"), url: "Outlets"))

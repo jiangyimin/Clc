@@ -8,10 +8,8 @@ using Clc.Types.Entities;
 namespace Clc.Types.Dto
 {
     [AutoMap(typeof(WorkerType))]
-    public class WorkerTypeDto : IEntityDto
+    public class WorkerTypeDto : EntityDto
     {
-        public int Id { get; set; }
-
         [Required]
         [StringLength(WorkerType.MaxNameLength)]
         public string Cn { get; set; }

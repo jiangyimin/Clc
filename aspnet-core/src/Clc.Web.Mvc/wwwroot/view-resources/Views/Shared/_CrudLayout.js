@@ -36,12 +36,6 @@ var crud = crud || {};
         });
     };
 
-    crud.setTagBox = function(domid, data) {
-        $(domid).tagbox({
-            value: ['aaa', 'bbbb', 'ccccc']
-        });
-    };
-
     crud.getComboTextByInt = function(domid, val) {
         var types = $(domid).combobox('getData');
         for (var i = 0; i < types.length; i++) {

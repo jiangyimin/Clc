@@ -9,7 +9,7 @@
         // role combobox
         _userService.getRoles().done(function(roles) {
             $('#roleName').combobox({
-                data: roles,
+                data: roles.items,
                 valueField: 'name',
                 textField: 'displayName'
             });
@@ -40,7 +40,7 @@
             }
             abp.message.confirm('确定删除这一行吗？', '请确定', function (isConfirmed) {
                 if (isConfirmed) {
-                    _userService.deleteUser(_row.id).done(function () {
+                    _userService.delete(_row).done(function () {
                         abp.notify.info(_row.name + " 被删除！");
                         _$dialog.dialog('close');
                         _$dg.datagrid('reload'); 
@@ -60,10 +60,17 @@
 
             abp.ui.setBusy(_$dialog);
             var _defer;
-            if (_$dialog.panel('options').title === "增加")
-                _defer = _userService.createUser(user);
-            else
-                _defer = _userService.updateUser(_row.id, user);
+            if (_$dialog.panel('options').title === "增加") {
+                user.surname = user.name;
+                user.emailAddress = user.name + "@163.com";
+                user.password = abp.setting.get('Const.UserDefaultPassword');
+                user.isActive = true;
+                user.roleNames = [user.roleName];
+                _defer = _userService.create(user);
+            }
+            else {
+                _defer = _userService.update(_row.id, user);
+            }
 
             _defer.done(function () {
                 abp.notify.info(_$dialog.panel('options').title+'操作成功')

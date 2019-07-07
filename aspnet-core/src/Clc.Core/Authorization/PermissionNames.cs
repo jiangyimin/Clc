@@ -10,6 +10,7 @@
         public const string Pages_Types = "Pages.Types";                // 2. 各种类型
 
         public const string Pages_Fields = "Pages.Fields";              // 3. 场地与资源
+        public const string Pages_Files = "Pages.Files";              // 4. 档案
 
         public const string Pages_Customers = "Pages.Customers";        // 4. 客户数据
 

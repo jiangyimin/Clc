@@ -13,6 +13,7 @@ namespace Clc.Authorization
             context.CreatePermission(PermissionNames.Pages_Setup, L("Setup"));
             context.CreatePermission(PermissionNames.Pages_Types, L("Types"));
             context.CreatePermission(PermissionNames.Pages_Fields, L("Fields"));
+            context.CreatePermission(PermissionNames.Pages_Files, L("Files"));
             context.CreatePermission(PermissionNames.Pages_Customers, L("Customers"));
         }
 
