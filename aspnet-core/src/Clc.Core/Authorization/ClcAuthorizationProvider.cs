@@ -15,6 +15,10 @@ namespace Clc.Authorization
             context.CreatePermission(PermissionNames.Pages_Fields, L("Fields"));
             context.CreatePermission(PermissionNames.Pages_Files, L("Files"));
             context.CreatePermission(PermissionNames.Pages_Customers, L("Customers"));
+
+            context.CreatePermission(PermissionNames.Pages_PreArrange, L("PreArrange"));
+            context.CreatePermission(PermissionNames.Pages_TodayArrange, L("TodayArrang"));
+            context.CreatePermission(PermissionNames.Pages_AuxDispatch, L("AuxDispatch"));
         }
 
         private static ILocalizableString L(string name)

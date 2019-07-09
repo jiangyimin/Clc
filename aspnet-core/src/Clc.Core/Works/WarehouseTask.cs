@@ -32,8 +32,7 @@ namespace Clc.Works
         /// 库房
         /// </summary>
         [Required]
-        [StringLength(Warehouse.MaxNameLength
-        )]
+        [StringLength(Warehouse.MaxNameLength)]
         public string WarehorseName { get; set; }
         public int WarehouseWorkTypeId { get; set; }
         public WarehouseWorkType WarehouseWorkType  { get; set; }
