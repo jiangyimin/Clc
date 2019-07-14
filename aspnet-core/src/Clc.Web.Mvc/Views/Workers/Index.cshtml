@@ -15,22 +15,76 @@
             { field: "password", title: "微信登录密码", width: 80 },
             { field: "idCardNo", title: "ID卡号", width: 100 },         
             { field: "photo", title: "有否照片", width: 80, formatter: photoFormatter },
-            { field: "finger", title: "有否指纹", width: 80, formatter: fingerFormatter },
-            { field: "idNumber", title: "身份证", width: 100 },
             { field: "mobile", title: "手机号码", width: 100 },
             { field: "deviceId", title: "微信设备号", width: 100 },
-            { field: "depotId", title: "所属"+title, width: 100, formatter: $.displayDepotText }
-            { field: "isActive", title: "线路确认身份", width: 60 }
+            { field: "depotId", title: "所属"+title, width: 100}, // formatter: $.displayDepotText }
+            { field: "isActive", title: "启用", width: 60 }
         ]];
         function photoFormatter(val, row, index) {
             if (row.photo.length > 0)
                 return '(有)'
         }
-        function fingerFormatter(val, row, index) {
-            if (row.finger != null)
-                return '(有)'
-        }
     </script>
+}
+
+@section endScript
+{
+    <script type="text/javascript">
+        crud.startfunction = function () {
+            abp.services.app.field.getComboItems('Depot').done(function(depots) {
+                crud.setComboBox('#depotId', depots);
+                var treeData = [];
+                depots.forEach( function (val, index, arr) {
+                    treeData.push({ id: val.value, text: val.displayText });
+                });
+                $('#tree').tree({
+                    data: treeData,
+                    onSelect: function (node) {
+                        crud.parentId = node.id;
+                        $('#datagrid').datagrid({
+                            url: crud.dgDefault.name + '/GetPagedData/' + 'DepotId=' + node.id
+                        });
+                    }
+                });
+            });
+      
+            //crud.toolbarData.push({ text: "重置当前微信设备号", iconCls: "", handler: resetDevice });
+            //crud.toolbarData.push({ text: "重置所有微信设备号", iconCls: "", handler: clearDevice });
+        };
+
+        crud.endfunction = function () {
+            // photo Preview processes
+            $("#fm").form({
+                onLoadSuccess: function (row) {
+                    if (row && row.id > 0) {
+                        $("#preview").attr("src", "Workers/GetPhoto/" + row.id);
+                    }
+                },
+            });
+
+            $("#dlg").dialog({
+                onClose: function () {
+                    var obj = document.getElementById('photoFile');
+                    obj.outerHTML = obj.outerHTML;
+                    $("#preview").attr("src", "");
+                }
+            });
+        };
+    </script>
+}
+
+@section headHtml
+{
+    <div id="cc" class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'west', split:true, minWidth:80, width:120">
+            <ul id="tree" class="easyui-tree" style="margin-top:6px"></ul>
+        </div>
+        <div data-options="region:'center', border:false">
+}
+@section footHtml
+{
+        </div>
+    </div>
 }
 
 @*弹窗*@
@@ -40,44 +94,28 @@
             <input id="id" name="id" type="hidden">
             <tr>
                 <th><label for="cn">编号：</label></th>
-                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @Worker.MaxCnLength)]'" style="width: 100%"></td>
+                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @Worker.MaxCnLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
                 <th><Label for="name">姓名:</Label></th>
                 <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @Worker.MaxNameLength]'" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><Label for="password">登录密码:</Label></th>
-                <td><input name="password" class="easyui-numberbox" data-options="validType:'length[1, @Worker.MaxPasswordLength]'" style="width: 100%"></td>
+                <td><input name="password" class="easyui-numberbox" style="width: 100%"></td>
                 <th><Label for="idCardNo">ID 卡号:</Label></th>
-                <td><input name="idCardNo" class="easyui-textbox" data-options="validType:'length[2, @Worker.IDCardNoMaxLength]'" style="width: 100%"></td>
+                <td><input name="idCardNo" class="easyui-textbox" style="width: 100%"></td>
             </tr>
-            <tr>
-                <th><Label for="PhotoFile">照片:</Label></th>
-                <td>
-                    <img id="preview" alt="" src="" style="width:93px; height:110px;" />
-                    <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
-                </td>
-            </tr>
-            <tr>
-                <th><label for="finger">指纹：</label>
-                </th>
-                <td>
-                    <input id="finger" name="finger" class="easyui-textbox" style="width: 100%" >
-                    <a onclick="getFinger()" class="easyui-linkbutton">获取指纹</a>
-                    <a onclick="validFinger()" class="easyui-linkbutton">验证指纹</a>
-                </td>
-            </tr>
-            <tr>
+           <tr>
                 <th><Label for="idNumber">身份证:</Label></th>
-                <td><input name="idNumber" class="easyui-textbox" data-options="validType:'length[@Worker.IDNumberLength, @Worker.IDNumberLength]'" style="width: 100%"></td>
-            </tr>
-             <tr>
+                <td><input name="idNumber" class="easyui-textbox" style="width: 100%"></td>
                 <th><Label for="mobile">手机号码:</Label></th>
-                <td><input name="mobile" class="easyui-numberbox" data-options="validType:'length[@Worker.MobileLength, @Worker.MobileLength]'" style="width: 100%"></td>
+                <td><input name="mobile" class="easyui-numberbox" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="depotId">所属：</label></th>
                 <td><select id="depotId" name="depotId" class="easyui-combobox" style="width: 100%" /></td>
-                <th><label for="isActive">所属：</label></th>
+                <th><label for="isActive">启用：</label></th>
                 <td><input name="isActive" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
             </tr>
         </table>

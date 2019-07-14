@@ -49,6 +49,26 @@
             });
         });
 
+        // resetPassword
+        $('#tb').children('a[name="resetPassword"]').click(function (e) {
+            _row = _$dg.datagrid('getSelected');
+            if (!_row) {
+                abp.notify.error("请先选择用户", "", { positionClass : 'toast-top-center'} );
+                return;
+            }
+            abp.message.confirm('确定重置此角色用户密码吗？', '请确定', function (isConfirmed) {
+                if (isConfirmed) {
+                    abp.ui.setBusy(_$dialog);
+                    _userService.resetRoleUserPassword(_row.userName).done(function () {
+                        abp.notify.info("成功重置角色缺省用户密码");
+                    }).always(function() {
+                        abp.ui.clearBusy(_$dg);
+                    });
+                }
+            });
+        });
+
+
         $('#dlg-tb').children('a[name="save"]').click(function (e) {
             e.preventDefault();
 

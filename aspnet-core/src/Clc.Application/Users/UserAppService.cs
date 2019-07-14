@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
@@ -16,8 +18,7 @@ using Clc.Authorization.Roles;
 using Clc.Authorization.Users;
 using Clc.Roles.Dto;
 using Clc.Users.Dto;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Clc.Configuration;
 
 namespace Clc.Users
 {
@@ -103,6 +104,16 @@ namespace Clc.Users
                 LocalizationSettingNames.DefaultLanguage,
                 input.LanguageName
             );
+        }
+
+        public async Task ResetRoleUserPassword(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user != null)
+            {
+                var defaultPassword = await SettingManager.GetSettingValueAsync(AppSettingNames.Const.RoleUserDefaultPassword);
+                CheckErrors(await _userManager.ChangePasswordAsync(user, defaultPassword));
+            }
         }
 
         protected override User MapToEntity(CreateUserDto createInput)

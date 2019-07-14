@@ -1,7 +1,6 @@
 (function() {
     $(function() {
         var _roleService = abp.services.app.role;
-        var _userService = abp.services.app.user;
         var _$dg = $('#dgRole');
         var _$dialog = $('#dlg');
         var _$form = _$dialog.find('form');
@@ -96,22 +95,5 @@
                 });
             }
         });
-
-        // resetDefaultUser
-        $('#tb').children('a[name="resetDefaultUser"]').click(function (e) {
-            let row = _$dg.datagrid('getSelected');
-            if (!row) {
-                abp.notify.error("请先选择角色", "", { positionClass : 'toast-top-center'} );
-                return;
-            }
-
-            abp.ui.setBusy(_$dialog);
-            _userService.resetDefaultUser(_tenancyName, row.id).done(function () {
-                abp.notify.info("成功重置角色缺省用户");
-            }).always(function() {
-                abp.ui.clearBusy(_$dialog);
-            });
-        });
-
     });
 })();

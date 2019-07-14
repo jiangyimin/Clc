@@ -1,20 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
-using Abp.Dependency;
-using Abp.Domain.Repositories;
-using Abp.Reflection.Extensions;
-using Clc;
-using Clc.Types;
-using Clc.Types.Dto;
 
-namespace Tbs.DomainModels
+namespace Clc.Types
 {
     [AbpAuthorize]
     public class TypeAppService : ClcAppServiceBase, ITypeAppService

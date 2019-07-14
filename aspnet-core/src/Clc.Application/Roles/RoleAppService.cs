@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
@@ -14,8 +16,6 @@ using Clc.Authorization.Roles;
 using Clc.Authorization.Users;
 using Clc.MultiTenancy;
 using Clc.Roles.Dto;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Clc.Roles
 {
@@ -211,7 +211,6 @@ namespace Clc.Roles
         }
 
         #endregion
-
     }
 }
 

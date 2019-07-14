@@ -7,6 +7,8 @@ namespace Clc.Fields.Dto
     [AutoMap(typeof(Worker))]
     public class WorkerDto : EntityDto
     {
+        public int DepotId { get; set; }
+        
         /// <summary>
         /// 编号
         /// </summary>

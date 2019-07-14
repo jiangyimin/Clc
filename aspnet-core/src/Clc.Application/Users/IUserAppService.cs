@@ -11,5 +11,7 @@ namespace Clc.Users
         Task<ListResultDto<RoleDto>> GetRoles();
 
         Task ChangeLanguage(ChangeUserLanguageDto input);
+
+        Task ResetRoleUserPassword(string userName);
     }
 }

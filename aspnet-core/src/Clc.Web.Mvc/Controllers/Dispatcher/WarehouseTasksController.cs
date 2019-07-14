@@ -4,16 +4,17 @@ using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Web.Models;
 using Clc.Authorization;
 using Clc.Controllers;
+using Clc.Warehouses;
 
 namespace Clc.Web.Controllers
 {
     [AbpMvcAuthorize(PermissionNames.Pages_TodayArrange)]
     public class WarehouseTasksController : ClcControllerBase
     {
-        private readonly IWarehouseAppService _warehosueAppService;
-        public WhAffairsController(IWarehouseAppService whAffairAppService)
+        private readonly IWarehouseAppService _warehouseAppService;
+        public WarehouseTasksController(IWarehouseAppService warehouseAppService)
         {
-            _whAffairAppService = whAffairAppService;
+            _warehouseAppService = warehouseAppService;
         }
 
         public ActionResult Index()
@@ -23,13 +24,10 @@ namespace Clc.Web.Controllers
 
         public ActionResult WhAffairWorkersStat()
         {
-            WhAffairsViewModel vm = new WhAffairsViewModel() {
-                UserDepots = DomainManager.GetCurrentUserDepots()
-            };
-            return View(vm);
+            return View();
         }
 
-        [DontWrapResult]
+/*         [DontWrapResult]
         public JsonResult GridData(int depotId, DateTime carryoutDate)
         {
             var output = _whAffairAppService.GetAffairs(depotId, carryoutDate, GetSorting());
@@ -42,6 +40,6 @@ namespace Clc.Web.Controllers
             var output = _whAffairAppService.GetAffairWorkers(id, GetSorting());
             return Json( new { rows = output });
         }
-
+ */
     }
 }

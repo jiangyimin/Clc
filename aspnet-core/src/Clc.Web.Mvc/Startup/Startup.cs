@@ -33,6 +33,9 @@ namespace Clc.Web.Startup
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            //services.ConfigureApplicationCookie(options => {
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+            //});
             // MVC
             services.AddMvc(
                 options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())

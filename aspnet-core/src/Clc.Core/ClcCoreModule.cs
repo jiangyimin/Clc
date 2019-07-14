@@ -10,6 +10,7 @@ using Clc.Localization;
 using Clc.MultiTenancy;
 using Clc.Timing;
 using Clc.Types.Cache;
+using Clc.Fields.Cache;
 
 namespace Clc
 {
@@ -42,13 +43,18 @@ namespace Clc
             IocManager.RegisterAssemblyByConvention(typeof(ClcCoreModule).GetAssembly());
 
             //为特定的缓存配置有效期
-            Configuration.Caching.Configure("CachedKeeper", cache =>
+            Configuration.Caching.Configure("CachedWorker", cache =>
             {
                 cache.DefaultSlidingExpireTime = System.TimeSpan.FromMinutes(10);
             });
             
+            // Cache for Types
             IocManager.Register<IWorkerTypeCache, WorkerTypeCache>();
             IocManager.Register<ITaskTypeCache, TaskTypeCache>();
+
+            // Cache for Fields
+            IocManager.Register<IDepotCache, DepotCache>();
+
         }
 
         public override void PostInitialize()

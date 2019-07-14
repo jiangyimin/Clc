@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Abp;
 using Abp.Domain.Repositories;
 using Abp.Events.Bus.Entities;
 using Abp.Events.Bus.Handlers;
@@ -33,9 +32,8 @@ namespace Clc.Types.Cache
 
         public List<TaskType> GetList()
         {
-            var cacheKey = "TaskTypes@" + (_abpSession.TenantId ?? 0);
             return _cacheManager.GetCache(CacheName)
-                .Get(cacheKey, () => _taskTypeRepository.GetAll().ToList());
+                .Get(CacheKey, () => _taskTypeRepository.GetAll().ToList());
         }
 
         public TaskType GetById(int id)

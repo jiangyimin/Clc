@@ -15,7 +15,7 @@ namespace Clc.Web.Controllers
         where TEntity : class, IEntity
         where TEntityDto : IEntityDto
     {
-        protected ClcCrudController(Abp.Domain.Repositories.IRepository<TEntity> repository)
+        protected ClcCrudController(IRepository<TEntity> repository)
             : base(repository)
         {
         }
@@ -36,9 +36,9 @@ namespace Clc.Web.Controllers
         }
 
         [DontWrapResult]
-        public virtual async Task<JsonResult> GetPagedData()
+        public virtual async Task<JsonResult> GetPagedData(string id)
         {
-            PagedResultDto<TEntityDto> o = await GetPagedResult(null);
+            PagedResultDto<TEntityDto> o = await GetPagedResult(id);        // wherePhrase
             return Json(new { total = o.TotalCount, rows = o.Items });
         }
 

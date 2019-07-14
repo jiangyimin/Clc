@@ -9,7 +9,7 @@ var crud = crud || {};
     // default var
     crud.dgDefault = {
         name: '',
-        toolbarItem: "reload, add",
+        toolbarItems: "reload, add",
         columns: [[]],
         sortName: 'cn',
         singleSelect: true,
@@ -109,35 +109,31 @@ var crud = crud || {};
             return;
 
         var fd = new FormData(document.getElementById('fm'));         
-        abp.ui.setBusy(
-            _$dlg, crud.sendFdAjax(fd)
-        );
+        crud.sendFdAjax(fd);
     };
 
     crud.sendAjax = function (data) {
-        return abp.ajax({
+        abp.ajax({
             contentType: 'application/x-www-form-urlencoded',
             url: crud.dgDefault.name + _action,
-            data: data,
-            success: function (data) {
-                abp.notify.info(data.content);
-                _$dlg.dialog('close');
-                _$dg.datagrid('reload');
-            }
+            data: data   
+        }).done(function (data) {
+            abp.notify.info(data.content);
+            _$dg.datagrid('reload');
+            _$dlg.dialog('close');
         });
     }
 
     crud.sendFdAjax = function (data) {
-        return abp.ajax({
+        abp.ajax({
             contentType: false,
             processData: false,
             url: crud.dgDefault.name + _action,
-            data: data,
-            success: function (data) {
-                abp.notify.info(data.content);
-                _$dlg.dialog('close');
-                _$dg.datagrid('reload');
-            }
+            data: data
+        }).done(function (data) {
+            abp.notify.info(data.content);
+            _$dg.datagrid('reload');
+            _$dlg.dialog('close');
         });
     }
 
@@ -148,21 +144,21 @@ var crud = crud || {};
         return htmlTag;
     }
 
-    var _toolbarData = [];
-
     // document ready
     $(function () {
         // get toolbardata
-        if (crud.dgDefault.toolbarItem.indexOf('reload') >= 0) {
-            _toolbarData.push({ text: "刷新", iconCls: "icon-reload", handler: crud.reload} );
+        crud.toolbarData=[];
+
+        if (crud.dgDefault.toolbarItems.indexOf('reload') >= 0) {
+            crud.toolbarData.push({ text: "刷新", iconCls: "icon-reload", handler: crud.reload} );
         }
 
-        if (crud.dgDefault.toolbarItem.indexOf('add') >= 0) {
-            _toolbarData.push({ text: "增加", iconCls: "icon-add", handler: crud.addNew });
+        if (crud.dgDefault.toolbarItems.indexOf('add') >= 0) {
+            crud.toolbarData.push({ text: "增加", iconCls: "icon-add", handler: crud.addNew });
         }
-        if (crud.dgDefault.toolbarItem.indexOf('deletes') >= 0) {
-            _toolbarData.push("-");
-            _toolbarData.push({ text: "批量删除", iconCls: "icon-remove", handler: deletes });
+        if (crud.dgDefault.toolbarItems.indexOf('deletes') >= 0) {
+            crud.toolbarData.push("-");
+            crud.toolbarData.push({ text: "批量删除", iconCls: "icon-remove", handler: deletes });
             crud.dgDefault.columns[0].unshift({ field: "ck", checkbox: true });
         }
 
@@ -175,7 +171,7 @@ var crud = crud || {};
         var _url = crud.dgDefault.pagination ? '/GetPagedData/' : '/GetAllData/';
         _$dg.datagrid({
             url: crud.dgDefault.name + _url,
-            toolbar: _toolbarData,
+            toolbar: crud.toolbarData,
             fit: true,
             fitColumns: true,
             columns: crud.dgDefault.columns,

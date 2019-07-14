@@ -56,7 +56,7 @@ namespace Clc.Configuration
                 ),
                 new SettingDefinition(
                     AppSettingNames.Const.RoleUserDefaultPassword, 
-                    "RoleUserDefaultPassword", 
+                    "112233qqwwee", 
                     new FixedLocalizableString("角色用户缺省密码"),
                     scopes: SettingScopes.Tenant
                 )

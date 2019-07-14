@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
-using Clc.Types.Dto;
 
-namespace Tbs.DomainModels
+namespace Clc.Types
 {
     public interface ITypeAppService : IApplicationService
     {
