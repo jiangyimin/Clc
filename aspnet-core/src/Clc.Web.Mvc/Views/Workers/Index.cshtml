@@ -20,6 +20,8 @@
             { field: "depotId", title: "所属"+title, width: 100}, // formatter: $.displayDepotText }
             { field: "isActive", title: "启用", width: 60 }
         ]];
+        crud.parentField = 'depotId';
+        
         function photoFormatter(val, row, index) {
             if (row.photo.length > 0)
                 return '(有)'

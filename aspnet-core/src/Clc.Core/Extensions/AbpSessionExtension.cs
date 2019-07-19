@@ -1,5 +1,5 @@
+using System;
 using System.Linq;
-using System.Security.Claims;
 using Abp.Dependency;
 using Abp.Runtime.Session;
 
@@ -12,6 +12,18 @@ namespace Clc.Extensions
             return GetClaimValue(claimType);
         }
 
+        public static int GetDepotId(this IAbpSession session)
+        {
+            var id = GetClaimValue(session, "DEPOTID");
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException("请用工作人员编号登录！(可能需要重新登录)");
+            }
+            else
+            {
+                return int.Parse(id);
+            }          
+        }
         private static string GetClaimValue(string claimType)
         {
             // important

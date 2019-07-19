@@ -1,11 +1,12 @@
 ﻿using Abp.Authorization;
 using Clc.Authorization;
 
-namespace Clc.Users
+namespace Clc.Warehouses
 {
     [AbpAuthorize(PermissionNames.Pages_TodayArrange)]
-    public class WarehouseAppService : ClcAppServiceBase
+    public class WarehouseAppService : ClcAppServiceBase, IWarehouseAppService
     {
+        
     }
 }
 

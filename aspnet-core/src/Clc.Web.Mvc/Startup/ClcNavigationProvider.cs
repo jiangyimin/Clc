@@ -65,9 +65,9 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("PreArrange_VehicleWorkers", new FixedLocalizableString("应急交接人员"), url: "VehicleWorkers"))
                 // TodayArrange
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_TodayArrange, new FixedLocalizableString("当日任务"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_TodayArrange)
-                    .AddItem(new MenuItemDefinition("TodayArrange_Warehouse", new FixedLocalizableString("库房任务"), url: "WarehouseTask"))
-                    .AddItem(new MenuItemDefinition("TodayArrange_Vault", new FixedLocalizableString("金库任务"), url: "VtAffairs"))
-                    .AddItem(new MenuItemDefinition("TodayArrange_Routes", new FixedLocalizableString("线路任务"), url: "Routes"))
+                    .AddItem(new MenuItemDefinition("TodayArrange_Warehouse", new FixedLocalizableString("库房任务"), url: "WarehouseTasks"))
+                    .AddItem(new MenuItemDefinition("TodayArrange_Vault", new FixedLocalizableString("金库任务"), url: "VaultTasks"))
+                    .AddItem(new MenuItemDefinition("TodayArrange_Routes", new FixedLocalizableString("线路任务"), url: "RouteTasks"))
                 // AuxDispatcher
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_AuxDispatch, new FixedLocalizableString("辅助调度"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_AuxDispatch)
                     .AddItem(new MenuItemDefinition("AuxDispatcher_TaskOrder", new FixedLocalizableString("临时任务处理"), url: "TaskOrder"))

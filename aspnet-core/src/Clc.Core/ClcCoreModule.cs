@@ -54,6 +54,7 @@ namespace Clc
 
             // Cache for Fields
             IocManager.Register<IDepotCache, DepotCache>();
+            IocManager.Register<IWorkerCache, WorkerCache>();
 
         }
 

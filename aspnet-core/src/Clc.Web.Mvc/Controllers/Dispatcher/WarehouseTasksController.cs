@@ -1,10 +1,12 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Web.Models;
 using Clc.Authorization;
 using Clc.Controllers;
 using Clc.Warehouses;
+using Clc.Web.Models.Today;
+using Clc.Today;
 
 namespace Clc.Web.Controllers
 {
@@ -12,14 +14,22 @@ namespace Clc.Web.Controllers
     public class WarehouseTasksController : ClcControllerBase
     {
         private readonly IWarehouseAppService _warehouseAppService;
-        public WarehouseTasksController(IWarehouseAppService warehouseAppService)
+        private readonly TodayManager _todayManager;
+
+        public WarehouseTasksController(IWarehouseAppService warehouseAppService, TodayManager todayManager)
         {
             _warehouseAppService = warehouseAppService;
+            _todayManager = todayManager;
         }
 
         public ActionResult Index()
         {
-            return View();
+            WarehouseTasksViewModel vm = new WarehouseTasksViewModel() {
+                Today = _todayManager.ToDayString,
+                DepotId = _todayManager.DepotId,
+                WarehouseNames = new List<string>()
+            };
+            return View(vm);
         }
 
         public ActionResult WhAffairWorkersStat()

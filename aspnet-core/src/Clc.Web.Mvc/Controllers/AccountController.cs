@@ -28,6 +28,8 @@ using Clc.MultiTenancy;
 using Clc.Sessions;
 using Clc.Web.Models.Account;
 using Clc.Web.Views.Shared.Components.TenantChange;
+using Clc.Fields;
+using Clc.Configuration;
 
 namespace Clc.Web.Controllers
 {
@@ -44,6 +46,7 @@ namespace Clc.Web.Controllers
         private readonly ISessionAppService _sessionAppService;
         private readonly ITenantCache _tenantCache;
         private readonly INotificationPublisher _notificationPublisher;
+        private readonly FieldProvider _fieldProvider;
 
         public AccountController(
             UserManager userManager,
@@ -56,7 +59,8 @@ namespace Clc.Web.Controllers
             UserRegistrationManager userRegistrationManager,
             ISessionAppService sessionAppService,
             ITenantCache tenantCache,
-            INotificationPublisher notificationPublisher)
+            INotificationPublisher notificationPublisher,
+            FieldProvider fieldProvider)
         {
             _userManager = userManager;
             _multiTenancyConfig = multiTenancyConfig;
@@ -69,6 +73,7 @@ namespace Clc.Web.Controllers
             _sessionAppService = sessionAppService;
             _tenantCache = tenantCache;
             _notificationPublisher = notificationPublisher;
+            _fieldProvider = fieldProvider;
         }
 
         #region Login / Logout
@@ -117,16 +122,36 @@ namespace Clc.Web.Controllers
         private async Task<AbpLoginResult<Tenant, User>> GetLoginResultAsync(string usernameOrEmailAddress, string password, string tenancyName)
         {
             var loginResult = await _logInManager.LoginAsync(usernameOrEmailAddress, password, tenancyName);
-
-            switch (loginResult.Result)
-            {
-                case AbpLoginResultType.Success:
-                    // Add Cls Claims, must before signin
-                    loginResult.Identity.AddClaim(new Claim("CN", "90005"));
-                    return loginResult;
-                default:
+            
+            if (loginResult.Result != AbpLoginResultType.Success)
+           {   
+                // Lookup Workers
+                var worker = _fieldProvider.GetWorkerByCn(usernameOrEmailAddress);
+                if (worker == null || worker.IsActive == false || worker.Password != password)
                     throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
+                
+                // get RoleUserName. ex worker.defaultRoleUserName.
+                if (worker.IsActive == true)
+                {
+                    var roleUserDefaultPassword = SettingManager.GetSettingValue(AppSettingNames.Const.RoleUserDefaultPassword);
+                    loginResult = await _logInManager.LoginAsync("captain", roleUserDefaultPassword, tenancyName);
+                    if (loginResult.Result == AbpLoginResultType.Success) 
+                    {
+                        loginResult.Identity.AddClaim(new Claim("CN", worker.Cn));
+                        loginResult.Identity.AddClaim(new Claim("NAME", worker.Name));
+                        loginResult.Identity.AddClaim(new Claim("DEPOTID", worker.DepotId.ToString()));
+                        loginResult.Identity.AddClaim(new Claim("DEPOTNAME", _fieldProvider.GetDepotNameById(worker.DepotId)));
+                    }
+                    else
+                        throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
+                }
+                else 
+                {
+
+                }
             }
+
+            return loginResult;
         }
 
         #endregion

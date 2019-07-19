@@ -14,7 +14,10 @@ namespace Clc.Identity
         {
             services.AddLogging();
 
-            return services.AddAbpIdentity<Tenant, User, Role>()
+            return services.AddAbpIdentity<Tenant, User, Role>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+            })
                 .AddAbpTenantManager<TenantManager>()
                 .AddAbpUserManager<UserManager>()
                 .AddAbpRoleManager<RoleManager>()

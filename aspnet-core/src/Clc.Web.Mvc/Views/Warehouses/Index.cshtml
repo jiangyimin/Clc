@@ -1,0 +1,82 @@
+﻿@using Clc.Fields
+@{
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+}
+
+@section customScript
+{
+    <script type="text/javascript">
+        crud.dgDefault.name = 'Warehouses';
+        crud.dgDefault.sortName = 'name';
+        crud.dgDefault.columns = [[
+            { field: "name", title: "名称", width: 100 },
+            { field: "articleTypeList", title: "领用物品类型列表", width: 100 },
+            { field: "isActive", title: "启用", width: 60 }
+        ]];
+        crud.parentField = 'depotId';
+    </script>
+}
+
+@section endScript
+{
+    <script type="text/javascript">
+        crud.startfunction = function () {
+            abp.services.app.field.getComboItems('Depot').done(function(depots) {
+                crud.setComboBox('#depotId', depots);
+                var treeData = [];
+                depots.forEach( function (val, index, arr) {
+                    treeData.push({ id: val.value, text: val.displayText });
+                });
+                $('#tree').tree({
+                    data: treeData,
+                    onSelect: function (node) {
+                        crud.parentId = node.id;
+                        $('#datagrid').datagrid({
+                            url: crud.dgDefault.name + '/GetPagedData/' + 'DepotId=' + node.id
+                        });
+                    }
+                });
+            });
+        };
+
+        crud.endfunction = function () {
+            var title = abp.setting.get('VI.DepotTitleName');
+            $('#cc').layout('panel', 'west').panel('setTitle', title);
+        }
+    </script>
+}
+
+@section headHtml
+{
+    <div id="cc" class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'west', split:true, minWidth:80, width:120">
+            <ul id="tree" class="easyui-tree" style="margin-top:6px"></ul>
+        </div>
+        <div data-options="region:'center', border:false">
+}
+@section footHtml
+{
+        </div>
+    </div>
+}
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 360px; padding: 10px;">
+    <form id="fm" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl">
+            <input id="id" name="id" type="hidden">
+            <tr>
+                <th><Label for="name">库房名称:</Label></th>
+                <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @Warehouse.MaxNameLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="articleTypeList">物品类型列表:</Label></th>
+                <td><input name="articleTypeList" class="easyui-textbox", data-options="validType:'length[1, @Warehouse.ArticleTypeListLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="depotId">所属：</label></th>
+                <td><select id="depotId" name="depotId" class="easyui-combobox" style="width: 100%" /></td>
+            </tr>
+        </table>
+    </form>
+</div>

@@ -4,6 +4,7 @@ using Abp.Configuration;
 using Abp.Runtime.Session;
 using Clc.Configuration;
 using Clc.Extensions;
+using Abp.UI;
 
 namespace Clc.Web.Views.Shared.Components.TopBarTitle
 {
@@ -27,10 +28,22 @@ namespace Clc.Web.Views.Shared.Components.TopBarTitle
                 CompanyImageName = Images_DIR + name,
                 CompanyName = await _settingManager.GetSettingValueAsync(AppSettingNames.VI.CompanyName),
                 AppName = AppConsts.AppName,
-                UserName = _abpSession.GetClaimValue("CN")
+                UserName = GetUserTitile()
             };
 
             return View(model);
+        }
+
+        private string GetUserTitile() 
+        {
+            var cn = _abpSession.GetClaimValue("CN");
+            if (string.IsNullOrEmpty(cn))
+                return null;
+            else
+                return string.Format("{0} {1} [{2}]", 
+                    _abpSession.GetClaimValue("CN"), 
+                    _abpSession.GetClaimValue("NAME"),
+                    _abpSession.GetClaimValue("DEPOTNAME")); 
         }
     }
 }
