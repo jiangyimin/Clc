@@ -8,9 +8,9 @@ using Clc.Types.Dto;
 namespace Clc.Web.Controllers
 {
     [AbpMvcAuthorize(PermissionNames.Pages_Types)]
-    public class WorkerTypesController : ClcCrudController<WorkerType, WorkerTypeDto>
+    public class ArticleTypesController : ClcCrudController<ArticleType, ArticleTypeDto>
     {
-        public WorkerTypesController(IRepository<WorkerType> repository)
+        public ArticleTypesController(IRepository<ArticleType> repository)
             : base(repository)
         {
         }

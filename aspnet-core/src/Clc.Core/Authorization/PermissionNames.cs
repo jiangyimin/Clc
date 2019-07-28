@@ -5,21 +5,34 @@
         // Host管理
         public const string Pages_Host = "Pages.Host";
         
-        // 系统管理工作
-        public const string Pages_Setup = "Pages.Setup";                // 1. 系统设置管理
-        public const string Pages_Types = "Pages.Types";                // 2. 各种类型
+        // Admin 的菜单夹
+        public const string Pages_Setup = "Pages.Setup";                // Admin-系统设置管理
+        public const string Pages_Types = "Pages.Types";                // Admin-各种类型
+        public const string Pages_Fields = "Pages.Fields";              // Admin-场地与资源
+        public const string Pages_Customers = "Pages.Customers";        // Admin-客户数据
 
-        public const string Pages_Fields = "Pages.Fields";              // 3. 场地与资源
-        public const string Pages_Files = "Pages.Files";                // 4. 档案
+        // Hrm 的菜单夹
+        public const string Pages_Hrm = "Pages.Hrm";                    // Hrm-人事数据维护
+        // Hrq 的菜单夹
+        public const string Pages_Hrq = "Pages.Hrq";                    // Hrq-人事数据查询
 
-        public const string Pages_Customers = "Pages.Customers";        // 5. 客户数据
+        // Query 的菜单夹
+        public const string Pages_Query = "Pages.Query";                // Query-各类业务数据查询
 
+        // PlaceC (中央的远程门禁控制)
+        public const string Pages_PlaceC = "Pages.PlaceC";              // 含线路、物品、箱总监控
 
-        // 调度工作
-        public const string Pages_PreArrange = "Page.PreArrange";       // 6. 任务预排
-        public const string Pages_TodayArrange = "Pages.TodayArrange";  // 7. 当天任务运行
-        public const string Pages_AuxDispatch = "Page.AuxDispatch";     // 8. 辅助调度工作
+        // 上面是总部权限（对应菜单夹），下面的是分部权限（对应菜单夹）
+        // Captain 的菜单夹
+        public const string Pages_PreArrange = "Pages.PreArrange";       // Captain-任务预排
+        public const string Pages_TodayArrange = "Pages.TodayArrange";  // Captain-当天任务安排
+        public const string Pages_Statistic = "Pages.Statistic";        // Captain-统计和日结
+        public const string Pages_Aux = "Page.Aux";                     // Captian（Aux）-辅助(含监看线路、物和箱)
 
-        // 库管工作
+        // PlaceA(物）的菜单夹
+        public const string Pages_PlaceA = "Pages.PlaceA";              // 含查物
+
+        // PlaceB(箱）的菜单夹
+        public const string Pages_PlaceB = "Pages.PlaceB";              // 含查箱
     }
 }

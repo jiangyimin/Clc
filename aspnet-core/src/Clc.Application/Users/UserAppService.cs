@@ -111,8 +111,8 @@ namespace Clc.Users
             var user = await _userManager.FindByNameAsync(userName);
             if (user != null)
             {
-                var defaultPassword = await SettingManager.GetSettingValueAsync(AppSettingNames.Const.RoleUserDefaultPassword);
-                CheckErrors(await _userManager.ChangePasswordAsync(user, defaultPassword));
+                var roleUserPassword = await SettingManager.GetSettingValueAsync(AppSettingNames.Const.RoleUserPassword);
+                CheckErrors(await _userManager.ChangePasswordAsync(user, roleUserPassword));
             }
         }
 

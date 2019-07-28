@@ -11,51 +11,46 @@ using Clc.Types.Entities;
 
 namespace Clc.Types.Cache
 {
-    public class WorkerTypeCache : IWorkerTypeCache, IEventHandler<EntityChangedEventData<WorkerType>>
+    public class PostCache : IPostCache, IEventHandler<EntityChangedEventData<Post>>
     {
-        private readonly string CacheName = "CachedWorkerType";
+        private readonly string CacheName = "CachedPost";
         private readonly IAbpSession _abpSession;
         private readonly ICacheManager _cacheManager;
-        private readonly IRepository<WorkerType> _workerTypeRepository;
+        private readonly IRepository<Post> _postRepository;
 
-        public WorkerTypeCache(
+        public PostCache(
             ICacheManager cacheManager,
-            IRepository<WorkerType> workerTypeRepository,
+            IRepository<Post> postRepository,
             IAbpSession abpSession)
         {
             _cacheManager = cacheManager;
-            _workerTypeRepository = workerTypeRepository;
+            _postRepository = postRepository;
             _abpSession = abpSession;
 
             ICache cache = _cacheManager.GetCache(CacheName);
             cache.DefaultSlidingExpireTime = TimeSpan.FromHours(ClcConsts.TypeCacheSlidingExpireTime);
         }
 
-        public List<WorkerType> GetList()
+        public List<Post> GetList()
         {
-            var cacheKey = "WorkerTypes@" + (_abpSession.TenantId ?? 0);
+            var cacheKey = "Posts@" + (_abpSession.TenantId ?? 0);
             return _cacheManager.GetCache(CacheName)
-                .Get(cacheKey, () => _workerTypeRepository.GetAll().ToList());
+                .Get(cacheKey, () => _postRepository.GetAll().ToList());
         }
 
-        public WorkerType GetById(int id)
+        public Post GetById(int id)
         {
             return GetList().FirstOrDefault(d => d.Id == id);
         }
         
-        public WorkerType GetByCn(string cn)
-        {
-            return GetList().FirstOrDefault(d => d.Cn == cn);
-        }
-        
-        public void HandleEvent(EntityChangedEventData<WorkerType> eventData)
+        public void HandleEvent(EntityChangedEventData<Post> eventData)
         {
             _cacheManager.GetCache(CacheName).Remove(CacheKey);
         }
 
         private string CacheKey
         {
-            get { return "WorkerTypes@" + (_abpSession.TenantId ?? 0); }
+            get { return "Posts@" + (_abpSession.TenantId ?? 0); }
         }
     }
 }

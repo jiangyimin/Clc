@@ -133,8 +133,8 @@ namespace Clc.Web.Controllers
                 // get RoleUserName. ex worker.defaultRoleUserName.
                 if (worker.IsActive == true)
                 {
-                    var roleUserDefaultPassword = SettingManager.GetSettingValue(AppSettingNames.Const.RoleUserDefaultPassword);
-                    loginResult = await _logInManager.LoginAsync("captain", roleUserDefaultPassword, tenancyName);
+                    var roleUserPassword = SettingManager.GetSettingValue(AppSettingNames.Const.RoleUserPassword);
+                    loginResult = await _logInManager.LoginAsync("captain", roleUserPassword, tenancyName);
                     if (loginResult.Result == AbpLoginResultType.Success) 
                     {
                         loginResult.Identity.AddClaim(new Claim("CN", worker.Cn));

@@ -5,10 +5,10 @@ using Abp.Domain.Entities;
 namespace Clc.Types.Entities
 {
     /// <summary>
-    /// TaskType Entity
+    /// Post Entity
     /// </summary>
-    [Description("ATM机型")]
-    public class ATMType : Entity, IMustHaveTenant
+    [Description("人员岗位")]
+    public class Post : Entity, IMustHaveTenant
     {
         public const int MaxCnLength = 2;
         public const int MaxNameLength = 8;
@@ -24,7 +24,7 @@ namespace Clc.Types.Entities
         public string Cn { get; set; }
         
         /// <summary>
-        /// 类型名称
+        /// 岗位名称
         /// </summary>
         [Required]
         [StringLength(MaxNameLength)]

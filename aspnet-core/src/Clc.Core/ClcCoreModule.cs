@@ -49,9 +49,12 @@ namespace Clc
             });
             
             // Cache for Types
-            IocManager.Register<IWorkerTypeCache, WorkerTypeCache>();
+            IocManager.Register<IArticleTypeCache, ArticleTypeCache>();
+            IocManager.Register<IPostCache, PostCache>();
+            IocManager.Register<IRouteTypeCache, RouteTypeCache>();
             IocManager.Register<ITaskTypeCache, TaskTypeCache>();
-
+            IocManager.Register<IWorkRoleCache, WorkRoleCache>();
+ 
             // Cache for Fields
             IocManager.Register<IDepotCache, DepotCache>();
             IocManager.Register<IWorkerCache, WorkerCache>();

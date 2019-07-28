@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Clc.Types.Entities
+@{
     Layout = "~/Views/Shared/_CrudLayout.cshtml";
 }
 
@@ -6,17 +7,17 @@
 {
     <script type="text/javascript">
         crud.dgDefault.name = 'WorkRoles';
-        crud.dgDefault.sortName = 'cn';
+        crud.dgDefault.sortName = 'name';
         crud.dgDefault.columns = [[
-            { field: "cn", title: "编号", width: 80, sortable: true },
             { field: "name", title: "名称", width: 80, sortable: true },
-            { field: "defaultWorkerTypeId", title: "缺省人员类型", width: 80, sortable: true, formatter: workerTypeFormatter  },
-            { field: "category", title: "类别", width: 80, sortable: true},
-            { field: "duties", title: "职责", width: 80, sortable: false },
-        ]];
+            { field: "defaultPostId", title: "缺省岗位", width: 80, sortable: true, formatter: postFormatter  },
+            { field: "duties", title: "职责", width: 80 },
+            { field: "mustHave", title: "是否必须", width: 80},
+            { field: "maxNum", title: "最多人数", width: 80},
+         ]];
 
-        function workerTypeFormatter (val) {
-            return crud.getComboTextByInt('#workerType', val);
+        function postFormatter (val) {
+            return crud.getComboTextByInt('#post', val);
         }
     </script>
 }
@@ -25,12 +26,8 @@
 {
     <script type="text/javascript">
         crud.startfunction = function () {
-            abp.services.app.type.getComboItems('WorkerType').done(function(d) { crud.setComboBox('#workerType', d); });
-            abp.services.app.type.getDutyCategories().done(function(d) { crud.setComboBox('#category', d); });
-            $('#category').combobox({
-                onSelect: function(rec) {
-                    // abp.services.app.type.getDuties(rec.value).done(function(d) { crud.setTagBox('#duties', d); });
-                }
+            abp.services.app.type.getComboItems('Post').done(function(d) { 
+                crud.setComboBox('#post', d);
             });
         }     
     </script>
@@ -42,24 +39,25 @@
         <table class="edit-tbl">
             <input id="id" name="id" type="hidden">
             <tr>
-                <th><label for="cn">编号：</label></th>
-                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @Clc.Types.Entities.WorkerType.MaxCnLength]'" style="width: 100%"></td>
-            </tr>
-            <tr>
                 <th><label for="name">名称：</label></th>
-                <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @Clc.Types.Entities.WorkerType.MaxNameLength]'" style="width: 100%"></td>
+                <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @WorkRole.MaxNameLength]'" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><label for="defaultWorkerTypeId">缺省人员类型：</label></th>
-                <td><input id="workerType" name="defaultWorkerTypeId" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
-            </tr>
-            <tr>
-                <th><label for="category">职责类别：</label></th>
-                <td><input id="category" name="category" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
+                <th><label for="defaultPostId">缺省岗位：</label></th>
+                <td><input id="post" name="defaultPostId" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="duties">职责列表：</label></th>
-                <td><input id="duties" name="duties" class="easyui-textbox" data-options="required:true" style="width: 100%"></td>
+                <td><input id="duties" name="duties" class="easyui-textbox" data-options="validType:'length[2, @WorkRole.MaxDutiesLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="mustHave">是否必须: </label></th>
+                <td><input name="mustHave" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
+                </td>
+            </tr>
+            <tr>
+                <th><label for="maxNum">最多人数：</label></th>
+                <td><input name="maxNum" class="easyui-numberbox" style="width: 100%"></td>
             </tr>
         </table>
     </form>

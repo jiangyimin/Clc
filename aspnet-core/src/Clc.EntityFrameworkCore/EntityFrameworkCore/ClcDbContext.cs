@@ -13,18 +13,11 @@ namespace Clc.EntityFrameworkCore
     {
         // Types
         public DbSet<ArticleType> ArticleTypes { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<RouteType> RouteTypes { get; set; }
         public DbSet<TaskType> TaskTypes { get; set; }
-        public DbSet<ATMType> ATMTypes { get; set; }
-        public DbSet<WorkerType> WorkerTypes { get; set; }
         public DbSet<WorkRole> WorkRoles { get; set; }
 
-        // WorkTypes
-        public DbSet<WarehouseWorkType> WarehouseWorkTypes { get; set; }
-        public DbSet<WarehouseWorkTypeRole> WarehouseWorkTypeRoles { get; set; }
-        public DbSet<VaultWorkType> VaultWorkTypes { get; set; }
-        public DbSet<VaultWorkTypeRole> VaultWorkTypeRoles { get; set; }
-
-        //public DbSet<RouteType> RouteTypes { get; set; }
         //public DbSet<VaultType> VaultTypes { get; set; }
         // public DbSet<Customer> Customers { get; set; }
         //public DbSet<Outlet> Outlets { get; set; }
@@ -34,7 +27,6 @@ namespace Clc.EntityFrameworkCore
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Vault> Vaults { get; set; }
 
-        public DbSet<Manager> Managers { get; set; }
         public DbSet<Worker> Workers { get; set; }
 
         // Works

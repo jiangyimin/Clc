@@ -1044,34 +1044,6 @@ namespace Clc.Migrations
                     b.ToTable("Depots");
                 });
 
-            modelBuilder.Entity("Clc.Fields.Manager", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Cn")
-                        .IsRequired()
-                        .HasMaxLength(8);
-
-                    b.Property<string>("Mobile")
-                        .HasMaxLength(11);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(8);
-
-                    b.Property<int?>("RoleId");
-
-                    b.Property<int>("TenantId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("Managers");
-                });
-
             modelBuilder.Entity("Clc.Fields.Vault", b =>
                 {
                     b.Property<int>("Id")
@@ -1114,6 +1086,10 @@ namespace Clc.Migrations
 
                     b.Property<string>("ArticleTypeList")
                         .HasMaxLength(50);
+
+                    b.Property<int>("CheckinDeadline");
+
+                    b.Property<int>("CheckinLead");
 
                     b.Property<int>("DepotId");
 
@@ -1240,27 +1216,6 @@ namespace Clc.Migrations
                     b.ToTable("AbpTenants");
                 });
 
-            modelBuilder.Entity("Clc.Types.Entities.ATMType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Cn")
-                        .IsRequired()
-                        .HasMaxLength(2);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(8);
-
-                    b.Property<int>("TenantId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ATMTypes");
-                });
-
             modelBuilder.Entity("Clc.Types.Entities.ArticleType", b =>
                 {
                     b.Property<int>("Id")
@@ -1268,7 +1223,6 @@ namespace Clc.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("BindStyle")
-                        .IsRequired()
                         .HasMaxLength(8);
 
                     b.Property<string>("Cn")
@@ -1286,6 +1240,52 @@ namespace Clc.Migrations
                     b.ToTable("ArticleTypes");
                 });
 
+            modelBuilder.Entity("Clc.Types.Entities.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Cn")
+                        .IsRequired()
+                        .HasMaxLength(2);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(8);
+
+                    b.Property<int>("TenantId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("Clc.Types.Entities.RouteType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CheckinLead");
+
+                    b.Property<int>("LendArticleDeadline");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(8);
+
+                    b.Property<int>("TenantId");
+
+                    b.Property<string>("WorkRoles")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RouteTypes");
+                });
+
             modelBuilder.Entity("Clc.Types.Entities.TaskType", b =>
                 {
                     b.Property<int>("Id")
@@ -1296,103 +1296,19 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(2);
 
+                    b.Property<int>("DefaultPrice");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(8);
 
                     b.Property<int>("TenantId");
+
+                    b.Property<bool>("isCharge");
 
                     b.HasKey("Id");
 
                     b.ToTable("TaskTypes");
-                });
-
-            modelBuilder.Entity("Clc.Types.Entities.VaultWorkType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CheckinDeadline");
-
-                    b.Property<int>("CheckinLead");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(8);
-
-                    b.Property<int>("TenantId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VaultWorkTypes");
-                });
-
-            modelBuilder.Entity("Clc.Types.Entities.VaultWorkTypeRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("DisplayOrder");
-
-                    b.Property<int>("MaxNum");
-
-                    b.Property<int>("VaultWorkTypeId");
-
-                    b.Property<int>("WorkRoleId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VaultWorkTypeId");
-
-                    b.HasIndex("WorkRoleId");
-
-                    b.ToTable("VaultWorkTypeRoles");
-                });
-
-            modelBuilder.Entity("Clc.Types.Entities.WarehouseWorkType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CheckinDeadline");
-
-                    b.Property<int>("CheckinLead");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(8);
-
-                    b.Property<int>("TenantId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WarehouseWorkTypes");
-                });
-
-            modelBuilder.Entity("Clc.Types.Entities.WarehouseWorkTypeRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("DisplayOrder");
-
-                    b.Property<int>("MaxNum");
-
-                    b.Property<int>("WarehouseWorkTypeId");
-
-                    b.Property<int>("WorkRoleId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WarehouseWorkTypeId");
-
-                    b.HasIndex("WorkRoleId");
-
-                    b.ToTable("WarehouseWorkTypeRoles");
                 });
 
             modelBuilder.Entity("Clc.Types.Entities.WorkRole", b =>
@@ -1401,19 +1317,12 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.Property<string>("Cn")
-                        .IsRequired()
-                        .HasMaxLength(2);
-
-                    b.Property<int>("DefaultWorkerTypeId");
+                    b.Property<int?>("DefaultPostId");
 
                     b.Property<string>("Duties")
-                        .IsRequired()
-                        .HasMaxLength(100);
+                        .HasMaxLength(50);
+
+                    b.Property<int>("MaxNum");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1421,32 +1330,13 @@ namespace Clc.Migrations
 
                     b.Property<int>("TenantId");
 
+                    b.Property<bool>("mustHave");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DefaultWorkerTypeId");
+                    b.HasIndex("DefaultPostId");
 
                     b.ToTable("WorkRoles");
-                });
-
-            modelBuilder.Entity("Clc.Types.Entities.WorkerType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Cn")
-                        .IsRequired()
-                        .HasMaxLength(2);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(8);
-
-                    b.Property<int>("TenantId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WorkerTypes");
                 });
 
             modelBuilder.Entity("Clc.Works.WarehouseTask", b =>
@@ -1476,13 +1366,9 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(8);
 
-                    b.Property<int>("WarehouseWorkTypeId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DepotId");
-
-                    b.HasIndex("WarehouseWorkTypeId");
 
                     b.ToTable("WarehouseTasks");
                 });
@@ -1686,13 +1572,6 @@ namespace Clc.Migrations
                         .HasForeignKey("LastModifierUserId");
                 });
 
-            modelBuilder.Entity("Clc.Fields.Manager", b =>
-                {
-                    b.HasOne("Clc.Authorization.Roles.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId");
-                });
-
             modelBuilder.Entity("Clc.Fields.Vault", b =>
                 {
                     b.HasOne("Clc.Fields.Depot", "Depot")
@@ -1736,38 +1615,11 @@ namespace Clc.Migrations
                         .HasForeignKey("LastModifierUserId");
                 });
 
-            modelBuilder.Entity("Clc.Types.Entities.VaultWorkTypeRole", b =>
-                {
-                    b.HasOne("Clc.Types.Entities.VaultWorkType", "VaultWorkType")
-                        .WithMany()
-                        .HasForeignKey("VaultWorkTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Clc.Types.Entities.WorkRole", "WorkRole")
-                        .WithMany()
-                        .HasForeignKey("WorkRoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Clc.Types.Entities.WarehouseWorkTypeRole", b =>
-                {
-                    b.HasOne("Clc.Types.Entities.WarehouseWorkType", "WarehouseWorkType")
-                        .WithMany()
-                        .HasForeignKey("WarehouseWorkTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Clc.Types.Entities.WorkRole", "WorkRole")
-                        .WithMany()
-                        .HasForeignKey("WorkRoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Clc.Types.Entities.WorkRole", b =>
                 {
-                    b.HasOne("Clc.Types.Entities.WorkerType", "DefaultWorkerType")
+                    b.HasOne("Clc.Types.Entities.Post", "DefaultPost")
                         .WithMany()
-                        .HasForeignKey("DefaultWorkerTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("DefaultPostId");
                 });
 
             modelBuilder.Entity("Clc.Works.WarehouseTask", b =>
@@ -1775,11 +1627,6 @@ namespace Clc.Migrations
                     b.HasOne("Clc.Fields.Depot", "Depot")
                         .WithMany()
                         .HasForeignKey("DepotId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Clc.Types.Entities.WarehouseWorkType", "WarehouseWorkType")
-                        .WithMany()
-                        .HasForeignKey("WarehouseWorkTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

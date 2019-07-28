@@ -5,7 +5,7 @@ using Abp.Domain.Entities;
 namespace Clc.Types.Entities
 {
     /// <summary>
-    /// TaskType Entity
+    /// ArticleType Entity
     /// </summary>
     [Description("物品类型")]
     public class ArticleType : Entity, IMustHaveTenant
@@ -35,7 +35,6 @@ namespace Clc.Types.Entities
         /// <summary>
         /// 绑定方式（人，车，线路，机器，网点等）
         /// </summary>
-        [Required]
         [StringLength(MaxBindStyleLength)]
         public string BindStyle { get; set; }
     }

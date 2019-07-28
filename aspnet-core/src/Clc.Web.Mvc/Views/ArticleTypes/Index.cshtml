@@ -1,15 +1,17 @@
-﻿@{
+﻿@using Clc.Types.Entities
+@{
     Layout = "~/Views/Shared/_CrudLayout.cshtml";
 }
 
 @section customScript
 {
     <script type="text/javascript">
-        crud.dgDefault.name = 'WorkerTypes';
+        crud.dgDefault.name = 'ArticleTypes';
         crud.dgDefault.sortName = 'cn';
         crud.dgDefault.columns = [[
             { field: "cn", title: "编号", width: 80, sortable: true },
             { field: "name", title: "名称", width: 80, sortable: true },
+            { field: "bindStyle", title: "绑定方式", width: 80, sortable: true },
         ]];
     </script>
 }
@@ -21,12 +23,14 @@
             <input id="id" name="id" type="hidden">
             <tr>
                 <th><label for="cn">编号：</label></th>
-                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @Clc.Types.Entities.WorkerType.MaxCnLength]'" style="width: 100%"></td>
+                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @ArticleType.MaxCnLength]'" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="name">名称：</label></th>
-                <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @Clc.Types.Entities.WorkerType.MaxNameLength]'" style="width: 100%"></td>
+                <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @ArticleType.MaxNameLength]'" style="width: 100%"></td>
             </tr>
+                <th><label for="bindStyle">绑定方式: </label></th>
+                <td><select id="bindStyle" name="bindStyle" class="easyui-combobox" style="width: 100%" /></td>
         </table>
     </form>
 </div>

@@ -14,7 +14,11 @@
         public static class Const
         {
             public const string UserDefaultPassword = "Const.UserDefaultPassword";
-            public const string RoleUserDefaultPassword = "Const.RoleUserDefaultPasword";
+            public const string RoleUserPassword = "Const.RoleUserPassword";
+        }
+        public static class Rule
+        {
+            public const string Radius = "Const.Radius";
         }
     }
 }

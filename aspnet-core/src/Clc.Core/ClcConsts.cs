@@ -9,5 +9,9 @@
         public const bool MultiTenancyEnabled = true;
 
         public const int TypeCacheSlidingExpireTime = 12;
+
+        public const string UserEmailServerName = "@tenant.com";
+
+        public const int NormalStringLength = 50;
     }
 }

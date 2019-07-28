@@ -49,6 +49,15 @@ namespace Clc.Fields
         /// 每班最长时长
         /// </summary>
         public int MaxDuration { get; set; }     
+        /// <summary>
+        /// 签到提前时间（分钟）
+        /// </summary>
+        public int CheckinLead { get; set; }
+
+        /// <summary>
+        /// 签到关闭时间（分钟）
+        /// </summary>
+        public int CheckinDeadline { get; set; }
     }
 }
 

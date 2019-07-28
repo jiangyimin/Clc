@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Abp.Configuration;
 using Abp.Localization;
+using Clc.Authorization.Users;
 
 namespace Clc.Configuration
 {
@@ -11,6 +12,7 @@ namespace Clc.Configuration
             List<SettingDefinition> lst = new List<SettingDefinition>();
             lst.AddRange(GetVISettingDefinitions(context));
             lst.AddRange(GetConstSettingDefinitions(context));
+            lst.AddRange(GetRuleSettingDefinitions(context));
             // return new[]
             // {
             //     new SettingDefinition(AppSettingNames.UiTheme, "red", scopes: SettingScopes.Application | SettingScopes.Tenant | SettingScopes.User, isVisibleToClients: true)
@@ -49,15 +51,27 @@ namespace Clc.Configuration
             {
                 new SettingDefinition(
                     AppSettingNames.Const.UserDefaultPassword, 
-                    "123456", 
+                    User.UserDefaultPassword, 
                     new FixedLocalizableString("用户缺省密码"),
                     scopes: SettingScopes.Tenant,
                     isVisibleToClients: true
                 ),
                 new SettingDefinition(
-                    AppSettingNames.Const.RoleUserDefaultPassword, 
-                    "#123QweewQ321#", 
+                    AppSettingNames.Const.RoleUserPassword, 
+                    User.RoleUserPassword, 
                     new FixedLocalizableString("角色用户缺省密码"),
+                    scopes: SettingScopes.Tenant
+                )
+            };
+        }
+        private IEnumerable<SettingDefinition> GetRuleSettingDefinitions(SettingDefinitionProviderContext context)
+        {
+            return new List<SettingDefinition>
+            {
+                new SettingDefinition(
+                    AppSettingNames.Rule.Radius, 
+                    "300", 
+                    new FixedLocalizableString("半径"),
                     scopes: SettingScopes.Tenant
                 )
             };

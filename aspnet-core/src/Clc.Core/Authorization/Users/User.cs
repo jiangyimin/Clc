@@ -7,6 +7,8 @@ namespace Clc.Authorization.Users
     public class User : AbpUser<User>
     {
         public const string DefaultPassword = "123qwe";
+        public const string UserDefaultPassword = "123456";
+        public const string RoleUserPassword = "Role@123456";
 
         public static string CreateRandomPassword()
         {

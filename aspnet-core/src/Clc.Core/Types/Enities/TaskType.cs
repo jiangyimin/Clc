@@ -29,6 +29,9 @@ namespace Clc.Types.Entities
         [Required]
         [StringLength(MaxNameLength)]
         public string Name { get; set; }
+
+        public bool isCharge { get; set; }
+        public int DefaultPrice { get; set; }
     }
 }
 

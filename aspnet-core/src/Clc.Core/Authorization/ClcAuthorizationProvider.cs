@@ -10,15 +10,30 @@ namespace Clc.Authorization
         {
             context.CreatePermission(PermissionNames.Pages_Host, L("Host"), multiTenancySides: MultiTenancySides.Host);
 
+            // Admin
             context.CreatePermission(PermissionNames.Pages_Setup, L("Setup"));
             context.CreatePermission(PermissionNames.Pages_Types, L("Types"));
             context.CreatePermission(PermissionNames.Pages_Fields, L("Fields"));
-            context.CreatePermission(PermissionNames.Pages_Files, L("Files"));
             context.CreatePermission(PermissionNames.Pages_Customers, L("Customers"));
 
+            // Hrm
+            context.CreatePermission(PermissionNames.Pages_Hrm, L("Hrm"));
+            // Hrq
+            context.CreatePermission(PermissionNames.Pages_Hrq, L("Hrq"));
+            // Qurey
+            context.CreatePermission(PermissionNames.Pages_Query, L("Query"));
+            // PlaceC
+            context.CreatePermission(PermissionNames.Pages_PlaceC, L("PlaceC"));
+
+            // Captain
             context.CreatePermission(PermissionNames.Pages_PreArrange, L("PreArrange"));
             context.CreatePermission(PermissionNames.Pages_TodayArrange, L("TodayArrang"));
-            context.CreatePermission(PermissionNames.Pages_AuxDispatch, L("AuxDispatch"));
+            context.CreatePermission(PermissionNames.Pages_Aux, L("Aux"));
+
+            // PlaceA
+            context.CreatePermission(PermissionNames.Pages_PlaceA, L("PlaceA"));
+            // PlaceB
+            context.CreatePermission(PermissionNames.Pages_PlaceB, L("PlaceB"));
         }
 
         private static ILocalizableString L(string name)

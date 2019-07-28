@@ -4,39 +4,104 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Clc.Migrations
 {
-    public partial class clc3 : Migration
+    public partial class clc : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Workers_DepotFeatures_DepotId",
-                table: "Workers");
+            migrationBuilder.AddColumn<string>(
+                name: "TwinUserName",
+                table: "AbpRoles",
+                maxLength: 256,
+                nullable: true);
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_WorkerType",
-                table: "WorkerType");
+            migrationBuilder.AddColumn<string>(
+                name: "TwinUserPassword",
+                table: "AbpRoles",
+                maxLength: 32,
+                nullable: true);
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_DepotFeatures",
-                table: "DepotFeatures");
+            migrationBuilder.CreateTable(
+                name: "ArticleTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    Cn = table.Column<string>(maxLength: 2, nullable: false),
+                    Name = table.Column<string>(maxLength: 8, nullable: false),
+                    BindStyle = table.Column<string>(maxLength: 8, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArticleTypes", x => x.Id);
+                });
 
-            migrationBuilder.RenameTable(
-                name: "WorkerType",
-                newName: "WorkerTypes");
+            migrationBuilder.CreateTable(
+                name: "Depots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    Cn = table.Column<string>(maxLength: 2, nullable: false),
+                    Name = table.Column<string>(maxLength: 8, nullable: false),
+                    Longitude = table.Column<double>(nullable: true),
+                    Latitude = table.Column<double>(nullable: true),
+                    UseRouteForIdentify = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Depots", x => x.Id);
+                });
 
-            migrationBuilder.RenameTable(
-                name: "DepotFeatures",
-                newName: "Depots");
+            migrationBuilder.CreateTable(
+                name: "Posts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    Cn = table.Column<string>(maxLength: 2, nullable: false),
+                    Name = table.Column<string>(maxLength: 8, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Posts", x => x.Id);
+                });
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_WorkerTypes",
-                table: "WorkerTypes",
-                column: "Id");
+            migrationBuilder.CreateTable(
+                name: "RouteTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 8, nullable: false),
+                    WorkRoles = table.Column<string>(maxLength: 50, nullable: false),
+                    CheckinLead = table.Column<int>(nullable: false),
+                    LendArticleDeadline = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RouteTypes", x => x.Id);
+                });
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_Depots",
-                table: "Depots",
-                column: "Id");
+            migrationBuilder.CreateTable(
+                name: "TaskTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    Cn = table.Column<string>(maxLength: 2, nullable: false),
+                    Name = table.Column<string>(maxLength: 8, nullable: false),
+                    isCharge = table.Column<bool>(nullable: false),
+                    DefaultPrice = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskTypes", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Vaults",
@@ -64,22 +129,6 @@ namespace Clc.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VaultWorkTypes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    TenantId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 8, nullable: false),
-                    CheckinLead = table.Column<int>(nullable: false),
-                    CheckinDeadline = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VaultWorkTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Warehouses",
                 columns: table => new
                 {
@@ -91,7 +140,9 @@ namespace Clc.Migrations
                     ArticleTypeList = table.Column<string>(maxLength: 50, nullable: true),
                     ShiftNameList = table.Column<string>(maxLength: 50, nullable: true),
                     MinDuration = table.Column<int>(nullable: false),
-                    MaxDuration = table.Column<int>(nullable: false)
+                    MaxDuration = table.Column<int>(nullable: false),
+                    CheckinLead = table.Column<int>(nullable: false),
+                    CheckinDeadline = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -100,46 +151,6 @@ namespace Clc.Migrations
                         name: "FK_Warehouses_Depots_DepotId",
                         column: x => x.DepotId,
                         principalTable: "Depots",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WarehouseWorkTypes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    TenantId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 8, nullable: false),
-                    CheckinLead = table.Column<int>(nullable: false),
-                    CheckinDeadline = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WarehouseWorkTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WorkRoles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    TenantId = table.Column<int>(nullable: false),
-                    Cn = table.Column<string>(maxLength: 2, nullable: false),
-                    Name = table.Column<string>(maxLength: 8, nullable: false),
-                    DefaultWorkerTypeId = table.Column<int>(nullable: false),
-                    Category = table.Column<string>(maxLength: 100, nullable: false),
-                    Duties = table.Column<string>(maxLength: 100, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WorkRoles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_WorkRoles_WorkerTypes_DefaultWorkerTypeId",
-                        column: x => x.DefaultWorkerTypeId,
-                        principalTable: "WorkerTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -154,7 +165,6 @@ namespace Clc.Migrations
                     DepotId = table.Column<int>(nullable: false),
                     CarryoutDate = table.Column<DateTime>(nullable: false),
                     WarehorseName = table.Column<string>(maxLength: 8, nullable: false),
-                    WarehouseWorkTypeId = table.Column<int>(nullable: false),
                     StartTime = table.Column<DateTime>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: false),
                     Status = table.Column<string>(maxLength: 4, nullable: false),
@@ -169,68 +179,60 @@ namespace Clc.Migrations
                         principalTable: "Depots",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Workers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    DepotId = table.Column<int>(nullable: false),
+                    Cn = table.Column<string>(maxLength: 8, nullable: false),
+                    Name = table.Column<string>(maxLength: 8, nullable: false),
+                    Password = table.Column<string>(maxLength: 10, nullable: true),
+                    Photo = table.Column<byte[]>(nullable: true),
+                    Finger = table.Column<string>(maxLength: 1024, nullable: true),
+                    IDNumber = table.Column<string>(maxLength: 18, nullable: true),
+                    IDCardNo = table.Column<string>(maxLength: 18, nullable: true),
+                    Mobile = table.Column<string>(maxLength: 11, nullable: true),
+                    DeviceId = table.Column<string>(maxLength: 50, nullable: true),
+                    IsActive = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Workers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WarehouseTasks_WarehouseWorkTypes_WarehouseWorkTypeId",
-                        column: x => x.WarehouseWorkTypeId,
-                        principalTable: "WarehouseWorkTypes",
+                        name: "FK_Workers_Depots_DepotId",
+                        column: x => x.DepotId,
+                        principalTable: "Depots",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "VaultWorkTypeRoles",
+                name: "WorkRoles",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    VaultWorkTypeId = table.Column<int>(nullable: false),
-                    WorkRoleId = table.Column<int>(nullable: false),
-                    DisplayOrder = table.Column<int>(nullable: false),
+                    TenantId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 8, nullable: false),
+                    DefaultPostId = table.Column<int>(nullable: true),
+                    Duties = table.Column<string>(maxLength: 50, nullable: true),
+                    mustHave = table.Column<bool>(nullable: false),
                     MaxNum = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VaultWorkTypeRoles", x => x.Id);
+                    table.PrimaryKey("PK_WorkRoles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_VaultWorkTypeRoles_VaultWorkTypes_VaultWorkTypeId",
-                        column: x => x.VaultWorkTypeId,
-                        principalTable: "VaultWorkTypes",
+                        name: "FK_WorkRoles_Posts_DefaultPostId",
+                        column: x => x.DefaultPostId,
+                        principalTable: "Posts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VaultWorkTypeRoles_WorkRoles_WorkRoleId",
-                        column: x => x.WorkRoleId,
-                        principalTable: "WorkRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WarehouseWorkTypeRoles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    WarehouseWorkTypeId = table.Column<int>(nullable: false),
-                    WorkRoleId = table.Column<int>(nullable: false),
-                    DisplayOrder = table.Column<int>(nullable: false),
-                    MaxNum = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WarehouseWorkTypeRoles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_WarehouseWorkTypeRoles_WarehouseWorkTypes_WarehouseWorkTypeId",
-                        column: x => x.WarehouseWorkTypeId,
-                        principalTable: "WarehouseWorkTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_WarehouseWorkTypeRoles_WorkRoles_WorkRoleId",
-                        column: x => x.WorkRoleId,
-                        principalTable: "WorkRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -302,16 +304,6 @@ namespace Clc.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_VaultWorkTypeRoles_VaultWorkTypeId",
-                table: "VaultWorkTypeRoles",
-                column: "VaultWorkTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VaultWorkTypeRoles_WorkRoleId",
-                table: "VaultWorkTypeRoles",
-                column: "WorkRoleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WarehouseEvents_WarehouseTaskId",
                 table: "WarehouseEvents",
                 column: "WarehouseTaskId");
@@ -333,11 +325,6 @@ namespace Clc.Migrations
                 column: "DepotId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WarehouseTasks_WarehouseWorkTypeId",
-                table: "WarehouseTasks",
-                column: "WarehouseWorkTypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WarehouseTaskWorkers_WarehouseTaskId",
                 table: "WarehouseTaskWorkers",
                 column: "WarehouseTaskId");
@@ -348,40 +335,35 @@ namespace Clc.Migrations
                 column: "WorkerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WarehouseWorkTypeRoles_WarehouseWorkTypeId",
-                table: "WarehouseWorkTypeRoles",
-                column: "WarehouseWorkTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WarehouseWorkTypeRoles_WorkRoleId",
-                table: "WarehouseWorkTypeRoles",
-                column: "WorkRoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WorkRoles_DefaultWorkerTypeId",
-                table: "WorkRoles",
-                column: "DefaultWorkerTypeId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Workers_Depots_DepotId",
+                name: "IX_Workers_DepotId",
                 table: "Workers",
-                column: "DepotId",
-                principalTable: "Depots",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                column: "DepotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Workers_TenantId_Cn",
+                table: "Workers",
+                columns: new[] { "TenantId", "Cn" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WorkRoles_DefaultPostId",
+                table: "WorkRoles",
+                column: "DefaultPostId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Workers_Depots_DepotId",
-                table: "Workers");
+            migrationBuilder.DropTable(
+                name: "ArticleTypes");
+
+            migrationBuilder.DropTable(
+                name: "RouteTypes");
+
+            migrationBuilder.DropTable(
+                name: "TaskTypes");
 
             migrationBuilder.DropTable(
                 name: "Vaults");
-
-            migrationBuilder.DropTable(
-                name: "VaultWorkTypeRoles");
 
             migrationBuilder.DropTable(
                 name: "WarehouseEvents");
@@ -393,57 +375,27 @@ namespace Clc.Migrations
                 name: "WarehouseTaskWorkers");
 
             migrationBuilder.DropTable(
-                name: "WarehouseWorkTypeRoles");
-
-            migrationBuilder.DropTable(
-                name: "VaultWorkTypes");
+                name: "WorkRoles");
 
             migrationBuilder.DropTable(
                 name: "WarehouseTasks");
 
             migrationBuilder.DropTable(
-                name: "WorkRoles");
+                name: "Workers");
 
             migrationBuilder.DropTable(
-                name: "WarehouseWorkTypes");
+                name: "Posts");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_WorkerTypes",
-                table: "WorkerTypes");
+            migrationBuilder.DropTable(
+                name: "Depots");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Depots",
-                table: "Depots");
+            migrationBuilder.DropColumn(
+                name: "TwinUserName",
+                table: "AbpRoles");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Depots_TenantId_Cn",
-                table: "Depots");
-
-            migrationBuilder.RenameTable(
-                name: "WorkerTypes",
-                newName: "WorkerType");
-
-            migrationBuilder.RenameTable(
-                name: "Depots",
-                newName: "DepotFeatures");
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_WorkerType",
-                table: "WorkerType",
-                column: "Id");
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_DepotFeatures",
-                table: "DepotFeatures",
-                column: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Workers_DepotFeatures_DepotId",
-                table: "Workers",
-                column: "DepotId",
-                principalTable: "DepotFeatures",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.DropColumn(
+                name: "TwinUserPassword",
+                table: "AbpRoles");
         }
     }
 }

@@ -5,12 +5,13 @@ using Abp.Domain.Entities;
 namespace Clc.Types.Entities
 {
     /// <summary>
-    /// WarehouseArrangeType Entity
+    /// RouteType Entity
     /// </summary>
-    [Description("金库工作类型")]
-    public class VaultWorkType : Entity, IMustHaveTenant
+    [Description("线路类型")]
+    public class RouteType : Entity, IMustHaveTenant
     {
         public const int MaxNameLength = 8;
+        public const int MaxWorkRolesLength = ClcConsts.NormalStringLength;
  
         // Implement of IMustHaveTenant
         public int TenantId { get; set; }
@@ -23,13 +24,22 @@ namespace Clc.Types.Entities
         public string Name { get; set; }
 
         /// <summary>
+        /// 工作角色列表
+        /// </summary>
+        [Required]
+        [StringLength(MaxWorkRolesLength)]
+        public string WorkRoles { get; set; }
+
+        /// <summary>
         /// 签到提前时间（分钟）
         /// </summary>
+        [DefaultValue(60)]
         public int CheckinLead { get; set; }
 
         /// <summary>
-        /// 签到关闭时间（分钟）
+        /// 领物关闭时间（分钟）
         /// </summary>
-        public int CheckinDeadline { get; set; }
+        [DefaultValue(30)]
+        public int LendArticleDeadline { get; set; }
     }
 }

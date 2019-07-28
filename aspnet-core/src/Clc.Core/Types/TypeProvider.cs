@@ -12,17 +12,25 @@ namespace Clc.Types
     /// </summary>
     public class TypeProvider : ITransientDependency
     {        
-        // public ICacheManager CacheManager { protected get; set; }
+        private readonly IArticleTypeCache _articleTypeCache;
+        private readonly IPostCache _postCache;
+        private readonly IRouteTypeCache _routeTypeCache;
         private readonly ITaskTypeCache _taskTypeCache;
-        private readonly IWorkerTypeCache _workerTypeCache;
+        private readonly IWorkRoleCache _workRoleCache;
 
 
         public TypeProvider(
+            ArticleTypeCache articleTypeCache,
+            PostCache postCache,
+            RouteTypeCache routeTypeCache,
             TaskTypeCache taskTypeCache,
-            WorkerTypeCache workerTypeCache )
+            WorkRoleCache workRoleCache )
         {
+            _articleTypeCache = articleTypeCache;
+            _postCache = postCache;
+            _routeTypeCache = routeTypeCache;
             _taskTypeCache = taskTypeCache;
-            _workerTypeCache = workerTypeCache;
+            _workRoleCache = workRoleCache;
         }
         
         public List<ComboboxItemDto> GetComboItems(string tableName)
@@ -30,12 +38,24 @@ namespace Clc.Types
             var lst = new List<ComboboxItemDto>();
             switch (tableName) 
             {
-                case "WorkerType":
-                    foreach (WorkerType t in _workerTypeCache.GetList())
+                case "ArticleType":
+                    foreach (ArticleType t in _articleTypeCache.GetList())
+                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
+                    break;
+                case "Post":
+                    foreach (Post t in _postCache.GetList())
+                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
+                    break;
+                case "RouteType":
+                    foreach (RouteType t in _routeTypeCache.GetList())
                         lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
                     break;
                 case "TaskType":
                     foreach (TaskType t in _taskTypeCache.GetList())
+                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
+                    break;
+                case "WorkRole":
+                    foreach (WorkRole t in _workRoleCache.GetList())
                         lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
                     break;
                 default:
