@@ -50,4 +50,18 @@
         $.blockUI.defaults.baseZ = 2000;
     }
 
+    // plugins for jQuery: setImagePreview
+    $.extend({
+        setImagePreview: function (domid, obj) {
+            var file = obj.files[0];
+            if (obj.files && file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(domid).attr("src", e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+            //$("#PhotoImage").val('');
+        },
+    });
 })(jQuery);

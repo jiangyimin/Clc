@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Abp.Application.Services.Dto;
 using Abp.Dependency;
-using Abp.Runtime.Caching;
 using Clc.Fields.Cache;
+using Clc.Fields.Entities;
 
 namespace Clc.Fields
 {
@@ -31,6 +31,10 @@ namespace Clc.Fields
                 case "Depot":
                     foreach (Depot t in _depotCache.GetList())
                         lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
+                    break;
+                case "DepotWithCn":
+                    foreach (Depot t in _depotCache.GetList())
+                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = string.Format("{0} {1}", t.Cn, t.Name) });
                     break;
                 default:
                     break;

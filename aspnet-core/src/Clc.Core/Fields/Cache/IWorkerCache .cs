@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Clc.Types.Entities;
+using Clc.Fields.Entities;
 
 namespace Clc.Fields.Cache
 {

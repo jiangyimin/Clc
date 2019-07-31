@@ -49,6 +49,7 @@ namespace Clc
             });
             
             // Cache for Types
+            IocManager.Register<IAffairTypeCache, AffairTypeCache>();
             IocManager.Register<IArticleTypeCache, ArticleTypeCache>();
             IocManager.Register<IPostCache, PostCache>();
             IocManager.Register<IRouteTypeCache, RouteTypeCache>();
@@ -57,8 +58,10 @@ namespace Clc
  
             // Cache for Fields
             IocManager.Register<IDepotCache, DepotCache>();
+            IocManager.Register<IWorkplaceCache, WorkplaceCache>();
             IocManager.Register<IWorkerCache, WorkerCache>();
-
+            IocManager.Register<IVehicleCache, VehicleCache>();
+            IocManager.Register<IArticleCache, ArticleCache>();
         }
 
         public override void PostInitialize()

@@ -21,13 +21,32 @@ namespace Clc.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
+                name: "AffairTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    Cn = table.Column<string>(maxLength: 1, nullable: false),
+                    Name = table.Column<string>(maxLength: 8, nullable: false),
+                    hasCloudDoor = table.Column<bool>(nullable: false),
+                    toRoute = table.Column<bool>(nullable: false),
+                    MinDuration = table.Column<int>(nullable: false),
+                    MaxDuration = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AffairTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ArticleTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
-                    Cn = table.Column<string>(maxLength: 2, nullable: false),
+                    Cn = table.Column<string>(maxLength: 1, nullable: false),
                     Name = table.Column<string>(maxLength: 8, nullable: false),
                     BindStyle = table.Column<string>(maxLength: 8, nullable: true)
                 },
@@ -47,11 +66,19 @@ namespace Clc.Migrations
                     Name = table.Column<string>(maxLength: 8, nullable: false),
                     Longitude = table.Column<double>(nullable: true),
                     Latitude = table.Column<double>(nullable: true),
-                    UseRouteForIdentify = table.Column<bool>(nullable: false)
+                    Radius = table.Column<int>(nullable: true),
+                    activeRouteNeedCheckin = table.Column<bool>(nullable: false),
+                    RelyDepotId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Depots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Depots_Depots_RelyDepotId",
+                        column: x => x.RelyDepotId,
+                        principalTable: "Depots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,7 +105,7 @@ namespace Clc.Migrations
                     TenantId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 8, nullable: false),
                     WorkRoles = table.Column<string>(maxLength: 50, nullable: false),
-                    CheckinLead = table.Column<int>(nullable: false),
+                    LendArticleLead = table.Column<int>(nullable: false),
                     LendArticleDeadline = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -95,8 +122,8 @@ namespace Clc.Migrations
                     TenantId = table.Column<int>(nullable: false),
                     Cn = table.Column<string>(maxLength: 2, nullable: false),
                     Name = table.Column<string>(maxLength: 8, nullable: false),
-                    isCharge = table.Column<bool>(nullable: false),
-                    DefaultPrice = table.Column<int>(nullable: false)
+                    isTemporary = table.Column<bool>(nullable: false),
+                    BasicPrice = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,24 +131,30 @@ namespace Clc.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vaults",
+                name: "Articles",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
                     DepotId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 8, nullable: false),
-                    ChannnelList = table.Column<string>(maxLength: 50, nullable: true),
-                    ShiftNameList = table.Column<string>(maxLength: 50, nullable: true),
-                    MinDuration = table.Column<int>(nullable: false),
-                    MaxDuration = table.Column<int>(nullable: false)
+                    Cn = table.Column<string>(maxLength: 10, nullable: false),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    ArticleTypeId = table.Column<int>(nullable: false),
+                    Rfid = table.Column<string>(maxLength: 20, nullable: true),
+                    BindInfo = table.Column<string>(maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vaults", x => x.Id);
+                    table.PrimaryKey("PK_Articles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vaults_Depots_DepotId",
+                        name: "FK_Articles_ArticleTypes_ArticleTypeId",
+                        column: x => x.ArticleTypeId,
+                        principalTable: "ArticleTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Articles_Depots_DepotId",
                         column: x => x.DepotId,
                         principalTable: "Depots",
                         principalColumn: "Id",
@@ -129,26 +162,22 @@ namespace Clc.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Warehouses",
+                name: "Vehicles",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
                     DepotId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 8, nullable: false),
-                    ArticleTypeList = table.Column<string>(maxLength: 50, nullable: true),
-                    ShiftNameList = table.Column<string>(maxLength: 50, nullable: true),
-                    MinDuration = table.Column<int>(nullable: false),
-                    MaxDuration = table.Column<int>(nullable: false),
-                    CheckinLead = table.Column<int>(nullable: false),
-                    CheckinDeadline = table.Column<int>(nullable: false)
+                    Cn = table.Column<string>(maxLength: 8, nullable: false),
+                    License = table.Column<string>(maxLength: 7, nullable: false),
+                    Photo = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Warehouses", x => x.Id);
+                    table.PrimaryKey("PK_Vehicles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Warehouses_Depots_DepotId",
+                        name: "FK_Vehicles_Depots_DepotId",
                         column: x => x.DepotId,
                         principalTable: "Depots",
                         principalColumn: "Id",
@@ -182,6 +211,36 @@ namespace Clc.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Workplaces",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    DepotId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 8, nullable: false),
+                    AffairTypeId = table.Column<int>(nullable: false),
+                    ArticleTypeList = table.Column<string>(maxLength: 50, nullable: true),
+                    RoleUserName = table.Column<string>(maxLength: 64, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Workplaces", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Workplaces_AffairTypes_AffairTypeId",
+                        column: x => x.AffairTypeId,
+                        principalTable: "AffairTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Workplaces_Depots_DepotId",
+                        column: x => x.DepotId,
+                        principalTable: "Depots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Workers",
                 columns: table => new
                 {
@@ -191,13 +250,12 @@ namespace Clc.Migrations
                     DepotId = table.Column<int>(nullable: false),
                     Cn = table.Column<string>(maxLength: 8, nullable: false),
                     Name = table.Column<string>(maxLength: 8, nullable: false),
+                    PostId = table.Column<int>(nullable: false),
                     Password = table.Column<string>(maxLength: 10, nullable: true),
+                    Rfid = table.Column<string>(maxLength: 18, nullable: true),
                     Photo = table.Column<byte[]>(nullable: true),
-                    Finger = table.Column<string>(maxLength: 1024, nullable: true),
-                    IDNumber = table.Column<string>(maxLength: 18, nullable: true),
-                    IDCardNo = table.Column<string>(maxLength: 18, nullable: true),
-                    Mobile = table.Column<string>(maxLength: 11, nullable: true),
                     DeviceId = table.Column<string>(maxLength: 50, nullable: true),
+                    AdditiveInfo = table.Column<string>(maxLength: 20, nullable: true),
                     IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -209,6 +267,12 @@ namespace Clc.Migrations
                         principalTable: "Depots",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Workers_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -218,6 +282,7 @@ namespace Clc.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
+                    Cn = table.Column<string>(maxLength: 2, nullable: false),
                     Name = table.Column<string>(maxLength: 8, nullable: false),
                     DefaultPostId = table.Column<int>(nullable: true),
                     Duties = table.Column<string>(maxLength: 50, nullable: true),
@@ -287,37 +352,47 @@ namespace Clc.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Articles_ArticleTypeId",
+                table: "Articles",
+                column: "ArticleTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_DepotId",
+                table: "Articles",
+                column: "DepotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_TenantId_Cn",
+                table: "Articles",
+                columns: new[] { "TenantId", "Cn" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Depots_RelyDepotId",
+                table: "Depots",
+                column: "RelyDepotId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Depots_TenantId_Cn",
                 table: "Depots",
                 columns: new[] { "TenantId", "Cn" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vaults_DepotId",
-                table: "Vaults",
+                name: "IX_Vehicles_DepotId",
+                table: "Vehicles",
                 column: "DepotId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vaults_TenantId_DepotId_Name",
-                table: "Vaults",
-                columns: new[] { "TenantId", "DepotId", "Name" },
+                name: "IX_Vehicles_TenantId_Cn",
+                table: "Vehicles",
+                columns: new[] { "TenantId", "Cn" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_WarehouseEvents_WarehouseTaskId",
                 table: "WarehouseEvents",
                 column: "WarehouseTaskId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Warehouses_DepotId",
-                table: "Warehouses",
-                column: "DepotId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Warehouses_TenantId_DepotId_Name",
-                table: "Warehouses",
-                columns: new[] { "TenantId", "DepotId", "Name" },
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_WarehouseTasks_DepotId",
@@ -340,9 +415,30 @@ namespace Clc.Migrations
                 column: "DepotId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Workers_PostId",
+                table: "Workers",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Workers_TenantId_Cn",
                 table: "Workers",
                 columns: new[] { "TenantId", "Cn" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Workplaces_AffairTypeId",
+                table: "Workplaces",
+                column: "AffairTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Workplaces_DepotId",
+                table: "Workplaces",
+                column: "DepotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Workplaces_TenantId_DepotId_Name",
+                table: "Workplaces",
+                columns: new[] { "TenantId", "DepotId", "Name" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -354,7 +450,7 @@ namespace Clc.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ArticleTypes");
+                name: "Articles");
 
             migrationBuilder.DropTable(
                 name: "RouteTypes");
@@ -363,19 +459,22 @@ namespace Clc.Migrations
                 name: "TaskTypes");
 
             migrationBuilder.DropTable(
-                name: "Vaults");
+                name: "Vehicles");
 
             migrationBuilder.DropTable(
                 name: "WarehouseEvents");
 
             migrationBuilder.DropTable(
-                name: "Warehouses");
-
-            migrationBuilder.DropTable(
                 name: "WarehouseTaskWorkers");
 
             migrationBuilder.DropTable(
+                name: "Workplaces");
+
+            migrationBuilder.DropTable(
                 name: "WorkRoles");
+
+            migrationBuilder.DropTable(
+                name: "ArticleTypes");
 
             migrationBuilder.DropTable(
                 name: "WarehouseTasks");
@@ -384,10 +483,13 @@ namespace Clc.Migrations
                 name: "Workers");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "AffairTypes");
 
             migrationBuilder.DropTable(
                 name: "Depots");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
 
             migrationBuilder.DropColumn(
                 name: "TwinUserName",

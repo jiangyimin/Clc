@@ -11,8 +11,19 @@
         crud.dgDefault.columns = [[
             { field: "cn", title: "编号", width: 80, sortable: true },
             { field: "name", title: "名称", width: 80, sortable: true },
-            { field: "bindStyle", title: "绑定方式", width: 80, sortable: true },
+            { field: "bindStyle", title: "绑定方式", width: 80, sortable: true }
         ]];
+    </script>
+}
+
+@section endScript
+{
+    <script type="text/javascript">
+        crud.startfunction = function () {
+            abp.services.app.type.getComboItems('BindStyle').done(function(d) { 
+                crud.setComboBox('#bindStyle', d);
+            });
+        }     
     </script>
 }
 

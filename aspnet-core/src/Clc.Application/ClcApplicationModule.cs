@@ -30,7 +30,7 @@ namespace Clc
             {
                 // common
                 mapper.CreateMap<string, bool>().ConvertUsing(s => s == "on" ? true : false);
-                mapper.CreateMap<bool, string>().ConvertUsing(s => s ? "on" : "");
+                mapper.CreateMap<bool, string>().ConvertUsing(s => s ? "on" : "off");
             });
 
         }

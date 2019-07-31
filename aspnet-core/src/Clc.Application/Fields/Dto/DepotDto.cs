@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using Clc.Fields.Entities;
 
 namespace Clc.Fields.Dto
 {
@@ -16,6 +17,8 @@ namespace Clc.Fields.Dto
 
         public double? Latitude { get; set; }
 
-        public string UseRouteForIdentify { get; set; }
+        public int? Radius { get; set; }
+        public string activeRouteNeedCheckin { get; set; }
+        public int? RelyDepotId { get; set; }
     }
 }

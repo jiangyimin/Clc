@@ -8,6 +8,12 @@ namespace Clc.Types.Dto
     [AutoMap(typeof(WorkRole))]
     public class WorkRoleDto : EntityDto
     {
+        /// <summary>
+        /// 编号/序号
+        /// </summary>
+        [Required]
+        [StringLength(WorkRole.MaxCnLength)]
+        public string Cn { get; set; }
         [Required]
         [StringLength(WorkRole.MaxNameLength)]
         public string Name { get; set; } 
@@ -20,10 +26,11 @@ namespace Clc.Types.Dto
         /// <summary>
         /// 必须安排
         /// </summary>
-        public bool mustHave { get; set; }
+        public string MustHave { get; set; }
         
         /// <summary>
         /// 最多人数
         /// </summary>
+        public int MaxNum { get; set; }
     }
 }

@@ -1,0 +1,111 @@
+﻿@using Clc.Fields.Entities
+@{
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+}
+
+@section customScript
+{
+    <script type="text/javascript">
+        crud.dgDefault.name = 'Vehicles';
+        crud.dgDefault.sortName = 'cn';
+        var title = abp.setting.get('VI.DepotTitleName');
+        crud.dgDefault.columns = [[
+            { field: "cn", title: "编号", width: 100, sortable: true },
+            { field: "license", title: "车牌", width: 100 },
+            { field: "photo", title: "有否照片", width: 80, formatter: photoFormatter },
+        ]];
+        crud.parentField = 'depotId';
+        crud.children = true;        
+
+        // formatters
+        function photoFormatter(val, row, index) {
+            if (row.photo.length > 0)
+                return '(有)'
+        }
+    </script>
+}
+
+@section endScript
+{
+    <script type="text/javascript">
+        crud.startfunction = function () {
+            abp.services.app.field.getComboItems('Depot').done(function(depots) {
+                crud.setComboBox('#depotId', depots);
+                var treeData = [];
+                depots.forEach( function (val, index, arr) {
+                    treeData.push({ id: val.value, text: val.displayText });
+                });
+                $('#tree').tree({
+                    data: treeData,
+                    onSelect: function (node) {
+                        crud.parentId = node.id;
+                        $('#datagrid').datagrid({
+                            url: crud.dgDefault.name + '/GetPagedData/' + 'DepotId=' + node.id
+                        });
+                    }
+                });
+            });      
+        };
+
+        crud.endfunction = function () {
+            // photo Preview processes
+            $("#fm").form({
+                onLoadSuccess: function (row) {
+                    if (row && row.id > 0) {
+                        $("#preview").attr("src", "Vehicles/GetPhoto/" + row.id);
+                    }
+                },
+            });
+
+            $("#dlg").dialog({
+                onClose: function () {
+                    var obj = document.getElementById('photoFile');
+                    obj.outerHTML = obj.outerHTML;
+                    $("#preview").attr("src", "");
+                }
+            });
+        };
+    </script>
+}
+
+@section headHtml
+{
+    <div id="cc" class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'west', split:true, minWidth:80, width:120">
+            <ul id="tree" class="easyui-tree" style="margin-top:6px"></ul>
+        </div>
+        <div data-options="region:'center', border:false">
+}
+@section footHtml
+{
+        </div>
+    </div>
+}
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 400px; padding: 10px;">
+    <form id="fm" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl">
+            <input id="id" name="id" type="hidden">
+            <tr>
+                <th><label for="depotId">所属:</label></th>
+                <td><input id="depotId" name="depotId" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="cn">编号：</label></th>
+                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @Worker.MaxCnLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="license">车牌:</Label></th>
+                <td><input name="license" class="easyui-textbox" data-options="required:true, validType:'length[1, @Worker.MaxNameLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="PhotoImage">照片:</Label></th>
+                <td>
+                    <img id="preview" alt="" src="" style="width:100px; height:110px;" />
+                    <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

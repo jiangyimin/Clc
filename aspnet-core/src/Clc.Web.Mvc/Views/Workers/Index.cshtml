@@ -1,4 +1,4 @@
-﻿@using Clc.Fields
+﻿@using Clc.Fields.Entities
 @{
     Layout = "~/Views/Shared/_CrudLayout.cshtml";
 }
@@ -12,16 +12,17 @@
         crud.dgDefault.columns = [[
             { field: "cn", title: "编号", width: 100, sortable: true },
             { field: "name", title: "名称", width: 100 },
-            { field: "password", title: "微信登录密码", width: 80 },
-            { field: "idCardNo", title: "ID卡号", width: 100 },         
+            { field: "password", title: "登录密码", width: 80 },
             { field: "photo", title: "有否照片", width: 80, formatter: photoFormatter },
-            { field: "mobile", title: "手机号码", width: 100 },
-            { field: "deviceId", title: "微信设备号", width: 100 },
-            { field: "depotId", title: "所属"+title, width: 100}, // formatter: $.displayDepotText }
+            { field: "rfid", title: "RFID", width: 100 },         
+            { field: "deviceId", title: "微信设备号", width: 120 },
+            { field: "additiveInfo", title: "附加认证信息", width: 120 },
             { field: "isActive", title: "启用", width: 60 }
         ]];
         crud.parentField = 'depotId';
+        crud.children = true;
         
+        // formatters
         function photoFormatter(val, row, index) {
             if (row.photo.length > 0)
                 return '(有)'
@@ -33,6 +34,10 @@
 {
     <script type="text/javascript">
         crud.startfunction = function () {
+            abp.services.app.type.getComboItems('Post').done(function(d) {
+                crud.setComboBox('#post', d);
+            });
+
             abp.services.app.field.getComboItems('Depot').done(function(depots) {
                 crud.setComboBox('#depotId', depots);
                 var treeData = [];
@@ -90,10 +95,14 @@
 }
 
 @*弹窗*@
-<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 800px; padding: 10px;">
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 400px; padding: 10px;">
     <form id="fm" class="easyui-form" method="post" novalidate>
-        <table class="edit-tbl2">
+        <table class="edit-tbl">
             <input id="id" name="id" type="hidden">
+            <tr>
+                <th><label for="depotId">所属:</label></th>
+                <td><input id="depotId" name="depotId" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
             <tr>
                 <th><label for="cn">编号：</label></th>
                 <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @Worker.MaxCnLength]'" style="width: 100%"></td>
@@ -103,20 +112,31 @@
                 <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @Worker.MaxNameLength]'" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><Label for="password">登录密码:</Label></th>
-                <td><input name="password" class="easyui-numberbox" style="width: 100%"></td>
-                <th><Label for="idCardNo">ID 卡号:</Label></th>
-                <td><input name="idCardNo" class="easyui-textbox" style="width: 100%"></td>
-            </tr>
-           <tr>
-                <th><Label for="idNumber">身份证:</Label></th>
-                <td><input name="idNumber" class="easyui-textbox" style="width: 100%"></td>
-                <th><Label for="mobile">手机号码:</Label></th>
-                <td><input name="mobile" class="easyui-numberbox" style="width: 100%"></td>
+                <th><label for="postId">岗位:</label></th>
+                <td><input id="post" name="postId" class="easyui-combobox" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><label for="depotId">所属：</label></th>
-                <td><select id="depotId" name="depotId" class="easyui-combobox" style="width: 100%" /></td>
+                <th><Label for="password">登录密码:</Label></th>
+                <td><input name="password" class="easyui-numberbox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="PhotoImage">照片:</Label></th>
+                <td>
+                    <img id="preview" alt="" src="" style="width:100px; height:110px;" />
+                    <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
+                </td>
+            </tr>
+            <tr>
+                <th><Label for="rfid">RFID:</Label></th>
+                <td><input name="rfid" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
+           <tr>
+                <th><Label for="deviceId">微信设备号:</Label></th>
+                <td><input name="deviceId" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
+                <th><Label for="additiveInfo">附加认证信息:</Label></th>
+                <td><input name="additiveInfo" class="easyui-numberbox" style="width: 100%"></td>
+            </tr>
                 <th><label for="isActive">启用：</label></th>
                 <td><input name="isActive" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
             </tr>

@@ -61,7 +61,14 @@ namespace Clc.Configuration
                     User.RoleUserPassword, 
                     new FixedLocalizableString("角色用户缺省密码"),
                     scopes: SettingScopes.Tenant
-                )
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Const.IdentifyEmergencyPassword, 
+                    User.UserDefaultPassword, 
+                    new FixedLocalizableString("身份确认紧急密码"),
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
+                ),
             };
         }
         private IEnumerable<SettingDefinition> GetRuleSettingDefinitions(SettingDefinitionProviderContext context)
@@ -71,7 +78,13 @@ namespace Clc.Configuration
                 new SettingDefinition(
                     AppSettingNames.Rule.Radius, 
                     "300", 
-                    new FixedLocalizableString("半径"),
+                    new FixedLocalizableString("半径(米)"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.MinCheckinInterval, 
+                    "180", 
+                    new FixedLocalizableString("最小签到间隔(分钟)"),
                     scopes: SettingScopes.Tenant
                 )
             };

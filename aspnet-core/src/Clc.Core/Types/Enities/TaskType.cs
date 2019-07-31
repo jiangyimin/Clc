@@ -30,8 +30,8 @@ namespace Clc.Types.Entities
         [StringLength(MaxNameLength)]
         public string Name { get; set; }
 
-        public bool isCharge { get; set; }
-        public int DefaultPrice { get; set; }
+        public bool isTemporary { get; set; }
+        public int BasicPrice { get; set; }
     }
 }
 

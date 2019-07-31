@@ -1,9 +1,10 @@
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities;
+using Clc.Types.Entities;
 
-namespace Clc.Fields
+namespace Clc.Fields.Entities
 {
     /// <summary>
     /// Worker Entity
@@ -18,11 +19,9 @@ namespace Clc.Fields
         public const int MaxNameLength = 8;
         public const int MaxPasswordLength = 10;
         public const string PasswordRegex = "^[0-9]{6}$";
-        public const int IDCardNoMaxLength = 18;
-        public const int IDNumberLength = 18;
-        public const int MobileLength = 11;
-        public const int FingerLength = 1024;
+        public const int RfidMaxLength = 18;
         public const int MaxDeviceId = 50;
+        public const int MaxAdditiveInfoLength = 20;
  
         /// <summary>
         /// 所属中心
@@ -44,6 +43,13 @@ namespace Clc.Fields
         [StringLength(MaxNameLength)]
         public string Name { get; set; }
 
+         /// <summary>
+        /// 岗位
+        /// </summary>
+        [Required]
+        public int PostId { get; set; }
+        public Post Post { get; set; }
+
         /// <summary>
         /// 登录密码
         /// </summary>
@@ -51,33 +57,15 @@ namespace Clc.Fields
         public string Password { get; set; }
 
         /// <summary>
+        /// IDCardNo 
+        /// </summary>
+        [StringLength(RfidMaxLength)]
+        public string Rfid { get; set; }
+
+        /// <summary>
         /// 照片
         /// </summary>
         public byte[] Photo { get; set; }
-
-        /// <summary>
-        /// 指纹
-        /// </summary>
-        [StringLength(FingerLength)]
-        public string Finger { get; set; }
-
-        /// <summary>
-        /// 身份证
-        /// </summary>
-        [StringLength(IDNumberLength)]
-        public string IDNumber { get; set; }
-
-        /// <summary>
-        /// IDCardNo 
-        /// </summary>
-        [StringLength(IDCardNoMaxLength)]
-        public string IDCardNo { get; set; }
-
-        /// <summary>
-        /// 手机
-        /// </summary>
-        [StringLength(MobileLength)]
-        public string Mobile { get; set; }
 
         /// <summary>
         /// 微信设备Id
@@ -85,6 +73,13 @@ namespace Clc.Fields
         [StringLength(MaxDeviceId)]
         public string DeviceId { get; set; }
 
+        // 附加认证信息
+        [StringLength(MaxAdditiveInfoLength)]
+        public string AdditiveInfo { get; set; }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
         public bool IsActive { get; set; }
     }
 }

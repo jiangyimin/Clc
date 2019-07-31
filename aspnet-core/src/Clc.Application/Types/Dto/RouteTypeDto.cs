@@ -22,9 +22,9 @@ namespace Clc.Types.Dto
         [StringLength(RouteType.MaxWorkRolesLength)]
         public string WorkRoles { get; set; }
         /// <summary>
-        /// 签到提前时间（分钟）
+        /// 领物提前时间（分钟）
         /// </summary>
-        public int CheckinLead { get; set; }
+        public int LendArticleLead { get; set; }
 
         /// <summary>
         /// 领物关闭时间（分钟）

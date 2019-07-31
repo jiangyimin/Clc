@@ -1,4 +1,4 @@
-﻿@using Clc.Fields
+﻿@using Clc.Fields.Entities
 @{
     Layout = "~/Views/Shared/_CrudLayout.cshtml";
 }
@@ -8,19 +8,37 @@
     <script type="text/javascript">
         crud.dgDefault.name = 'Depots';
         crud.dgDefault.sortName = 'cn';
-        // crud.options.title = abp.setting.get('VI.DepotTitleName');
+        // crud.dgDefault.title = abp.setting.get('VI.DepotTitleName');
         crud.dgDefault.columns = [[
             { field: "cn", title: "编号", width: 100 },
             { field: "name", title: "名称", width: 100 },
+            { field: "radius", title: "签到半径(米)", width: 100 },
             { field: "longitude", title: "经度", width: 120 },
             { field: "latitude", title: "纬度", width: 120 },
-            { field: "useRouteForIdentify", title: "线路确认身份", width: 60 }
+            { field: "activeRouteNeedCheckin", title: "激活线路先签到", width: 100 },
+            { field: "relyDepotId", title: "依赖于", width: 80, formatter: relyDepotFormatter }
         ]];
+
+        // formatters
+        function relyDepotFormatter (val) {
+            return crud.getComboTextByInt('#relyDepot', val);
+        }
+    </script>
+}
+
+@section endScript
+{
+    <script type="text/javascript">
+        crud.startfunction = function () {
+            abp.services.app.field.getComboItems('Depot').done(function(d) {
+                crud.setComboBox('#relyDepot', d);
+            });
+        };
     </script>
 }
 
 @*弹窗*@
-<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 360px; padding: 10px;">
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 450px; padding: 10px;">
     <form id="fm" class="easyui-form" method="post" novalidate>
         <table class="edit-tbl">
             <input id="id" name="id" type="hidden">
@@ -40,9 +58,17 @@
                 <td><input name="latitude" class="easyui-numberbox" data-options="precision:6" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><label for="useRouteForIdentify">线路确认身份：</label></th>
-                <td><input name="useRouteForIdentify" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
+                <th><label for="radius">签到半径(米)：</label></th>
+                <td><input name="radius" class="easyui-numberbox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="activeRouteNeedCheckin">激活线路先签到: </label></th>
+                <td><input name="activeRouteNeedCheckin" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
                 </td>
+            </tr>
+            <tr>
+                <th><label for="relyDepotId">依赖于：</label></th>
+                <td><input id="relyDepot" name="relyDepotId" class="easyui-combobox" style="width: 100%"></td>
             </tr>
         </table>
     </form>

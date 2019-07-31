@@ -166,11 +166,13 @@ var crud = crud || {};
 
         crud.dgDefault.columns[0].push({ field: "operator", title: "操作", width: 80, align: "center", formatter: crud.operator });
 
-        // alert(crud.dgDefault.table + '/GridPagedData/');
-        // 构造datagrid
-        var _url = crud.dgDefault.pagination ? '/GetPagedData/' : '/GetAllData/';
+       // 构造datagrid
+        var url = '';
+        if (crud.children === false)
+            url = crud.dgDefault.pagination ? '/GetPagedData/' : '/GetAllData/';
+
         _$dg.datagrid({
-            url: crud.dgDefault.name + _url,
+            url: crud.dgDefault.name + url,
             toolbar: crud.toolbarData,
             fit: true,
             fitColumns: true,

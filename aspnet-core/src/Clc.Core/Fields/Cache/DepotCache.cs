@@ -5,6 +5,7 @@ using Abp.Events.Bus.Entities;
 using Abp.Events.Bus.Handlers;
 using Abp.Runtime.Caching;
 using Abp.Runtime.Session;
+using Clc.Fields.Entities;
 
 namespace Clc.Fields.Cache
 {

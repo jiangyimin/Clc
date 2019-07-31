@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 using Abp.Domain.Entities;
 using Clc.Types.Entities;
-using Clc.Fields;
+using Clc.Fields.Entities;
 
 namespace Clc.Works
 {
@@ -32,7 +32,7 @@ namespace Clc.Works
         /// 库房
         /// </summary>
         [Required]
-        [StringLength(Warehouse.MaxNameLength)]
+        [StringLength(Workplace.MaxNameLength)]
         public string WarehorseName { get; set; }
 
         /// <summary>

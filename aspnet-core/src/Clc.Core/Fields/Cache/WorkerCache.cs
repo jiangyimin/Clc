@@ -5,6 +5,7 @@ using Abp.Events.Bus.Entities;
 using Abp.Events.Bus.Handlers;
 using Abp.Runtime.Caching;
 using Abp.Runtime.Session;
+using Clc.Fields.Entities;
 
 namespace Clc.Fields.Cache
 {
@@ -48,7 +49,7 @@ namespace Clc.Fields.Cache
 
         private string CacheKey
         {
-            get { return "Depots@" + (_abpSession.TenantId ?? 0); }
+            get { return "Workers@" + (_abpSession.TenantId ?? 0); }
         }
     }
 }

@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
-using Clc.Fields;
+using Clc.Fields.Entities;
 
 namespace Clc.Works
 {

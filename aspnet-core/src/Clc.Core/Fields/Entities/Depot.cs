@@ -1,10 +1,8 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic;
 using Abp.Domain.Entities;
 
-namespace Clc.Fields
+namespace Clc.Fields.Entities
 {
     /// <summary>
     /// Depot Entity
@@ -25,7 +23,7 @@ namespace Clc.Fields
         public string Cn { get; set; }
 
         /// <summary>
-        /// 获取或设置 中心名
+        /// 运行中心名称
         /// </summary>
         [Required]
         [StringLength(MaxNameLength)]
@@ -41,7 +39,22 @@ namespace Clc.Fields
         /// </summary>
         public double? Latitude { get; set; }
 
-        public bool UseRouteForIdentify { get; set; }
+        /// <summary>
+        /// 签到半径(米)，如空采用缺省的
+        /// </summary>
+        public int? Radius { get; set; }
+    
+        /// <summary>
+        /// 激活线路是否需要全部签到
+        /// </summary>
+        public bool activeRouteNeedCheckin { get; set; }
+
+        /// <summary>
+        /// 利用其它运行中心的库
+        /// </summary>
+        public int? RelyDepotId { get; set; }
+        public Depot RelyDepot { get; set; }
+
     }
 }
 

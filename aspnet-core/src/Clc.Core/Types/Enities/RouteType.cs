@@ -31,15 +31,13 @@ namespace Clc.Types.Entities
         public string WorkRoles { get; set; }
 
         /// <summary>
-        /// 签到提前时间（分钟）
+        /// 领物提前时间（分钟）
         /// </summary>
-        [DefaultValue(60)]
-        public int CheckinLead { get; set; }
+        public int LendArticleLead { get; set; }
 
         /// <summary>
         /// 领物关闭时间（分钟）
         /// </summary>
-        [DefaultValue(30)]
         public int LendArticleDeadline { get; set; }
     }
 }

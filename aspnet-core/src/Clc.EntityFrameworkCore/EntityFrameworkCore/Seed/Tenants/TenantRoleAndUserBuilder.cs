@@ -55,10 +55,6 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             permissions = new string[] { PermissionNames.Pages_PlaceB };
             CreateRoleAndUser(StaticRoleNames.Tenants.PlaceB, permissions, StaticRoleNames.Tenants.PlaceB, User.RoleUserPassword);
             
-            // PlaceAB
-            permissions = new string[] { PermissionNames.Pages_PlaceA, PermissionNames.Pages_PlaceB };
-            CreateRoleAndUser(StaticRoleNames.Tenants.PlaceAB, permissions, StaticRoleNames.Tenants.PlaceAB, User.RoleUserPassword);
-
             // Captain
             permissions = new string[] { 
                 PermissionNames.Pages_PreArrange, PermissionNames.Pages_TodayArrange, PermissionNames.Pages_Aux

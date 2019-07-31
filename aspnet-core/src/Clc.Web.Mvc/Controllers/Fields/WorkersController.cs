@@ -1,8 +1,9 @@
 ﻿using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Domain.Repositories;
 using Clc.Authorization;
-using Clc.Fields;
+using Clc.Fields.Entities;
 using Clc.Fields.Dto;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Clc.Web.Controllers
 {
@@ -14,5 +15,13 @@ namespace Clc.Web.Controllers
         {
         }
 
+        public ActionResult GetPhoto(int id)
+        {
+            Worker w = _repository.Get(id);
+            if (w != null && w.Photo != null)
+                return File(w.Photo, "image/jpg");
+
+            return File(new byte[0], "image/jpg");
+        }
 	}
 }

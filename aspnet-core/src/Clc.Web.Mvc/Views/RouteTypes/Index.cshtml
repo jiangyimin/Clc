@@ -11,14 +11,14 @@
         crud.dgDefault.columns = [[
             { field: "name", title: "名称", width: 80 },
             { field: "workRoles", title: "工作角色列表", width: 120 },
-            { field: "checkinLead", title: "签到提前时间", width: 80 },
+            { field: "lendArticleLead", title: "领物提前时间", width: 80 },
             { field: "lendArticleDeadline", title: "领物截止时间", width: 80 }
         ]];
     </script>
 }
 
 @*弹窗*@
-<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 360px; padding: 10px;">
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 500px; padding: 10px;">
     <form id="fm" class="easyui-form" method="post" novalidate>
         <table class="edit-tbl">
             <input id="id" name="id" type="hidden">
@@ -31,12 +31,12 @@
                 <td><input name="workRoles" class="easyui-textbox" data-options="required:true, validType:'length[2, @RouteType.MaxWorkRolesLength]'" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><label for="checkinLead">签到提前时间：</label></th>
-                <td><input name="checkinLead" class="easyui-numberbox" style="width: 100%"></td>
+                <th><label for="lendArticleLead">领物提前时间：</label></th>
+                <td><input name="lendArticleLead" class="easyui-numberbox" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><label for="latitude">领物截止时间：</label></th>
-                <td><input name="latitude" class="easyui-numberbox" style="width: 100%"></td>
+                <th><label for="lendArticleDeadline">领物截止时间：</label></th>
+                <td><input name="lendArticleDeadline" class="easyui-numberbox" style="width: 100%"></td>
             </tr>
         </table>
     </form>

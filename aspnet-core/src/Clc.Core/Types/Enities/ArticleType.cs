@@ -10,7 +10,7 @@ namespace Clc.Types.Entities
     [Description("物品类型")]
     public class ArticleType : Entity, IMustHaveTenant
     {
-        public const int MaxCnLength = 2;
+        public const int MaxCnLength = 1;
         public const int MaxNameLength = 8;
         public const int MaxBindStyleLength = 8;
 
