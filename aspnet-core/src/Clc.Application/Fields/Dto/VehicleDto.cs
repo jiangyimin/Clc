@@ -33,14 +33,14 @@ namespace Clc.Fields.Dto
         /// 照片
         /// </summary>
         public byte[] Photo { get; set; }
-
+        public int PhotoLength { get; set; }
         public IFormFile PhotoFile { get; set; }
 
         #region interface
         public void AddValidationErrors(CustomValidationContext context)
         {
             if (PhotoFile != null && PhotoFile.Length > MaxPhotoLength)
-                context.Results.Add(new ValidationResult("照片文件不能大于10K!"));
+                context.Results.Add(new ValidationResult("照片文件不能大于200K!"));
         }
 
         public void Normalize()

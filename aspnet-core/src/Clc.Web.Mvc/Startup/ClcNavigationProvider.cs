@@ -42,9 +42,11 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Field_Workers", new FixedLocalizableString("工作人员"), url: "Workers"))
                     .AddItem(new MenuItemDefinition("Field_Vehicles", new FixedLocalizableString("车辆"), url: "Vehicles"))
                     .AddItem(new MenuItemDefinition("Field_Articles", new FixedLocalizableString("物品"), url: "Articles"))
-                // Customers
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Customers, new FixedLocalizableString("客户"), icon: "fa fa-th-large", requiredPermissionName: PermissionNames.Pages_Customers)
-                    .AddItem(new MenuItemDefinition("Admin_Outlets", new FixedLocalizableString("网点"), url: "Outlets"))
+                // Clients
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Clients, new FixedLocalizableString("客户"), icon: "fa fa-th-large", requiredPermissionName: PermissionNames.Pages_Clients)
+                    .AddItem(new MenuItemDefinition("Client_Customers", new FixedLocalizableString("客户"), url: "Customers"))
+                    .AddItem(new MenuItemDefinition("Client_Outlets", new FixedLocalizableString("网点"), url: "Outlets"))
+                    .AddItem(new MenuItemDefinition("Client_Boxes", new FixedLocalizableString("尾箱"), url: "Boxes"))
                  // Hrm
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrm, new FixedLocalizableString("档案管理"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrm)
                     .AddItem(new MenuItemDefinition("Hrm_Workers", new FixedLocalizableString("人员档案"), url: "WorkerFiles"))
@@ -65,13 +67,15 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("PreArrange_Routes", new FixedLocalizableString("预排线路"), url: "PreRoutes"))
                     .AddItem(new MenuItemDefinition("PreArrange_Workers", new FixedLocalizableString("预排人员"), url: "PreWorkers"))
                     .AddItem(new MenuItemDefinition("PreArrange_VehicleWorkers", new FixedLocalizableString("应急交接人员"), url: "VehicleWorkers"))
-                // TodayArrange
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_TodayArrange, new FixedLocalizableString("当日任务"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_TodayArrange)
-                    .AddItem(new MenuItemDefinition("TodayArrange_Warehouse", new FixedLocalizableString("库房任务"), url: "WarehouseTasks"))
-                    .AddItem(new MenuItemDefinition("TodayArrange_Vault", new FixedLocalizableString("金库任务"), url: "VaultTasks"))
-                    .AddItem(new MenuItemDefinition("TodayArrange_Routes", new FixedLocalizableString("线路任务"), url: "RouteTasks"))
+                // Arrange
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("当日任务"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
+                    .AddItem(new MenuItemDefinition("Arrange_Affairs", new FixedLocalizableString("内部任务"), url: "Affairs"))
+                    .AddItem(new MenuItemDefinition("Arrange_Routes", new FixedLocalizableString("线路任务"), url: "Routes"))
                     .AddItem(new MenuItemDefinition("Dispatcher_DaySettle", new FixedLocalizableString("日结"), url: "DaySettles"))
-                    .AddItem(new MenuItemDefinition("Dispatcher_RouteTasksStat", new FixedLocalizableString("线路任务统计"), url: "Routes/RouteTasksStat"))
+                // Statistic
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
+                    .AddItem(new MenuItemDefinition("Statistic_Affairs", new FixedLocalizableString("内部任务查询"), url: "Routes/RouteTasksStat"))
+                    .AddItem(new MenuItemDefinition("Statistic_Routes", new FixedLocalizableString("线路任务查询"), url: "Routes/RouteTasksStat"))
                     .AddItem(new MenuItemDefinition("Dispatcher_RouteWorkersStat", new FixedLocalizableString("线路工作量统计"), url: "Routes/RouteWorkersStat"))
                     .AddItem(new MenuItemDefinition("Dispatcher_VtAffairWorkersStat", new FixedLocalizableString("金库工作量统计"), url: "VtAffairs/VtAffairWorkersStat"))
                     .AddItem(new MenuItemDefinition("Dispatcher_WhAffairWorkersStat", new FixedLocalizableString("库房工作量统计"), url: "WhAffairs/WhAffairWorkersStat"))

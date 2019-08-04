@@ -12,7 +12,8 @@
             { field: "name", title: "名称", width: 80 },
             { field: "affairTypeId", title: "内务类型", width: 80, formatter: affairTypeFormatter },
             { field: "articleTypeList", title: "领用物品列表", width: 100 },
-            { field: "RoleUserName", title: "角色用户名", width: 100 }
+            { field: "shareDepotList", title: "共享中心列表", width: 100 },
+            { field: "roleUserName", title: "角色用户名", width: 100 }
         ]];
         crud.parentField = 'depotId';
         crud.children = true;
@@ -94,8 +95,12 @@
                 <td><input name="articleTypeList" class="easyui-textbox", data-options="validType:'length[1, @Workplace.ArticleTypeListLength]'" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><Label for="RoleUserName">角色用户名: </Label></th>
-                <td><input name="RoleUserName" class="easyui-textbox", data-options="validType:'length[1, @Workplace.ArticleTypeListLength]'" style="width: 100%"></td>
+                <th><Label for="shareDepotList">共享中心列表表: </Label></th>
+                <td><input name="shareDepotList" class="easyui-textbox", data-options="validType:'length[1, @Workplace.ShareDepotListLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="roleUserName">角色用户名: </Label></th>
+                <td><input name="roleUserName" class="easyui-textbox" style="width: 100%"></td>
             </tr>
         </table>
     </form>

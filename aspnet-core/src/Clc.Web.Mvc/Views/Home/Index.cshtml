@@ -28,12 +28,13 @@
 
 <!-- body -->
 <div class="easyui-layout" fit="true">
-    <div data-options="region:'north'" style="height: 52px; line-height: 0px;">
+    <div data-options="region:'north'" style="height: 48px; line-height: 0px;">
         <div class="topbar">
             <div class="bar-left">
                 @await Component.InvokeAsync(typeof(TopBarTitleViewComponent))
             </div>
             <div class="bar-right">
+                <a href="#" class="easyui-linkbutton" style="color: white; margin-right: 5px; " plain="true">修改密码</a>
                 <a href="/Account/Logout" class="easyui-linkbutton" style="color: white; margin: 10px; " plain="true" iconCls="icon-cancel">退出</a>
             </div>
         </div>
@@ -80,3 +81,24 @@
     <div id="tab-menu-closeother" data-options="iconCls:'pic_101'">关闭其他</div>
     <div id="tab-menu-closeall" data-options="iconCls:'pic_283'">关闭所有</div>
 </div>
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog"  title="修改密码" closed="true" modal="true" buttons="#dlg-buttons" style="width: 400px; padding: 10px;">
+    <form id="fm" method="post" novalidate>
+        <table class="edit-tbl">
+            <tr>
+                <th><label for="NewPassword">新密码：</label></th>
+                <td><input id="NewPassword" name="NewPassword" class="easyui-textbox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="NewPasswordAgain">再次输入：</label></th>
+                <td><input id="NewPasswordAgain" name="NewPasswordAgain" class="easyui-textbox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dlg-buttons">
+    <a id="submit" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save">提交</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlg').dialog('close')">取消</a>
+</div>
+

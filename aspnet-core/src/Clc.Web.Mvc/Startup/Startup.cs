@@ -19,6 +19,7 @@ using Senparc.Weixin;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.Entities;
+using Clc.RealTime;
 
 namespace Clc.Web.Startup
 {
@@ -33,15 +34,18 @@ namespace Clc.Web.Startup
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureApplicationCookie(options => {
-                options.ExpireTimeSpan = TimeSpan.FromHours(12);
-            });
+            // services.ConfigureApplicationCookie(options => {
+            //     options.ExpireTimeSpan = TimeSpan.FromHours(12);
+            // });
             // MVC
             services.AddMvc(
                 options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())
             );
 
             IdentityRegistrar.Register(services);
+            services.AddAuthentication().AddCookie(options => {
+                options.ExpireTimeSpan = TimeSpan.FromHours(18);
+            });
             AuthConfigurer.Configure(services, _appConfiguration);
 
             services.AddScoped<IWebResourceManager, WebResourceManager>();
@@ -85,6 +89,7 @@ namespace Clc.Web.Startup
             app.UseSignalR(routes =>
             {
                 routes.MapHub<AbpCommonHub>("/signalr");
+                routes.MapHub<MyChatHub>("/signalr-myChatHub");
             });
 
             app.UseMvc(routes =>

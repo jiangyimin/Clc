@@ -46,6 +46,7 @@ namespace Clc.Fields.Dto
         /// </summary>
         public byte[] Photo { get; set; }
 
+        public int PhotoLength { get; set; }
         public IFormFile PhotoFile { get; set; }
 
         /// <summary>

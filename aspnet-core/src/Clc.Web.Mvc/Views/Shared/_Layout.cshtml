@@ -8,7 +8,6 @@
 @using Clc.Web.Resources
 @using Clc.Web.Views.Shared.Components.SideBarNav
 @using Clc.Web.Views.Shared.Components.TopBarTitle
-@using Clc.Web.Views.Shared.Components.TopBarLanguageSwitch
 @using Clc.Web.Views.Shared.Components.RightSideBar
 @inject Clc.Timing.AppTimes AppTimes
 @inject IAbpAntiForgeryManager AbpAntiForgeryManager
@@ -68,7 +67,7 @@
 
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
-        <script src="~/lib/momnet/min/moment-with-locales.js" asp-append-version="true"></script>
+        <script src="~/lib/moment/min/moment-with-locales.js" asp-append-version="true"></script>
         <script src="~/lib/blockUI/jquery.blockUI.js" asp-append-version="true"></script>
         <script src="~/lib/toastr/toastr.js" asp-append-version="true"></script>
         <script src="~/lib/sweetalert/dist/sweetalert.min.js" asp-append-version="true"></script>
@@ -98,6 +97,12 @@
     <!-- Dynamic scripts of ABP system (They are created on runtime and can not be bundled) -->
     <script src="~/AbpServiceProxies/GetAll?v=@(AppTimes.StartupTime.Ticks)" type="text/javascript"></script>
     <script src="~/AbpScripts/GetScripts?v=@(AppTimes.StartupTime.Ticks)" type="text/javascript"></script>
+
+    <script>
+        // autConnect = false;
+        abp.signalr = abp.signalr || {};
+        abp.signalr.autoConnect = false;
+    </script>
 
     <script src="~/lib/signalr-client/signalr.min.js" asp-append-version="true"></script>
     <script src="~/lib/abp-web-resources/Abp/Framework/scripts/libs/abp.signalr-client.js" asp-append-version="true"></script>

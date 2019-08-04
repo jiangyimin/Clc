@@ -14,7 +14,7 @@ namespace Clc.Fields.Entities
     {
         public const int MaxNameLength = 8;
         public const int ArticleTypeListLength = ClcConsts.NormalStringLength;
-        public const int ShiftNameListLength = 50;
+        public const int ShareDepotListLength = ClcConsts.NormalStringLength;
 
         // Impement of IMustHaveTenant
         public int TenantId { get; set; }
@@ -39,6 +39,12 @@ namespace Clc.Fields.Entities
         /// </summary>
         [StringLength(ArticleTypeListLength)]
         public string ArticleTypeList { get; set; }
+
+        /// <summary>
+        /// 共享运行中心列表
+        /// </summary>
+        [StringLength(ShareDepotListLength)]
+        public string ShareDepotList { get; set; }
 
         /// <summary>
         /// 角色用户名

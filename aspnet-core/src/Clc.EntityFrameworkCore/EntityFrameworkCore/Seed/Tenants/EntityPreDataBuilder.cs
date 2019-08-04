@@ -1,6 +1,7 @@
 using System.Linq;
 using Clc.Types.Entities;
 using Clc.Fields.Entities;
+using Clc.Clients.Entities;
 
 namespace Clc.EntityFrameworkCore.Seed.Tenants
 {
@@ -31,7 +32,11 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             CreateWorkers();
             CreateVehicles();
             CreateArticles();
-            //CreateSources();
+
+            // Clients
+            CreateCustomers();
+            CreateOutlets();
+            CreateBoxes();
         }
 
         private void CreateAffairTypes()
@@ -108,8 +113,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.WorkRoles.Count() == 0)
             {
                 _context.WorkRoles.AddRange(new WorkRole[] {
-                    new WorkRole { TenantId = _tenantId, Cn = "01", Name = "司机", DefaultPostId = 3, mustHave = true, MaxNum = 2 }, 
-                    new WorkRole { TenantId = _tenantId, Cn = "02", Name = "车长", DefaultPostId = 4, mustHave = true, MaxNum = 2 }, 
+                    new WorkRole { TenantId = _tenantId, Cn = "01", Name = "司机", DefaultPostId = 2, mustHave = true, MaxNum = 2 }, 
+                    new WorkRole { TenantId = _tenantId, Cn = "02", Name = "车长", DefaultPostId = 3, mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "03", Name = "持枪员", DefaultPostId = 4, mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "04", Name = "主业务员", DefaultPostId = 5, mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "05", Name = "业务员", DefaultPostId = 6, mustHave = true, MaxNum = 2 },
@@ -153,17 +158,17 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Workers.Count() == 0)
             {
                 _context.Workers.AddRange(new Worker[] {
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "11110", Name = "王宽", PostId = 1, Password = "123456", Rfid = "", AdditiveInfo = "" },
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10001", Name = "高鹏", PostId = 2, Password = "123456", Rfid = "10001", AdditiveInfo = "142701198001041239" }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10002", Name = "许振亚", PostId = 3, Password = "123456", Rfid = "10002", AdditiveInfo = "142701198001041239" }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10003", Name = "陈俊杰", PostId = 4, Password = "123456", Rfid = "10003", AdditiveInfo = "142701198001041239" }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10004", Name = "曲斌", PostId = 5, Password = "123456", Rfid = "10004", AdditiveInfo = "142701198001041239" }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10005", Name = "程涛", PostId = 6, Password = "123456", Rfid = "10004", AdditiveInfo = "142701198001041239" }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10010", Name = "郭杰", PostId = 7, Password = "123456", Rfid = "10010", AdditiveInfo = "142701198001041239" }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10011", Name = "赵帅", PostId = 7, Password = "123456", Rfid = "10011", AdditiveInfo = "142701198001041239" }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10012", Name = "裴孟林", PostId = 8, Password = "123456", Rfid = "10012", AdditiveInfo = "142701198001041239" }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10013", Name = "滕帅斌", PostId = 8, Password = "123456", Rfid = "10013", AdditiveInfo = "142701198001041239" }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10014", Name = "申晓强", PostId = 8, Password = "123456", Rfid = "10014", AdditiveInfo = "142701198001041239" }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "11110", Name = "王宽", PostId = 1, Password = "123456", Rfid = "", AdditiveInfo = "", IsActive = true },
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10001", Name = "高鹏", PostId = 2, Password = "123456", Rfid = "10001", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10002", Name = "许振亚", PostId = 3, Password = "123456", Rfid = "10002", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10003", Name = "陈俊杰", PostId = 4, Password = "123456", Rfid = "10003", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10004", Name = "曲斌", PostId = 5, Password = "123456", Rfid = "10004", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10005", Name = "程涛", PostId = 6, Password = "123456", Rfid = "10004", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10010", Name = "郭杰", PostId = 7, Password = "123456", Rfid = "10010", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10011", Name = "赵帅", PostId = 7, Password = "123456", Rfid = "10011", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10012", Name = "裴孟林", PostId = 8, Password = "123456", Rfid = "10012", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10013", Name = "滕帅斌", PostId = 8, Password = "123456", Rfid = "10013", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10014", Name = "申晓强", PostId = 8, Password = "123456", Rfid = "10014", AdditiveInfo = "142701198001041239", IsActive = true }, 
                 }); 
                 _context.SaveChanges();
             }
@@ -196,5 +201,52 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                 _context.SaveChanges();
             }
         }
+
+        // Clients
+        private void CreateCustomers()
+        {
+            if (_context.Customers.Count() == 0)
+            {
+                _context.Customers.AddRange(new Customer[] {
+                    new Customer { TenantId = _tenantId, Cn = "01", Name = "工商银行" },
+                    new Customer { TenantId = _tenantId, Cn = "02", Name = "农业银行" },
+                    new Customer { TenantId = _tenantId, Cn = "03", Name = "中国银行" },
+                });
+                _context.SaveChanges();
+            }
+        }
+        private void CreateOutlets()
+        {
+            if (_context.Outlets.Count() == 0)
+            {
+                _context.Outlets.AddRange(new Outlet[] {
+                    new Outlet { TenantId = _tenantId, CustomerId = 1, Cn = "010102", Name = "工行分行营业部" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 1, Cn = "011001", Name = "工行大营支行" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "020101", Name = "农行分行营业部" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "023110", Name = "农行武大分理处" },
+                });
+                _context.SaveChanges();
+            }
+
+        }
+        private void CreateBoxes()
+        {
+            if (_context.Boxes.Count() == 0)
+            {
+                _context.Boxes.AddRange(new Box[] {
+                    new Box { TenantId = _tenantId, OutletId = 1, Cn = "01010202", Name = "2号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 1, Cn = "01010212", Name = "12号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 2, Cn = "01100101", Name = "1号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 2, Cn = "01100103", Name = "3号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 3, Cn = "02010105", Name = "5号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 3, Cn = "02010106", Name = "6号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 4, Cn = "02311015", Name = "15号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 4, Cn = "02311016", Name = "16号箱" },
+                });
+                _context.SaveChanges();
+            }
+
+        }
+
     }
 }

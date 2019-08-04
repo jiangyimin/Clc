@@ -12,8 +12,8 @@
 }
 .topbar .bar-left img {
     margin-left: 10px;
-    height: 48px;
-    width: 48px;
+    height: 46px;
+    width: 46px;
     display: inline-block;
     vertical-align: middle;
 }
@@ -26,7 +26,7 @@
 }
 .topbar .app-name {
     color: white; 
-    font-size: x-large; 
+    font-size: large; 
     font-weight: bold; 
     padding-left: 15px;
     display: inline-block;

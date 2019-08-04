@@ -14,7 +14,7 @@ namespace Clc.Authorization
             context.CreatePermission(PermissionNames.Pages_Setup, L("Setup"));
             context.CreatePermission(PermissionNames.Pages_Types, L("Types"));
             context.CreatePermission(PermissionNames.Pages_Fields, L("Fields"));
-            context.CreatePermission(PermissionNames.Pages_Customers, L("Customers"));
+            context.CreatePermission(PermissionNames.Pages_Clients, L("Clients"));
 
             // Hrm
             context.CreatePermission(PermissionNames.Pages_Hrm, L("Hrm"));
@@ -27,7 +27,8 @@ namespace Clc.Authorization
 
             // Captain
             context.CreatePermission(PermissionNames.Pages_PreArrange, L("PreArrange"));
-            context.CreatePermission(PermissionNames.Pages_TodayArrange, L("TodayArrang"));
+            context.CreatePermission(PermissionNames.Pages_Arrange, L("Arrang"));
+            context.CreatePermission(PermissionNames.Pages_Statistic, L("Statistic"));
             context.CreatePermission(PermissionNames.Pages_Aux, L("Aux"));
 
             // PlaceA

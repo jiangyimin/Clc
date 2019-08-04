@@ -9,8 +9,10 @@ namespace Clc.Fields.Dto
     public class DepotDto : EntityDto
     {
         [Required]
+        [StringLength(Depot.MaxCnLength)]
         public string Cn { get; set; }
         [Required]
+        [StringLength(Depot.MaxNameLength)]
         public string Name { get; set; }
 
         public double? Longitude { get; set; }
@@ -18,7 +20,10 @@ namespace Clc.Fields.Dto
         public double? Latitude { get; set; }
 
         public int? Radius { get; set; }
-        public string activeRouteNeedCheckin { get; set; }
-        public int? RelyDepotId { get; set; }
+        
+        public string ActiveRouteNeedCheckin { get; set; }
+        
+        [StringLength(Depot.MaxPasswordLength)]
+        public string UnlockScreenPassword { get; set; }
     }
 }

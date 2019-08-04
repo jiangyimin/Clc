@@ -12,16 +12,10 @@
         crud.dgDefault.columns = [[
             { field: "cn", title: "编号", width: 100, sortable: true },
             { field: "license", title: "车牌", width: 100 },
-            { field: "photo", title: "有否照片", width: 80, formatter: photoFormatter },
+            { field: "photoLength", title: "照片大小", width: 80 },
         ]];
         crud.parentField = 'depotId';
         crud.children = true;        
-
-        // formatters
-        function photoFormatter(val, row, index) {
-            if (row.photo.length > 0)
-                return '(有)'
-        }
     </script>
 }
 

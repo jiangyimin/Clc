@@ -5,7 +5,8 @@ using Clc.Authorization.Users;
 using Clc.MultiTenancy;
 using Clc.Types.Entities;
 using Clc.Fields.Entities;
-using Clc.Works;
+using Clc.Clients.Entities;
+using Clc.Works.Entities;
 
 namespace Clc.EntityFrameworkCore
 {
@@ -26,14 +27,16 @@ namespace Clc.EntityFrameworkCore
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Article> Articles { get; set; }
 
-        // Customers
-        // public DbSet<Customer> Customers { get; set; }
-        // public DbSet<Outlet> Outlets { get; set; }
+        // Clients
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Outlet> Outlets { get; set; }
+        public DbSet<Box> Boxes { get; set; }
 
         // Works
-        public DbSet<WarehouseTask> WarehouseTasks { get; set; }
-        public DbSet<WarehouseTaskEvent> WarehouseEvents { get; set; }
-        public DbSet<WarehouseTaskWorker> WarehouseTaskWorkers { get; set; }
+        public DbSet<Signin> Signins { get; set; }
+        public DbSet<Affair> Affairs { get; set; }
+        public DbSet<AffairEvent> AffairEvents { get; set; }
+        public DbSet<AffairWorker> AffairWorkers { get; set; }
 
         public ClcDbContext(DbContextOptions<ClcDbContext> options)
             : base(options)
@@ -70,8 +73,47 @@ namespace Clc.EntityFrameworkCore
                 b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
             });
             
-            modelBuilder.Entity<WarehouseTaskWorker>()
-                .HasOne(b=> b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
+            // Clients
+            modelBuilder.Entity<Customer>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
+            });
+
+            modelBuilder.Entity<Outlet>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
+            });
+
+            modelBuilder.Entity<Box>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
+            });
+
+            //
+            // DeleteBehavior
+            //
+            // Fields
+            modelBuilder.Entity<Workplace>()
+                .HasOne(b => b.Depot).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            // Customers
+            modelBuilder.Entity<Box>()
+                .HasOne(b => b.Outlet).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Outlet>()
+                .HasOne(b => b.Customer).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            // Works
+            modelBuilder.Entity<Signin>()
+                .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Affair>()
+                .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<AffairWorker>()
+                .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<AffairTask>()
+                .HasOne(b => b.Workplace).WithMany().OnDelete(DeleteBehavior.Restrict);                
+            modelBuilder.Entity<AffairTask>()
+                .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -1014,6 +1014,105 @@ namespace Clc.Migrations
                     b.ToTable("AbpUsers");
                 });
 
+            modelBuilder.Entity("Clc.Clients.Entities.Box", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Cn")
+                        .IsRequired()
+                        .HasMaxLength(10);
+
+                    b.Property<string>("Contact")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<int>("OutletId");
+
+                    b.Property<int>("TenantId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OutletId");
+
+                    b.HasIndex("TenantId", "Cn")
+                        .IsUnique();
+
+                    b.ToTable("Boxes");
+                });
+
+            modelBuilder.Entity("Clc.Clients.Entities.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Cn")
+                        .IsRequired()
+                        .HasMaxLength(4);
+
+                    b.Property<string>("Contact")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<int>("TenantId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "Cn")
+                        .IsUnique();
+
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("Clc.Clients.Entities.Outlet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Ciphertext")
+                        .HasMaxLength(6);
+
+                    b.Property<string>("Cn")
+                        .IsRequired()
+                        .HasMaxLength(6);
+
+                    b.Property<string>("Contact")
+                        .HasMaxLength(50);
+
+                    b.Property<int>("CustomerId");
+
+                    b.Property<double?>("Latitude");
+
+                    b.Property<double?>("Longitude");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Password")
+                        .HasMaxLength(6);
+
+                    b.Property<int>("TenantId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("TenantId", "Cn")
+                        .IsUnique();
+
+                    b.ToTable("Outlets");
+                });
+
             modelBuilder.Entity("Clc.Fields.Entities.Article", b =>
                 {
                     b.Property<int>("Id")
@@ -1058,6 +1157,8 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("ActiveRouteNeedCheckin");
+
                     b.Property<string>("Cn")
                         .IsRequired()
                         .HasMaxLength(2);
@@ -1072,15 +1173,12 @@ namespace Clc.Migrations
 
                     b.Property<int?>("Radius");
 
-                    b.Property<int?>("RelyDepotId");
-
                     b.Property<int>("TenantId");
 
-                    b.Property<bool>("activeRouteNeedCheckin");
+                    b.Property<string>("UnlockScreenPassword")
+                        .HasMaxLength(8);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RelyDepotId");
 
                     b.HasIndex("TenantId", "Cn")
                         .IsUnique();
@@ -1138,6 +1236,8 @@ namespace Clc.Migrations
 
                     b.Property<bool>("IsActive");
 
+                    b.Property<int?>("LoanDepotId");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(8);
@@ -1157,6 +1257,8 @@ namespace Clc.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DepotId");
+
+                    b.HasIndex("LoanDepotId");
 
                     b.HasIndex("PostId");
 
@@ -1185,6 +1287,9 @@ namespace Clc.Migrations
 
                     b.Property<string>("RoleUserName")
                         .HasMaxLength(64);
+
+                    b.Property<string>("ShareDepotList")
+                        .HasMaxLength(50);
 
                     b.Property<int>("TenantId");
 
@@ -1406,7 +1511,7 @@ namespace Clc.Migrations
                     b.ToTable("WorkRoles");
                 });
 
-            modelBuilder.Entity("Clc.Works.WarehouseTask", b =>
+            modelBuilder.Entity("Clc.Works.Entities.Affair", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1414,37 +1519,51 @@ namespace Clc.Migrations
 
                     b.Property<DateTime>("CarryoutDate");
 
+                    b.Property<DateTime>("CreateTime");
+
+                    b.Property<int>("CreateWorkerId");
+
                     b.Property<int>("DepotId");
 
-                    b.Property<DateTime>("EndTime");
+                    b.Property<string>("EndTime")
+                        .IsRequired()
+                        .HasMaxLength(5);
 
                     b.Property<string>("Remark")
                         .HasMaxLength(50);
 
-                    b.Property<DateTime>("StartTime");
+                    b.Property<string>("StartTime")
+                        .IsRequired()
+                        .HasMaxLength(5);
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(4);
+                        .HasMaxLength(2);
 
                     b.Property<int>("TenantId");
 
-                    b.Property<string>("WarehorseName")
-                        .IsRequired()
-                        .HasMaxLength(8);
+                    b.Property<int>("WorkplaceId");
+
+                    b.Property<bool>("isTomorrow");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreateWorkerId");
+
                     b.HasIndex("DepotId");
 
-                    b.ToTable("WarehouseTasks");
+                    b.HasIndex("WorkplaceId");
+
+                    b.ToTable("Affairs");
                 });
 
-            modelBuilder.Entity("Clc.Works.WarehouseTaskEvent", b =>
+            modelBuilder.Entity("Clc.Works.Entities.AffairEvent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AffairId");
 
                     b.Property<string>("Content")
                         .HasMaxLength(50);
@@ -1452,41 +1571,106 @@ namespace Clc.Migrations
                     b.Property<DateTime>("EventTime");
 
                     b.Property<string>("Issurer")
-                        .HasMaxLength(20);
-
-                    b.Property<string>("Name")
                         .HasMaxLength(50);
 
-                    b.Property<int>("WarehouseTaskId");
+                    b.Property<string>("Name")
+                        .HasMaxLength(10);
+
+                    b.Property<int>("TenantId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WarehouseTaskId");
+                    b.HasIndex("AffairId");
 
-                    b.ToTable("WarehouseEvents");
+                    b.ToTable("AffairEvents");
                 });
 
-            modelBuilder.Entity("Clc.Works.WarehouseTaskWorker", b =>
+            modelBuilder.Entity("Clc.Works.Entities.AffairTask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Checkin");
+                    b.Property<int>("AffairId");
 
-                    b.Property<DateTime?>("Checkout");
+                    b.Property<DateTime>("CreateTime");
 
-                    b.Property<int>("WarehouseTaskId");
+                    b.Property<int>("CreateWorkerId");
+
+                    b.Property<string>("EndTime")
+                        .IsRequired()
+                        .HasMaxLength(5);
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("StartTime")
+                        .IsRequired()
+                        .HasMaxLength(5);
+
+                    b.Property<int>("TenantId");
+
+                    b.Property<int>("WorkplaceId");
+
+                    b.Property<bool>("isTomorrow");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AffairId");
+
+                    b.HasIndex("CreateWorkerId");
+
+                    b.HasIndex("WorkplaceId");
+
+                    b.ToTable("AffairTask");
+                });
+
+            modelBuilder.Entity("Clc.Works.Entities.AffairWorker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AffairId");
+
+                    b.Property<int>("TenantId");
+
+                    b.Property<int>("WorkRoleId");
 
                     b.Property<int>("WorkerId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WarehouseTaskId");
+                    b.HasIndex("AffairId");
+
+                    b.HasIndex("WorkRoleId");
 
                     b.HasIndex("WorkerId");
 
-                    b.ToTable("WarehouseTaskWorkers");
+                    b.ToTable("AffairWorkers");
+                });
+
+            modelBuilder.Entity("Clc.Works.Entities.Signin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DepotId");
+
+                    b.Property<DateTime>("SigninTime");
+
+                    b.Property<int>("TenantId");
+
+                    b.Property<int>("WorkerId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepotId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("Signins");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>
@@ -1639,6 +1823,22 @@ namespace Clc.Migrations
                         .HasForeignKey("LastModifierUserId");
                 });
 
+            modelBuilder.Entity("Clc.Clients.Entities.Box", b =>
+                {
+                    b.HasOne("Clc.Clients.Entities.Outlet", "Outlet")
+                        .WithMany()
+                        .HasForeignKey("OutletId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Clc.Clients.Entities.Outlet", b =>
+                {
+                    b.HasOne("Clc.Clients.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("Clc.Fields.Entities.Article", b =>
                 {
                     b.HasOne("Clc.Types.Entities.ArticleType", "ArticleType")
@@ -1650,13 +1850,6 @@ namespace Clc.Migrations
                         .WithMany()
                         .HasForeignKey("DepotId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Clc.Fields.Entities.Depot", b =>
-                {
-                    b.HasOne("Clc.Fields.Entities.Depot", "RelyDepot")
-                        .WithMany()
-                        .HasForeignKey("RelyDepotId");
                 });
 
             modelBuilder.Entity("Clc.Fields.Entities.Vehicle", b =>
@@ -1674,6 +1867,10 @@ namespace Clc.Migrations
                         .HasForeignKey("DepotId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("Clc.Fields.Entities.Depot", "LoanDepot")
+                        .WithMany()
+                        .HasForeignKey("LoanDepotId");
+
                     b.HasOne("Clc.Types.Entities.Post", "Post")
                         .WithMany()
                         .HasForeignKey("PostId")
@@ -1690,7 +1887,7 @@ namespace Clc.Migrations
                     b.HasOne("Clc.Fields.Entities.Depot", "Depot")
                         .WithMany()
                         .HasForeignKey("DepotId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Clc.MultiTenancy.Tenant", b =>
@@ -1719,27 +1916,73 @@ namespace Clc.Migrations
                         .HasForeignKey("DefaultPostId");
                 });
 
-            modelBuilder.Entity("Clc.Works.WarehouseTask", b =>
+            modelBuilder.Entity("Clc.Works.Entities.Affair", b =>
                 {
+                    b.HasOne("Clc.Fields.Entities.Worker", "CreateWorker")
+                        .WithMany()
+                        .HasForeignKey("CreateWorkerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Clc.Fields.Entities.Depot", "Depot")
                         .WithMany()
                         .HasForeignKey("DepotId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
 
-            modelBuilder.Entity("Clc.Works.WarehouseTaskEvent", b =>
-                {
-                    b.HasOne("Clc.Works.WarehouseTask", "WarehouseTask")
+                    b.HasOne("Clc.Fields.Entities.Workplace", "Workplace")
                         .WithMany()
-                        .HasForeignKey("WarehouseTaskId")
+                        .HasForeignKey("WorkplaceId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Clc.Works.WarehouseTaskWorker", b =>
+            modelBuilder.Entity("Clc.Works.Entities.AffairEvent", b =>
                 {
-                    b.HasOne("Clc.Works.WarehouseTask", "WarehouseTask")
+                    b.HasOne("Clc.Works.Entities.Affair", "Affair")
                         .WithMany()
-                        .HasForeignKey("WarehouseTaskId")
+                        .HasForeignKey("AffairId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Clc.Works.Entities.AffairTask", b =>
+                {
+                    b.HasOne("Clc.Works.Entities.Affair", "Affair")
+                        .WithMany()
+                        .HasForeignKey("AffairId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clc.Fields.Entities.Worker", "CreateWorker")
+                        .WithMany()
+                        .HasForeignKey("CreateWorkerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Clc.Fields.Entities.Workplace", "Workplace")
+                        .WithMany()
+                        .HasForeignKey("WorkplaceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Clc.Works.Entities.AffairWorker", b =>
+                {
+                    b.HasOne("Clc.Works.Entities.Affair", "Affair")
+                        .WithMany()
+                        .HasForeignKey("AffairId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clc.Types.Entities.WorkRole", "WorkRole")
+                        .WithMany()
+                        .HasForeignKey("WorkRoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clc.Fields.Entities.Worker", "Worker")
+                        .WithMany()
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Clc.Works.Entities.Signin", b =>
+                {
+                    b.HasOne("Clc.Fields.Entities.Depot", "Depot")
+                        .WithMany()
+                        .HasForeignKey("DepotId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Clc.Fields.Entities.Worker", "Worker")

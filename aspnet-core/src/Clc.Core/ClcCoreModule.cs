@@ -11,6 +11,7 @@ using Clc.MultiTenancy;
 using Clc.Timing;
 using Clc.Types.Cache;
 using Clc.Fields.Cache;
+using Clc.Clients.Cache;
 
 namespace Clc
 {
@@ -62,6 +63,10 @@ namespace Clc
             IocManager.Register<IWorkerCache, WorkerCache>();
             IocManager.Register<IVehicleCache, VehicleCache>();
             IocManager.Register<IArticleCache, ArticleCache>();
+
+            // Cache for Clients
+            IocManager.Register<ICustomerCache, CustomerCache>();
+            IocManager.Register<IOutletCache, OutletCache>();
         }
 
         public override void PostInitialize()

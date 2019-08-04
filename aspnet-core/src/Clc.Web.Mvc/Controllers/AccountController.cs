@@ -27,7 +27,6 @@ using Clc.Identity;
 using Clc.MultiTenancy;
 using Clc.Sessions;
 using Clc.Web.Models.Account;
-using Clc.Web.Views.Shared.Components.TenantChange;
 using Clc.Fields;
 using Clc.Configuration;
 
@@ -403,19 +402,6 @@ namespace Clc.Web.Controllers
         public string GetAppHomeUrl()
         {
             return Url.Action("Index", "Home");
-        }
-
-        #endregion
-
-        #region Change Tenant
-
-        public async Task<ActionResult> TenantChangeModal()
-        {
-            var loginInfo = await _sessionAppService.GetCurrentLoginInformations();
-            return View("/Views/Shared/Components/TenantChange/_ChangeModal.cshtml", new ChangeModalViewModel
-            {
-                TenancyName = loginInfo.Tenant?.TenancyName
-            });
         }
 
         #endregion

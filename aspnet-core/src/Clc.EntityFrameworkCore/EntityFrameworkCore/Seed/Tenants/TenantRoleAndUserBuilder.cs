@@ -26,7 +26,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
         {
             // Admin RoleAndUser
             string[] permissions = new string[] {
-                PermissionNames.Pages_Setup, PermissionNames.Pages_Types, PermissionNames.Pages_Fields, PermissionNames.Pages_Customers
+                PermissionNames.Pages_Setup, PermissionNames.Pages_Types, PermissionNames.Pages_Fields, PermissionNames.Pages_Clients
             };
             CreateRoleAndUser(StaticRoleNames.Tenants.Admin, permissions, AbpUserBase.AdminUserName, User.DefaultPassword);
 
@@ -57,7 +57,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             
             // Captain
             permissions = new string[] { 
-                PermissionNames.Pages_PreArrange, PermissionNames.Pages_TodayArrange, PermissionNames.Pages_Aux
+                PermissionNames.Pages_PreArrange, PermissionNames.Pages_Arrange, PermissionNames.Pages_Statistic, PermissionNames.Pages_Aux
             };
             CreateRoleAndUser(StaticRoleNames.Tenants.Captain, permissions, StaticRoleNames.Tenants.Captain, User.RoleUserPassword);
 

@@ -16,24 +16,8 @@
             { field: "longitude", title: "经度", width: 120 },
             { field: "latitude", title: "纬度", width: 120 },
             { field: "activeRouteNeedCheckin", title: "激活线路先签到", width: 100 },
-            { field: "relyDepotId", title: "依赖于", width: 80, formatter: relyDepotFormatter }
+            { field: "unlockScreenPassword", title: "解屏密码", width: 100 },
         ]];
-
-        // formatters
-        function relyDepotFormatter (val) {
-            return crud.getComboTextByInt('#relyDepot', val);
-        }
-    </script>
-}
-
-@section endScript
-{
-    <script type="text/javascript">
-        crud.startfunction = function () {
-            abp.services.app.field.getComboItems('Depot').done(function(d) {
-                crud.setComboBox('#relyDepot', d);
-            });
-        };
     </script>
 }
 
@@ -66,9 +50,9 @@
                 <td><input name="activeRouteNeedCheckin" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
                 </td>
             </tr>
-            <tr>
-                <th><label for="relyDepotId">依赖于：</label></th>
-                <td><input id="relyDepot" name="relyDepotId" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+                <th><label for="unlockScreenPassword">名称：</label></th>
+                <td><input name="unlockScreenPassword" class="easyui-textbox" data-options="required:true, validType:'length[2, @Depot.MaxPasswordLength]'" style="width: 100%"></td>
             </tr>
         </table>
     </form>

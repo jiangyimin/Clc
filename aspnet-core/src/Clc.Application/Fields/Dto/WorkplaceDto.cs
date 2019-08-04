@@ -31,6 +31,12 @@ namespace Clc.Fields.Dto
         public string ArticleTypeList { get; set; }
 
         /// <summary>
+        /// 共享运行中心列表
+        /// </summary>
+        [StringLength(Workplace.ShareDepotListLength)]
+        public string ShareDepotList { get; set; }
+
+        /// <summary>
         /// 角色用户名
         /// </summary>
         [StringLength(User.MaxNameLength)]

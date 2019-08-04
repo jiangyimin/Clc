@@ -12,6 +12,9 @@ namespace Clc.Fields.Entities
     {        
         public const int MaxCnLength = 2;
         public const int MaxNameLength = 8;
+        public const int MaxPasswordLength = 8;
+
+
         // Impement of IMustHaveTenant
         public int TenantId { get; set; }
 
@@ -47,14 +50,10 @@ namespace Clc.Fields.Entities
         /// <summary>
         /// 激活线路是否需要全部签到
         /// </summary>
-        public bool activeRouteNeedCheckin { get; set; }
+        public bool ActiveRouteNeedCheckin { get; set; }
 
-        /// <summary>
-        /// 利用其它运行中心的库
-        /// </summary>
-        public int? RelyDepotId { get; set; }
-        public Depot RelyDepot { get; set; }
-
+        [StringLength(MaxPasswordLength)]
+        public string UnlockScreenPassword { get; set; }
     }
 }
 
