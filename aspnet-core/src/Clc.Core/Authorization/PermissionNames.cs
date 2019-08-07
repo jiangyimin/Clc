@@ -20,7 +20,7 @@
         public const string Pages_Query = "Pages.Query";                // Query-各类业务数据查询
 
         // PlaceC (中央的远程门禁控制)
-        public const string Pages_PlaceC = "Pages.PlaceC";              // 含线路、物品、箱总监控
+        public const string Pages_Monitor = "Pages.Monitor";              // 含线路、物品、箱总监控
 
         // 上面是总部权限（对应菜单夹），下面的是分部权限（对应菜单夹）
         // Captain 的菜单夹
@@ -30,9 +30,9 @@
         public const string Pages_Aux = "Page.Aux";                     // Captian（Aux）-辅助(含监看线路、物和箱)
 
         // PlaceA(物）的菜单夹
-        public const string Pages_PlaceA = "Pages.PlaceA";              // 含查物
+        public const string Pages_Article = "Pages.Article";            // 含查物
 
         // PlaceB(箱）的菜单夹
-        public const string Pages_PlaceB = "Pages.PlaceB";              // 含查箱
+        public const string Pages_Box = "Pages.Box";                    // 含查箱
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clc.Migrations
 {
     [DbContext(typeof(ClcDbContext))]
-    [Migration("20190804012743_clc")]
+    [Migration("20190807033836_clc")]
     partial class clc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -883,6 +883,8 @@ namespace Clc.Migrations
 
                     b.Property<bool>("IsStatic");
 
+                    b.Property<bool>("IsWorkerRole");
+
                     b.Property<DateTime?>("LastModificationTime");
 
                     b.Property<long?>("LastModifierUserId");
@@ -896,12 +898,6 @@ namespace Clc.Migrations
                         .HasMaxLength(32);
 
                     b.Property<int?>("TenantId");
-
-                    b.Property<string>("TwinUserName")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("TwinUserPassword")
-                        .HasMaxLength(32);
 
                     b.HasKey("Id");
 
@@ -1001,6 +997,8 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(256);
 
+                    b.Property<int?>("WorkerId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorUserId");
@@ -1008,6 +1006,8 @@ namespace Clc.Migrations
                     b.HasIndex("DeleterUserId");
 
                     b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("WorkerId");
 
                     b.HasIndex("TenantId", "NormalizedEmailAddress");
 
@@ -1287,9 +1287,6 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(8);
 
-                    b.Property<string>("RoleUserName")
-                        .HasMaxLength(64);
-
                     b.Property<string>("ShareDepotList")
                         .HasMaxLength(50);
 
@@ -1426,6 +1423,9 @@ namespace Clc.Migrations
 
                     b.Property<int>("TenantId");
 
+                    b.Property<string>("WorkerRoleName")
+                        .HasMaxLength(32);
+
                     b.HasKey("Id");
 
                     b.ToTable("Posts");
@@ -1531,6 +1531,8 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(5);
 
+                    b.Property<bool>("IsTomorrow");
+
                     b.Property<string>("Remark")
                         .HasMaxLength(50);
 
@@ -1545,8 +1547,6 @@ namespace Clc.Migrations
                     b.Property<int>("TenantId");
 
                     b.Property<int>("WorkplaceId");
-
-                    b.Property<bool>("isTomorrow");
 
                     b.HasKey("Id");
 
@@ -1567,8 +1567,8 @@ namespace Clc.Migrations
 
                     b.Property<int>("AffairId");
 
-                    b.Property<string>("Content")
-                        .HasMaxLength(50);
+                    b.Property<string>("Description")
+                        .HasMaxLength(500);
 
                     b.Property<DateTime>("EventTime");
 
@@ -1603,6 +1603,8 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(5);
 
+                    b.Property<bool>("IsTomorrow");
+
                     b.Property<string>("Remark")
                         .HasMaxLength(50);
 
@@ -1613,8 +1615,6 @@ namespace Clc.Migrations
                     b.Property<int>("TenantId");
 
                     b.Property<int>("WorkplaceId");
-
-                    b.Property<bool>("isTomorrow");
 
                     b.HasKey("Id");
 
@@ -1823,6 +1823,10 @@ namespace Clc.Migrations
                     b.HasOne("Clc.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
+
+                    b.HasOne("Clc.Fields.Entities.Worker", "Worker")
+                        .WithMany()
+                        .HasForeignKey("WorkerId");
                 });
 
             modelBuilder.Entity("Clc.Clients.Entities.Box", b =>

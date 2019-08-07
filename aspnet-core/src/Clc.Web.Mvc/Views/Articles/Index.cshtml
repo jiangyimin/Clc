@@ -54,7 +54,7 @@
 
         crud.endfunction = function () {
             var title = abp.setting.get('VI.DepotTitleName');
-            $('#cc').layout('panel', 'west').panel('setTitle', title);
+            $('#cc').layout('panel', 'west').panel({title:title});
         };
     </script>
 }

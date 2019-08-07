@@ -27,8 +27,7 @@ using Clc.Identity;
 using Clc.MultiTenancy;
 using Clc.Sessions;
 using Clc.Web.Models.Account;
-using Clc.Fields;
-using Clc.Configuration;
+using Clc.Runtime.Cache;
 
 namespace Clc.Web.Controllers
 {
@@ -45,7 +44,7 @@ namespace Clc.Web.Controllers
         private readonly ISessionAppService _sessionAppService;
         private readonly ITenantCache _tenantCache;
         private readonly INotificationPublisher _notificationPublisher;
-        private readonly FieldProvider _fieldProvider;
+        private readonly IWorkerCache _workerCache;
 
         public AccountController(
             UserManager userManager,
@@ -59,7 +58,7 @@ namespace Clc.Web.Controllers
             ISessionAppService sessionAppService,
             ITenantCache tenantCache,
             INotificationPublisher notificationPublisher,
-            FieldProvider fieldProvider)
+            IWorkerCache workerCache)
         {
             _userManager = userManager;
             _multiTenancyConfig = multiTenancyConfig;
@@ -72,7 +71,7 @@ namespace Clc.Web.Controllers
             _sessionAppService = sessionAppService;
             _tenantCache = tenantCache;
             _notificationPublisher = notificationPublisher;
-            _fieldProvider = fieldProvider;
+            _workerCache = workerCache;
         }
 
         #region Login / Logout
@@ -123,30 +122,20 @@ namespace Clc.Web.Controllers
             var loginResult = await _logInManager.LoginAsync(usernameOrEmailAddress, password, tenancyName);
             
             if (loginResult.Result != AbpLoginResultType.Success)
-           {   
+            {   
                 // Lookup Workers
-                var worker = _fieldProvider.GetWorkerByCn(usernameOrEmailAddress);
-                if (worker == null || worker.IsActive == false || worker.Password != password)
+                var item = _workerCache.GetList().FirstOrDefault(x=> x.Cn == usernameOrEmailAddress);
+                if (item == null)       // 无此人
                     throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
-                
-                // get RoleUserName. ex worker.defaultRoleUserName.
+
+                var worker = _workerCache[item.Id];
+                if (worker.Password != password)     // 密码错
+                    throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
+
+                // TODO:  Worker must is duty (in Affair)
                 if (worker.IsActive == true)
                 {
-                    var roleUserPassword = SettingManager.GetSettingValue(AppSettingNames.Const.RoleUserPassword);
-                    loginResult = await _logInManager.LoginAsync("captain", roleUserPassword, tenancyName);
-                    if (loginResult.Result == AbpLoginResultType.Success) 
-                    {
-                        loginResult.Identity.AddClaim(new Claim("CN", worker.Cn));
-                        loginResult.Identity.AddClaim(new Claim("NAME", worker.Name));
-                        loginResult.Identity.AddClaim(new Claim("DEPOTID", worker.DepotId.ToString()));
-                        loginResult.Identity.AddClaim(new Claim("DEPOTNAME", _fieldProvider.GetDepotNameById(worker.DepotId)));
-                    }
-                    else
-                        throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
-                }
-                else 
-                {
-
+                    loginResult = await _logInManager.LoginAsync("Worker" + usernameOrEmailAddress, Clc.Authorization.Users.User.WorkerUserDefaultPassword, tenancyName);
                 }
             }
 

@@ -35,8 +35,9 @@ namespace Clc.EntityFrameworkCore
         // Works
         public DbSet<Signin> Signins { get; set; }
         public DbSet<Affair> Affairs { get; set; }
-        public DbSet<AffairEvent> AffairEvents { get; set; }
         public DbSet<AffairWorker> AffairWorkers { get; set; }
+        public DbSet<AffairTask> AffairTasks { get; set; }
+        public DbSet<AffairEvent> AffairEvents { get; set; }
 
         public ClcDbContext(DbContextOptions<ClcDbContext> options)
             : base(options)

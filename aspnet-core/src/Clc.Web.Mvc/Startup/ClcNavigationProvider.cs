@@ -14,8 +14,8 @@ namespace Clc.Web.Startup
     {
         public override void SetNavigation(INavigationProviderContext context)
         {
-            ISettingManager settingManager =  IocManager.Instance.Resolve<ISettingManager>();
-            string title = settingManager.GetSettingValue(AppSettingNames.VI.DepotTitleName);
+            //ISettingManager settingManager =  IocManager.Instance.Resolve<ISettingManager>();
+            //string title = settingManager.GetSettingValue(AppSettingNames.VI.DepotTitleName);
 
             context.Manager.MainMenu
                 // Host
@@ -27,6 +27,7 @@ namespace Clc.Web.Startup
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Setup, new FixedLocalizableString("配置"), icon: "fa fa-globe", requiredPermissionName: PermissionNames.Pages_Setup)
                     .AddItem(new MenuItemDefinition("Admin_Settings", new FixedLocalizableString("全局设置"), url: "TenantSettings"))
                     .AddItem(new MenuItemDefinition("Admin_Users", new FixedLocalizableString("用户"), url: "Users"))
+                    .AddItem(new MenuItemDefinition("Admin_WorkerUsers", new FixedLocalizableString("工作人员用户"), url: "WorkerUsers"))
                 // Types
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Types, new FixedLocalizableString("类型设置"), icon: "fa fa-list", requiredPermissionName: PermissionNames.Pages_Types)
                     .AddItem(new MenuItemDefinition("Type_AffairTypes", new FixedLocalizableString("内务类型"), url: "AffairTypes"))
@@ -37,7 +38,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Type_WorkRoles", new FixedLocalizableString("工作角色"), url: "WorkRoles"))
                // Fields
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Fields, new FixedLocalizableString("场地及资源"), icon: "fa fa-globe", requiredPermissionName: PermissionNames.Pages_Fields)
-                    .AddItem(new MenuItemDefinition("Field_Depots", new FixedLocalizableString(title), url: "Depots"))
+                    .AddItem(new MenuItemDefinition("Field_Depots", new FixedLocalizableString("运行场地"), url: "Depots"))
                     .AddItem(new MenuItemDefinition("Field_Workplaces", new FixedLocalizableString("内务地点"), url: "Workplaces"))
                     .AddItem(new MenuItemDefinition("Field_Workers", new FixedLocalizableString("工作人员"), url: "Workers"))
                     .AddItem(new MenuItemDefinition("Field_Vehicles", new FixedLocalizableString("车辆"), url: "Vehicles"))
@@ -60,7 +61,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Keeper_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Keeper/ArticleRecords"))
                     .AddItem(new MenuItemDefinition("Dispatcher_DaySettlesQuery", new FixedLocalizableString("日结查询"), url: "DaySettles/DaySettlesQuery"))
                // PlaceC
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_PlaceC, new FixedLocalizableString("中心监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_PlaceC)
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("中心监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
  
                 // PreArrange
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_PreArrange, new FixedLocalizableString("预排"), icon: "fa fa-list", requiredPermissionName: PermissionNames.Pages_PreArrange)
@@ -88,13 +89,13 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Dispatcher_RouteTasksQuery", new FixedLocalizableString("线路任务查询"), url: "Routes/RouteTasksQuery"))
 
                 // PlaceA
-                ).AddItem(new MenuItemDefinition("KeeperPages_Inquire", new FixedLocalizableString("库房查询"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_PlaceA)
+                ).AddItem(new MenuItemDefinition("KeeperPages_Inquire", new FixedLocalizableString("库房查询"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Article)
                     .AddItem(new MenuItemDefinition("Keeper_WhAffairsCheck", new FixedLocalizableString("库房人员自签"), url: "Keeper/WhAffairsCheck"))
                     .AddItem(new MenuItemDefinition("Keeper_Articles", new FixedLocalizableString("物品清单"), url: "Keeper/Index"))
                     .AddItem(new MenuItemDefinition("Keeper_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Keeper/ArticleRecords"))
                 
                 // PlaceB
-                ).AddItem(new MenuItemDefinition("KeeperPages_Operate", new FixedLocalizableString("库房操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_PlaceB)
+                ).AddItem(new MenuItemDefinition("KeeperPages_Operate", new FixedLocalizableString("库房操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Box)
                     .AddItem(new MenuItemDefinition("Keeper_VtAffairsCheck", new FixedLocalizableString("金库人员核实"), url: "Keeper/VtAffairsCheck"))
                     .AddItem(new MenuItemDefinition("Keeper_RoutesArticle", new FixedLocalizableString("押运任务处理"), url: "Keeper/RoutesArticle"))
                 );

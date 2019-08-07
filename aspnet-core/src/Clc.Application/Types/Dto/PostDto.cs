@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using Clc.Authorization.Roles;
 using Clc.Types.Entities;
 
 namespace Clc.Types.Dto
@@ -16,5 +17,7 @@ namespace Clc.Types.Dto
         [StringLength(Post.MaxNameLength)]
         public string Name { get; set; }       
 
+        [StringLength(Role.MaxNameLength)]
+        public string WorkerRoleName { get; set; }
     }
 }

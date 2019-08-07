@@ -13,9 +13,7 @@
 
         public static class Const
         {
-            public const string UserDefaultPassword = "Const.UserDefaultPassword";
-            public const string RoleUserPassword = "Const.RoleUserPassword";
-            public const string IdentifyEmergencyPassword = "Const.IdentifyEmergencyPassword";
+           public const string IdentifyEmergencyPassword = "Const.IdentifyEmergencyPassword";
         }
         public static class Rule
         {

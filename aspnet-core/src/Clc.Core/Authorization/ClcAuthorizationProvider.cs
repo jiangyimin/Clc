@@ -23,18 +23,18 @@ namespace Clc.Authorization
             // Qurey
             context.CreatePermission(PermissionNames.Pages_Query, L("Query"));
             // PlaceC
-            context.CreatePermission(PermissionNames.Pages_PlaceC, L("PlaceC"));
+            context.CreatePermission(PermissionNames.Pages_Monitor, L("Monitor"));
 
             // Captain
             context.CreatePermission(PermissionNames.Pages_PreArrange, L("PreArrange"));
-            context.CreatePermission(PermissionNames.Pages_Arrange, L("Arrang"));
+            context.CreatePermission(PermissionNames.Pages_Arrange, L("Arrange"));
             context.CreatePermission(PermissionNames.Pages_Statistic, L("Statistic"));
             context.CreatePermission(PermissionNames.Pages_Aux, L("Aux"));
 
             // PlaceA
-            context.CreatePermission(PermissionNames.Pages_PlaceA, L("PlaceA"));
+            context.CreatePermission(PermissionNames.Pages_Article, L("Article"));
             // PlaceB
-            context.CreatePermission(PermissionNames.Pages_PlaceB, L("PlaceB"));
+            context.CreatePermission(PermissionNames.Pages_Box, L("Box"));
         }
 
         private static ILocalizableString L(string name)

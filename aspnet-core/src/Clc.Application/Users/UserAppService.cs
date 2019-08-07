@@ -18,7 +18,8 @@ using Clc.Authorization.Roles;
 using Clc.Authorization.Users;
 using Clc.Roles.Dto;
 using Clc.Users.Dto;
-using Clc.Configuration;
+using Clc.Runtime.Cache;
+using Clc.Fields.Entities;
 
 namespace Clc.Users
 {
@@ -29,19 +30,25 @@ namespace Clc.Users
         private readonly RoleManager _roleManager;
         private readonly IRepository<Role> _roleRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IWorkerCache  _workerCache;
+        private readonly IPostCache _postCache;
 
         public UserAppService(
             IRepository<User, long> repository,
             UserManager userManager,
             RoleManager roleManager,
             IRepository<Role> roleRepository,
-            IPasswordHasher<User> passwordHasher)
+            IPasswordHasher<User> passwordHasher,
+            IWorkerCache workerCache,
+            IPostCache postCache)
             : base(repository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _roleRepository = roleRepository;
             _passwordHasher = passwordHasher;
+            _workerCache = workerCache;
+            _postCache = postCache;
         }
 
         public override async Task<UserDto> Create(CreateUserDto input)
@@ -91,9 +98,10 @@ namespace Clc.Users
             await _userManager.DeleteAsync(user);
         }
 
-        public async Task<ListResultDto<RoleDto>> GetRoles()
+        public async Task<ListResultDto<RoleDto>> GetRoles(bool isWorkerRole)
         {
             var roles = await _roleRepository.GetAllListAsync();
+            roles = roles.Where(x => x.IsWorkerRole == isWorkerRole).ToList();
             return new ListResultDto<RoleDto>(ObjectMapper.Map<List<RoleDto>>(roles));
         }
 
@@ -106,13 +114,41 @@ namespace Clc.Users
             );
         }
 
-        public async Task ResetRoleUserPassword(string userName)
+        public async Task UpdateWorkerUsers()
         {
-            var user = await _userManager.FindByNameAsync(userName);
-            if (user != null)
+            var users = await Repository.GetAllListAsync();
+            foreach (WorkerListItem worker in _workerCache.GetList())
             {
-                var roleUserPassword = await SettingManager.GetSettingValueAsync(AppSettingNames.Const.RoleUserPassword);
-                CheckErrors(await _userManager.ChangePasswordAsync(user, roleUserPassword));
+                string roleName = _postCache[worker.PostId].WorkerRoleName;
+               
+                if (!string.IsNullOrWhiteSpace(roleName))
+                {
+                    // Skip unexisted role
+                    try 
+                    {
+                        await _roleManager.GetRoleByNameAsync(roleName);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    // User
+                    string userName = "Worker" + worker.Cn;
+                    var user = users.FirstOrDefault(x => x.UserName == userName);
+                    if (user == null)
+                    {
+                        // Add WorkerUser
+                        var newUser = User.CreateUser(AbpSession.TenantId??0, userName, User.WorkerUserDefaultPassword);
+                        newUser.WorkerId = worker.Id;
+                        CheckErrors(await _userManager.CreateAsync(newUser));
+                        CheckErrors(await _userManager.AddToRoleAsync(newUser, roleName));                      
+                    }
+                    else 
+                    {
+                        CheckErrors(await _userManager.ChangePasswordAsync(user, User.WorkerUserDefaultPassword));
+                    }
+                }
             }
         }
 
@@ -141,6 +177,8 @@ namespace Clc.Users
         {
             return Repository.GetAllIncluding(x => x.Roles)
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.UserName.Contains(input.Keyword) || x.Name.Contains(input.Keyword))
+                .WhereIf(input.IsWorker, x => x.WorkerId.HasValue == true )
+                .WhereIf(!input.IsWorker, x => x.WorkerId.HasValue == false )
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive)
                 .WhereIf(input.From.HasValue, x => x.CreationTime >= input.From.Value.LocalDateTime)
                 .WhereIf(input.To.HasValue, x => x.CreationTime <= input.To.Value.LocalDateTime);

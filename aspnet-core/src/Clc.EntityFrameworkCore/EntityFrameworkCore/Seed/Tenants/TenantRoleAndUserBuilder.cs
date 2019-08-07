@@ -1,8 +1,5 @@
 ﻿using System.Linq;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Abp.Authorization.Roles;
 using Abp.Authorization.Users;
 using Clc.Authorization;
@@ -28,54 +25,60 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             string[] permissions = new string[] {
                 PermissionNames.Pages_Setup, PermissionNames.Pages_Types, PermissionNames.Pages_Fields, PermissionNames.Pages_Clients
             };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Admin, permissions, AbpUserBase.AdminUserName, User.DefaultPassword);
+            CreateRoleAndUser(StaticRoleNames.Tenants.Admin, permissions, false, AbpUserBase.AdminUserName, User.DefaultPassword);
 
             // Hrm RoleAndUser
             permissions = new string[] { PermissionNames.Pages_Hrm };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Hrm, permissions, StaticRoleNames.Tenants.Hrm, User.UserDefaultPassword);
+            CreateRoleAndUser(StaticRoleNames.Tenants.Hrm, permissions, false, StaticRoleNames.Tenants.Hrm, User.UserDefaultPassword);
 
             // Hrq RoleAndUser
             permissions = new string[] { PermissionNames.Pages_Hrq };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Hrq, permissions, StaticRoleNames.Tenants.Hrq, User.UserDefaultPassword);
+            CreateRoleAndUser(StaticRoleNames.Tenants.Hrq, permissions, false, StaticRoleNames.Tenants.Hrq, User.UserDefaultPassword);
 
             // Query RoleAndUser
             permissions = new string[] { PermissionNames.Pages_Query };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Query, permissions, StaticRoleNames.Tenants.Query, User.UserDefaultPassword);
+            CreateRoleAndUser(StaticRoleNames.Tenants.Query, permissions, false, StaticRoleNames.Tenants.Query, User.UserDefaultPassword);
 
-            // PlaceC RoleAndUser
-            permissions = new string[] { PermissionNames.Pages_PlaceC };
-            CreateRoleAndUser(StaticRoleNames.Tenants.PlaceC, permissions, StaticRoleNames.Tenants.PlaceC, User.RoleUserPassword);
-
-            // 分部角色
-            // PlaceA
-            permissions = new string[] { PermissionNames.Pages_PlaceA };
-            CreateRoleAndUser(StaticRoleNames.Tenants.PlaceA, permissions, StaticRoleNames.Tenants.PlaceA, User.RoleUserPassword);
-
-            // PlaceB
-            permissions = new string[] { PermissionNames.Pages_PlaceB };
-            CreateRoleAndUser(StaticRoleNames.Tenants.PlaceB, permissions, StaticRoleNames.Tenants.PlaceB, User.RoleUserPassword);
-            
+            //
+            // Worker Roles
+            //
             // Captain
             permissions = new string[] { 
                 PermissionNames.Pages_PreArrange, PermissionNames.Pages_Arrange, PermissionNames.Pages_Statistic, PermissionNames.Pages_Aux
             };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Captain, permissions, StaticRoleNames.Tenants.Captain, User.RoleUserPassword);
+
+            CreateRole(StaticRoleNames.Tenants.Captain, permissions, true);
 
             // Aux
             permissions = new string[] { PermissionNames.Pages_Aux };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Aux, permissions, StaticRoleNames.Tenants.Aux, User.RoleUserPassword);
+            CreateRole(StaticRoleNames.Tenants.Aux, permissions, true);
+            // Monitor 
+            permissions = new string[] { PermissionNames.Pages_Monitor };
+            CreateRole(StaticRoleNames.Tenants.Monitor, permissions, true);
+
+            // Article
+            permissions = new string[] { PermissionNames.Pages_Article };
+            CreateRole(StaticRoleNames.Tenants.Article, permissions, true);
+
+            // Box
+            permissions = new string[] { PermissionNames.Pages_Box };
+            CreateRole(StaticRoleNames.Tenants.Box, permissions, true);
+
+            // ArticleAndBox
+            permissions = new string[] { PermissionNames.Pages_Article, PermissionNames.Pages_Box };
+            CreateRole(StaticRoleNames.Tenants.ArticleAndBox, permissions, true);           
         }
 
-        private void CreateRoleAndUser(string roleName, string[] permissions, string userName, string password)
+        private void CreateRoleAndUser(string roleName, string[] permissions, bool isWorkerRole, string userName, string password)
         {
-            var role = CreateRole(roleName, permissions);
+            var role = CreateRole(roleName, permissions, isWorkerRole);
             if (role == null) 
                 return;
             // user
             var user = _context.Users.IgnoreQueryFilters().FirstOrDefault(u => u.TenantId == _tenantId && u.UserName == userName);
             if (user == null)
             {
-                user = CreateUser(_tenantId, userName, password);
+                user = User.CreateUser(_tenantId, userName, password);
                 _context.Users.Add(user);
                 _context.SaveChanges();
 
@@ -85,13 +88,13 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             }
         }
 
-        private Role CreateRole(string name, string[] permissions)
+        private Role CreateRole(string name, string[] permissions, bool isWorkerRole)
         {
             // role
             var role = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == name);
             if (role == null)
             {
-                role = _context.Roles.Add(new Role(_tenantId, name, name) { IsStatic = true }).Entity;
+                role = _context.Roles.Add(new Role(_tenantId, name, name) { IsStatic = true, IsWorkerRole = isWorkerRole }).Entity;
                 _context.SaveChanges();
 
                 // Grant permission to role
@@ -101,32 +104,13 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                         TenantId = _tenantId, 
                         Name = permission, 
                         IsGranted = true, 
-                        RoleId = role.Id 
+                        RoleId = role.Id
                     })
                 );
                 _context.SaveChanges();
             }
              
             return role;
-        }
-
-        private User CreateUser(int tenantId, string name, string password)
-        {
-            var user = new User
-            {
-                TenantId = _tenantId,
-                UserName = name,
-                Name = name,
-                Surname = name,
-                EmailAddress = name + ClcConsts.UserEmailServerName,
-                Roles = new List<UserRole>()
-            };
-
-            user.SetNormalizedNames();
-            user.Password = new PasswordHasher<User>(new OptionsWrapper<PasswordHasherOptions>(new PasswordHasherOptions())).HashPassword(user, password);
-            user.IsEmailConfirmed = true;
-            user.IsActive = true;
-            return user;
         }
     }
 }

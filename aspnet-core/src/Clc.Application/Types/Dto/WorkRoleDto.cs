@@ -17,7 +17,7 @@ namespace Clc.Types.Dto
         [Required]
         [StringLength(WorkRole.MaxNameLength)]
         public string Name { get; set; } 
-
+        
         public int? DefaultPostId { get; set; }
 
         [StringLength(WorkRole.MaxDutiesLength)]

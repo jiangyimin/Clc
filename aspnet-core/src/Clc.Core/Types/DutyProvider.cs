@@ -1,8 +1,5 @@
 using System.Collections.Generic;
 using Abp.Dependency;
-using Abp.Runtime.Caching;
-using Clc.Types.Cache;
-using Clc.Types.Entities;
 
 namespace Clc.Types
 {

@@ -50,19 +50,6 @@ namespace Clc.Configuration
             return new List<SettingDefinition>
             {
                 new SettingDefinition(
-                    AppSettingNames.Const.UserDefaultPassword, 
-                    User.UserDefaultPassword, 
-                    new FixedLocalizableString("用户缺省密码"),
-                    scopes: SettingScopes.Tenant,
-                    isVisibleToClients: true
-                ),
-                new SettingDefinition(
-                    AppSettingNames.Const.RoleUserPassword, 
-                    User.RoleUserPassword, 
-                    new FixedLocalizableString("角色用户缺省密码"),
-                    scopes: SettingScopes.Tenant
-                ),
-                new SettingDefinition(
                     AppSettingNames.Const.IdentifyEmergencyPassword, 
                     User.UserDefaultPassword, 
                     new FixedLocalizableString("身份确认紧急密码"),

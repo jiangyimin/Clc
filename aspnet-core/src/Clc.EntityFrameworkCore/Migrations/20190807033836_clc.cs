@@ -8,17 +8,16 @@ namespace Clc.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "TwinUserName",
-                table: "AbpRoles",
-                maxLength: 256,
+            migrationBuilder.AddColumn<int>(
+                name: "WorkerId",
+                table: "AbpUsers",
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "TwinUserPassword",
+            migrationBuilder.AddColumn<bool>(
+                name: "IsWorkerRole",
                 table: "AbpRoles",
-                maxLength: 32,
-                nullable: true);
+                nullable: false,
+                defaultValue: false);
 
             migrationBuilder.CreateTable(
                 name: "AffairTypes",
@@ -99,7 +98,8 @@ namespace Clc.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
                     Cn = table.Column<string>(maxLength: 2, nullable: false),
-                    Name = table.Column<string>(maxLength: 8, nullable: false)
+                    Name = table.Column<string>(maxLength: 8, nullable: false),
+                    WorkerRoleName = table.Column<string>(maxLength: 32, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -232,8 +232,7 @@ namespace Clc.Migrations
                     Name = table.Column<string>(maxLength: 8, nullable: false),
                     AffairTypeId = table.Column<int>(nullable: false),
                     ArticleTypeList = table.Column<string>(maxLength: 50, nullable: true),
-                    ShareDepotList = table.Column<string>(maxLength: 50, nullable: true),
-                    RoleUserName = table.Column<string>(maxLength: 64, nullable: true)
+                    ShareDepotList = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -355,7 +354,7 @@ namespace Clc.Migrations
                     Status = table.Column<string>(maxLength: 2, nullable: false),
                     StartTime = table.Column<string>(maxLength: 5, nullable: false),
                     EndTime = table.Column<string>(maxLength: 5, nullable: false),
-                    isTomorrow = table.Column<bool>(nullable: false),
+                    IsTomorrow = table.Column<bool>(nullable: false),
                     Remark = table.Column<string>(maxLength: 50, nullable: true),
                     CreateWorkerId = table.Column<int>(nullable: false),
                     CreateTime = table.Column<DateTime>(nullable: false)
@@ -421,7 +420,7 @@ namespace Clc.Migrations
                     AffairId = table.Column<int>(nullable: false),
                     EventTime = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(maxLength: 10, nullable: true),
-                    Content = table.Column<string>(maxLength: 50, nullable: true),
+                    Description = table.Column<string>(maxLength: 500, nullable: true),
                     Issurer = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -446,7 +445,7 @@ namespace Clc.Migrations
                     WorkplaceId = table.Column<int>(nullable: false),
                     StartTime = table.Column<string>(maxLength: 5, nullable: false),
                     EndTime = table.Column<string>(maxLength: 5, nullable: false),
-                    isTomorrow = table.Column<bool>(nullable: false),
+                    IsTomorrow = table.Column<bool>(nullable: false),
                     Remark = table.Column<string>(maxLength: 50, nullable: true),
                     CreateWorkerId = table.Column<int>(nullable: false),
                     CreateTime = table.Column<DateTime>(nullable: false)
@@ -507,6 +506,11 @@ namespace Clc.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AbpUsers_WorkerId",
+                table: "AbpUsers",
+                column: "WorkerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AffairEvents_AffairId",
@@ -670,10 +674,22 @@ namespace Clc.Migrations
                 name: "IX_WorkRoles_DefaultPostId",
                 table: "WorkRoles",
                 column: "DefaultPostId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AbpUsers_Workers_WorkerId",
+                table: "AbpUsers",
+                column: "WorkerId",
+                principalTable: "Workers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_AbpUsers_Workers_WorkerId",
+                table: "AbpUsers");
+
             migrationBuilder.DropTable(
                 name: "AffairEvents");
 
@@ -731,12 +747,16 @@ namespace Clc.Migrations
             migrationBuilder.DropTable(
                 name: "Depots");
 
-            migrationBuilder.DropColumn(
-                name: "TwinUserName",
-                table: "AbpRoles");
+            migrationBuilder.DropIndex(
+                name: "IX_AbpUsers_WorkerId",
+                table: "AbpUsers");
 
             migrationBuilder.DropColumn(
-                name: "TwinUserPassword",
+                name: "WorkerId",
+                table: "AbpUsers");
+
+            migrationBuilder.DropColumn(
+                name: "IsWorkerRole",
                 table: "AbpRoles");
         }
     }

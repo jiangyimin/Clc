@@ -15,14 +15,13 @@ namespace Clc.Authorization.Roles
             public const string Hrq = "Hrq";            // 人事数据查询
             public const string Query = "Query";        // 查询
 
-            // 带非实际登录用户的角色（同名，密码由AppSettingProvider中提供）
+            // Worker Roles，用户名: Worker+Cn, 密码：User.WorkerUserDefaultPassword
             public const string Captain = "Captain";    // 队长
             public const string Aux = "Aux";            // 调度辅助
-            public const string PlaceC = "PlaceC";      // 中央控制
-            public const string PlaceA = "PlaceA";      // 仅领物
-            public const string PlaceB = "PlaceB";      // 仅领箱
-            public const string PlaceAB = "PlaceAB";   // 领物和领箱
-
+            public const string Monitor = "Monitor";     // 监控员
+            public const string Article = "Article";      // 仅领物
+            public const string Box = "Box";               // 仅领箱
+            public const string ArticleAndBox = "ArticleAndBox";   // 领物和领箱
         }
     }
 }

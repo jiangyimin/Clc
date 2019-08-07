@@ -36,7 +36,7 @@ namespace Clc.Works.Entities
         public Workplace Workplace { get; set; }
 
         /// <summary>
-        /// 状态（生成，活动，结束, 日结）
+        /// 状态（生成，活动，结束）
         /// </summary>
         [Required]
         [StringLength(2)]
@@ -55,7 +55,7 @@ namespace Clc.Works.Entities
         [Required]
         [StringLength(ClcConsts.TimeLength)]
         public string EndTime { get; set; }
-        public bool isTomorrow { get; set; }
+        public bool IsTomorrow { get; set; }
 
         [StringLength(MaxRemarkLength)]
         public string Remark { get; set; }

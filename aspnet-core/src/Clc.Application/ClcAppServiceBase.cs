@@ -6,6 +6,8 @@ using Abp.IdentityFramework;
 using Abp.Runtime.Session;
 using Clc.Authorization.Users;
 using Clc.MultiTenancy;
+using Clc.Works;
+using Abp.UI;
 
 namespace Clc
 {
@@ -18,9 +20,21 @@ namespace Clc
 
         public UserManager UserManager { get; set; }
 
+        public WorkManager WorkManager { get; set; }
+
         protected ClcAppServiceBase()
         {
             LocalizationSourceName = ClcConsts.LocalizationSourceName;
+        }
+
+        protected virtual async Task<int> GetCurrentUserWorkerIdAsync()
+        {
+            var user = await GetCurrentUserAsync();
+            if (user.WorkerId.HasValue == false)
+            {
+                throw new UserFriendlyException("必须是运行场所的工作人员登录");
+            }
+            return user.WorkerId.Value;
         }
 
         protected virtual Task<User> GetCurrentUserAsync()

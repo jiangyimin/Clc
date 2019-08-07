@@ -8,10 +8,10 @@ namespace Clc.Users
 {
     public interface IUserAppService : IAsyncCrudAppService<UserDto, long, PagedUserResultRequestDto, CreateUserDto, UserDto>
     {
-        Task<ListResultDto<RoleDto>> GetRoles();
+        Task<ListResultDto<RoleDto>> GetRoles(bool isWorkerRole = false);
 
         Task ChangeLanguage(ChangeUserLanguageDto input);
 
-        Task ResetRoleUserPassword(string userName);
+        Task UpdateWorkerUsers();
     }
 }

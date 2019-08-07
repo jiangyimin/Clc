@@ -21,13 +21,10 @@ namespace Clc.Authorization.Roles
             : base(tenantId, name, displayName)
         {
         }
-
+        
+        public bool IsWorkerRole { get; set; }
+        
         [StringLength(MaxDescriptionLength)]
         public string Description {get; set;}
-
-        [StringLength(User.MaxUserNameLength)]
-        public string TwinUserName { get; set; }
-        [StringLength(User.MaxPlainPasswordLength)]
-        public string TwinUserPassword { get; set; }
-    }
+   }
 }

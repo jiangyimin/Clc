@@ -7,6 +7,7 @@ namespace Clc.Works
 {
     public interface IWorkAppService : IApplicationService
     {
-        Task<bool> VerifyUnlockPassword(string password); 
+        bool VerifyUnlockPassword(string password);
+        string GetTodayString();
     }
 }

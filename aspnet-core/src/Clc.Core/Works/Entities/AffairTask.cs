@@ -45,7 +45,7 @@ namespace Clc.Works.Entities
         [Required]
         [StringLength(ClcConsts.TimeLength)]
         public string EndTime { get; set; }
-        public bool isTomorrow { get; set; }
+        public bool IsTomorrow { get; set; }
 
         [StringLength(MaxRemarkLength)]
         public string Remark { get; set; }

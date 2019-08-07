@@ -13,7 +13,7 @@ namespace Clc.Works.Entities
     public class AffairEvent : Entity, IMustHaveTenant
     {
         public const int MaxNameLength = 10;
-        public const int MaxContentLength = ClcConsts.NormalStringLength;
+        public const int MaxDescriptionLength = ClcConsts.LargeStringLength;
         public const int MaxIssurerLength = ClcConsts.NormalStringLength;
 
         // Impement of IMustHaveTenant
@@ -40,8 +40,8 @@ namespace Clc.Works.Entities
         /// <summary>
         /// 内容
         /// </summary>
-        [StringLength(MaxContentLength)]
-        public string Content { get; set; }
+        [StringLength(MaxDescriptionLength)]
+        public string Description { get; set; }
 
         /// <summary>
         /// Issuer

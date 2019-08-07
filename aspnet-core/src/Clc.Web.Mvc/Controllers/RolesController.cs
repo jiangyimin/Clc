@@ -29,15 +29,6 @@ namespace Clc.Web.Controllers
         {
             var permissions = (await _roleAppService.GetAllPermissions()).Items; //PermissionManager.GetAllPermissions(false);            
             return View(permissions);
-            //var roles = (await _roleAppService.GetRolesAsync(new GetRolesInput())).Items;
-            //var permissions = (await _roleAppService.GetAllPermissions()).Items;
-            //var model = new RoleListViewModel
-            //{
-            //    Roles = roles,
-            //    Permissions = permissions
-            //};
-
-            //return View(model);
         }
 
        [DontWrapResult]

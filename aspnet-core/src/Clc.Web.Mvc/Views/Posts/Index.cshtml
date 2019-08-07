@@ -11,6 +11,7 @@
         crud.dgDefault.columns = [[
             { field: "cn", title: "编号", width: 80, sortable: true },
             { field: "name", title: "名称", width: 80, sortable: true },
+            { field: "workerRoleName", title: "登录角色名", width: 80, sortable: true },
         ]];
     </script>
 }
@@ -27,6 +28,10 @@
             <tr>
                 <th><label for="name">名称：</label></th>
                 <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @Post.MaxNameLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="workerRoleName">登录角色名: </Label></th>
+                <td><input name="workerRoleName" class="easyui-textbox" style="width: 100%"></td>
             </tr>
         </table>
     </form>

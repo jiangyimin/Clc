@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
-using Clc.Authorization.Users;
 using Clc.Types.Entities;
 
 namespace Clc.Fields.Entities
@@ -45,12 +44,6 @@ namespace Clc.Fields.Entities
         /// </summary>
         [StringLength(ShareDepotListLength)]
         public string ShareDepotList { get; set; }
-
-        /// <summary>
-        /// 角色用户名
-        /// </summary>
-        [StringLength(User.MaxNameLength)]
-        public string RoleUserName { get; set; }
     }
 }
 

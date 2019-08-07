@@ -30,7 +30,7 @@ namespace Clc.Types.Entities
         [Required]
         [StringLength(MaxNameLength)]
         public string Name { get; set; }
-   
+           
         /// <summary>
         /// 缺省的工作岗位
         /// </summary>

@@ -10,6 +10,8 @@ namespace Clc.Roles.Dto
 
         public string DisplayName { get; set; }
 
+        public string IsWorkerRole { get; set;}
+
         public bool IsStatic { get; set; }
 
         public bool IsDefault { get; set; }

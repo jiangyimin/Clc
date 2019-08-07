@@ -27,6 +27,20 @@ function F1KeyDown(event) {
     }
 }
 
+function getTomorrow(today) {
+    var now = today.split('-')
+    now = new Date(Number(now['0']),(Number(now['1'])-1),Number(now['2']));
+    now.setDate(now.getDate() + 1);
+    return formatTime(now);
+}
+
+function formatTime(date) {
+    var year = date.getFullYear();
+    var month = date.getMonth()+1, month = month < 10 ? '0' + month : month;
+    var day = date.getDate(), day =day < 10 ? '0' + day : day;
+    return year + '-' + month + '-' + day;
+}
+  
 (function ($) {
     $(function () {
         // 侦听F1

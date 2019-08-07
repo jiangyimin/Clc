@@ -1,12 +1,14 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Clc.Fields.Dto;
 
 namespace Clc.Fields
 {
     public interface IFieldAppService : IApplicationService
     {
-        Task<List<ComboboxItemDto>> GetComboItems(string name); 
+        List<ComboboxItemDto> GetComboItems(string name);
+
+        List<WorkplaceDto> GetWorkplaceItems(bool all = false);
     }
 }

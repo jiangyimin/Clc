@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Clc.Authorization.Users;
 using Clc.Types.Entities;
 using Clc.Fields.Entities;
 
@@ -35,12 +34,6 @@ namespace Clc.Fields.Dto
         /// </summary>
         [StringLength(Workplace.ShareDepotListLength)]
         public string ShareDepotList { get; set; }
-
-        /// <summary>
-        /// 角色用户名
-        /// </summary>
-        [StringLength(User.MaxNameLength)]
-        public string RoleUserName { get; set; }
     }
 }
 

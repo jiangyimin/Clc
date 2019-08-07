@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,18 +9,18 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Castle.Facilities.Logging;
 using Abp.AspNetCore;
+using Abp.AspNetCore.SignalR.Hubs;
 using Abp.Castle.Logging.Log4Net;
 using Clc.Authentication.JwtBearer;
 using Clc.Configuration;
 using Clc.Identity;
+using Clc.RealTime;
 using Clc.Web.Resources;
-using Abp.AspNetCore.SignalR.Hubs;
 using Senparc.CO2NET;
 using Senparc.Weixin;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.Entities;
-using Clc.RealTime;
 
 namespace Clc.Web.Startup
 {
@@ -34,18 +35,12 @@ namespace Clc.Web.Startup
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            // services.ConfigureApplicationCookie(options => {
-            //     options.ExpireTimeSpan = TimeSpan.FromHours(12);
-            // });
             // MVC
             services.AddMvc(
                 options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())
             );
 
             IdentityRegistrar.Register(services);
-            services.AddAuthentication().AddCookie(options => {
-                options.ExpireTimeSpan = TimeSpan.FromHours(18);
-            });
             AuthConfigurer.Configure(services, _appConfiguration);
 
             services.AddScoped<IWebResourceManager, WebResourceManager>();

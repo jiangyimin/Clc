@@ -1,4 +1,5 @@
-﻿using Abp.Modules;
+﻿using Abp.AutoMapper;
+using Abp.Modules;
 using Abp.Reflection.Extensions;
 using Abp.Timing;
 using Abp.Zero;
@@ -9,13 +10,12 @@ using Clc.Configuration;
 using Clc.Localization;
 using Clc.MultiTenancy;
 using Clc.Timing;
-using Clc.Types.Cache;
-using Clc.Fields.Cache;
 using Clc.Clients.Cache;
 
 namespace Clc
 {
-    [DependsOn(typeof(AbpZeroCoreModule))]
+    [DependsOn(typeof(AbpZeroCoreModule),
+        typeof(AbpAutoMapperModule))]
     public class ClcCoreModule : AbpModule
     {
         public override void PreInitialize()
@@ -42,31 +42,10 @@ namespace Clc
         public override void Initialize()
         {
             IocManager.RegisterAssemblyByConvention(typeof(ClcCoreModule).GetAssembly());
-
-            //为特定的缓存配置有效期
-            Configuration.Caching.Configure("CachedWorker", cache =>
-            {
-                cache.DefaultSlidingExpireTime = System.TimeSpan.FromMinutes(10);
-            });
             
-            // Cache for Types
-            IocManager.Register<IAffairTypeCache, AffairTypeCache>();
-            IocManager.Register<IArticleTypeCache, ArticleTypeCache>();
-            IocManager.Register<IPostCache, PostCache>();
-            IocManager.Register<IRouteTypeCache, RouteTypeCache>();
-            IocManager.Register<ITaskTypeCache, TaskTypeCache>();
-            IocManager.Register<IWorkRoleCache, WorkRoleCache>();
- 
-            // Cache for Fields
-            IocManager.Register<IDepotCache, DepotCache>();
-            IocManager.Register<IWorkplaceCache, WorkplaceCache>();
-            IocManager.Register<IWorkerCache, WorkerCache>();
-            IocManager.Register<IVehicleCache, VehicleCache>();
-            IocManager.Register<IArticleCache, ArticleCache>();
-
             // Cache for Clients
             IocManager.Register<ICustomerCache, CustomerCache>();
-            IocManager.Register<IOutletCache, OutletCache>();
+            IocManager.Register<IOutletCache, OutletCache>();            
         }
 
         public override void PostInitialize()

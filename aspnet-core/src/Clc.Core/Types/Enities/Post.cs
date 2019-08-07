@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
+using Clc.Authorization.Roles;
 
 namespace Clc.Types.Entities
 {
@@ -29,6 +30,12 @@ namespace Clc.Types.Entities
         [Required]
         [StringLength(MaxNameLength)]
         public string Name { get; set; }
+        
+        /// <summary>
+        /// 工作人员角色名
+        /// </summary>
+        [StringLength(Role.MaxNameLength)]
+        public string WorkerRoleName { get; set; }
     }
 }
 

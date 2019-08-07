@@ -10,7 +10,7 @@ namespace Clc.Users.Dto
     [AutoMapTo(typeof(User))]
     public class CreateUserDto : IShouldNormalize
     {
-        [Required]
+        // [Required]
         [StringLength(AbpUserBase.MaxUserNameLength)]
         public string UserName { get; set; }
 
@@ -18,11 +18,11 @@ namespace Clc.Users.Dto
         [StringLength(AbpUserBase.MaxNameLength)]
         public string Name { get; set; }
 
-        [Required]
+        //[Required]
         [StringLength(AbpUserBase.MaxSurnameLength)]
         public string Surname { get; set; }
 
-        [Required]
+        //[Required]
         [EmailAddress]
         [StringLength(AbpUserBase.MaxEmailAddressLength)]
         public string EmailAddress { get; set; }
@@ -31,13 +31,21 @@ namespace Clc.Users.Dto
 
         public string[] RoleNames { get; set; }
 
-        [Required]
+        //[Required]
         [StringLength(AbpUserBase.MaxPlainPasswordLength)]
         [DisableAuditing]
         public string Password { get; set; }
 
         public void Normalize()
         {
+            if (Surname == null) 
+            {
+                Surname = Name;
+                EmailAddress = Name + ClcConsts.UserEmailServerName;
+                Password = User.UserDefaultPassword; 
+                IsActive = true;
+            }
+
             if (RoleNames == null)
             {
                 RoleNames = new string[0];

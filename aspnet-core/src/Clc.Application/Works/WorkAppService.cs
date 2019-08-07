@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
@@ -13,18 +14,22 @@ namespace Clc.Works
         {
         }
 
-        public Task<bool> VerifyUnlockPassword(string password)
+        public bool VerifyUnlockPassword(string password)
         {
             // Get DepotId and WorkCn
             try
             {
-                int depotId = AbpSession.GetDepotId();
-                return Task.FromResult(true);
+                return true;
             }
-            catch 
+            catch
             {
-                return Task.FromResult(false);
+                return false;
             }
-       }        
+        }
+
+        public string GetTodayString()
+        {
+            return DateTime.Now.Date.ToString("yyyy-MM-dd");
+        }
     }
 }

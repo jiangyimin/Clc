@@ -120,7 +120,7 @@ var crud = crud || {};
         }).done(function (data) {
             abp.notify.info(data.content);
             _$dg.datagrid('reload');
-            _$dlg.dialog('close');
+            _$dlg.dialog('close');          // must after reload
         });
     }
 
