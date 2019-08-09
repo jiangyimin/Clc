@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Clc.Clients.Entities;
+using Clc.Clients;
 
 namespace Clc.Clients.Dto
 {

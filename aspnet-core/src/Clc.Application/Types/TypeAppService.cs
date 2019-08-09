@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Clc.Runtime.Cache;
-using Clc.Types.Entities;
+using Clc.Types;
 
 namespace Clc.Types
 {
@@ -11,7 +11,6 @@ namespace Clc.Types
     public class TypeAppService : ClcAppServiceBase, ITypeAppService
     {
         private readonly DutyProvider _dutyProvider;
-        private readonly IAffairTypeCache _affairTypeCache;
         private readonly IArticleTypeCache _articleTypeCache;
         private readonly IPostCache _postCache;
         private readonly IRouteTypeCache _routeTypeCache;
@@ -20,7 +19,6 @@ namespace Clc.Types
         private readonly List<string> _bindStyleItems = new List<string>() {"人", "车", "线路" };
 
         public TypeAppService(DutyProvider dutyProvider, 
-            IAffairTypeCache affairTypeCache,
             IArticleTypeCache articleTypeCache,
             IPostCache postCache,
             IRouteTypeCache routeTypeCache,
@@ -28,7 +26,6 @@ namespace Clc.Types
             IWorkRoleCache workRoleCache)
         {
             _dutyProvider = dutyProvider;
-            _affairTypeCache = affairTypeCache;
             _articleTypeCache = articleTypeCache;
             _postCache = postCache;
             _routeTypeCache = routeTypeCache;
@@ -52,10 +49,6 @@ namespace Clc.Types
             var lst = new List<ComboboxItemDto>();
             switch (typeName) 
             {
-                case "AffairType":
-                    foreach (AffairType t in _affairTypeCache.GetList())
-                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
-                    break;
                 case "ArticleType":
                     foreach (ArticleType t in _articleTypeCache.GetList())
                         lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = string.Format("{0} {1}", t.Cn, t.Name) });

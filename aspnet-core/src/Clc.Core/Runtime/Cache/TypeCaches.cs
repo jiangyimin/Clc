@@ -2,19 +2,10 @@ using Abp.Dependency;
 using Abp.Domain.Repositories;
 using Abp.ObjectMapping;
 using Abp.Runtime.Caching;
-using Clc.Types.Entities;
+using Clc.Types;
 
 namespace Clc.Runtime.Cache
 {
-
-    public class AffairTypeCache : EntityListCache<AffairType, AffairType, AffairType>, IAffairTypeCache, ITransientDependency
-    {
-        public AffairTypeCache(ICacheManager cacheManager, IRepository<AffairType> repository, IObjectMapper objectMapper)
-            : base(cacheManager, repository, objectMapper)
-        {
-        }
-    }
-
     public class ArticleTypeCache : EntityListCache<ArticleType, ArticleType, ArticleType>, IArticleTypeCache, ITransientDependency
     {
         public ArticleTypeCache(ICacheManager cacheManager, IRepository<ArticleType> repository, IObjectMapper objectMapper)

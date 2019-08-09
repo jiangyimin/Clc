@@ -63,5 +63,18 @@
             }
             //$("#PhotoImage").val('');
         },
+
+        // formatters
+        dateFormatter: function (val) {
+            if (val) return val.substr(0, 10);
+        },
+
+        timeFormatter: function (val) {
+            if (val) return val.substr(11, 5);
+        },
+
+        datetimeFormatter: function (val) {
+            if (val) return val.substr(0, 10) + ' ' + val.substr(11, 5);
+        },
     });
 })(jQuery);

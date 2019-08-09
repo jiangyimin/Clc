@@ -3,17 +3,19 @@ using Abp.Zero.EntityFrameworkCore;
 using Clc.Authorization.Roles;
 using Clc.Authorization.Users;
 using Clc.MultiTenancy;
-using Clc.Types.Entities;
-using Clc.Fields.Entities;
-using Clc.Clients.Entities;
-using Clc.Works.Entities;
+using Clc.Types;
+using Clc.Fields;
+using Clc.Clients;
+using Clc.Affairs;
+using Clc.Works;
+using Clc.Runtime;
+using Clc.Routes;
 
 namespace Clc.EntityFrameworkCore
 {
     public class ClcDbContext : AbpZeroDbContext<Tenant, Role, User, ClcDbContext>
     {
         // Types
-        public DbSet<AffairType> AffairTypes { get; set; }
         public DbSet<ArticleType> ArticleTypes { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<RouteType> RouteTypes { get; set; }
@@ -32,12 +34,23 @@ namespace Clc.EntityFrameworkCore
         public DbSet<Outlet> Outlets { get; set; }
         public DbSet<Box> Boxes { get; set; }
 
-        // Works
-        public DbSet<Signin> Signins { get; set; }
+        // Runtimes        public DbSet<Signin> Signins { get; set; }
+        public DbSet<ArticleRecord> ArticleRecords { get; set; }
+
+        // Affairs
         public DbSet<Affair> Affairs { get; set; }
         public DbSet<AffairWorker> AffairWorkers { get; set; }
         public DbSet<AffairTask> AffairTasks { get; set; }
         public DbSet<AffairEvent> AffairEvents { get; set; }
+
+        // Routes
+        public DbSet<Route> Routes { get; set; }
+        public DbSet<RouteWorker> RouteWorkers { get; set; }
+        public DbSet<RouteTask> RouteTasks { get; set; }
+        public DbSet<RouteEvent> RouteEvents { get; set; }
+        public DbSet<RouteArticle> RouteArticles { get; set; }
+        public DbSet<RouteInBox> RouteInBoxes { get; set; }
+        public DbSet<RouteOutBox> RouteOutBoxes { get; set; }
 
         public ClcDbContext(DbContextOptions<ClcDbContext> options)
             : base(options)
@@ -90,6 +103,26 @@ namespace Clc.EntityFrameworkCore
                 b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
             });
 
+            // Works
+            modelBuilder.Entity<Signin>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.DepotId, e.SigninTime, e.WorkerId });
+            });
+
+            modelBuilder.Entity<Affair>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.DepotId, e.CarryoutDate});
+            });
+            modelBuilder.Entity<PreRoute>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.DepotId, e.RouteTypeId});
+            });
+            modelBuilder.Entity<Route>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.DepotId, e.CarryoutDate});
+            });
+
+
             //
             // DeleteBehavior
             //
@@ -107,6 +140,18 @@ namespace Clc.EntityFrameworkCore
             modelBuilder.Entity<Signin>()
                 .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<ArticleRecord>()
+                .HasOne(b => b.Article).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ArticleRecord>()
+                .HasOne(b => b.RouteWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<BoxRecord>()
+                .HasOne(b => b.Box).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<BoxRecord>()
+                .HasOne(b => b.RouteTask).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            // Affairs
             modelBuilder.Entity<Affair>()
                 .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<AffairWorker>()
@@ -115,6 +160,44 @@ namespace Clc.EntityFrameworkCore
                 .HasOne(b => b.Workplace).WithMany().OnDelete(DeleteBehavior.Restrict);                
             modelBuilder.Entity<AffairTask>()
                 .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            // PreRoutes
+            modelBuilder.Entity<PreRoute>()
+                .HasOne(b => b.Vehicle).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PreRouteWorker>()
+                .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
+                
+             // Routes
+            modelBuilder.Entity<Route>()
+                .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Route>()
+                .HasOne(b => b.Vehicle).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RouteWorker>()
+                .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RouteTask>()
+                .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RouteArticle>()
+                .HasOne(b => b.Route).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RouteArticle>()
+                .HasOne(b => b.RouteWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RouteArticle>()
+                .HasOne(b => b.ArticleRecord).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RouteInBox>()
+                .HasOne(b => b.Route).WithMany().OnDelete(DeleteBehavior.Restrict);
+             modelBuilder.Entity<RouteInBox>()
+                .HasOne(b => b.RouteTask).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RouteInBox>()
+                .HasOne(b => b.BoxRecord).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RouteOutBox>()
+                .HasOne(b => b.Route).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RouteOutBox>()
+                .HasOne(b => b.RouteTask).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RouteOutBox>()
+                .HasOne(b => b.BoxRecord).WithMany().OnDelete(DeleteBehavior.Restrict);
+            
         }
     }
 }

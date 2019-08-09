@@ -2,7 +2,7 @@ using Abp.Dependency;
 using Abp.Domain.Repositories;
 using Abp.ObjectMapping;
 using Abp.Runtime.Caching;
-using Clc.Fields.Entities;
+using Clc.Fields;
 
 namespace Clc.Runtime.Cache
 {

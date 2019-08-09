@@ -1,7 +1,7 @@
 using System;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Clc.Works.Entities;
+using Clc.Affairs;
 
 namespace Clc.Affairs
 {

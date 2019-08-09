@@ -1,4 +1,4 @@
-@using Clc.Fields.Entities
+@using Clc.Fields
 @{
     Layout = "_Layout.cshtml";
 }
@@ -15,7 +15,8 @@
         <script src="~/view-resources/Views/Shared/_WorkLayout.min.js" asp-append-version="true"></script>
     </environment>
 
-    @RenderSection("myscripts", false);
+    @*开放一个Section*@
+    @RenderSection("workScripts", false);
 }
 
 <!-- Page Lock -->
@@ -23,6 +24,8 @@
     <p>正在锁屏中...</p> 
 </div>
 <!-- #END# Page Loader -->
+
+@RenderBody()
 
 @*弹窗*@
 <div id="dlgUnlock" class="easyui-dialog" closed="true" modal="true" title="验证解屏密码" buttons="#dlgUnlock-buttons" style="z-index::8889; width: 400px; padding: 10px;">
@@ -38,5 +41,3 @@
 <div id="dlgUnlock-buttons">
 	<a href="#" class="easyui-linkbutton" plain="true" onclick="verifyUnlockPassword()">确定</a>
 </div>
-
-@RenderBody()

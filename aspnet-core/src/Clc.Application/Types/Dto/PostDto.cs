@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Clc.Authorization.Roles;
-using Clc.Types.Entities;
+using Clc.Types;
 
 namespace Clc.Types.Dto
 {

@@ -30,7 +30,6 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Admin_WorkerUsers", new FixedLocalizableString("工作人员用户"), url: "WorkerUsers"))
                 // Types
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Types, new FixedLocalizableString("类型设置"), icon: "fa fa-list", requiredPermissionName: PermissionNames.Pages_Types)
-                    .AddItem(new MenuItemDefinition("Type_AffairTypes", new FixedLocalizableString("内务类型"), url: "AffairTypes"))
                     .AddItem(new MenuItemDefinition("Type_ArticleTypes", new FixedLocalizableString("物品类型"), url: "ArticleTypes"))
                     .AddItem(new MenuItemDefinition("Type_Posts", new FixedLocalizableString("岗位"), url: "Posts"))
                     .AddItem(new MenuItemDefinition("Type_RouteTypes", new FixedLocalizableString("线路类型"), url: "RouteTypes"))

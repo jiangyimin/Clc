@@ -73,7 +73,14 @@ namespace Clc.Configuration
                     "180", 
                     new FixedLocalizableString("最小签到间隔(分钟)"),
                     scopes: SettingScopes.Tenant
-                )
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.WorkerRfidLength, 
+                    "5", 
+                    new FixedLocalizableString("员工RFID卡编码长度"),
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
+                ),
             };
         }
     }

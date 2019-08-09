@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Clc.Works.Entities;
+using Clc.Affairs;
 
 namespace Clc.Affairs
 {
@@ -19,9 +19,12 @@ namespace Clc.Affairs
 
         [Required]
         public int WorkerId { get; set; }
+        public string WorkerCn { get; set; }
+        public string WorkerName { get; set; }
 
         [Required]
         public int WorkRoleId { get; set; }
+        public string WorkRoleName { get; set; }
     }
 }
 

@@ -1,4 +1,4 @@
-﻿@using Clc.Fields.Entities
+﻿@using Clc.Fields
 @{
     Layout = "~/Views/Shared/_CrudLayout.cshtml";
 }
@@ -10,18 +10,15 @@
         crud.dgDefault.sortName = 'name';
         crud.dgDefault.columns = [[
             { field: "name", title: "名称", width: 80 },
-            { field: "affairTypeId", title: "内务类型", width: 80, formatter: affairTypeFormatter },
+            { field: "workRoles", title: "工作角色列表", width: 80 },
             { field: "articleTypeList", title: "领用物品列表", width: 100 },
             { field: "shareDepotList", title: "共享中心列表", width: 100 },
+            { field: "minDuration", title: "最短班次小时", width: 80 },
+            { field: "maxDuration", title: "最长班次小时", width: 80 },
+            { field: "hasCloudDoor", title: "带云门", width: 80 },
         ]];
         crud.parentField = 'depotId';
         crud.children = true;
-
-        // formatters
-        function affairTypeFormatter (val) {
-            return crud.getComboTextByInt('#affairType', val);
-        }
-
     </script>
 }
 
@@ -29,10 +26,6 @@
 {
     <script type="text/javascript">
         crud.startfunction = function () {
-            abp.services.app.type.getComboItems('AffairType').done(function(d) {
-                crud.setComboBox('#affairType', d);
-            });
-
             abp.services.app.field.getComboItems('Depot').done(function(depots) {
                 crud.setComboBox('#depotId', depots);
                 var treeData = [];
@@ -86,8 +79,8 @@
                 <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @Workplace.MaxNameLength]'" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><label for="affairTypeId">内务类型：</label></th>
-                <td><input id="affairType" name="affairTypeId" class="easyui-combobox" style="width: 100%"></td>
+                <th><label for="workRoles">工作角色列表：</label></th>
+                <td><input name="workRoles" class="easyui-textbox" data-options="required:true, validType:'length[2, @Workplace.MaxWorkRolesLength]'" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><Label for="articleTypeList">物品类型列表: </Label></th>
@@ -97,6 +90,19 @@
                 <th><Label for="shareDepotList">共享中心列表表: </Label></th>
                 <td><input name="shareDepotList" class="easyui-textbox", data-options="validType:'length[1, @Workplace.ShareDepotListLength]'" style="width: 100%"></td>
             </tr>
+            </tr>
+            <tr>
+                <th><label for="minDuration">最短班次小时：</label></th>
+                <td><input name="minDuration" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="maxDuration">最长班次小时：</label></th>
+                <td><input name="maxDuration" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="hasCloudDoor">带云门: </label></th>
+                <td><input name="hasCloudDoor" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
+                </td>
         </table>
     </form>
 </div>

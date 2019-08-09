@@ -1,0 +1,47 @@
+﻿@using Clc.Types
+@{
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+}
+
+@section customScript
+{
+    <script type="text/javascript">
+        crud.dgDefault.name = 'AffairTypes';
+        crud.dgDefault.sortName = 'cn';
+        crud.dgDefault.columns = [[
+            { field: "cn", title: "编号", width: 80, sortable: true },
+            { field: "name", title: "名称", width: 80, sortable: true },
+            { field: "hasCloudDoor", title: "带云门", width: 100 },
+            { field: "toRoute", title: "可安排到线路", width: 100 },
+            { field: "minDuration", title: "最短班次小时", width: 100 },
+            { field: "maxDuration", title: "最长班次小时", width: 100 }
+        ]];
+    </script>
+}
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" align="center" style="width: 400px; padding: 10px;">
+    <form id="fm" method="post" novalidate>
+        <table class="edit-tbl">
+            <input id="id" name="id" type="hidden">
+            <tr>
+                <th><label for="hasCloudDoor">带云门: </label></th>
+                <td><input name="hasCloudDoor" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
+                </td>
+            </tr>
+            <tr>
+                <th><label for="toRoute">可安排到线路: </label></th>
+                <td><input name="toRoute" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
+                </td>
+            </tr>
+            <tr>
+                <th><label for="minDuration">最短班次小时：</label></th>
+                <td><input name="minDuration" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="maxDuration">最长班次小时：</label></th>
+                <td><input name="maxDuration" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>

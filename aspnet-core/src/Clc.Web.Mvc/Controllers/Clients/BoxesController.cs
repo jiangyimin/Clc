@@ -1,7 +1,7 @@
 ﻿using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Domain.Repositories;
 using Clc.Authorization;
-using Clc.Clients.Entities;
+using Clc.Clients;
 using Clc.Clients.Dto;
 
 namespace Clc.Web.Controllers

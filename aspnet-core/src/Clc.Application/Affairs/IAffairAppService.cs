@@ -9,7 +9,10 @@ namespace Clc.Affairs
     public interface IAffairAppService : IApplicationService
     {
         Task<List<AffairDto>> GetAffairsAsync(DateTime carryoutDate, string sorting);
-        Task Activate(int id, bool active);
+
+        Task<int> Activate(List<int> ids);
+        Task Back(int id);
+
         Task<int> CreateFrom(DateTime carryoutDate, DateTime fromDate);
 
          Task<AffairDto> Insert(AffairDto input);
@@ -18,7 +21,7 @@ namespace Clc.Affairs
 
 
         #region Son Tables
-        Task<List<AffairWorkerDto>> GetAffairWorkers(int id, string sorting);
+        Task<List<AffairWorkerDto>> GetAffairWorkers(int id);
         Task<AffairWorkerDto> InsertWorker(AffairWorkerDto input);
         Task<AffairWorkerDto> UpdateWorker(AffairWorkerDto input);
         Task DeleteWorker(int id);

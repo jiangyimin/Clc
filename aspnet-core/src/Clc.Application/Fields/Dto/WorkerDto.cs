@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Abp.Runtime.Validation;
-using Clc.Fields.Entities;
+using Clc.Fields;
 using Microsoft.AspNetCore.Http;
 
 namespace Clc.Fields.Dto

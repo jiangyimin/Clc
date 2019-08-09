@@ -12,6 +12,6 @@ namespace Clc.Users
 
         Task ChangeLanguage(ChangeUserLanguageDto input);
 
-        Task UpdateWorkerUsers();
+        Task resetWorkerUsersToLatest();
     }
 }

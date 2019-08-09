@@ -9,7 +9,7 @@ using Abp.Linq;
 using Abp.UI;
 using Clc.Affairs.Dto;
 using Clc.Authorization;
-using Clc.Works.Entities;
+using Clc.Affairs;
 
 namespace Clc.Affairs
 {
@@ -73,7 +73,7 @@ namespace Clc.Affairs
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
             int depotId = WorkManager.GetWorkerDepotId(workerId);
-             var list = _affairRepository.GetAllList(e=>e.DepotId == depotId && e.CarryoutDate == fromDate);
+            var list = _affairRepository.GetAllList(e=>e.DepotId == depotId && e.CarryoutDate == fromDate);
             foreach (Affair a in list)
             {
                 Affair affair = new Affair();
@@ -87,23 +87,24 @@ namespace Clc.Affairs
                 affair.Remark = a.Remark;
                 affair.CreateWorkerId = workerId;
                 affair.CreateTime = DateTime.Now;
-                await _affairRepository.InsertAsync(affair);
+                int affairId = await _affairRepository.InsertAndGetIdAsync(affair);
 
                 var workers =  _workerRepository.GetAllList(e => e.AffairId == a.Id);
                 foreach (AffairWorker w in workers)
                 {
                     AffairWorker worker = new AffairWorker();
-                    worker.AffairId = affair.Id;
+                    worker.AffairId = affairId;
                     worker.WorkerId = w.WorkerId;
                     worker.WorkRoleId = w.WorkRoleId;
                     await _workerRepository.InsertAsync(worker);
                 }
 
+
                 var tasks =  _taskRepository.GetAllList(e => e.AffairId == a.Id);
                 foreach (AffairTask t in tasks)
                 {
                     AffairTask task = new AffairTask();
-                    task.AffairId = affair.Id;
+                    task.AffairId = affairId;
                     task.WorkplaceId = t.WorkplaceId;
                     task.StartTime = t.StartTime;
                     task.EndTime = t.EndTime;
@@ -116,25 +117,35 @@ namespace Clc.Affairs
             return list.Count;
         }
 
-        public Task Activate(int id, bool active = true)
+        public async Task<int> Activate(List<int> ids)
+        {
+            int count = 0;
+            foreach (int id in ids)
+            {
+                var affair = _affairRepository.Get(id);
+                if (affair.Status != "安排") continue;          // Skip
+                affair.Status = "激活";
+                await _affairRepository.UpdateAsync(affair);
+                count++;            
+            }
+            return count;
+        }
+
+        public Task Back(int id)
         {
             var entity = _affairRepository.Get(id);
-        
-            if (active)
-                entity.Status = "激活";
-            else
-                entity.Status = "安排";
-
+            entity.Status = "安排";
             return _affairRepository.UpdateAsync(entity);
         }
         
         #region Son Tables
-        public async Task<List<AffairWorkerDto>> GetAffairWorkers(int id, string sorting)
+        public async Task<List<AffairWorkerDto>> GetAffairWorkers(int id)
         {
-            var query =_workerRepository.GetAll().Where(e => e.AffairId == id).OrderBy(sorting);
+            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole).Where(e => e.AffairId == id).OrderBy(x => x.WorkRole.Cn);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            return new List<AffairWorkerDto>(entities.Select(ObjectMapper.Map<AffairWorkerDto>).ToList());
+            var list = ObjectMapper.Map<List<AffairWorkerDto>>(entities);
+            return list;
         }
 
         public async Task<AffairWorkerDto> UpdateWorker(AffairWorkerDto input)
@@ -166,7 +177,7 @@ namespace Clc.Affairs
             var query =_workerRepository.GetAll().Where(e => e.AffairId == id).OrderBy(sorting);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            return new List<AffairTaskDto>(entities.Select(ObjectMapper.Map<AffairTaskDto>).ToList());
+            return ObjectMapper.Map<List<AffairTaskDto>>(entities);
         }
 
         public async Task<AffairTaskDto> UpdateTask(AffairTaskDto input)

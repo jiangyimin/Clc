@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Clc.Types.Entities;
-using Clc.Fields.Entities;
+using Clc.Types;
+using Clc.Fields;
 
 namespace Clc.Fields.Dto
 {
@@ -20,8 +20,8 @@ namespace Clc.Fields.Dto
         public string Name { get; set; }
 
         [Required]
-        public int AffairTypeId { get; set; }
-        public AffairType AffairType { get; set; }
+        [StringLength(Workplace.MaxWorkRolesLength)]
+        public string WorkRoles { get; set; }
         
         /// <summary>
         /// 可领用物品列表
@@ -34,6 +34,15 @@ namespace Clc.Fields.Dto
         /// </summary>
         [StringLength(Workplace.ShareDepotListLength)]
         public string ShareDepotList { get; set; }
+        
+        public int MinDuration { get; set; }     
+        /// <summary>
+        /// 每班最长时长
+        /// </summary>
+        public int MaxDuration { get; set; }     
+        /// <summary>
+        /// 是否云端开门
+        public string HasCloudDoor { get; set; }
     }
 }
 

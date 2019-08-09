@@ -19,7 +19,7 @@ using Clc.Authorization.Users;
 using Clc.Roles.Dto;
 using Clc.Users.Dto;
 using Clc.Runtime.Cache;
-using Clc.Fields.Entities;
+using Clc.Fields;
 
 namespace Clc.Users
 {
@@ -114,7 +114,7 @@ namespace Clc.Users
             );
         }
 
-        public async Task UpdateWorkerUsers()
+        public async Task resetWorkerUsersToLatest()
         {
             var users = await Repository.GetAllListAsync();
             foreach (WorkerListItem worker in _workerCache.GetList())
@@ -146,6 +146,12 @@ namespace Clc.Users
                     }
                     else 
                     {
+                        var roles = await _userManager.GetRolesAsync(user);
+                        if (!roles.Contains(roleName))
+                        {
+                            CheckErrors(await _userManager.RemoveFromRolesAsync(user, roles));
+                            CheckErrors(await _userManager.AddToRoleAsync(user, roleName));
+                        }
                         CheckErrors(await _userManager.ChangePasswordAsync(user, User.WorkerUserDefaultPassword));
                     }
                 }

@@ -1,11 +1,7 @@
-using Clc.Types.Entities;
+using Clc.Types;
 
 namespace Clc.Runtime.Cache
 {
-    public interface IAffairTypeCache : IEntityListCache<AffairType, AffairType, AffairType>
-    {
-    }
-
     public interface IArticleTypeCache : IEntityListCache<ArticleType, ArticleType, ArticleType>
     {
     }

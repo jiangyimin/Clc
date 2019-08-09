@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Abp.Authorization.Users;
 using Abp.Extensions;
-using Clc.Fields.Entities;
+using Clc.Fields;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 

@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Clc.Works.Entities;
+using Clc.Affairs;
 
 namespace Clc.Affairs
 {

@@ -2,8 +2,10 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using Abp.Dependency;
 using Abp.Runtime.Validation;
-using Clc.Works.Entities;
+using Clc.Works;
+using Clc.Affairs;
 
 namespace Clc.Affairs.Dto
 {
@@ -13,8 +15,6 @@ namespace Clc.Affairs.Dto
     [AutoMap(typeof(Affair))]
     public class AffairDto : EntityDto, IShouldNormalize, ICustomValidate
     {
-        public int DepotId { get; set; }
-
         public DateTime CarryoutDate { get; set; }
 
         /// <summary>
@@ -59,18 +59,12 @@ namespace Clc.Affairs.Dto
 
         public void AddValidationErrors(CustomValidationContext context)
         {
-            // WorkManager workManager = IocManager.Instance.Resolve<DomainManager>();
+            WorkManager workManager = IocManager.Instance.Resolve<WorkManager>();
 
-            // VaultType vaultType = domainManager.GetVaultType(VaultTypeId);
-            
-            // if (string.Compare(vaultType.EarliestTime, StartTime) > 0)
-            //     context.Results.Add(new ValidationResult("开始时间不能早于金库操作类型的最早时间!"));
-
-            // if (string.Compare(vaultType.LatestTime, EndTime) < 0)
-            //     context.Results.Add(new ValidationResult("结束时间不能晚于金库操作类型的最晚时间!"));
-
-            // if (string.Compare(StartTime, EndTime) >= 0)
-            //     context.Results.Add(new ValidationResult("结束时间不能小于开始时间!"));
+            var workplace = workManager.GetWorkplace(WorkplaceId);           
+            string result = workplace.CheckTimeZone(StartTime, EndTime, IsTomorrow == "on" ? true : false);
+            if (!string.IsNullOrEmpty(result))
+                 context.Results.Add(new ValidationResult(result));
         }
 
         #endregion      

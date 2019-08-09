@@ -10,7 +10,6 @@ using Clc.Configuration;
 using Clc.Localization;
 using Clc.MultiTenancy;
 using Clc.Timing;
-using Clc.Clients.Cache;
 
 namespace Clc
 {
@@ -41,11 +40,7 @@ namespace Clc
 
         public override void Initialize()
         {
-            IocManager.RegisterAssemblyByConvention(typeof(ClcCoreModule).GetAssembly());
-            
-            // Cache for Clients
-            IocManager.Register<ICustomerCache, CustomerCache>();
-            IocManager.Register<IOutletCache, OutletCache>();            
+            IocManager.RegisterAssemblyByConvention(typeof(ClcCoreModule).GetAssembly());            
         }
 
         public override void PostInitialize()
