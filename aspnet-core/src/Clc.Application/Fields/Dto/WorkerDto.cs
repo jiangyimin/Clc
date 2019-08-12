@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Abp.Runtime.Validation;
+using Clc.Authorization.Roles;
 using Clc.Fields;
 using Microsoft.AspNetCore.Http;
 
@@ -41,6 +42,12 @@ namespace Clc.Fields.Dto
         [StringLength(Worker.MaxPasswordLength)]
         public string Password { get; set; }
 
+        /// <summary>
+        /// 工作人员角色名
+        /// </summary>
+        [StringLength(Role.MaxNameLength)]
+        
+        public string WorkerRoleName { get; set; }
         /// <summary>
         /// 照片
         /// </summary>

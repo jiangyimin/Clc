@@ -7,9 +7,9 @@ using Clc.Types;
 using Clc.Fields;
 using Clc.Clients;
 using Clc.Affairs;
-using Clc.Works;
 using Clc.Runtime;
 using Clc.Routes;
+using Clc.PreRoutes;
 
 namespace Clc.EntityFrameworkCore
 {
@@ -34,8 +34,10 @@ namespace Clc.EntityFrameworkCore
         public DbSet<Outlet> Outlets { get; set; }
         public DbSet<Box> Boxes { get; set; }
 
-        // Runtimes        public DbSet<Signin> Signins { get; set; }
+        // Runtimes        
+        public DbSet<Signin> Signins { get; set; }
         public DbSet<ArticleRecord> ArticleRecords { get; set; }
+        public DbSet<BoxRecord> BoxRecords { get; set; }
 
         // Affairs
         public DbSet<Affair> Affairs { get; set; }
@@ -43,6 +45,10 @@ namespace Clc.EntityFrameworkCore
         public DbSet<AffairTask> AffairTasks { get; set; }
         public DbSet<AffairEvent> AffairEvents { get; set; }
 
+        // PreRoutes
+        public DbSet<PreRoute> PreRoutes { get; set; }
+        public DbSet<PreRouteWorker> PreRouteWorkers { get; set; }
+        public DbSet<PreRouteTask> PreRouteTasks { get; set; }
         // Routes
         public DbSet<Route> Routes { get; set; }
         public DbSet<RouteWorker> RouteWorkers { get; set; }
@@ -115,11 +121,11 @@ namespace Clc.EntityFrameworkCore
             });
             modelBuilder.Entity<PreRoute>(b =>
             {
-                b.HasIndex(e => new { e.TenantId, e.DepotId, e.RouteTypeId});
+                b.HasIndex(e => new { e.TenantId, e.DepotId, e.RouteName}).IsUnique();
             });
             modelBuilder.Entity<Route>(b =>
             {
-                b.HasIndex(e => new { e.TenantId, e.DepotId, e.CarryoutDate});
+                b.HasIndex(e => new { e.TenantId, e.DepotId, e.CarryoutDate, e.RouteName}).IsUnique();
             });
 
 
@@ -136,7 +142,7 @@ namespace Clc.EntityFrameworkCore
             modelBuilder.Entity<Outlet>()
                 .HasOne(b => b.Customer).WithMany().OnDelete(DeleteBehavior.Restrict);
 
-            // Works
+            // Runtimes
             modelBuilder.Entity<Signin>()
                 .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
 

@@ -43,6 +43,11 @@ namespace Clc.Clients.Dto
         [StringLength(Outlet.MaxContactLength)]
         public string Contact { get; set; }
         /// <summary>
+        /// Contact
+        /// </summary>
+        [StringLength(Outlet.MaxContactLength)]
+        public string Weixins { get; set; }
+        /// <summary>
         /// 经度
         /// </summary>
         public double? Longitude { get; set; }

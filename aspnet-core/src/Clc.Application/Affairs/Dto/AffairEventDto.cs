@@ -23,6 +23,9 @@ namespace Clc.Affairs
         public string Description { get; set; }
 
         public string Issurer { get; set; }
+
+        // only for mds.js 
+        public string Postfix { get; } = "Event";
     }
 }
 

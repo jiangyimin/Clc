@@ -10,7 +10,8 @@ namespace Clc.Types
         Task<List<ComboboxItemDto>> GetComboItems(string typeName);
         Task<List<ComboboxItemDto>> GetDutyCategories();
 
-        //Task<List<string>> GetDuties(string category);
- 
+        List<WorkRole> GetWorkRoleItems(int workplaceId);
+
+        List<WorkRole> GetRouteWorkRoleItems(int routeTypeId);
     }
 }

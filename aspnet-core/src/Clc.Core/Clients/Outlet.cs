@@ -52,6 +52,10 @@ namespace Clc.Clients
         /// </summary>
         [StringLength(MaxContactLength)]
         public string Contact { get; set; }
+
+        [StringLength(MaxContactLength)]
+        public string Weixins { get; set; }
+
         /// <summary>
         /// 经度
         /// </summary>

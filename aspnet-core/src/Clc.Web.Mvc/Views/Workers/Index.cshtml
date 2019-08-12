@@ -14,6 +14,7 @@
             { field: "name", title: "名称", width: 80 },
             { field: "postId", title: "岗位", width: 100, formatter: postFormatter },
             { field: "password", title: "登录密码", width: 80 },
+            { field: "workerRoleName", title: "登录角色名", width: 80, sortable: true },
             { field: "photoLength", title: "照片大小", width: 80 },
             { field: "rfid", title: "RFID", width: 100 },         
             { field: "deviceId", title: "微信设备号", width: 120 },
@@ -40,6 +41,14 @@
         crud.startfunction = function () {
             abp.services.app.type.getComboItems('Post').done(function(d) {
                 crud.setComboBox('#post', d);
+            });
+
+            abp.services.app.user.getRoles(true).done(function(d) {
+                $('#workerRoleName').combobox({
+                    data: d, 
+                    valueField: 'name', 
+                    textField: 'displayName'
+                });
             });
 
             abp.services.app.field.getComboItems('Depot').done(function(depots) {
@@ -125,22 +134,27 @@
                 <td><input name="password" class="easyui-numberbox" style="width: 100%"></td>
             </tr>
             <tr>
+            <tr>
+                <th><Label for="workerRoleName">登录角色名: </Label></th>
+                <td><input name="workerRoleName" class="easyui-combobox" style="width: 100%"></td>
                 <th><Label for="PhotoImage">照片:</Label></th>
                 <td>
                     <img id="preview" alt="" src="" style="width:100px; height:110px;" />
                     <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
                 </td>
+            <tr>
                 <th><Label for="rfid">RFID:</Label></th>
                 <td><input name="rfid" class="easyui-textbox" style="width: 100%"></td>
-            <tr>
                 <th><Label for="deviceId">微信设备号:</Label></th>
                 <td><input name="deviceId" class="easyui-textbox" style="width: 100%"></td>
-                <th><Label for="additiveInfo">附加认证信息:</Label></th>
-                <td><input name="additiveInfo" class="easyui-numberbox" style="width: 100%"></td>
             </tr>
             <tr>
+                <th><Label for="additiveInfo">附加认证信息:</Label></th>
+                <td><input name="additiveInfo" class="easyui-numberbox" style="width: 100%"></td>
                 <th><label for="loanDepotId">借用到:</label></th>
                 <td><input id="loanDepot" name="loanDepotId" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+            <tr>
                 <th><label for="isActive">启用：</label></th>
                 <td><input name="isActive" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
             </tr>

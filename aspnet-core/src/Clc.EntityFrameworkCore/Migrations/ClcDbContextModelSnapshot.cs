@@ -1248,6 +1248,9 @@ namespace Clc.Migrations
 
                     b.Property<int>("TenantId");
 
+                    b.Property<string>("Weixins")
+                        .HasMaxLength(50);
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -1403,6 +1406,9 @@ namespace Clc.Migrations
 
                     b.Property<int>("TenantId");
 
+                    b.Property<string>("WorkerRoleName")
+                        .HasMaxLength(32);
+
                     b.HasKey("Id");
 
                     b.HasIndex("DepotId");
@@ -1507,7 +1513,7 @@ namespace Clc.Migrations
                     b.ToTable("AbpTenants");
                 });
 
-            modelBuilder.Entity("Clc.Routes.PreRoute", b =>
+            modelBuilder.Entity("Clc.PreRoutes.PreRoute", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1524,6 +1530,10 @@ namespace Clc.Migrations
                     b.Property<string>("Remark")
                         .HasMaxLength(50);
 
+                    b.Property<string>("RouteName")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
                     b.Property<int>("RouteTypeId");
 
                     b.Property<string>("StartTime")
@@ -1538,14 +1548,49 @@ namespace Clc.Migrations
 
                     b.HasIndex("DepotId");
 
+                    b.HasIndex("RouteTypeId");
+
                     b.HasIndex("VehicleId");
 
-                    b.HasIndex("TenantId", "DepotId", "RouteTypeId");
+                    b.HasIndex("TenantId", "DepotId", "RouteName")
+                        .IsUnique();
 
-                    b.ToTable("PreRoute");
+                    b.ToTable("PreRoutes");
                 });
 
-            modelBuilder.Entity("Clc.Routes.PreRouteWorker", b =>
+            modelBuilder.Entity("Clc.PreRoutes.PreRouteTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ArriveTime")
+                        .IsRequired()
+                        .HasMaxLength(5);
+
+                    b.Property<int>("OutletId");
+
+                    b.Property<int>("PreRouteId");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(50);
+
+                    b.Property<int>("TaskTypeId");
+
+                    b.Property<int>("TenantId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OutletId");
+
+                    b.HasIndex("PreRouteId");
+
+                    b.HasIndex("TaskTypeId");
+
+                    b.ToTable("PreRouteTasks");
+                });
+
+            modelBuilder.Entity("Clc.PreRoutes.PreRouteWorker", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1567,7 +1612,7 @@ namespace Clc.Migrations
 
                     b.HasIndex("WorkerId");
 
-                    b.ToTable("PreRouteWorker");
+                    b.ToTable("PreRouteWorkers");
                 });
 
             modelBuilder.Entity("Clc.Routes.Route", b =>
@@ -1627,7 +1672,8 @@ namespace Clc.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.HasIndex("TenantId", "DepotId", "CarryoutDate");
+                    b.HasIndex("TenantId", "DepotId", "CarryoutDate", "RouteName")
+                        .IsUnique();
 
                     b.ToTable("Routes");
                 });
@@ -1868,7 +1914,7 @@ namespace Clc.Migrations
 
                     b.HasIndex("RouteTaskId");
 
-                    b.ToTable("BoxRecord");
+                    b.ToTable("BoxRecords");
                 });
 
             modelBuilder.Entity("Clc.Runtime.Signin", b =>
@@ -1893,7 +1939,7 @@ namespace Clc.Migrations
 
                     b.HasIndex("TenantId", "DepotId", "SigninTime", "WorkerId");
 
-                    b.ToTable("Signin");
+                    b.ToTable("Signins");
                 });
 
             modelBuilder.Entity("Clc.Types.ArticleType", b =>
@@ -1935,9 +1981,6 @@ namespace Clc.Migrations
                         .HasMaxLength(8);
 
                     b.Property<int>("TenantId");
-
-                    b.Property<string>("WorkerRoleName")
-                        .HasMaxLength(32);
 
                     b.HasKey("Id");
 
@@ -2334,11 +2377,16 @@ namespace Clc.Migrations
                         .HasForeignKey("LastModifierUserId");
                 });
 
-            modelBuilder.Entity("Clc.Routes.PreRoute", b =>
+            modelBuilder.Entity("Clc.PreRoutes.PreRoute", b =>
                 {
                     b.HasOne("Clc.Fields.Depot", "Depot")
                         .WithMany()
                         .HasForeignKey("DepotId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clc.Types.RouteType", "RouteType")
+                        .WithMany()
+                        .HasForeignKey("RouteTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Clc.Fields.Vehicle", "Vehicle")
@@ -2347,9 +2395,27 @@ namespace Clc.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("Clc.Routes.PreRouteWorker", b =>
+            modelBuilder.Entity("Clc.PreRoutes.PreRouteTask", b =>
                 {
-                    b.HasOne("Clc.Routes.Route", "PreRoute")
+                    b.HasOne("Clc.Clients.Outlet", "Outlet")
+                        .WithMany()
+                        .HasForeignKey("OutletId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clc.PreRoutes.PreRoute", "PreRoute")
+                        .WithMany()
+                        .HasForeignKey("PreRouteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clc.Types.TaskType", "TaskType")
+                        .WithMany()
+                        .HasForeignKey("TaskTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Clc.PreRoutes.PreRouteWorker", b =>
+                {
+                    b.HasOne("Clc.PreRoutes.PreRoute", "PreRoute")
                         .WithMany()
                         .HasForeignKey("PreRouteId")
                         .OnDelete(DeleteBehavior.Cascade);

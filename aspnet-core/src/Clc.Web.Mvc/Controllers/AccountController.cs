@@ -132,11 +132,10 @@ namespace Clc.Web.Controllers
                 if (worker.Password != password)     // 密码错
                     throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
 
-                // TODO:  Worker must is duty (in Affair)
-                if (worker.IsActive == true)
-                {
-                    loginResult = await _logInManager.LoginAsync("Worker" + usernameOrEmailAddress, Clc.Authorization.Users.User.WorkerUserDefaultPassword, tenancyName);
-                }
+                if (string.IsNullOrEmpty(worker.WorkerRoleName) || worker.IsActive == false || string.IsNullOrEmpty(worker.Password))
+                    throw new UserFriendlyException("你没有登录权限");
+
+                loginResult = await _logInManager.LoginAsync("Worker" + usernameOrEmailAddress, Clc.Authorization.Users.User.WorkerUserDefaultPassword, tenancyName);
             }
 
             return loginResult;

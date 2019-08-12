@@ -26,7 +26,6 @@ namespace Clc.Authorization
             context.CreatePermission(PermissionNames.Pages_Monitor, L("Monitor"));
 
             // Captain
-            context.CreatePermission(PermissionNames.Pages_PreArrange, L("PreArrange"));
             context.CreatePermission(PermissionNames.Pages_Arrange, L("Arrange"));
             context.CreatePermission(PermissionNames.Pages_Statistic, L("Statistic"));
             context.CreatePermission(PermissionNames.Pages_Aux, L("Aux"));

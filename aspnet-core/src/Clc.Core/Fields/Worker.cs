@@ -1,8 +1,8 @@
-using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
 using Clc.Types;
+using Clc.Authorization.Roles;
 
 namespace Clc.Fields
 {
@@ -55,6 +55,12 @@ namespace Clc.Fields
         /// </summary>
         [StringLength(MaxPasswordLength)]
         public string Password { get; set; }
+
+        /// <summary>
+        /// 工作人员角色名
+        /// </summary>
+        [StringLength(Role.MaxNameLength)]
+        public string WorkerRoleName { get; set; }
 
         /// <summary>
         /// IDCardNo 

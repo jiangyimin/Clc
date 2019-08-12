@@ -57,16 +57,16 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Posts.Count() == 0)
             {
                 _context.Posts.AddRange(new Post[] {
-                    new Post { TenantId = _tenantId, Cn = "01", Name = "大队长", WorkerRoleName = StaticRoleNames.Tenants.Captain }, 
+                    new Post { TenantId = _tenantId, Cn = "01", Name = "大队长" }, 
                     new Post { TenantId = _tenantId, Cn = "02", Name = "司机" },
                     new Post { TenantId = _tenantId, Cn = "03", Name = "车长" },
                     new Post { TenantId = _tenantId, Cn = "04", Name = "持枪员" },
                     new Post { TenantId = _tenantId, Cn = "05", Name = "主业务员" },
                     new Post { TenantId = _tenantId, Cn = "06", Name = "业务员" },
-                    new Post { TenantId = _tenantId, Cn = "07", Name = "物品库管员", WorkerRoleName = StaticRoleNames.Tenants.Article },                     
-                    new Post { TenantId = _tenantId, Cn = "08", Name = "金库管理员", WorkerRoleName = StaticRoleNames.Tenants.Box },                     
-                    new Post { TenantId = _tenantId, Cn = "09", Name = "综合库管员", WorkerRoleName = StaticRoleNames.Tenants.ArticleAndBox },                     
-                    new Post { TenantId = _tenantId, Cn = "10", Name = "监控员", WorkerRoleName = StaticRoleNames.Tenants.Monitor },
+                    new Post { TenantId = _tenantId, Cn = "07", Name = "物品库管员" },                     
+                    new Post { TenantId = _tenantId, Cn = "08", Name = "金库管理员" },                     
+                    new Post { TenantId = _tenantId, Cn = "09", Name = "综合库管员" },                     
+                    new Post { TenantId = _tenantId, Cn = "10", Name = "监控员" },
                     new Post { TenantId = _tenantId, Cn = "11", Name = "领导" }, 
                     new Post { TenantId = _tenantId, Cn = "12", Name = "干部" }, 
                     new Post { TenantId = _tenantId, Cn = "13", Name = "职员" }
@@ -109,7 +109,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new WorkRole { TenantId = _tenantId, Cn = "05", Name = "业务员", DefaultPostId = 6, mustHave = true, MaxNum = 2 },
                     new WorkRole { TenantId = _tenantId, Cn = "06", Name = "库房管理员", DefaultPostId = 7, mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "07", Name = "金库管理员", DefaultPostId = 7, mustHave = true, MaxNum = 8 }, 
-                    //new WorkRole { TenantId = _tenantId, Cn = "08", Name = "值班员", mustHave = true, MaxNum = 5 }, 
+                    new WorkRole { TenantId = _tenantId, Cn = "08", Name = "待命", mustHave = true, MaxNum = 5 }, 
                     //new WorkRole { TenantId = _tenantId, Cn = "09", Name = "监控员", DefaultPostId = 7, mustHave = true, MaxNum = 3 },
                  }); 
                 _context.SaveChanges();
@@ -147,7 +147,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Workers.Count() == 0)
             {
                 _context.Workers.AddRange(new Worker[] {
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "33336", Name = "李明", PostId = 1, Password = "123456", Rfid = "33336", AdditiveInfo = "142701198001041239", IsActive = true },
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "33336", Name = "李明", PostId = 1, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Captain, Rfid = "33336", AdditiveInfo = "142701198001041239", IsActive = true },
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10001", Name = "高鹏", PostId = 2, Password = "123456", Rfid = "10001", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10002", Name = "许振亚", PostId = 2, Password = "123456", Rfid = "10002", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10003", Name = "陈俊杰", PostId = 3, Password = "123456", Rfid = "10003", AdditiveInfo = "142701198001041239", IsActive = true }, 
@@ -158,11 +158,11 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10008", Name = "程涛", PostId = 5, Password = "123456", Rfid = "10008", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10009", Name = "吴风涛", PostId = 6, Password = "123456", Rfid = "10009", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10010", Name = "郭杰", PostId = 6, Password = "123456", Rfid = "10010", AdditiveInfo = "142701198001041239", IsActive = true }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20001", Name = "赵帅", PostId = 7, Password = "123456", Rfid = "20001", AdditiveInfo = "142701198001041239", IsActive = true }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20002", Name = "裴孟林", PostId = 7, Password = "123456", Rfid = "20002", AdditiveInfo = "142701198001041239", IsActive = true }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20003", Name = "滕帅斌", PostId = 8, Password = "123456", Rfid = "20003", AdditiveInfo = "142701198001041239", IsActive = true }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20004", Name = "申晓强", PostId = 8, Password = "123456", Rfid = "20004", AdditiveInfo = "142701198001041239", IsActive = true }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20005", Name = "王宽", PostId = 9, Password = "123456", Rfid = "20005", AdditiveInfo = "142701198001041239", IsActive = true },
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20001", Name = "赵帅", PostId = 7, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Article, Rfid = "20001", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20002", Name = "裴孟林", PostId = 7, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Article, Rfid = "20002", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20003", Name = "滕帅斌", PostId = 8, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Box, Rfid = "20003", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20004", Name = "申晓强", PostId = 8, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Box, Rfid = "20004", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20005", Name = "王宽", PostId = 9, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.ArticleAndBox, Rfid = "20005", AdditiveInfo = "142701198001041239", IsActive = true },
                     new Worker { TenantId = _tenantId, DepotId = 2, Cn = "33333", Name = "陈灼", PostId = 1, Password = "123456", Rfid = "33333", AdditiveInfo = "142701198001041239", IsActive = true },
                 }); 
                 _context.SaveChanges();
@@ -215,6 +215,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Customer { TenantId = _tenantId, Cn = "01", Name = "工商银行" },
                     new Customer { TenantId = _tenantId, Cn = "02", Name = "农业银行" },
                     new Customer { TenantId = _tenantId, Cn = "03", Name = "中国银行" },
+                    new Customer { TenantId = _tenantId, Cn = "11", Name = "南通商业银行" },
                 });
                 _context.SaveChanges();
             }
@@ -232,6 +233,9 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "023110", Name = "农行武大分理处" },
                     new Outlet { TenantId = _tenantId, CustomerId = 3, Cn = "030410", Name = "中行惠凯丽分理处" },
                     new Outlet { TenantId = _tenantId, CustomerId = 3, Cn = "030511", Name = "中行杰拉德支行" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100401", Name = "南商南通分行", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100402", Name = "南商美丽华分理处" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100101", Name = "南商工业园支行" },
                 });
                 _context.SaveChanges();
             }

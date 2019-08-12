@@ -14,6 +14,7 @@
             { field: "password", title: "交接密码", width: 80 },
             { field: "ciphertext", title: "交接密文", width: 100 },
             { field: "contact", title: "联系方式", width: 100 },
+            { field: "weixins", title: "微信账号列表", width: 100 },
             { field: "longitude", title: "经度", width: 100 },
             { field: "latitude", title: "纬度", width: 100 },
          ]];
@@ -88,6 +89,10 @@
             <tr>
                 <th><Label for="contact">联系方式: </Label></th>
                 <td><input name="contact" class="easyui-textbox", data-options="validType:'length[1, @Outlet.MaxContactLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="weixins">微信账号列表: </Label></th>
+                <td><input name="weixins" class="easyui-textbox", data-options="validType:'length[1, @Outlet.MaxContactLength]'" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="longitude">经度：</label></th>

@@ -119,20 +119,10 @@ namespace Clc.Users
             var users = await Repository.GetAllListAsync();
             foreach (WorkerListItem worker in _workerCache.GetList())
             {
-                string roleName = _postCache[worker.PostId].WorkerRoleName;
+                string roleName = _workerCache[worker.Id].WorkerRoleName;
                
                 if (!string.IsNullOrWhiteSpace(roleName))
                 {
-                    // Skip unexisted role
-                    try 
-                    {
-                        await _roleManager.GetRoleByNameAsync(roleName);
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-
                     // User
                     string userName = "Worker" + worker.Cn;
                     var user = users.FirstOrDefault(x => x.UserName == userName);

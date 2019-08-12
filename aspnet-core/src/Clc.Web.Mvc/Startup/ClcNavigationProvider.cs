@@ -37,7 +37,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Type_WorkRoles", new FixedLocalizableString("工作角色"), url: "WorkRoles"))
                // Fields
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Fields, new FixedLocalizableString("场地及资源"), icon: "fa fa-globe", requiredPermissionName: PermissionNames.Pages_Fields)
-                    .AddItem(new MenuItemDefinition("Field_Depots", new FixedLocalizableString("运行场地"), url: "Depots"))
+                    .AddItem(new MenuItemDefinition("Field_Depots", new FixedLocalizableString("运行中心"), url: "Depots"))
                     .AddItem(new MenuItemDefinition("Field_Workplaces", new FixedLocalizableString("内务地点"), url: "Workplaces"))
                     .AddItem(new MenuItemDefinition("Field_Workers", new FixedLocalizableString("工作人员"), url: "Workers"))
                     .AddItem(new MenuItemDefinition("Field_Vehicles", new FixedLocalizableString("车辆"), url: "Vehicles"))
@@ -62,15 +62,11 @@ namespace Clc.Web.Startup
                // PlaceC
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("中心监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
  
-                // PreArrange
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_PreArrange, new FixedLocalizableString("预排"), icon: "fa fa-list", requiredPermissionName: PermissionNames.Pages_PreArrange)
-                    .AddItem(new MenuItemDefinition("PreArrange_Routes", new FixedLocalizableString("预排线路"), url: "PreRoutes"))
-                    .AddItem(new MenuItemDefinition("PreArrange_Workers", new FixedLocalizableString("预排人员"), url: "PreWorkers"))
-                    .AddItem(new MenuItemDefinition("PreArrange_VehicleWorkers", new FixedLocalizableString("应急交接人员"), url: "VehicleWorkers"))
                 // Arrange
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("当日任务"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
-                    .AddItem(new MenuItemDefinition("Arrange_Affairs", new FixedLocalizableString("内部任务"), url: "Affairs"))
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("工作安排"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
+                    .AddItem(new MenuItemDefinition("PreArrange_Routes", new FixedLocalizableString("预排线路"), url: "PreRoutes"))
                     .AddItem(new MenuItemDefinition("Arrange_Routes", new FixedLocalizableString("线路任务"), url: "Routes"))
+                    .AddItem(new MenuItemDefinition("Arrange_Affairs", new FixedLocalizableString("内部任务"), url: "Affairs"))
                     .AddItem(new MenuItemDefinition("Dispatcher_DaySettle", new FixedLocalizableString("日结"), url: "DaySettles"))
                 // Statistic
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
@@ -87,17 +83,20 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Keeper_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Keeper/ArticleRecords"))
                     .AddItem(new MenuItemDefinition("Dispatcher_RouteTasksQuery", new FixedLocalizableString("线路任务查询"), url: "Routes/RouteTasksQuery"))
 
-                // PlaceA
-                ).AddItem(new MenuItemDefinition("KeeperPages_Inquire", new FixedLocalizableString("库房查询"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Article)
-                    .AddItem(new MenuItemDefinition("Keeper_WhAffairsCheck", new FixedLocalizableString("库房人员自签"), url: "Keeper/WhAffairsCheck"))
-                    .AddItem(new MenuItemDefinition("Keeper_Articles", new FixedLocalizableString("物品清单"), url: "Keeper/Index"))
-                    .AddItem(new MenuItemDefinition("Keeper_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Keeper/ArticleRecords"))
+                // Article
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Article, new FixedLocalizableString("库房操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Article)
+                    .AddItem(new MenuItemDefinition("Article_Lend", new FixedLocalizableString("领用"), url: "ArticleWork/Lend"))
+                    .AddItem(new MenuItemDefinition("Article_Return", new FixedLocalizableString("归还"), url: "ArticleWork/Return"))
+                    .AddItem(new MenuItemDefinition("Article_List", new FixedLocalizableString("物品清单查询"), url: "ArticleWork/List"))
+                    .AddItem(new MenuItemDefinition("Article_Record", new FixedLocalizableString("物品领用记录查询"), url: "ArticleWork/Records"))
                 
-                // PlaceB
-                ).AddItem(new MenuItemDefinition("KeeperPages_Operate", new FixedLocalizableString("库房操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Box)
-                    .AddItem(new MenuItemDefinition("Keeper_VtAffairsCheck", new FixedLocalizableString("金库人员核实"), url: "Keeper/VtAffairsCheck"))
-                    .AddItem(new MenuItemDefinition("Keeper_RoutesArticle", new FixedLocalizableString("押运任务处理"), url: "Keeper/RoutesArticle"))
-                );
+                // Box
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Box, new FixedLocalizableString("金库尾箱操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Box)
+                    .AddItem(new MenuItemDefinition("Box_In", new FixedLocalizableString("入箱"), url: "BoxWork/InBox"))
+                    .AddItem(new MenuItemDefinition("Box_Out", new FixedLocalizableString("归还"), url: "BoxWork/OutBox"))
+                    .AddItem(new MenuItemDefinition("Box_List", new FixedLocalizableString("尾箱清单查询"), url: "BoxWork/List"))
+                    .AddItem(new MenuItemDefinition("Box_Record", new FixedLocalizableString("尾箱进出记录查询"), url: "BoxWork/Records"))
+                 );
         }
 
         private static ILocalizableString L(string name)

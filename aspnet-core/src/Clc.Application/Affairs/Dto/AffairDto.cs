@@ -50,6 +50,9 @@ namespace Clc.Affairs.Dto
         public string WorkplaceName { get; set; }
         public string CreateWorkerName { get; set; }
 
+        // only for mds.js 
+        public string Postfix { get; } = "";
+
         #region Inteface
         public void Normalize()
         {

@@ -2,9 +2,6 @@ using System.Collections.Generic;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Clc.Runtime.Cache;
-using Clc.Fields;
-using Clc.Fields.Dto;
-using Clc.Types;
 
 namespace Clc.Fields
 {
@@ -14,17 +11,21 @@ namespace Clc.Fields
         private readonly IDepotCache _depotCache;
         private readonly IWorkplaceCache _workplaceCache;
         private readonly IWorkerCache _workerCache;
-        private readonly IWorkRoleCache _workRoleCache;
+        private readonly IVehicleCache _vehicleCache;
+
+        private readonly IPostCache _postCache;
 
         public FieldAppService(IDepotCache depotCache,
             IWorkplaceCache workplaceCache,
             IWorkerCache workerCache,
-            IWorkRoleCache workRoleCache)
+            IVehicleCache vehicleCache,
+            IPostCache postCache)
         {
             _depotCache = depotCache;
             _workplaceCache = workplaceCache;
             _workerCache = workerCache;
-            _workRoleCache = workRoleCache;
+            _vehicleCache = vehicleCache;
+            _postCache = postCache;
         }
 
         public List<ComboboxItemDto> GetComboItems(string name)
@@ -63,23 +64,33 @@ namespace Clc.Fields
         {
             if (all)
             {
-                return ObjectMapper.Map<List<WorkerListItem>>(_workplaceCache.GetList());
+                return ObjectMapper.Map<List<WorkerListItem>>(_workerCache.GetList());
             }
             else
             {
                 int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
                 var lst = _workerCache.GetList().FindAll(x => x.DepotId == depotId || (x.LoanDepotId.HasValue && x.LoanDepotId.Value == depotId));
                 lst.Sort( (a, b) => a.Cn.CompareTo(b.Cn) );
-                return ObjectMapper.Map<List<WorkerListItem>>(lst);
+
+                var list = ObjectMapper.Map<List<WorkerListItem>>(lst);
+                list.ForEach(x => x.PostName = _postCache[x.PostId].Name);
+                return list;
             }
         }
 
-        public List<WorkRole> GetWorkRoleItems(int workplaceId)        
+        public List<VehicleListItem> GetVehicleListItems(bool all)        
         {
-            List<string> targetRoles = new List<string>(_workplaceCache[workplaceId].WorkRoles.Split('|', ','));
-            var all = _workRoleCache.GetList();
-            return all.FindAll(x => targetRoles.Contains(x.Name));
-        }
- 
+            if (all)
+            {
+                return ObjectMapper.Map<List<VehicleListItem>>(_vehicleCache.GetList());
+            }
+            else
+            {
+                int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
+                var lst = _vehicleCache.GetList().FindAll(x => x.DepotId == depotId);
+                lst.Sort( (a, b) => a.Cn.CompareTo(b.Cn) );
+                return ObjectMapper.Map<List<VehicleListItem>>(lst);
+            }
+        } 
     }
 }

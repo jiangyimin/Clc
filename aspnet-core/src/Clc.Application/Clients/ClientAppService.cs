@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Clc.Runtime.Cache;
@@ -19,7 +18,7 @@ namespace Clc.Clients
             _outletCache = outletCache;
         }
 
-        public Task<List<ComboboxItemDto>> GetComboItems(string name)
+        public List<ComboboxItemDto> GetComboItems(string name)
         {
             var lst = new List<ComboboxItemDto>();
             switch (name) 
@@ -35,7 +34,7 @@ namespace Clc.Clients
                 default:
                     break;
             }
-            return Task.FromResult<List<ComboboxItemDto>>(lst);
+            return lst;
         }        
     }
 }

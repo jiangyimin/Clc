@@ -1,47 +1,350 @@
-﻿@using Clc.Types
 @{
-    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+    Layout = "~/Views/Shared/_WorkLayout.cshtml";
 }
 
-@section customScript
+@section workScripts
 {
+    <environment names="Development">
+        <script src="~/js/mds.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Routes/Index.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/js/mds.min.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Routes/Index.min.js" asp-append-version="true"></script>
+    </environment>
+
     <script type="text/javascript">
-        crud.dgDefault.name = 'AffairTypes';
-        crud.dgDefault.sortName = 'cn';
-        crud.dgDefault.columns = [[
-            { field: "cn", title: "编号", width: 80, sortable: true },
-            { field: "name", title: "名称", width: 80, sortable: true },
-            { field: "hasCloudDoor", title: "带云门", width: 100 },
-            { field: "toRoute", title: "可安排到线路", width: 100 },
-            { field: "minDuration", title: "最短班次小时", width: 100 },
-            { field: "maxDuration", title: "最长班次小时", width: 100 }
+        mds.controllerName = 'Routes';
+        mds.masterInputName = 'routeId';
+        // main
+        mds.main = Object.assign({}, mds.dgDefault);
+        mds.main.sortName = "routeName";
+        mds.main.singleSelect = false;
+        mds.main.columns = [[
+            { field: "ck", checkbox: true },
+            { field: "carryoutDate", title: "时间", width: 100, formatter: $.dateFormatter },
+            { field: "routeName", title: "线路名称", width: 100, sortable: true },
+            { field: "status", title: "状态", width: 80 },
+            { field: "routeTypeName", title: "押运类型", width: 80 },
+            { field: "vehicleCn", title: "车辆编号", width: 80 },
+            { field: "vehicleLicense", title: "车牌号", width: 80 },
+            { field: "start1Time", title: "出发时间", width: 100, sortable: true },
+            { field: "end1Time", title: "返回时间", width: 80 },
+            { field: "mileage", title: "预计里程", width: 80 },
+            { field: "setoutTime", title: "实际出发", width: 80, formatter: $.timeFormatter },
+            { field: "returnTime", title: "实际返回", width: 80, formatter: $.timeFormatter },
+            { field: "actualMileage", title: "实际里程", width: 80 },
+            { field: "remark", title: "备注", width: 80 },
+            { field: "createWorkerName", title: "创建人", width: 60 }
         ]];
+        mds.main.insert = abp.services.app.route.insert;
+        mds.main.update = abp.services.app.route.update;
+        mds.main.delete = abp.services.app.route.delete;
+
+        // details
+        var detail = Object.assign({}, mds.dgDefault);
+        detail.postfix = "Worker";
+        detail.columns = [[
+            { field: "workRoleName", title: "工作角色", width: 80 },
+            { field: "workerCn", title: "人员编号", width: 80 },
+            { field: "workerName", title: "人员姓名", width: 80 },
+            { field: "workRoleArticleTypeList", title: "所需领用物品", width: 80 },
+        ]];
+        detail.insert = abp.services.app.route.insertWorker;
+        detail.update = abp.services.app.route.updateWorker;
+        detail.delete = abp.services.app.route.deleteWorker;
+        mds.details.push(detail);
+
+        detail = Object.assign({}, mds.dgDefault);
+        detail.postfix = "Task";
+        detail.sortName = "arriveTime";
+        detail.columns = [[
+            { field: "arriveTime", title: "到达时间", width: 80, sortable: true },
+            { field: "outletCn", title: "网点编号", width: 80 },
+            { field: "outletName", title: "网点名称", width: 100 },
+            { field: "taskTypeName", title: "任务类型", width: 80 },
+            { field: "remark", title: "备注", width: 80 },
+            { field: "identifyTime", title: "交接时间", width: 80, formatter: $.timeFormatter },
+            { field: "createWorkerName", title: "创建人", width: 60 },
+        ]];
+        detail.insert = abp.services.app.route.insertTask;
+        detail.update = abp.services.app.route.updateTask;
+        detail.delete = abp.services.app.route.deleteTask;
+        mds.details.push(detail);
+
+        detail = Object.assign({}, mds.dgDefault);
+        detail.postfix = "Event";
+        detail.columns = [[
+            { field: "eventTime", title: "发生时间", width: 80, formatter: $.datetimeFormatter },
+            { field: "name", title: "名称", width: 80, align: "center" },
+            { field: "description", title: "具体描述", width: 150 },
+            { field: "issuer", title: "创建者", width: 80 },
+        ]];
+        detail.operatorColumn = false;
+        mds.details.push(detail);
+
+        detail = Object.assign({}, mds.dgDefault);
+        detail.postfix = "Article";
+        detail.columns = [[
+            { field: "articleCn", title: "物品", width: 80 },
+        ]];
+        detail.operatorColumn = false;
+        mds.details.push(detail);
+
+        detail = Object.assign({}, mds.dgDefault);
+        detail.postfix = "InBox";
+        detail.columns = [[
+            { field: "boxCn", title: "尾箱", width: 80 },
+        ]];
+        detail.operatorColumn = false;
+        mds.details.push(detail);
+        detail = Object.assign({}, mds.dgDefault);
+
+        detail.postfix = "OutBox";
+        detail.columns = [[
+            { field: "boxCn", title: "尾箱", width: 80 },
+        ]];
+        detail.operatorColumn = false;
+        mds.details.push(detail);
     </script>
 }
 
-@*弹窗*@
-<div id="dlg" class="easyui-dialog" closed="true" modal="true" align="center" style="width: 400px; padding: 10px;">
+@section funcScripts
+{
+    <script type="text/javascript">
+        mds.initfunction = function () {
+            // comboBoxs
+            abp.services.app.type.getComboItems('RouteType').done(function (data) {
+                $('#routeType').combobox({
+                    data: data, 
+                    valueField: 'value', 
+                    textField: 'displayText'
+                });  
+            });
+            abp.services.app.field.getVehicleListItems().done(function (data) {
+                $('#vehicle').combobox({
+                    data: data, 
+                    valueField: 'id', 
+                    textField: 'cnLicense'
+                });    
+            });
+            abp.services.app.field.getWorkerListItems().done(function (data) {
+                $('#worker').combobox({
+                    data: data,
+                    valueField: 'id',
+                    textField: 'cnNamePost'
+                })
+            });
+            abp.services.app.client.getComboItems('OutletWithCn').done(function (data) {
+                $('#outlet').combobox({
+                    data: data,
+                    valueField: 'value',
+                    textField: 'displayText'
+                })
+            });
+            abp.services.app.type.getComboItems('TaskType').done(function (data) {
+                $('#taskType').combobox({
+                    data: data,
+                    valueField: 'value',
+                    textField: 'displayText'
+                })
+            });
+        }
+
+        mds.onselectfunction = function (masterRow) {
+            //alert("onselect" + masterRow.routeTypeId);
+            abp.services.app.type.getRouteWorkRoleItems(masterRow.routeTypeId).done(function (data) {
+                $('#workRole').combobox({
+                    data: data, 
+                    valueField: 'id', 
+                    textField: 'name'
+                });    
+            });
+        }
+
+        mds.customerSetAddValue = function(postfix) 
+        {
+            if (postfix == mds.main.postfix) {
+                $('#fm'+mds.main.postfix).find('input[name="carryoutDate"]').attr('value', $('#dd').datebox('getValue'));
+                $('#fm'+mds.main.postfix).find('input[name="status"]').attr('value', '安排');
+            }
+        };
+
+        mds.getUrl = function(postfix, masterRow) {
+            if (postfix == mds.main.postfix) 
+                url = 'Routes/GridData?CarryoutDate=' + mds.today;
+
+            var url = mds.controllerName + '/GridData' + postfix;
+            if (masterRow == null)
+                url += '/' + 0;          // clear datagrid!
+            else
+                url += '/' + masterRow.id;
+
+            alert(url);
+            return url;
+        }
+    </script>
+}
+
+<div class="easyui-layout" fit="true">
+    <!-- BEGIN of main -->
+    <div data-options="region:'north', split:true, border:false" style="min-height:120px; height:40%">
+        <div id="tb">
+            任务日期: <input id="dd" class="easyui-datebox" readonly="true" style="width:120px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('')">刷新</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('')">添加</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="activate" href="javascript:void(0)" class="easyui-linkbutton">激活</a>
+            <a name="back" href="javascript:void(0)" class="easyui-linkbutton">退回</a>
+            <a name="createFrom" href="javascript:void(0)" class="easyui-linkbutton">从指定日期生成</a>
+            <input id="fromDate" class="easyui-datebox" style="width:120px">
+            &nbsp;&nbsp;&nbsp;<a name="createFromPre" href="javascript:void(0)" class="easyui-linkbutton">从预排生成</a>
+        </div>
+        <table id="dg" class="easyui-datagrid" toolbar="#tb">
+        </table>
+    </div>
+    <!-- END of main -->
+    <div data-options="region:'center'">
+       <div id="tt" class="easyui-tabs" data-options="fit:true, border:false">
+            <div title="人员列表" style="display:none;">
+                <div id="tbWorker">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Worker')">刷新</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('Worker')">添加</a>
+                </div>
+                <table id="dgWorker" class="easyui-datagrid" toolbar="#tbWorker">
+                </table>
+            </div>
+            <div title="任务列表" style="display:none;">
+                <div id="tbTask">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Task')">刷新</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('Task')">添加</a>
+                </div>
+                <table id="dgTask" class="easyui-datagrid" toolbar="#tbTask">
+                </table>
+            </div>
+            <div title="事件" style="display:none;">
+                <div id="tbEvent">
+                    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Event')">刷新</a>
+                </div>
+                <table id="dgEvent" class="easyui-datagrid" toolbar="#tbEvent">
+                </table>
+            </div>
+            <div title="物品" style="display:none;">
+                <div id="tbArticle">
+                    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Article')">刷新</a>
+                </div>
+                <table id="dgArticle" class="easyui-datagrid" toolbar="#tbArticle">
+                </table>
+            </div>
+            <div title="入箱" style="display:none;">
+                <div id="tbInBox">
+                    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('InBox')">刷新</a>
+                </div>
+                <table id="dgInBox" class="easyui-datagrid" toolbar="#tbInBox">
+                </table>
+            </div>
+            <div title="出箱" style="display:none;">
+                <div id="tbOutBox">
+                    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('OutBox')">刷新</a>
+                </div>
+                <table id="dgOutBox" class="easyui-datagrid" toolbar="#tbOutBox">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*主弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" style="width: 400px; padding: 10px;">
     <form id="fm" method="post" novalidate>
         <table class="edit-tbl">
-            <input id="id" name="id" type="hidden">
+            <input name="id" type="hidden">
+            <input name="carryoutDate" type="hidden">
+            <input name="status" type="hidden">
             <tr>
-                <th><label for="hasCloudDoor">带云门: </label></th>
-                <td><input name="hasCloudDoor" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
-                </td>
+                <th><Label for="routeName">线路名:</Label></th>
+                <td><input name="routeName" class="easyui-textbox" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><label for="toRoute">可安排到线路: </label></th>
-                <td><input name="toRoute" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
-                </td>
+                <th><Label for="routeTypeId">押运类型:</Label></th>
+                <td><input id="routeType" name="routeTypeId" class="easyui-combobox" data-options="required: true" style="width:100%"></td>
             </tr>
             <tr>
-                <th><label for="minDuration">最短班次小时：</label></th>
-                <td><input name="minDuration" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
+                <th><Label for="vehicleId">车辆:</Label></th>
+                <td><input id="vehicle" name="vehicleId" class="easyui-combobox" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><label for="maxDuration">最长班次小时：</label></th>
-                <td><input name="maxDuration" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
+                <th><Label for="startTime">开始时间:</Label></th>
+                <td><input name="startTime" class="easyui-timespinner" data-options="required: true" style="width:100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="endTime">结束时间:</Label></th>
+                <td><input name="endTime" class="easyui-timespinner" data-options="required: true" style="width: 100%"></td>
+            </tr>
+             <tr>
+                <th><Label for="mileage">预计里程:</Label></th>
+                <td><input name="mileage" class="easyui-numberbox" data-options="precision:1" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="remark">备注:</Label></th>
+                <td><input name="remark" class="easyui-textbox" style="width: 100%"></td>
             </tr>
         </table>
     </form>
 </div>
+<div id="dlg-buttons">
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" onclick="mds.save('')">保存</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlg').dialog('close')">取消</a>
+</div>
+
+@*Worker弹窗*@
+<div id="dlgWorker" class="easyui-dialog" closed="true" modal="true" buttons="#dlgWorker-buttons" align="center" style="width: 400px; padding: 10px;">
+    <form id="fmWorker" method="post" novalidate>
+        <table class="edit-tbl">
+            <input name="id" type="hidden" >
+            <input name="routeId" type="hidden">
+            <tr>
+                <th><Label for="workRoleId">线路角色:</Label></th>
+                <td><input id="workRole" name="workRoleId" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="workerId">人员:</Label></th>
+                <td><input id="worker" name="workerId" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dlgWorker-buttons">
+    <a name="save" class="easyui-linkbutton" iconCls="icon-save" onclick="mds.save('Worker')">保存</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlgWorker').dialog('close')">取消</a>
+</div>
+
+@*Task弹窗*@
+<div id="dlgTask" class="easyui-dialog" closed="true" modal="true" buttons="#dlgTask-buttons" align="center" style="width: 400px; padding: 10px;">
+    <form id="fmTask" method="post" novalidate>
+        <table class="edit-tbl">
+            <input name="id" type="hidden" >
+            <input name="routeId" type="hidden">
+            <tr>
+                <th><Label for="arriveTime">预计到达时间:</Label></th>
+                <td><input name="arriveTime" class="easyui-timespinner" data-options="required: true" style="width:100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="outletId">网点:</Label></th>
+                <td><input id="outlet" name="outletId" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="taskTypeId">任务类型:</Label></th>
+                <td><input id="taskType" name="taskTypeId" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+            <tr>
+                <th><Label for="remark">备注:</Label></th>
+                <td><input name="remark" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dlgTask-buttons">
+    <a name="save" class="easyui-linkbutton" iconCls="icon-save" onclick="mds.save('Task')">保存</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlgTask').dialog('close')">取消</a>
+</div>
+

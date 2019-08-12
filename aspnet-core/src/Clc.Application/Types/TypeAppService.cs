@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Clc.Runtime.Cache;
-using Clc.Types;
 
 namespace Clc.Types
 {
@@ -16,6 +15,7 @@ namespace Clc.Types
         private readonly IRouteTypeCache _routeTypeCache;
         private readonly ITaskTypeCache _taskTypeCache;
         private readonly IWorkRoleCache _workRoleCache;
+        private readonly IWorkplaceCache _workplaceCache;
         private readonly List<string> _bindStyleItems = new List<string>() {"人", "车", "线路" };
 
         public TypeAppService(DutyProvider dutyProvider, 
@@ -23,7 +23,8 @@ namespace Clc.Types
             IPostCache postCache,
             IRouteTypeCache routeTypeCache,
             ITaskTypeCache taskTypeCache,
-            IWorkRoleCache workRoleCache)
+            IWorkRoleCache workRoleCache,
+            IWorkplaceCache workplaceCache)
         {
             _dutyProvider = dutyProvider;
             _articleTypeCache = articleTypeCache;
@@ -31,6 +32,7 @@ namespace Clc.Types
             _routeTypeCache = routeTypeCache;
             _taskTypeCache = taskTypeCache;
             _workRoleCache = workRoleCache;
+            _workplaceCache = workplaceCache;
         }
 
        
@@ -77,6 +79,20 @@ namespace Clc.Types
                     break;
             }
              return Task.FromResult<List<ComboboxItemDto>>(lst);
-        }        
+        } 
+
+        public List<WorkRole> GetWorkRoleItems(int workplaceId)        
+        {
+            List<string> targetRoles = new List<string>(_workplaceCache[workplaceId].WorkRoles.Split('|', ','));
+            var all = _workRoleCache.GetList();
+            return all.FindAll(x => targetRoles.Contains(x.Name));
+        }
+       
+        public List<WorkRole> GetRouteWorkRoleItems(int routeTypeId)
+        {
+            List<string> targetRoles = new List<string>(_routeTypeCache[routeTypeId].WorkRoles.Split('|', ','));
+            var all = _workRoleCache.GetList();
+            return all.FindAll(x => targetRoles.Contains(x.Name));
+        }
     }
 }

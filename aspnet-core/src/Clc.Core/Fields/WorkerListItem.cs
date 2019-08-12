@@ -18,10 +18,10 @@ namespace Clc.Fields
         public string Name { get; set; }
 
         public int PostId { get; set; }
-
-        public string CnName { 
+        public string PostName { get; set; }
+        public string CnNamePost { 
             get {
-                return string.Format("{0} {1}", Cn, Name);
+                return string.Format("{0} {1}({2})", Cn, Name, PostName);
             }
         }
     }

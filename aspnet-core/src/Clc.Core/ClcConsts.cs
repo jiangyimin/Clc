@@ -8,9 +8,10 @@
 
         public const bool MultiTenancyEnabled = true;
 
-        public const int EntityListCacheSlidingExpireTime = 12;
+        public const int EntityListCacheSlidingExpireTime = 20;
 
         public const string UserEmailServerName = "@tenant.com";
+        public const string CaptainRoleName = "Captain";
 
         public const int NormalStringLength = 50;
         public const int LargeStringLength = 500;

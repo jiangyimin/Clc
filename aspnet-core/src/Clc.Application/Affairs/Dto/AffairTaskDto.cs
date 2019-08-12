@@ -45,6 +45,10 @@ namespace Clc.Affairs
         [Required]
         public int CreateWorkerId { get; set; }
         public DateTime CreateTime { get; set; }
+
+        // only for mds.js 
+        public string Postfix { get; } = "Task";
+
     }
 }
 

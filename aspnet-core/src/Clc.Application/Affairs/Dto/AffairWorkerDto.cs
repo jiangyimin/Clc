@@ -25,6 +25,9 @@ namespace Clc.Affairs
         [Required]
         public int WorkRoleId { get; set; }
         public string WorkRoleName { get; set; }
+        
+        // only for mds.js 
+        public string Postfix { get; } = "Worker";
     }
 }
 
