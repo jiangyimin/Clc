@@ -8,12 +8,15 @@ using Abp.Domain.Repositories;
 using Abp.Linq;
 using Clc.PreRoutes.Dto;
 using Clc.Authorization;
+using Clc.Works;
 
 namespace Clc.PreRoutes
 {
     [AbpAuthorize(PermissionNames.Pages_Arrange)]
     public class PreRouteAppService : ClcAppServiceBase, IPreRouteAppService
     {
+        public WorkManager WorkManager { get; set; }
+
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
 
         private readonly IRepository<PreRoute> _preRouteRepository;

@@ -2,13 +2,12 @@ using System;
 using System.Threading.Tasks;
 using Abp.AspNetCore.SignalR.Hubs;
 using Abp.Auditing;
-using Abp.Dependency;
 using Abp.RealTime;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Clc.RealTime
 {
-public class MyChatHub : AbpCommonHub
+    public class MyChatHub : AbpCommonHub
 {
     public MyChatHub(IOnlineClientManager onlineClientManager, IClientInfoProvider clientInfoProvider)
         :base(onlineClientManager, clientInfoProvider)

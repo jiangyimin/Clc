@@ -6,12 +6,12 @@ using Clc.Authorization.Roles;
 
 namespace Clc.EntityFrameworkCore.Seed.Tenants
 {
-    public class EntityPreDataBuilder
+    public class BaseEntitySeedBuilder
     {
         private readonly ClcDbContext _context;
         private readonly int _tenantId;
 
-        public EntityPreDataBuilder(ClcDbContext context, int tenantId)
+        public BaseEntitySeedBuilder(ClcDbContext context, int tenantId)
         {
             _context = context;
             _tenantId = tenantId;
@@ -102,9 +102,9 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.WorkRoles.Count() == 0)
             {
                 _context.WorkRoles.AddRange(new WorkRole[] {
-                    new WorkRole { TenantId = _tenantId, Cn = "01", Name = "司机", DefaultPostId = 2, mustHave = true, MaxNum = 2 }, 
-                    new WorkRole { TenantId = _tenantId, Cn = "02", Name = "车长", DefaultPostId = 3, mustHave = true, MaxNum = 2 }, 
-                    new WorkRole { TenantId = _tenantId, Cn = "03", Name = "持枪员", DefaultPostId = 4, mustHave = true, MaxNum = 2 }, 
+                    new WorkRole { TenantId = _tenantId, Cn = "01", Name = "司机", DefaultPostId = 2, ArticleTypeList = "C", mustHave = true, MaxNum = 2 }, 
+                    new WorkRole { TenantId = _tenantId, Cn = "02", Name = "车长", DefaultPostId = 3, ArticleTypeList = "A|B|D", mustHave = true, MaxNum = 2 }, 
+                    new WorkRole { TenantId = _tenantId, Cn = "03", Name = "持枪员", DefaultPostId = 4, ArticleTypeList = "A|B|D", mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "04", Name = "主业务员", DefaultPostId = 5, mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "05", Name = "业务员", DefaultPostId = 6, mustHave = true, MaxNum = 2 },
                     new WorkRole { TenantId = _tenantId, Cn = "06", Name = "库房管理员", DefaultPostId = 7, mustHave = true, MaxNum = 2 }, 
@@ -121,7 +121,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Depots.Count() == 0)
             {
                 _context.Depots.AddRange(new Depot[] {
-                    new Depot { TenantId = _tenantId, Cn = "01", Name = "市区", Longitude = 114.016667, Latitude = 22.534167 }, 
+                    new Depot { TenantId = _tenantId, Cn = "01", Name = "市区", Longitude = 114.016667, Latitude = 22.534167, UnlockScreenPassword = "654321" }, 
                     new Depot { TenantId = _tenantId, Cn = "02", Name = "建行独立", Longitude = 114.016667, Latitude = 22.534167 }, 
                     new Depot { TenantId = _tenantId, Cn = "10", Name = "农行", Longitude = 114.016667, Latitude = 22.534167 }, 
                     // new Depot { TenantId = _tenantId, Cn = "91", Name = "监控", Longitude = 114.016667, Latitude = 22.534167 }, 

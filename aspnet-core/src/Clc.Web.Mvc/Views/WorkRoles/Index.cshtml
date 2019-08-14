@@ -12,6 +12,7 @@
             { field: "cn", title: "编号", width: 80, sortable: true },
             { field: "name", title: "名称", width: 80, sortable: true },
             { field: "defaultPostId", title: "缺省岗位", width: 80, sortable: true, formatter: postFormatter  },
+            { field: "articleTypeList", title: "领用物品类型", width: 80 },
             { field: "duties", title: "职责", width: 80 },
             { field: "mustHave", title: "是否必须", width: 80},
             { field: "maxNum", title: "最多人数", width: 80},
@@ -52,8 +53,12 @@
                 <td><input id="defaultPost" name="defaultPostId" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
             </tr>
             <tr>
+                <th><label for="artilceTypeList">物品类型列表：</label></th>
+                <td><input name="artilceTypeList" class="easyui-textbox" data-options="validType:'length[1, @WorkRole.MaxArticleTypeListLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
                 <th><label for="duties">职责列表：</label></th>
-                <td><input id="duties" name="duties" class="easyui-textbox" data-options="validType:'length[2, @WorkRole.MaxDutiesLength]'" style="width: 100%"></td>
+                <td><input name="duties" class="easyui-textbox" data-options="validType:'length[2, @WorkRole.MaxDutiesLength]'" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="mustHave">是否必须: </label></th>

@@ -6,7 +6,6 @@ using Abp.IdentityFramework;
 using Abp.Runtime.Session;
 using Clc.Authorization.Users;
 using Clc.MultiTenancy;
-using Clc.Works;
 using Abp.UI;
 
 namespace Clc
@@ -19,8 +18,6 @@ namespace Clc
         public TenantManager TenantManager { get; set; }
 
         public UserManager UserManager { get; set; }
-
-        public WorkManager WorkManager { get; set; }
 
         protected ClcAppServiceBase()
         {

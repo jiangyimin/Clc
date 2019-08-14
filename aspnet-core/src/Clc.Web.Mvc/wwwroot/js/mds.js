@@ -44,7 +44,7 @@ var mds = mds || {};
         };
 
         _dfd = mds.getInsertDfd(postfix);
-        alert(_dfd);
+        //alert(_dfd);
 
         $('#dlg' + postfix).dialog('open').dialog('setTitle', '增加');
         var $fm = $('#fm' + postfix);
@@ -76,7 +76,7 @@ var mds = mds || {};
     };
     mds.edit = function(postfix, index) {
         _dfd = mds.getUpdateDfd(postfix);
-        alert(_dfd);
+        // alert(_dfd);
         $('#dlg' + postfix).dialog('open').dialog('setTitle', '编辑');
 
         var $fm = $('#fm' + postfix);
@@ -151,7 +151,7 @@ var mds = mds || {};
     mds.reloadSelectedTab = function () {
         var tab = $('#tt').tabs('getSelected');
         var postfix = mds.details[$('#tt').tabs('getTabIndex', tab)].postfix;
-        alert('reloadSelectTab' + postfix);
+        // alert('reloadSelectTab' + postfix);
         $('#dg' + postfix).datagrid({ 
             url: mds.getUrl(postfix, mds.masterCurrentRow)
         });
@@ -197,7 +197,7 @@ var mds = mds || {};
         $('#dg' + mds.main.postfix).datagrid({
             onSelect: function (index, row) {
                 mds.masterCurrentRow = row;
-                
+
                 mds.onselectfunction(row);
                 mds.reloadSelectedTab();
             }

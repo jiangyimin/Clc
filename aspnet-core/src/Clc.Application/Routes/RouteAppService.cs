@@ -10,12 +10,15 @@ using Clc.Routes.Dto;
 using Clc.Authorization;
 using Clc.PreRoutes;
 using Clc.Runtime.Cache;
+using Clc.Works;
 
 namespace Clc.Routes
 {
     [AbpAuthorize(PermissionNames.Pages_Arrange)]
     public class RouteAppService : ClcAppServiceBase, IRouteAppService
     {
+        public WorkManager WorkManager { get; set; }
+
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
 
         private readonly IRepository<Route> _routeRepository;

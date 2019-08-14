@@ -73,40 +73,6 @@
         detail.delete = abp.services.app.route.deleteTask;
         mds.details.push(detail);
 
-        detail = Object.assign({}, mds.dgDefault);
-        detail.postfix = "Event";
-        detail.columns = [[
-            { field: "eventTime", title: "发生时间", width: 80, formatter: $.datetimeFormatter },
-            { field: "name", title: "名称", width: 80, align: "center" },
-            { field: "description", title: "具体描述", width: 150 },
-            { field: "issuer", title: "创建者", width: 80 },
-        ]];
-        detail.operatorColumn = false;
-        mds.details.push(detail);
-
-        detail = Object.assign({}, mds.dgDefault);
-        detail.postfix = "Article";
-        detail.columns = [[
-            { field: "articleCn", title: "物品", width: 80 },
-        ]];
-        detail.operatorColumn = false;
-        mds.details.push(detail);
-
-        detail = Object.assign({}, mds.dgDefault);
-        detail.postfix = "InBox";
-        detail.columns = [[
-            { field: "boxCn", title: "尾箱", width: 80 },
-        ]];
-        detail.operatorColumn = false;
-        mds.details.push(detail);
-        detail = Object.assign({}, mds.dgDefault);
-
-        detail.postfix = "OutBox";
-        detail.columns = [[
-            { field: "boxCn", title: "尾箱", width: 80 },
-        ]];
-        detail.operatorColumn = false;
-        mds.details.push(detail);
     </script>
 }
 
@@ -181,7 +147,7 @@
             else
                 url += '/' + masterRow.id;
 
-            alert(url);
+            // alert(url);
             return url;
         }
     </script>
@@ -220,34 +186,6 @@
                     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('Task')">添加</a>
                 </div>
                 <table id="dgTask" class="easyui-datagrid" toolbar="#tbTask">
-                </table>
-            </div>
-            <div title="事件" style="display:none;">
-                <div id="tbEvent">
-                    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Event')">刷新</a>
-                </div>
-                <table id="dgEvent" class="easyui-datagrid" toolbar="#tbEvent">
-                </table>
-            </div>
-            <div title="物品" style="display:none;">
-                <div id="tbArticle">
-                    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Article')">刷新</a>
-                </div>
-                <table id="dgArticle" class="easyui-datagrid" toolbar="#tbArticle">
-                </table>
-            </div>
-            <div title="入箱" style="display:none;">
-                <div id="tbInBox">
-                    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('InBox')">刷新</a>
-                </div>
-                <table id="dgInBox" class="easyui-datagrid" toolbar="#tbInBox">
-                </table>
-            </div>
-            <div title="出箱" style="display:none;">
-                <div id="tbOutBox">
-                    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('OutBox')">刷新</a>
-                </div>
-                <table id="dgOutBox" class="easyui-datagrid" toolbar="#tbOutBox">
                 </table>
             </div>
         </div>

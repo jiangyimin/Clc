@@ -56,6 +56,27 @@ namespace Clc.Configuration
                     scopes: SettingScopes.Tenant,
                     isVisibleToClients: true
                 ),
+                new SettingDefinition(
+                    AppSettingNames.Const.WorkerRfidLength, 
+                    "5", 
+                    new FixedLocalizableString("员工RFID卡编码长度"),
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Const.ArticleRfidLength, 
+                    "4", 
+                    new FixedLocalizableString("物品RFID卡编码长度"),
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Const.BoxRfidLength, 
+                    "8", 
+                    new FixedLocalizableString("尾箱RFID卡编码长度"),
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
+                ),
             };
         }
         private IEnumerable<SettingDefinition> GetRuleSettingDefinitions(SettingDefinitionProviderContext context)
@@ -73,13 +94,6 @@ namespace Clc.Configuration
                     "180", 
                     new FixedLocalizableString("最小签到间隔(分钟)"),
                     scopes: SettingScopes.Tenant
-                ),
-                new SettingDefinition(
-                    AppSettingNames.Rule.WorkerRfidLength, 
-                    "5", 
-                    new FixedLocalizableString("员工RFID卡编码长度"),
-                    scopes: SettingScopes.Tenant,
-                    isVisibleToClients: true
                 ),
             };
         }

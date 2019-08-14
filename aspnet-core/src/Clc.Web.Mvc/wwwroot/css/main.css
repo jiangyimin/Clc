@@ -93,4 +93,12 @@ body {
     word-break: break-all;
     border-bottom: 1px solid #e6e6e6;
   }
+
+  .rfid {
+    height:20px;
+    text-align:center;
+    background:#ccc;
+    margin-bottom:20px;
+}
+
   

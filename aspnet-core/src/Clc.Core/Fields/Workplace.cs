@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
+using Clc.Runtime;
 using Clc.Types;
 
 namespace Clc.Fields
@@ -63,11 +64,8 @@ namespace Clc.Fields
 
         public string CheckTimeZone(string startTime, string endTime, bool isTomorrow)
         {
-            DateTime today = DateTime.Now;
-            DateTime tomorrow = today.AddDays(1);
-            DateTime start = new DateTime(today.Year, today.Month, today.Day, int.Parse(startTime.Substring(0, 2)), int.Parse(startTime.Substring(3, 2)), 0);
-            DateTime end = isTomorrow ? new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, int.Parse(endTime.Substring(0, 2)), int.Parse(endTime.Substring(3, 2)), 0)
-                                        : new DateTime(today.Year, today.Month, today.Day, int.Parse(endTime.Substring(0, 2)), int.Parse(endTime.Substring(3, 2)), 0);
+            DateTime start = ClcUtils.GetNowDateTime(startTime);
+            DateTime end = ClcUtils.GetNowDateTime(endTime, isTomorrow);
             if (start > end)
                 return "结束时间不能小于开始时间!";
             if (end.Subtract(start).TotalHours < MinDuration)

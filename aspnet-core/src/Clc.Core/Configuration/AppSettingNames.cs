@@ -14,13 +14,15 @@
         public static class Const
         {
            public const string IdentifyEmergencyPassword = "Const.IdentifyEmergencyPassword";
+            public const string WorkerRfidLength = "Const.WorkerRfidLength";
+            public const string ArticleRfidLength = "Const.ArticleRfidLength";
+            public const string BoxRfidLength = "Const.BoxRfidLength";
         }
         public static class Rule
         {
             public const string Radius = "Rule.Radius";
             public const string MinCheckinInterval = "Rule.MinCheckinInterval";
 
-            public const string WorkerRfidLength = "Rule.WorkerRfidLength";
         }
     }
 }

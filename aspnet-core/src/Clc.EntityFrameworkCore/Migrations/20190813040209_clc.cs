@@ -406,9 +406,10 @@ namespace Clc.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
-                    SigninTime = table.Column<DateTime>(nullable: false),
                     DepotId = table.Column<int>(nullable: false),
-                    WorkerId = table.Column<int>(nullable: false)
+                    CarryoutDate = table.Column<DateTime>(nullable: false),
+                    WorkerId = table.Column<int>(nullable: false),
+                    SigninTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1276,9 +1277,9 @@ namespace Clc.Migrations
                 column: "WorkerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Signins_TenantId_DepotId_SigninTime_WorkerId",
+                name: "IX_Signins_TenantId_DepotId_CarryoutDate_WorkerId",
                 table: "Signins",
-                columns: new[] { "TenantId", "DepotId", "SigninTime", "WorkerId" });
+                columns: new[] { "TenantId", "DepotId", "CarryoutDate", "WorkerId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_DepotId",

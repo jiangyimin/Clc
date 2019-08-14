@@ -72,7 +72,7 @@
                 $('#worker').combobox({
                     data: data,
                     valueField: 'id',
-                    textField: 'cnName'
+                    textField: 'cnNamePost'
                 })
             });
 
@@ -86,14 +86,16 @@
         }
 
         mds.onselectfunction = function (masterRow) {
-            abp.services.app.field.getWorkRoleItems(row.workplaceId).done(function (data) {
+            // alert("onselect=" + masterRow.workplaceId);
+            abp.services.app.type.getWorkRoleItems(masterRow.workplaceId).done(function (data) {
                 $('#workRole').combobox({
                     data: data, 
                     valueField: 'id', 
                     textField: 'name'
                 });    
             });
-        }
+        };
+
         mds.customerSetAddValue = function(postfix) 
         {
             if (postfix == mds.main.postfix) {
@@ -111,7 +113,7 @@
             else
                 url += '/' + masterRow.id;
 
-            alert(url);
+            // alert(url);
             return url;
          }
     </script>
@@ -122,7 +124,7 @@
     <div data-options="region:'north', split:true, border:false" style="min-height:120px; height:40%">
         <div id="tb">
             任务日期: <input id="dd" class="easyui-datebox" readonly="true" style="width:120px">
-            &nbsp;明天<input id="tomorror" class="easyui-checkbox">
+            &nbsp;明天&nbsp;<input id="tomorror" class="easyui-checkbox">
             <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('')">刷新</a>
             <a name="add" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('')">添加</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts
+{
+    <environment names="Development">
+        <script src="~/js/finput.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/js/finput.min.js" asp-append-version="true"></script>
+    </environment>
+
+    <script type="text/javascript">
+
+        $(function() {
+            // get today
+            abp.services.app.work.getTodayString().done(function (dd) {
+                $('#dd').datebox('setValue', dd);
+
+                $('#dg').datagrid({
+                    url: 'Signins/GridData?CarryoutDate=' + dd
+                });
+            });
+        });
+
+
+        finput.onWorker = function(rfid) {
+            // alert(rfid);
+            abp.services.app.work.signinByRfid(rfid).done(function(data) {
+                abp.notify.info(data);
+                $('#dg').datagrid('reload');
+            });
+        };
+    </script>
+}
+
+<div id="tb">
+    日期: <input id="dd" class="easyui-datebox"  readonly="true" style="width:120px">
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+    &nbsp;&nbsp;&nbsp;请刷卡补签
+</div>
+
+<table id="dg" class="easyui-datagrid" toolbar="#tb"
+        fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true">
+    <thead>
+        <tr>
+            <th field="workerCn" width="100">人员编号</th>
+            <th field="workerName" width="100">人员姓名</th>
+            <th field="signinTime" width="100" formatter="$.timeFormatter">签到时间</th>
+        </tr>
+    </thead>
+</table>

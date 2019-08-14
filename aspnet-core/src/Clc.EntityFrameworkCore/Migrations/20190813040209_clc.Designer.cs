@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clc.Migrations
 {
     [DbContext(typeof(ClcDbContext))]
-    [Migration("20190811022059_clc")]
+    [Migration("20190813040209_clc")]
     partial class clc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1925,6 +1925,8 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CarryoutDate");
+
                     b.Property<int>("DepotId");
 
                     b.Property<DateTime>("SigninTime");
@@ -1939,7 +1941,7 @@ namespace Clc.Migrations
 
                     b.HasIndex("WorkerId");
 
-                    b.HasIndex("TenantId", "DepotId", "SigninTime", "WorkerId");
+                    b.HasIndex("TenantId", "DepotId", "CarryoutDate", "WorkerId");
 
                     b.ToTable("Signins");
                 });

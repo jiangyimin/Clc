@@ -17,6 +17,7 @@ namespace Clc.Fields
 
         public string Name { get; set; }
 
+        public string Rfid { get; set; }
         public int PostId { get; set; }
         public string PostName { get; set; }
         public string CnNamePost { 

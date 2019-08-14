@@ -112,7 +112,7 @@ namespace Clc.EntityFrameworkCore
             // Works
             modelBuilder.Entity<Signin>(b =>
             {
-                b.HasIndex(e => new { e.TenantId, e.DepotId, e.SigninTime, e.WorkerId });
+                b.HasIndex(e => new { e.TenantId, e.DepotId, e.CarryoutDate, e.WorkerId });
             });
 
             modelBuilder.Entity<Affair>(b =>

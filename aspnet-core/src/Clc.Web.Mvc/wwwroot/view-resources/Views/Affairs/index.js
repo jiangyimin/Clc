@@ -1,5 +1,6 @@
 (function() {        
     $(function() {    
+        isCaptain = true;
         // get today
         abp.services.app.work.getTodayString().done(function (d) {
             mds.today = d;
@@ -36,10 +37,10 @@
             }
 
             ids = [];
-            for (var row of checkRows) {
+            for (var row of checkedRows) {
                 if (row.status == "安排") ids.push(row.id);
             };
-
+            // alert(ids);
             abp.services.app.affair.activate(ids).done(function (count) {
                 abp.notify.info('有' + count + '个任务被激活');
                 mds.reload('');

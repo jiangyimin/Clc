@@ -1923,6 +1923,8 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CarryoutDate");
+
                     b.Property<int>("DepotId");
 
                     b.Property<DateTime>("SigninTime");
@@ -1937,7 +1939,7 @@ namespace Clc.Migrations
 
                     b.HasIndex("WorkerId");
 
-                    b.HasIndex("TenantId", "DepotId", "SigninTime", "WorkerId");
+                    b.HasIndex("TenantId", "DepotId", "CarryoutDate", "WorkerId");
 
                     b.ToTable("Signins");
                 });

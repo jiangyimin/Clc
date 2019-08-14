@@ -14,6 +14,7 @@ namespace Clc.Web.Startup
         {
             return WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseUrls("http://*:5000")
                 .Build();
         }
     }

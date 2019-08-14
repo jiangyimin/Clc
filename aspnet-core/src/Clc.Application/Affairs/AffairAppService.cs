@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq;
-using Abp.UI;
 using Clc.Affairs.Dto;
 using Clc.Authorization;
-using Clc.Affairs;
+using Clc.Works;
 
 namespace Clc.Affairs
 {
     [AbpAuthorize(PermissionNames.Pages_Arrange)]
     public class AffairAppService : ClcAppServiceBase, IAffairAppService
     {
+        public WorkManager WorkManager { get; set; }
+
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
 
         private readonly IRepository<Affair> _affairRepository;

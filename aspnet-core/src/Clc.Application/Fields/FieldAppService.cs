@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Clc.Runtime.Cache;
+using Clc.Works;
 
 namespace Clc.Fields
 {
@@ -55,7 +56,7 @@ namespace Clc.Fields
             }
             else
             {
-                int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
+                int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
                 return _workplaceCache.GetList().FindAll(x => x.DepotId == depotId);
             }
         }
@@ -68,7 +69,7 @@ namespace Clc.Fields
             }
             else
             {
-                int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
+                int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
                 var lst = _workerCache.GetList().FindAll(x => x.DepotId == depotId || (x.LoanDepotId.HasValue && x.LoanDepotId.Value == depotId));
                 lst.Sort( (a, b) => a.Cn.CompareTo(b.Cn) );
 
@@ -86,7 +87,7 @@ namespace Clc.Fields
             }
             else
             {
-                int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
+                int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
                 var lst = _vehicleCache.GetList().FindAll(x => x.DepotId == depotId);
                 lst.Sort( (a, b) => a.Cn.CompareTo(b.Cn) );
                 return ObjectMapper.Map<List<VehicleListItem>>(lst);

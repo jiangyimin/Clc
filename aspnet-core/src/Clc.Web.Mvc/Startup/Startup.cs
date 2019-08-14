@@ -100,7 +100,7 @@ namespace Clc.Web.Startup
 
             // Start CO2NET register
             IRegisterService register = RegisterService.Start(env, senparcSetting.Value)
-                                                        .UseSenparcGlobal(false, null);
+                .UseSenparcGlobal(false, null);
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value);
         }
     }
