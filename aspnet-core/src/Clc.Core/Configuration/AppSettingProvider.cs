@@ -65,7 +65,7 @@ namespace Clc.Configuration
                 ),
                 new SettingDefinition(
                     AppSettingNames.Const.ArticleRfidLength, 
-                    "4", 
+                    "3", 
                     new FixedLocalizableString("物品RFID卡编码长度"),
                     scopes: SettingScopes.Tenant,
                     isVisibleToClients: true
@@ -85,7 +85,7 @@ namespace Clc.Configuration
             {
                 new SettingDefinition(
                     AppSettingNames.Rule.Radius, 
-                    "300", 
+                    "900", 
                     new FixedLocalizableString("半径(米)"),
                     scopes: SettingScopes.Tenant
                 ),

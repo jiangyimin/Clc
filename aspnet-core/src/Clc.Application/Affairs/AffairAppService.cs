@@ -120,6 +120,8 @@ namespace Clc.Affairs
 
         public async Task<int> Activate(List<int> ids)
         {
+            int workerId = await GetCurrentUserWorkerIdAsync();
+            
             int count = 0;
             foreach (int id in ids)
             {
@@ -127,6 +129,11 @@ namespace Clc.Affairs
                 if (affair.Status != "安排") continue;          // Skip
                 affair.Status = "激活";
                 await _affairRepository.UpdateAsync(affair);
+                // for affairEvent
+                string issuer = string.Format("{0} {1}", WorkManager.GetWorkerCn(workerId), WorkManager.GetWorkerName(workerId));
+                var ae = new AffairEvent() { AffairId = affair.Id, EventTime = DateTime.Now, Name = "激活任务",Issurer = issuer};
+                await _eventRepository.InsertAsync(ae);
+                
                 count++;            
             }
             return count;

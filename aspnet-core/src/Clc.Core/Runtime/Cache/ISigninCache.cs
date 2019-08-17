@@ -5,5 +5,4 @@ namespace Clc.Runtime.Cache
     public interface ISigninCache
     {
     }
-
 }

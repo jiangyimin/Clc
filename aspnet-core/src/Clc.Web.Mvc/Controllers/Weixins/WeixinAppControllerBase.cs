@@ -6,11 +6,11 @@ using Clc.Configuration;
 using Clc.Controllers;
 using Clc.RealTime;
 using Clc.Web.MessageHandlers;
-using Clc.Weixin;
 
 using Senparc.CO2NET.HttpUtility;
 using Senparc.Weixin.Work;
 using Senparc.Weixin.Work.Entities;
+using Clc.Works;
 
 namespace Clc.Web.Controllers
 {
@@ -19,7 +19,7 @@ namespace Clc.Web.Controllers
     [IgnoreAntiforgeryToken]
     public class WorkAppControllerBase : ClcControllerBase
     {
-        public IWeixinAppService WeixinAppService {get; set; }
+        public WorkManager WorkManager { get; set; }
         public IHubContext<MyChatHub> HubContext { get; set; }
         private readonly string _token;
         private readonly string _encodingAESKey;
@@ -64,7 +64,7 @@ namespace Clc.Web.Controllers
             var maxRecordCount = 10;
             try
             {
-                var messageHandler = new WorkAppMessageHandler(WeixinAppService, HubContext, Request.GetRequestMemoryStream(), postModel, maxRecordCount);
+                var messageHandler = new WorkAppMessageHandler(WorkManager, HubContext, Request.GetRequestMemoryStream(), postModel, maxRecordCount);
                 messageHandler.Execute();
                 return Content(messageHandler.FinalResponseDocument.ToString());
             }

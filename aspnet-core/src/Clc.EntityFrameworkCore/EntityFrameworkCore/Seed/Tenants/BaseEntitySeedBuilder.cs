@@ -79,7 +79,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.RouteTypes.Count() == 0)
             {
                 _context.RouteTypes.AddRange(new RouteType[] {
-                    new RouteType { TenantId = _tenantId, Name = "押运", WorkRoles = "司机|车长|持枪员|主业务员|业务员", LendArticleLead = 60, LendArticleDeadline = 30 }
+                    new RouteType { TenantId = _tenantId, Name = "押运", WorkRoles = "司机|车长|持枪员|主业务员|业务员", LendArticleLead = 60, LendArticleDeadline = 60 }
                 }); 
                 _context.SaveChanges();
             }
@@ -121,7 +121,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Depots.Count() == 0)
             {
                 _context.Depots.AddRange(new Depot[] {
-                    new Depot { TenantId = _tenantId, Cn = "01", Name = "市区", Longitude = 114.016667, Latitude = 22.534167, UnlockScreenPassword = "654321" }, 
+                    new Depot { TenantId = _tenantId, Cn = "01", Name = "市区", Longitude = 114.022022, Latitude = 22.531167, UnlockScreenPassword = "654321" }, 
                     new Depot { TenantId = _tenantId, Cn = "02", Name = "建行独立", Longitude = 114.016667, Latitude = 22.534167 }, 
                     new Depot { TenantId = _tenantId, Cn = "10", Name = "农行", Longitude = 114.016667, Latitude = 22.534167 }, 
                     // new Depot { TenantId = _tenantId, Cn = "91", Name = "监控", Longitude = 114.016667, Latitude = 22.534167 }, 

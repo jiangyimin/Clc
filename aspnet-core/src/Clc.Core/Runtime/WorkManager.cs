@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Abp.Configuration;
 using Abp.Domain.Repositories;
@@ -11,36 +12,35 @@ using Clc.Runtime.Cache;
 
 namespace Clc.Works
 {
-    public class WorkManager : IDomainService
+    public class WorkManager : DomainService, IDomainService
     {
-        public ISettingManager SettingManager;
-
         private readonly IWorkerCache _workerCache;
         private readonly IWorkplaceCache _workplaceCache;
         private readonly IDepotCache _depotCache;
-        // private readonly IRepository<Affair> _affairRepository;
+        private readonly IRepository<Signin> _signinRepository;
+        private readonly IRepository<Affair> _affairRepository;
         private readonly IRepository<AffairWorker> _affairWorkerRepository;
 
         public WorkManager(IWorkerCache workerCache,
             IWorkplaceCache workplaceCache,
             IDepotCache depotCache,
+            IRepository<Signin> signinRepository,
+            IRepository<Affair> affairRepository,
             IRepository<AffairWorker> affairWorkerRepository)
         {
             _workerCache = workerCache;
             _workplaceCache = workplaceCache;
             _depotCache = depotCache;
+            _signinRepository = signinRepository;
+            _affairRepository = affairRepository;
             _affairWorkerRepository = affairWorkerRepository;
         }
 
         #region Worker
-        public int GetWorkerDepotId(int workerId)
-        {
-            return _workerCache[workerId].DepotId;
-        }
 
-        public string GetWorkerCn(int workerId)
+        public Worker GetWorker(int workerId)
         {
-            return _workerCache[workerId].Cn;
+            return _workerCache[workerId];
         }
         public Worker GetWorkerByRfid(string rfid) 
         {
@@ -56,9 +56,61 @@ namespace Clc.Works
             return null;
         }
 
+        public int GetWorkerDepotId(int workerId)
+        {
+            return _workerCache[workerId].DepotId;
+        }
+
+        public string GetWorkerCn(int workerId)
+        {
+            return _workerCache[workerId].Cn;
+        }
+
+        public string GetWorkerName(int workerId)
+        {
+            return _workerCache[workerId].Name;
+        }
+        public bool IsWorkerRoleUser(string workerCn)
+        {
+            var w = _workerCache.GetList().Find(x => x.Cn == workerCn);
+            if (w != null) 
+            {
+                var worker = _workerCache[w.Id];
+                return string.IsNullOrEmpty(worker.WorkerRoleName) ? false : true;
+            }
+            return false;
+        }
+
+        public string DoSignin(int depotId, int workerId)
+        {
+            // Get Signin 
+            var signin = _signinRepository.FirstOrDefault(s => s.DepotId == depotId && s.CarryoutDate == DateTime.Today && s.WorkerId == workerId);
+            if (signin == null)
+            {
+                Signin s = new Signin() { DepotId = depotId, CarryoutDate = DateTime.Today, WorkerId = workerId, SigninTime = DateTime.Now }; 
+                _signinRepository.Insert(s);
+                return "签到成功";
+            }
+            else
+            {
+                return "你已签过到";
+            }
+        }
+
+        public string DoSignin(int tenantId, int depotId, int workerId)
+        {
+            string ret = null;
+            using (CurrentUnitOfWork.SetTenantId(tenantId))
+            {
+                ret = DoSignin(depotId, workerId);
+                CurrentUnitOfWork.SaveChanges();
+            }
+            return ret;
+        }
+
         #endregion
 
-        #region Depot Util
+        #region Other
 
         public Workplace GetWorkplace(int id)
         {
@@ -88,6 +140,22 @@ namespace Clc.Works
         #endregion
 
         #region Affair, Article, Box, 
+
+        public List<int> GetShareDepods(int affairId)
+        {
+            var affair = _affairRepository.Get(affairId);
+            var wp = _workplaceCache[affair.WorkplaceId];
+            var depots = new List<int>() { affair.DepotId };
+            if (!string.IsNullOrEmpty(wp.ShareDepotList))
+            {
+                var lst = _depotCache.GetList();
+                foreach (var cn in wp.ShareDepotList.Split())
+                {
+                    depots.Add(lst.First(x => x.Cn == cn).Id);
+                }
+            }
+            return depots;
+        }
         public AffairWorker GetValidAffairWorker(int depotId, int workerId)
         {
             var lst = _affairWorkerRepository.GetAllIncluding(x => x.Affair)
@@ -97,8 +165,8 @@ namespace Clc.Works
 
             foreach (var affair in lst)
             {
-                DateTime start = ClcUtils.GetNowDateTime(affair.Affair.StartTime);
-                DateTime end = ClcUtils.GetNowDateTime(affair.Affair.EndTime, affair.Affair.IsTomorrow);
+                DateTime start = ClcUtils.GetDateTime(affair.Affair.StartTime);
+                DateTime end = ClcUtils.GetDateTime(affair.Affair.EndTime, affair.Affair.IsTomorrow);
                 if (ClcUtils.NowInTimeZone(start, end)) return affair;
             }
             return null;
@@ -117,7 +185,5 @@ namespace Clc.Works
 
         #endregion
 
-        #region Route
-        #endregion
     }
 }

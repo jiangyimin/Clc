@@ -112,12 +112,12 @@ namespace Clc.EntityFrameworkCore
             // Works
             modelBuilder.Entity<Signin>(b =>
             {
-                b.HasIndex(e => new { e.TenantId, e.DepotId, e.CarryoutDate, e.WorkerId });
+                b.HasIndex(e => new { e.TenantId, e.CarryoutDate, e.DepotId, e.WorkerId });
             });
 
             modelBuilder.Entity<Affair>(b =>
             {
-                b.HasIndex(e => new { e.TenantId, e.DepotId, e.CarryoutDate});
+                b.HasIndex(e => new { e.TenantId, e.CarryoutDate, e.DepotId });
             });
             modelBuilder.Entity<PreRoute>(b =>
             {
@@ -125,7 +125,7 @@ namespace Clc.EntityFrameworkCore
             });
             modelBuilder.Entity<Route>(b =>
             {
-                b.HasIndex(e => new { e.TenantId, e.DepotId, e.CarryoutDate, e.RouteName}).IsUnique();
+                b.HasIndex(e => new { e.TenantId, e.CarryoutDate, e.DepotId, e.RouteName}).IsUnique();
             });
 
 
@@ -183,8 +183,6 @@ namespace Clc.EntityFrameworkCore
             modelBuilder.Entity<RouteTask>()
                 .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<RouteArticle>()
-                .HasOne(b => b.Route).WithMany().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<RouteArticle>()
                 .HasOne(b => b.RouteWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<RouteArticle>()

@@ -29,8 +29,8 @@
             { field: "routeTypeName", title: "押运类型", width: 80 },
             { field: "vehicleCn", title: "车辆编号", width: 80 },
             { field: "vehicleLicense", title: "车牌号", width: 80 },
-            { field: "start1Time", title: "出发时间", width: 100, sortable: true },
-            { field: "end1Time", title: "返回时间", width: 80 },
+            { field: "startTime", title: "出发时间", width: 100, sortable: true },
+            { field: "endTime", title: "返回时间", width: 80 },
             { field: "mileage", title: "预计里程", width: 80 },
             { field: "setoutTime", title: "实际出发", width: 80, formatter: $.timeFormatter },
             { field: "returnTime", title: "实际返回", width: 80, formatter: $.timeFormatter },
@@ -162,6 +162,7 @@
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('')">添加</a>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="activate" href="javascript:void(0)" class="easyui-linkbutton">激活</a>
             <a name="back" href="javascript:void(0)" class="easyui-linkbutton">退回</a>
+            <a name="close" href="javascript:void(0)" class="easyui-linkbutton">关闭</a>
             <a name="createFrom" href="javascript:void(0)" class="easyui-linkbutton">从指定日期生成</a>
             <input id="fromDate" class="easyui-datebox" style="width:120px">
             &nbsp;&nbsp;&nbsp;<a name="createFromPre" href="javascript:void(0)" class="easyui-linkbutton">从预排生成</a>
@@ -199,6 +200,8 @@
             <input name="id" type="hidden">
             <input name="carryoutDate" type="hidden">
             <input name="status" type="hidden">
+            <input name="createWorkerId" type="hidden">
+            <input name="createTime" type="hidden">
             <tr>
                 <th><Label for="routeName">线路名:</Label></th>
                 <td><input name="routeName" class="easyui-textbox" style="width: 100%"></td>
@@ -243,7 +246,7 @@
             <input name="routeId" type="hidden">
             <tr>
                 <th><Label for="workRoleId">线路角色:</Label></th>
-                <td><input id="workRole" name="workRoleId" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+                <td><input id="workRole" name="workRoleId" class="easyui-combobox" data-options="required: true" style="width: 200px"></td>
             </tr>
             <tr>
                 <th><Label for="workerId">人员:</Label></th>

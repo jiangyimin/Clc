@@ -793,7 +793,7 @@ namespace Clc.Migrations
                         column: x => x.RouteId,
                         principalTable: "Routes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RouteArticles_RouteWorkers_RouteWorkerId",
                         column: x => x.RouteWorkerId,
@@ -970,9 +970,9 @@ namespace Clc.Migrations
                 column: "WorkplaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Affairs_TenantId_DepotId_CarryoutDate",
+                name: "IX_Affairs_TenantId_CarryoutDate_DepotId",
                 table: "Affairs",
-                columns: new[] { "TenantId", "DepotId", "CarryoutDate" });
+                columns: new[] { "TenantId", "CarryoutDate", "DepotId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AffairTasks_AffairId",
@@ -1226,9 +1226,9 @@ namespace Clc.Migrations
                 column: "VehicleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Routes_TenantId_DepotId_CarryoutDate_RouteName",
+                name: "IX_Routes_TenantId_CarryoutDate_DepotId_RouteName",
                 table: "Routes",
-                columns: new[] { "TenantId", "DepotId", "CarryoutDate", "RouteName" },
+                columns: new[] { "TenantId", "CarryoutDate", "DepotId", "RouteName" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1277,9 +1277,9 @@ namespace Clc.Migrations
                 column: "WorkerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Signins_TenantId_DepotId_CarryoutDate_WorkerId",
+                name: "IX_Signins_TenantId_CarryoutDate_DepotId_WorkerId",
                 table: "Signins",
-                columns: new[] { "TenantId", "DepotId", "CarryoutDate", "WorkerId" });
+                columns: new[] { "TenantId", "CarryoutDate", "DepotId", "WorkerId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_DepotId",

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities;
 using Clc.Fields;
 using Clc.Types;
@@ -84,6 +86,12 @@ namespace Clc.Routes
         public DateTime ReturnTime { get; set; }
 
         public float ActualMileage { get; set; }
+
+        [ForeignKey("RouteId")]
+        public virtual List<RouteWorker> Workers { get; set; }
+        
+        [ForeignKey("RouteId")]
+        public virtual List<RouteArticle> Articles { get; set; }
     }
 }
 

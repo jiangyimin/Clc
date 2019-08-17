@@ -94,11 +94,16 @@ body {
     border-bottom: 1px solid #e6e6e6;
   }
 
-  .rfid {
-    height:20px;
+  .route {
+    padding-left: 20px;
+    font-size: 28px;
+    color: #000;
+    background: #f7fafc;
+  }
+
+  .worker {
+    font-size: 28px;
     text-align:center;
-    background:#ccc;
-    margin-bottom:20px;
 }
 
   

@@ -14,7 +14,7 @@ using Clc.Works;
 
 namespace Clc.Routes
 {
-    [AbpAuthorize(PermissionNames.Pages_Arrange)]
+    [AbpAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Article)]
     public class RouteAppService : ClcAppServiceBase, IRouteAppService
     {
         public WorkManager WorkManager { get; set; }

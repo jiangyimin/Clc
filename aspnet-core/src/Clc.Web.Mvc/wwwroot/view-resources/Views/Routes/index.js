@@ -44,6 +44,24 @@
             });
         })            
 
+        $('#tb').children('a[name="close"]').click(function (e) {
+            var checkedRows = $('#dg').datagrid("getChecked");
+            if (checkedRows.length === 0) {
+                abp.notify.error("请先选中要关闭的线路。");
+                return;
+            }
+
+            ids = [];
+            for (var row of checkedRows) {
+                if (row.status == "激活") ids.push(row.id);
+            };
+
+            abp.services.app.route.activate(ids).done(function (count) {
+                abp.notify.info('有' + count + '个线路被关闭');
+                mds.reload('');
+            })
+        })            
+
         $('#tb').children('a[name="createFrom"]').click(function (e) {
             e.preventDefault();
             var from = $('#fromDate').datebox('getValue');

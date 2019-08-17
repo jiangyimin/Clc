@@ -1,7 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Clc.Runtime
 {
+    public class LambdaEqualityComparer<T> : IEqualityComparer<T>
+    {
+        public LambdaEqualityComparer(Func<T, T, bool> equalsFunction)
+        {
+            _equalsFunction = equalsFunction;
+        }
+
+        public bool Equals(T x, T y)
+        {
+            return _equalsFunction(x, y);
+        }
+
+        public int GetHashCode(T obj)
+        {
+            return obj.GetHashCode();
+        }
+
+        private readonly Func<T, T, bool> _equalsFunction;
+    }
+
     public class ClcUtils
     {
         private const double EARTH_RADIUS = 6378.137 * 1000;//地球半径,单位为米  
@@ -31,7 +52,7 @@ namespace Clc.Runtime
             return s;  
         } 
 
-        public static DateTime GetNowDateTime(string time, bool isTomorrow = false)
+        public static DateTime GetDateTime(string time, bool isTomorrow = false)
         {
             DateTime today = DateTime.Now;
             DateTime tomorrow = today.AddDays(1);
@@ -44,6 +65,14 @@ namespace Clc.Runtime
         public static bool NowInTimeZone(DateTime start, DateTime end)
         {
             if (DateTime.Now >= start && DateTime.Now <= end) return true;
+            return false;
+        }
+
+        public static bool NowInTimeZone(string startTime, int lead, int deadline)
+        {
+            DateTime start = GetDateTime(startTime);
+            if (DateTime.Now >= start.Subtract(TimeSpan.FromMinutes(lead)) && 
+                    DateTime.Now <= start.Add(TimeSpan.FromMinutes(deadline))) return true;
             return false;
         }
     }

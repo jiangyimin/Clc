@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
+using Clc.Routes.Dto;
 using Clc.Works.Dto;
 
 namespace Clc.Works
@@ -17,8 +18,14 @@ namespace Clc.Works
         Task<List<SigninDto>> GetSigninsAsync(DateTime carryoutDate);
 
         string SigninByRfid(string rfid);
-        string SigninByWx(string cn, float lat, float lon);
         
         #endregion Signin
+
+        #region Routes for article box
+        Task<List<RouteCDto>> GetRoutesForLendAsync(DateTime carryouDate, int affairId);
+
+        RouteWorkerMatchResult MatchWorkerForLend(DateTime carryoutDate, int affairId, string rfid);
+        
+        #endregion
     }
 }

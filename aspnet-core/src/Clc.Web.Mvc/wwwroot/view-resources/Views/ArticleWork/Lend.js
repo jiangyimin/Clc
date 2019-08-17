@@ -1,17 +1,34 @@
 
 (function() {        
-    $(function() {    
-        // get today
-        abp.services.app.work.getTodayString().done(function (dd) {
-            $('#dd').datebox('setValue', dd);
-            $('#dg').datagrid({
-                url: 'GridData?CarryoutDate=' + dd
+    $(function() {
+        abp.services.app.work.getMyWork().done(function (wk) {
+            work.myWork = wk;
+            $('#managers').textbox('setValue', '库房管理人：' + work.myWork.workers);
+            // get today
+            abp.services.app.work.getTodayString().done(function (dd) {
+                $('#dd').datebox('setValue', dd);
+                work.dd = dd;
+                $('#dg').datagrid({
+                    url: 'GridData',
+                    queryParams: {CarryoutDate: work.dd, AffairId: work.myWork.affairId }
+                });
             });
         });
 
-        abp.services.app.work.getMyWork().done(function (work) {
-            myWork = work;
-            $('#managers').textbox('setValue', '库房管理人：' + myWork.workers);
+        $('#dg').datagrid({
+            onSelect: function (index, row) {
+                $('#dgWorker').datagrid({
+                    url: 'GridDataWorker/' + row.id
+                });
+            }
         });
+
+        $('#dl').datalist({
+            lines: true,
+            textFormatter: function(value,row,index) {
+                return '<span style="font-size:24px">'+value+'</span>';
+            }
+        });
+
     });
 })();

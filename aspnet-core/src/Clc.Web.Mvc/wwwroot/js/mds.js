@@ -76,7 +76,7 @@ var mds = mds || {};
     };
     mds.edit = function(postfix, index) {
         _dfd = mds.getUpdateDfd(postfix);
-        // alert(_dfd);
+        alert(_dfd);
         $('#dlg' + postfix).dialog('open').dialog('setTitle', '编辑');
 
         var $fm = $('#fm' + postfix);

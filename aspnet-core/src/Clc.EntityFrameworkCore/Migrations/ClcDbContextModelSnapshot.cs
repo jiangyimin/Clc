@@ -893,7 +893,7 @@ namespace Clc.Migrations
 
                     b.HasIndex("WorkplaceId");
 
-                    b.HasIndex("TenantId", "DepotId", "CarryoutDate");
+                    b.HasIndex("TenantId", "CarryoutDate", "DepotId");
 
                     b.ToTable("Affairs");
                 });
@@ -1672,7 +1672,7 @@ namespace Clc.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.HasIndex("TenantId", "DepotId", "CarryoutDate", "RouteName")
+                    b.HasIndex("TenantId", "CarryoutDate", "DepotId", "RouteName")
                         .IsUnique();
 
                     b.ToTable("Routes");
@@ -1939,7 +1939,7 @@ namespace Clc.Migrations
 
                     b.HasIndex("WorkerId");
 
-                    b.HasIndex("TenantId", "DepotId", "CarryoutDate", "WorkerId");
+                    b.HasIndex("TenantId", "CarryoutDate", "DepotId", "WorkerId");
 
                     b.ToTable("Signins");
                 });
@@ -2464,9 +2464,9 @@ namespace Clc.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Clc.Routes.Route", "Route")
-                        .WithMany()
+                        .WithMany("Articles")
                         .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Clc.Routes.RouteWorker", "RouteWorker")
                         .WithMany()
@@ -2554,7 +2554,7 @@ namespace Clc.Migrations
             modelBuilder.Entity("Clc.Routes.RouteWorker", b =>
                 {
                     b.HasOne("Clc.Routes.Route", "Route")
-                        .WithMany()
+                        .WithMany("Workers")
                         .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade);
 

@@ -55,7 +55,7 @@
             { field: "eventTime", title: "发生时间", width: 80, formatter: $.datetimeFormatter },
             { field: "name", title: "名称", width: 80, align: "center" },
             { field: "description", title: "具体描述", width: 150 },
-            { field: "issuer", title: "创建者", width: 80 },
+            { field: "issurer", title: "创建者", width: 80 },
         ]];
         detail.operatorColumn = false;
         mds.details.push(detail);
@@ -165,6 +165,8 @@
             <input name="id" type="hidden">
             <input name="carryoutDate" type="hidden">
             <input name="status" type="hidden">
+            <input name="createWorkerId" type="hidden">
+            <input name="createTime" type="hidden">
             <tr>
                 <th><Label for="workplaceId">任务地点:</Label></th>
                 <td><input id = "workplace" name="workplaceId" class="easyui-combobox" data-options="required: true" style="width:100%"></td>
@@ -200,7 +202,7 @@
             <input name="affairId" type="hidden">
             <tr>
                 <th><Label for="workRoleId">角色:</Label></th>
-                <td><input id="workRole" name="workRoleId" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+                <td><input id="workRole" name="workRoleId" class="easyui-combobox" data-options="required: true" style="width: 200px"></td>
             </tr>
             <tr>
                 <th><Label for="workerId">人员:</Label></th>

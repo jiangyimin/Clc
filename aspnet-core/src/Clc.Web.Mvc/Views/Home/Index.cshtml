@@ -9,11 +9,6 @@
     <environment names="Staging,Production">
         <link rel="stylesheet" href="~/view-resources/Views/Home/Home.min.css" asp-append-version="true" />
     </environment>
-
-    <style>
-        #top-bar .title-user { color: white; font-size: large;  margin-left: 45px; }
-    
-    </style>
 }
 
 @section Scripts
@@ -24,6 +19,17 @@
     <environment names="Staging,Production">
         <script src="~/view-resources/Views/Home/Index.min.js" asp-append-version="true"></script>
     </environment>
+
+    <script type="text/javascript">
+
+        function displayRfid1(str) {
+            rfid1.innerHTML = str;
+        }
+        function displayRfid2(str) {
+            rfid2.innerHTML = str;
+        }
+    </script>    
+
 }
 
 <!-- body -->
@@ -55,8 +61,8 @@
     <div data-options="region:'south'" style="height: 26px; line-height: 0px;">
         <div class="statusbar">
             <div class="bar-left">
-                <p class="status-info">Info1</p>
-                <p class="status-info">Info2</p>
+                <p id="rfid1" class="status-info">人RFID</p>
+                <p id="rfid2" class="status-info">物RFID</p>
             </div>
             <div class="bar-right">
                 <i class="status-hint fa fa-home"></i>

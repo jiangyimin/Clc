@@ -64,8 +64,8 @@ namespace Clc.Fields
 
         public string CheckTimeZone(string startTime, string endTime, bool isTomorrow)
         {
-            DateTime start = ClcUtils.GetNowDateTime(startTime);
-            DateTime end = ClcUtils.GetNowDateTime(endTime, isTomorrow);
+            DateTime start = ClcUtils.GetDateTime(startTime);
+            DateTime end = ClcUtils.GetDateTime(endTime, isTomorrow);
             if (start > end)
                 return "结束时间不能小于开始时间!";
             if (end.Subtract(start).TotalHours < MinDuration)

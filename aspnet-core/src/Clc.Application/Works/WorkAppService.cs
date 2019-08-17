@@ -5,12 +5,16 @@ using System.Threading.Tasks;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq;
+using Abp.UI;
 using Clc.Fields;
+using Clc.Routes;
 using Clc.Runtime;
+using Clc.Runtime.Cache;
 using Clc.Works.Dto;
 
 namespace Clc.Works
 {
+
     [AbpAuthorize]
     public class WorkAppService : ClcAppServiceBase, IWorkAppService
     {
@@ -19,10 +23,30 @@ namespace Clc.Works
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
 
         private readonly IRepository<Signin> _signinRepository;
-        
-        public WorkAppService(IRepository<Signin> signinRepository)
+        private readonly IRepository<Route> _routeRepository;
+        private readonly IRouteCache _routeCache;
+        private readonly IWorkRoleCache _workRoleCache;
+        private readonly IRouteTypeCache _routeTypeCache;
+
+        private readonly IArticleCache _articleCache;
+        private readonly IArticleTypeCache _articleTypeCache;
+        // private readonly IBoxCache _boxCache;
+
+        public WorkAppService(IRepository<Signin> signinRepository,
+            IRepository<Route> routeRepository,
+            IRouteCache routeCache,
+            IWorkRoleCache workRoleCache,
+            IRouteTypeCache routeTypeCache,
+            IArticleCache articleCache,
+            IArticleTypeCache articleTypeCache)
         {
             _signinRepository = signinRepository;
+            _routeRepository = routeRepository;
+            _routeCache = routeCache;
+            _workRoleCache = workRoleCache;
+            _routeTypeCache = routeTypeCache;
+            _articleCache = articleCache;
+            _articleTypeCache = articleTypeCache;
         }
 
         public bool VerifyUnlockPassword(string password)
@@ -53,8 +77,8 @@ namespace Clc.Works
             {
                 dto.AffairId = aw.Affair.Id;
                 dto.Status = aw.Affair.Status;
-                dto.StartTime = ClcUtils.GetNowDateTime(aw.Affair.StartTime);
-                dto.EndTime = ClcUtils.GetNowDateTime(aw.Affair.EndTime, aw.Affair.IsTomorrow);
+                dto.StartTime = ClcUtils.GetDateTime(aw.Affair.StartTime);
+                dto.EndTime = ClcUtils.GetDateTime(aw.Affair.EndTime, aw.Affair.IsTomorrow);
                 dto.Workers = WorkManager.GetWorkersFromAffairId(aw.Affair.Id);
             }
             return dto;
@@ -69,6 +93,7 @@ namespace Clc.Works
             query = query.Where(x => x.DepotId == depotId && x.CarryoutDate == carryoutDate);
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             entities.Sort((a, b) => a.Worker.Cn.CompareTo(b.Worker.Cn));
+            // var list = entities.Distinct(new LambdaEqualityComparer<Signin>((a, b) => a.Worker.Cn == b.Worker.Cn)).ToList();
             return ObjectMapper.Map<List<SigninDto>>(entities);
         }
 
@@ -81,36 +106,124 @@ namespace Clc.Works
             if ( (!worker.LoanDepotId.HasValue && worker.DepotId != depotId) 
                 || (worker.LoanDepotId.HasValue) && worker.LoanDepotId != depotId ) return "此人不应在此运作中心签到";
             
-            return DoSignin(depotId, worker.Id);
+            return WorkManager.DoSignin(depotId, worker.Id);
+        }
+        #endregion
+
+        #region Route for Article and Box
+
+        public async Task<List<RouteCDto>> GetRoutesForLendAsync(DateTime carryoutDate, int affairId)
+        { 
+            var lst = await GetRoutesForArticle(carryoutDate, affairId);
+            lst.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
+            return lst;
         }
 
-        public string SigninByWx(string cn, float lat, float lon) 
+        public RouteWorkerMatchResult MatchWorkerForLend(DateTime carryoutDate, int affairId, string rfid)
         {
-            Worker worker = WorkManager.GetWorkerByCn(cn);
-            if (worker == null) return "无此工号";
-            // judge distance
+            var result = new RouteWorkerMatchResult();
+            var ret =  GetEqualRfidWorker(_routeCache.Get(carryoutDate, affairId), rfid);
+            // RULE JUDGE
+            var rt = _routeTypeCache[ret.Item1.RouteTypeId];
+            if (!ClcUtils.NowInTimeZone(ret.Item1.StartTime, rt.LendArticleLead, rt.LendArticleDeadline)) {
+               result.Message = "不在领物时间段";
+               return result;
+            }
+            if (string.IsNullOrEmpty(ret.Item2.ArticleTypeList)) {
+               result.Message = "此人不需要领物";
+               return result;
+            }
 
-            int depotId = worker.LoanDepotId.HasValue ? worker.LoanDepotId.Value : worker.DepotId;
-            if (!WorkManager.IsInDepotRadius(depotId, lat, lon)) return "请到中心后再签到";
-
-            return DoSignin(depotId, worker.Id);
+            result.RouteMatched = new RouteMatchedDto(ret.Item1);
+            result.WorkerMatched = ret.Item2;
+            return result;
         }
 
-        private string DoSignin(int depotId, int workerId)
+        public (string, RouteArticleCDto) MatchArticleForLend(string workerCn, string vehicleCn, string routeName, string articleTypeList, string rfid)
         {
-            // Get Signin 
-            var signin = _signinRepository.FirstOrDefault(s => s.DepotId == depotId && s.CarryoutDate == DateTime.Today && s.WorkerId == workerId);
-            if (signin == null)
+            var article = _articleCache.GetList().FirstOrDefault(x => x.Rfid == rfid);
+            if (article == null) return ("此Rfid没有对应的物品", null);
+
+            var type = _articleTypeCache[article.ArticleTypeId];
+            if (!articleTypeList.Contains(type.Cn)) return ("不允许领用此物品类型", null);
+
+            if (!string.IsNullOrEmpty(article.BindInfo))
             {
-                Signin s = new Signin() { DepotId = depotId, CarryoutDate = DateTime.Today, WorkerId = workerId, SigninTime = DateTime.Now }; 
-                _signinRepository.Insert(s);
-                return "签到成功";
+                switch (type.BindStyle) {
+                case "人":
+                    if (!article.BindInfo.Contains(workerCn)) return ("此物品未绑定到此人", null);
+                    break;
+                case "车":
+                    if (!article.BindInfo.Contains(vehicleCn)) return ("此物品未绑定到此车", null);
+                    break;
+                case "线":
+                    if (!article.BindInfo.Contains(routeName)) return ("此物品未绑定到此线路", null);
+                    break;
+                default:
+                    throw new InvalidOperationException("无此绑定类型");
+                }
             }
-            else
+            return ("", new RouteArticleCDto(article));
+        }
+
+        // 
+        private (RouteCDto, WorkerMatchedDto) GetEqualRfidWorker(List<RouteCDto> routes, string rfid)
+        {           
+            foreach (var route in routes)
             {
-                return "你已签过到";
+                foreach (var w in route.Workers) 
+                {
+                    var worker = WorkManager.GetWorker(w.WorkerId);
+                    if (worker.Rfid == rfid) {
+                        WorkerMatchedDto dto = new WorkerMatchedDto(w.Id, worker, _workRoleCache[w.WorkRoleId].ArticleTypeList);
+                        return (route, dto);
+                    }
+                }
+            }
+            return (null, null);
+        }
+
+        private async Task<List<RouteCDto>> GetRoutesForArticle(DateTime carryoutDate, int affairId)
+        {
+            try 
+            {
+                var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.Workers, x => x.Articles);
+                query = ApplyWhere(query, carryoutDate, affairId);
+                var entities = await AsyncQueryableExecuter.ToListAsync(query);
+                var lst = entities.Select(MapToDto).ToList();
+                _routeCache.Set(carryoutDate, affairId, lst);           // Cached
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
             }
         }
+
+        private RouteCDto MapToDto(Route route)
+        {
+            var dto = ObjectMapper.Map<RouteCDto>(route);
+            dto.Workers = new List<RouteWorkerCDto>();
+            dto.Articles = new List<RouteArticleCDto>();
+            foreach (var w in route.Workers)
+            {
+                dto.Workers.Add(new RouteWorkerCDto() { Id = w.Id, WorkerId = w.WorkerId, WorkRoleId = w.WorkRoleId});
+                // dto.WorkerList += string.Format("{0}({1}) ", WorkManager.GetWorker(w.WorkerId).Name, _workRoleCache[w.WorkRoleId].Name);
+            }
+            foreach (var a in route.Articles)
+            {
+                // dto.Articles.Add(new RouteArticleCDto());
+                // dto.ArticleList += "1 ";
+            }
+            return dto;
+        }
+        private IQueryable<Route> ApplyWhere(IQueryable<Route> query, DateTime carryoutDate, int affairId)
+        {
+            List<int> depots = WorkManager.GetShareDepods(affairId);
+            var q = query.Where(x => x.CarryoutDate == carryoutDate &&　depots.Contains(x.DepotId)　&& x.Status == "激活");
+            return q;
+        }
+
         #endregion
     }
 }
