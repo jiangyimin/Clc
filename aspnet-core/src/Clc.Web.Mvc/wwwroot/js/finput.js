@@ -1,11 +1,13 @@
 var finput = finput || {};
 (function ($) {
     var currentRfid = '';
+    var dialogClosed = true;
     finput.rfidLength = {
         workerRfidLength: 5,
         articleRfidLength: 3,
         boxRfidLength: 8,
     };
+    
 
     finput.route = {};
     finput.worker = {};
@@ -25,12 +27,9 @@ var finput = finput || {};
             finput.articles = ret.articles;
         else
             finput.articles = [];
-        $('#dl').datalist({
-            data: finput.articles,
-            valueField: 'articleId',
-            textField: 'displayText',
-        });
     
+        $('#dlg').dialog('open');
+        dialogClosed = false;
         routeName.innerHTML = finput.route.routeName;
         vehicle.innerHTML = finput.route.vehicleCn + ' ' + finput.route.vehicleLicense;
         worker.innerHTML = finput.worker.cn + ' ' + finput.worker.name;
@@ -73,17 +72,17 @@ var finput = finput || {};
         var c = String.fromCharCode(keyCode);
         if (keyCode == 13 && currentRfid != '') {
             if (currentRfid.length == finput.rfidLength.workerRfidLength) {
-                if ($('#dlg').dialog('options').closed == true)
+                if (dialogClosed == true)
                     finput.onWorker(currentRfid);
                 else
                     finput.onWorkerConfirm(currentRfid);
             }
             else if (currentRfid.length == finput.rfidLength.articleRfidLength) {
-                if ($('#dlg').dialog('options').closed == false)
+                if (dialogClosed == false)
                     finput.onArticle(currentRfid);
             }
             else if (currentRfid.length == finput.rfidLength.boxRfidLength) {
-                if ($('#dlg').dialog('options').closed == false)
+                if (dialogClosed == false)
                     finput.onBox(currentRfid);
             }
             else {
@@ -121,5 +120,21 @@ var finput = finput || {};
 
         // set envent
         window.document.onkeydown = finput.onkeydown;
+
+        $('#dl').datalist({
+            data: finput.articles,
+            valueField: 'articleId',
+            textField: 'displayText',
+            lines: true,
+            textFormatter: function(value,row,index) {
+                return '<span style="font-size:24px">'+value+'</span>';
+            }
+        });
+
+        $('#dlg').dialog({
+            onClose: function() {
+                dialogClosed = true;
+            }
+        })
      });
 })(jQuery);

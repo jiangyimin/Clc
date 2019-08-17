@@ -26,6 +26,8 @@ namespace Clc.Routes.Dto
         public string WorkRoleName { get; set; }
         public string WorkRoleArticleTypeList { get; set; }
 
+        public string ArticleList { get; set; }
+        
         // only for mds.js 
         public string Postfix { get; } = "Worker";
     }

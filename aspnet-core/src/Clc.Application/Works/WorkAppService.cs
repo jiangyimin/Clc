@@ -30,7 +30,7 @@ namespace Clc.Works
 
         private readonly IArticleCache _articleCache;
         private readonly IArticleTypeCache _articleTypeCache;
-        // private readonly IBoxCache _boxCache;
+        private readonly IBoxCache _boxCache;
 
         public WorkAppService(IRepository<Signin> signinRepository,
             IRepository<Route> routeRepository,
@@ -38,7 +38,8 @@ namespace Clc.Works
             IWorkRoleCache workRoleCache,
             IRouteTypeCache routeTypeCache,
             IArticleCache articleCache,
-            IArticleTypeCache articleTypeCache)
+            IArticleTypeCache articleTypeCache,
+            IBoxCache boxCache)
         {
             _signinRepository = signinRepository;
             _routeRepository = routeRepository;
@@ -47,6 +48,7 @@ namespace Clc.Works
             _routeTypeCache = routeTypeCache;
             _articleCache = articleCache;
             _articleTypeCache = articleTypeCache;
+            _boxCache = boxCache;
         }
 
         public bool VerifyUnlockPassword(string password)
@@ -116,6 +118,13 @@ namespace Clc.Works
         { 
             var lst = await GetRoutesForArticle(carryoutDate, affairId);
             lst.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
+            return lst;
+        }
+
+        public async Task<List<RouteCDto>> GetRoutesForReturnAsync(DateTime carryoutDate, int affairId)
+        { 
+            var lst = await GetRoutesForArticle(carryoutDate, affairId);
+            lst.Sort((a, b) => a.EndTime.CompareTo(b.EndTime));
             return lst;
         }
 

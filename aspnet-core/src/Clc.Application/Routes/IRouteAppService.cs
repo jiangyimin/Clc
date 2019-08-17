@@ -14,6 +14,7 @@ namespace Clc.Routes
         Task Delete(int id);
 
         Task<int> Activate(List<int> ids);
+        Task<int> Close(List<int> ids);
         Task Back(int id);
 
         Task<int> CreateFrom(DateTime carryoutDate, DateTime fromDate);

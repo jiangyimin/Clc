@@ -11,6 +11,7 @@ using Clc.Authorization;
 using Clc.PreRoutes;
 using Clc.Runtime.Cache;
 using Clc.Works;
+using Clc.Runtime;
 
 namespace Clc.Routes
 {
@@ -31,6 +32,8 @@ namespace Clc.Routes
         private readonly IRepository<PreRoute> _preRouteRepository;
         private readonly IRepository<PreRouteWorker> _preRouteWorkerRepository;
         private readonly IRepository<PreRouteTask> _preRouteTaskRepository;
+        private readonly IRepository<ArticleRecord> _articleRecordRepository;
+        private readonly IRepository<BoxRecord> _boxRecordRepository;
         private readonly ITaskTypeCache _taskTypeCache;
 
         public RouteAppService(IRepository<Route> routeRepository, 
@@ -42,7 +45,9 @@ namespace Clc.Routes
             IRepository<RouteOutBox> outBoxRepository,
             IRepository<PreRoute> preRouteRepository,
             IRepository<PreRouteWorker> preRouteWorkerRepository,
-            IRepository<PreRouteTask> preRouteTaskRepository,            
+            IRepository<PreRouteTask> preRouteTaskRepository, 
+            IRepository<ArticleRecord> articleRecordRepository,           
+            IRepository<BoxRecord> boxRecordRepository,           
             ITaskTypeCache taskTypeCache)
         {
             _routeRepository = routeRepository;
@@ -55,6 +60,8 @@ namespace Clc.Routes
             _preRouteRepository = preRouteRepository;
             _preRouteWorkerRepository = preRouteWorkerRepository;
             _preRouteTaskRepository = preRouteTaskRepository;
+            _articleRecordRepository = articleRecordRepository;
+            _boxRecordRepository = boxRecordRepository;
             _taskTypeCache = taskTypeCache;
         }
 
@@ -99,6 +106,20 @@ namespace Clc.Routes
                 var route = _routeRepository.Get(id);
                 if (route.Status != "安排") continue;          // Skip
                 route.Status = "激活";
+                await _routeRepository.UpdateAsync(route);
+                count++;            
+            }
+            return count;
+        }
+
+        public async Task<int> Close(List<int> ids)
+        {
+            int count = 0;
+            foreach (int id in ids)
+            {
+                var route = _routeRepository.Get(id);
+                if (route.Status != "激活") continue;          // Skip
+                route.Status = "关闭";
                 await _routeRepository.UpdateAsync(route);
                 count++;            
             }
@@ -168,11 +189,11 @@ namespace Clc.Routes
         #region Son Tables
         public async Task<List<RouteWorkerDto>> GetRouteWorkers(int id, string sorting)
         {
-            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole).Where(e => e.RouteId == id);
+            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole, x => x.RouteArticles).Where(e => e.RouteId == id);
             query = query.OrderBy(x => x.WorkRole.Cn);            
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            var list = ObjectMapper.Map<List<RouteWorkerDto>>(entities);
-            return list;
+            var lst = entities.Select(MapTo).ToList();
+            return lst;
         }
 
         public async Task<RouteWorkerDto> UpdateWorker(RouteWorkerDto input)
@@ -343,6 +364,22 @@ namespace Clc.Routes
             task.CreateWorkerId = workerId;
             task.CreateTime = DateTime.Now;
             await _taskRepository.InsertAsync(task);
+        }
+
+        private RouteWorkerDto MapTo(RouteWorker rw)
+        {
+            var dto = ObjectMapper.Map<RouteWorkerDto>(rw);
+            if (rw.RouteArticles == null) return dto;
+
+            foreach (var ra in rw.RouteArticles) 
+            {
+                var record = _articleRecordRepository.Get(ra.ArticleRecordId);
+                var a = WorkManager.GetArticle(record.AffairId);
+                var s = record.ReturnTime.HasValue ? string.Format("{0}已还", record.ReturnTime.Value.ToString("hh:MM")) : "未还";
+                dto.ArticleList += string.Format("{0}({1}) ", a.Name, s);
+            }
+
+            return dto;
         }
         #endregion
     }

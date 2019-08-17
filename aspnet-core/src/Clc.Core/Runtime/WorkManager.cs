@@ -5,6 +5,7 @@ using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Domain.Services;
 using Clc.Affairs;
+using Clc.Clients;
 using Clc.Configuration;
 using Clc.Fields;
 using Clc.Runtime;
@@ -17,6 +18,8 @@ namespace Clc.Works
         private readonly IWorkerCache _workerCache;
         private readonly IWorkplaceCache _workplaceCache;
         private readonly IDepotCache _depotCache;
+        private readonly IArticleCache _articleCache;
+        private readonly IBoxCache _boxCache;
         private readonly IRepository<Signin> _signinRepository;
         private readonly IRepository<Affair> _affairRepository;
         private readonly IRepository<AffairWorker> _affairWorkerRepository;
@@ -24,6 +27,8 @@ namespace Clc.Works
         public WorkManager(IWorkerCache workerCache,
             IWorkplaceCache workplaceCache,
             IDepotCache depotCache,
+            IArticleCache articleCache,
+            IBoxCache boxCache,
             IRepository<Signin> signinRepository,
             IRepository<Affair> affairRepository,
             IRepository<AffairWorker> affairWorkerRepository)
@@ -31,6 +36,9 @@ namespace Clc.Works
             _workerCache = workerCache;
             _workplaceCache = workplaceCache;
             _depotCache = depotCache;
+            _articleCache = articleCache;
+            _boxCache = boxCache;
+
             _signinRepository = signinRepository;
             _affairRepository = affairRepository;
             _affairWorkerRepository = affairWorkerRepository;
@@ -183,6 +191,14 @@ namespace Clc.Works
             return workers;
         }
 
+        public Article GetArticle(int id)
+        {
+            return _articleCache[id];
+        }
+        public Box GetBox(int id)
+        {
+            return _boxCache[id];
+        }
         #endregion
 
     }

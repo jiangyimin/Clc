@@ -9,4 +9,8 @@ namespace Clc.Runtime.Cache
     public interface IOutletCache : IEntityListCache<Outlet, Outlet, Outlet>
     {
     }
+
+    public interface IBoxCache : IEntityListCache<Box, Box, Box>
+    {
+    }
 }

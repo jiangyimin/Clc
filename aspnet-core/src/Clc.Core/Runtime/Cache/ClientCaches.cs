@@ -20,4 +20,11 @@ namespace Clc.Runtime.Cache
         {
         }
     }
+    public class BoxCache : EntityListCache<Box, Box, Box>, IBoxCache, ITransientDependency
+    {
+        public BoxCache(ICacheManager cacheManager, IRepository<Box> repository, IObjectMapper objectMapper)
+            : base(cacheManager, repository, objectMapper)
+        {
+        }
+    }
 }

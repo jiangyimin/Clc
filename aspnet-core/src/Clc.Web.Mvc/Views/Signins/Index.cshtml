@@ -27,7 +27,7 @@
 
 
         finput.onWorker = function(rfid) {
-            // alert(rfid);
+            window.parent.displayRfid1(rfid);
             abp.services.app.work.signinByRfid(rfid).done(function(data) {
                 abp.notify.info(data);
                 $('#dg').datagrid('reload');

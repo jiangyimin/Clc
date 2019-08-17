@@ -56,7 +56,7 @@
                 if (row.status == "激活") ids.push(row.id);
             };
 
-            abp.services.app.route.activate(ids).done(function (count) {
+            abp.services.app.route.close(ids).done(function (count) {
                 abp.notify.info('有' + count + '个线路被关闭');
                 mds.reload('');
             })

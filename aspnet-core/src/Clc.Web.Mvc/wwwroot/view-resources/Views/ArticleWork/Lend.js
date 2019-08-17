@@ -22,13 +22,5 @@
                 });
             }
         });
-
-        $('#dl').datalist({
-            lines: true,
-            textFormatter: function(value,row,index) {
-                return '<span style="font-size:24px">'+value+'</span>';
-            }
-        });
-
     });
 })();

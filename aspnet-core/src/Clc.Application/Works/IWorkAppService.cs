@@ -23,6 +23,7 @@ namespace Clc.Works
 
         #region Routes for article box
         Task<List<RouteCDto>> GetRoutesForLendAsync(DateTime carryouDate, int affairId);
+        Task<List<RouteCDto>> GetRoutesForReturnAsync(DateTime carryouDate, int affairId);
 
         RouteWorkerMatchResult MatchWorkerForLend(DateTime carryoutDate, int affairId, string rfid);
         

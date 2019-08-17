@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -31,6 +32,8 @@ namespace Clc.Routes
         public int WorkRoleId { get; set; }
         public WorkRole WorkRole { get; set; }  
 
+        [ForeignKey("RouteWorkerId")]
+        public virtual List<RouteArticle> RouteArticles { get; set; }
         [NotMapped]
         public string WorkerCn { 
             get {

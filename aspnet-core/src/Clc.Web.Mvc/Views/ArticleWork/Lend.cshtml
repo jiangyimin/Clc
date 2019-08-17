@@ -24,7 +24,6 @@
                     abp.notify.error(ret.message);
                     return;
                 }
-                $('#dlg').dialog('open');
                 finput.showWorkerCommon(ret);
             });
         };
@@ -81,8 +80,7 @@
             <thead>
                 <tr>
                     <th field="workRoleName" width="80">工作角色</th>
-                    <th field="workerCn" width="80">人员编号</th>
-                    <th field="workerName" width="80">人员姓名</th>
+                    <th field="worker" width="80" formatter="work.workerFormatter">人员</th>
                     <th field="articleList" width="200">物品清单</th>
                  </tr>
             </thead>
