@@ -92,6 +92,12 @@ namespace Clc.Routes
         
         [ForeignKey("RouteId")]
         public virtual List<RouteArticle> Articles { get; set; }
+
+        [ForeignKey("RouteId")]
+        public virtual List<RouteInBox> InBoxes { get; set; }
+        
+        [ForeignKey("RouteId")]
+        public virtual List<RouteOutBox> OutBoxes { get; set; }
     }
 }
 

@@ -1,0 +1,17 @@
+﻿<table id="dg" class="easyui-datagrid" toolbar="#tb"
+        fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true"
+        url="GridDataArticle" pagination="true" pageSize="20" sortName="cn">
+    <thead>
+        <tr>
+            <th field="cn" width="60" align="center">编号</th>
+            <th field="name" width="100">名称</th>
+            <th field="articleTypeName" width="60">物品类型</th>
+            <th field="rfid" width="80">RFID</th>
+            <th field="bindInfo" width="80">绑定信息</th>
+            <th field="articleRecordInfo" width="320">领用归还信息</th>
+        </tr>
+    </thead>
+</table>
+<div id="tb">
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+</div>

@@ -128,6 +128,15 @@ namespace Clc.EntityFrameworkCore
                 b.HasIndex(e => new { e.TenantId, e.CarryoutDate, e.DepotId, e.RouteName}).IsUnique();
             });
 
+            modelBuilder.Entity<ArticleRecord>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.LendTime });
+            });
+
+            modelBuilder.Entity<BoxRecord>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.InTime });
+            });
 
             //
             // DeleteBehavior
@@ -178,30 +187,24 @@ namespace Clc.EntityFrameworkCore
                 .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Route>()
                 .HasOne(b => b.Vehicle).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Route>()
+                .HasMany(b => b.Articles).WithOne().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Route>()
+                .HasMany(b => b.InBoxes).WithOne().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Route>()
+                .HasMany(b => b.OutBoxes).WithOne().OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<RouteWorker>()
                 .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<RouteTask>()
                 .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<RouteArticle>()
-                .HasOne(b => b.RouteWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<RouteArticle>()
                 .HasOne(b => b.ArticleRecord).WithMany().OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<RouteInBox>()
-                .HasOne(b => b.Route).WithMany().OnDelete(DeleteBehavior.Restrict);
-             modelBuilder.Entity<RouteInBox>()
-                .HasOne(b => b.RouteTask).WithMany().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<RouteInBox>()
                 .HasOne(b => b.BoxRecord).WithMany().OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<RouteOutBox>()
-                .HasOne(b => b.Route).WithMany().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<RouteOutBox>()
-                .HasOne(b => b.RouteTask).WithMany().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<RouteOutBox>()
-                .HasOne(b => b.BoxRecord).WithMany().OnDelete(DeleteBehavior.Restrict);
-            
+                .HasOne(b => b.BoxRecord).WithMany().OnDelete(DeleteBehavior.Restrict);            
         }
     }
 }

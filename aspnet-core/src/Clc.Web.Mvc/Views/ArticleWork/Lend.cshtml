@@ -18,23 +18,33 @@
 @section funcScripts
 {
     <script type="text/javascript">
-        finput.onWorkerSelf = function(rfid) {
+        finput.matchWorker = function(rfid) {
             abp.services.app.work.matchWorkerForLend(work.dd, work.myWork.affairId, rfid).done(function(ret) {
                 if (ret.message != null) {
                     abp.notify.error(ret.message);
                     return;
                 }
-                finput.showWorkerCommon(ret);
+                finput.showWorker(ret);
             });
         };
 
-        finput.onArticleSelf = function(rfid) {
+        finput.articleScaned = function(rfid) {
             abp.services.app.work.matchArticleForLend(finput.worker.cn, finput.route.vehicleCn, finput.route.routeName, finput.worker.articleTypeList, rfid).done(function(ret) {
                 if (ret.item1 != '') {
                     abp.notify.error(ret.item1);
                     return;
-                }
-                finput.showArticleCommon(ret.item2)
+                };
+                var a = ret.item2;
+                if (finput.IsInArticles(a.articleId)) {
+                    abp.notify.warn('此物品已扫描');
+                    return;
+                };
+
+                abp.services.app.articleRecord.getArticleStatus(a.articleId).done(function (status) {
+                    if (status != null) abp.notify.warn(status);
+                    finput.articles.push(a);
+                    $('#dl').datalist('loadData', finput.articles);
+                });
             });
         }
 
@@ -43,8 +53,11 @@
                 abp.notify.warn('未领用任何物品')
                 return;
             }
+            var ids = [];
+            for (var i = 0; i < finput.articles.length; i++) ids.push(finput.articles[i].articleId);
+            if (ids.length == 0) return;
 
-            abp.services.app.articleRecord.lend(finput.route.id, finput.worker.routeWorkerId, work.myWork.affairId, finput.getArticleIds()).done(function(count) {
+            abp.services.app.articleRecord.lend(finput.route.id, finput.worker.routeWorkerId, ids, work.myWork.workers).done(function(count) {
                 abp.notify.info(finput.worker.name+'领用了'+count+'件物品');
                 $('#dlg').dialog('close');
             });
@@ -58,7 +71,7 @@
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
             &nbsp;全部&nbsp;<input id="all" class="easyui-checkbox">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="managers" class="easyui-textbox" readonly style="width: 200px">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="workers"></span>
         </div>
         <table id="dg" title="线路列表" class="easyui-datagrid" toolbar="#tb"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">
@@ -100,7 +113,7 @@
             <p id="worker" class="worker"></p>
         </div>
         <div data-options="region:'center'" style="border:3px solid #ccc; padding:10px">
-            <div id="dl" class="esayui-datalist">
+            <div id="dl" class="esayui-datalist" fit="true" fitColumns="true" striped="true">
             </div>
         </div>
     </div>

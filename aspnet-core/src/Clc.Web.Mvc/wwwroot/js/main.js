@@ -76,5 +76,31 @@
         datetimeFormatter: function (val) {
             if (val) return val.substr(0, 10) + ' ' + val.substr(11, 5);
         },
+
+        toExcel: function (tbl, title) {
+            try {
+                var rows = $(tbl).datagrid('getRows');
+                var columns = $(tbl).datagrid("options").columns[0];
+                var oXL = new ActiveXObject("Excel.Application"); //创建AX对象excel 
+                var oWB = oXL.Workbooks.Add();
+                var oSheet = oWB.ActiveSheet;
+
+                oSheet.Name = title;
+                //设置表头
+                for (var i = 0; i < columns.length; i++) {
+                    oSheet.Cells(1, i + 1).value = columns[i].title;
+                }
+                //设置内容部分
+                for (var i = 0; i < rows.length; i++) {
+                    //动态获取每一行每一列的数据值
+                    for (var j = 0; j < columns.length; j++) {
+                        oSheet.Cells(i + 2, j + 1).value = rows[i][columns[j].field];
+                    }
+                }
+                oXL.Visible = true;
+            } catch (e) {
+                alert("无法启动Excel!\n\n如果您确信您的电脑中已经安装了Excel");
+            }
+        },
     });
 })(jQuery);

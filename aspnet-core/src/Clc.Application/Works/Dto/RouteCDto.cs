@@ -30,8 +30,6 @@ namespace Clc.Works.Dto
         public string Remark { get; set; }
 
         public List<RouteWorkerCDto> Workers { get; set; }
-        public List<RouteArticleCDto> Articles { get; set; }
-
     }
 }
 

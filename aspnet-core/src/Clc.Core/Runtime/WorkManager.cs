@@ -20,6 +20,8 @@ namespace Clc.Works
         private readonly IDepotCache _depotCache;
         private readonly IArticleCache _articleCache;
         private readonly IBoxCache _boxCache;
+
+        private readonly ISigninCache _signinCache;
         private readonly IRepository<Signin> _signinRepository;
         private readonly IRepository<Affair> _affairRepository;
         private readonly IRepository<AffairWorker> _affairWorkerRepository;
@@ -29,6 +31,7 @@ namespace Clc.Works
             IDepotCache depotCache,
             IArticleCache articleCache,
             IBoxCache boxCache,
+            ISigninCache signinCache,
             IRepository<Signin> signinRepository,
             IRepository<Affair> affairRepository,
             IRepository<AffairWorker> affairWorkerRepository)
@@ -38,6 +41,7 @@ namespace Clc.Works
             _depotCache = depotCache;
             _articleCache = articleCache;
             _boxCache = boxCache;
+            _signinCache = signinCache;
 
             _signinRepository = signinRepository;
             _affairRepository = affairRepository;
@@ -145,6 +149,14 @@ namespace Clc.Works
 
             return true;
         }
+
+        public string GetSigninInfo(int depotId, int workerId)
+        {
+            var s = _signinCache.Get(depotId, workerId);
+            if (s == null) return "未签到";
+            return s.SigninTime.ToString("HH:mm") + " 签到";
+        }
+
         #endregion
 
         #region Affair, Article, Box, 

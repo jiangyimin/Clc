@@ -24,6 +24,7 @@ namespace Clc.Works
 
         private readonly IRepository<Signin> _signinRepository;
         private readonly IRepository<Route> _routeRepository;
+        private readonly IRepository<RouteArticle> _routeArticleRepository;
         private readonly IRouteCache _routeCache;
         private readonly IWorkRoleCache _workRoleCache;
         private readonly IRouteTypeCache _routeTypeCache;
@@ -34,6 +35,7 @@ namespace Clc.Works
 
         public WorkAppService(IRepository<Signin> signinRepository,
             IRepository<Route> routeRepository,
+            IRepository<RouteArticle> routeArticleRepository,
             IRouteCache routeCache,
             IWorkRoleCache workRoleCache,
             IRouteTypeCache routeTypeCache,
@@ -43,6 +45,7 @@ namespace Clc.Works
         {
             _signinRepository = signinRepository;
             _routeRepository = routeRepository;
+            _routeArticleRepository = routeArticleRepository;
             _routeCache = routeCache;
             _workRoleCache = workRoleCache;
             _routeTypeCache = routeTypeCache;
@@ -132,6 +135,11 @@ namespace Clc.Works
         {
             var result = new RouteWorkerMatchResult();
             var ret =  GetEqualRfidWorker(_routeCache.Get(carryoutDate, affairId), rfid);
+            if (ret.Item1 == null) {
+                result.Message = "未安排任务";
+                return result;
+            }
+                
             // RULE JUDGE
             var rt = _routeTypeCache[ret.Item1.RouteTypeId];
             if (!ClcUtils.NowInTimeZone(ret.Item1.StartTime, rt.LendArticleLead, rt.LendArticleDeadline)) {
@@ -139,12 +147,38 @@ namespace Clc.Works
                return result;
             }
             if (string.IsNullOrEmpty(ret.Item2.ArticleTypeList)) {
-               result.Message = "此人不需要领物";
+               result.Message = "此人不需要领还物";
                return result;
             }
 
             result.RouteMatched = new RouteMatchedDto(ret.Item1);
             result.WorkerMatched = ret.Item2;
+            result.Articles = new List<RouteArticleCDto>();
+            return result;
+        }
+        public RouteWorkerMatchResult MatchWorkerForReturn(DateTime carryoutDate, int affairId, string rfid)
+        {
+            var result = new RouteWorkerMatchResult();
+            var ret =  GetEqualRfidWorker(_routeCache.Get(carryoutDate, affairId), rfid);
+            if (ret.Item1 == null) {
+                result.Message = "未安排任务";
+                return result;
+            }
+            // RULE JUDGE
+            if (string.IsNullOrEmpty(ret.Item2.ArticleTypeList)) {
+               result.Message = "此人不需要领还物";
+               return result;
+            }
+
+            result.RouteMatched = new RouteMatchedDto(ret.Item1);
+            result.WorkerMatched = ret.Item2;
+            result.Articles = new List<RouteArticleCDto>();
+            var articles = _routeArticleRepository.GetAllIncluding(x => x.ArticleRecord).Where(x => x.RouteWorkerId == result.WorkerMatched.RouteWorkerId).ToList();
+            foreach (var a in articles)
+            {
+                var article = WorkManager.GetArticle(a.ArticleRecord.ArticleId);
+                result.Articles.Add(new RouteArticleCDto(article, a.ArticleRecordId, a.ArticleRecord.ReturnTime.HasValue));
+            }
             return result;
         }
 
@@ -172,6 +206,13 @@ namespace Clc.Works
                     throw new InvalidOperationException("无此绑定类型");
                 }
             }
+            return ("", new RouteArticleCDto(article));
+        }
+
+        public (string, RouteArticleCDto) MatchArticleForReturn(string rfid)
+        {
+            var article = _articleCache.GetList().FirstOrDefault(x => x.Rfid == rfid);
+            if (article == null) return ("此Rfid没有对应的物品", null);
             return ("", new RouteArticleCDto(article));
         }
 
@@ -213,16 +254,9 @@ namespace Clc.Works
         {
             var dto = ObjectMapper.Map<RouteCDto>(route);
             dto.Workers = new List<RouteWorkerCDto>();
-            dto.Articles = new List<RouteArticleCDto>();
             foreach (var w in route.Workers)
             {
                 dto.Workers.Add(new RouteWorkerCDto() { Id = w.Id, WorkerId = w.WorkerId, WorkRoleId = w.WorkRoleId});
-                // dto.WorkerList += string.Format("{0}({1}) ", WorkManager.GetWorker(w.WorkerId).Name, _workRoleCache[w.WorkRoleId].Name);
-            }
-            foreach (var a in route.Articles)
-            {
-                // dto.Articles.Add(new RouteArticleCDto());
-                // dto.ArticleList += "1 ";
             }
             return dto;
         }

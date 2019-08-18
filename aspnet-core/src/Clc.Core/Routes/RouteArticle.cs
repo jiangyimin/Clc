@@ -22,14 +22,12 @@ namespace Clc.Routes
         /// </summary>
         [Required]
         public int RouteId { get; set; }
-        public Route Route { get; set; }
 
         /// <summary>
         /// Workplace
         /// </summary>
         [Required]
         public int RouteWorkerId { get; set; }
-        public RouteWorker RouteWorker { get; set; }
 
         [Required]
         public int ArticleRecordId { get; set; }

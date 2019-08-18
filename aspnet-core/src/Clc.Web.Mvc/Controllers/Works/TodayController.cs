@@ -7,24 +7,32 @@ using Clc.Authorization;
 using Clc.Controllers;
 using Clc.Works;
 using System.Threading.Tasks;
+using Clc.ArticleRecords;
 
 namespace Clc.Web.Controllers
 {
     [AbpMvcAuthorize(PermissionNames.Pages_Arrange)]
-    public class SigninsController : ClcControllerBase
+    public class TodayController : ClcControllerBase
     {
         private readonly IWorkAppService _workAppService;
+        private readonly IArticleRecordAppService _recordAppService;
 
-        public SigninsController(IWorkAppService workAppService)
+        public TodayController(IWorkAppService workAppService, IArticleRecordAppService recordAppService)
         {
             _workAppService = workAppService;
+            _recordAppService = recordAppService;
         }
 
-        public ActionResult Index()
+        public ActionResult Signins()
         {
             return View();
         }
 
+        public ActionResult ArticleList()
+        {
+            return View();
+        }
+        
         [DontWrapResult]
         public async Task<JsonResult> GridData(DateTime carryoutDate)
         {
@@ -32,5 +40,11 @@ namespace Clc.Web.Controllers
             return Json( new { rows = output });
         }
 
+        [DontWrapResult]
+        public async Task<JsonResult> GridDataArticle()
+        {
+            var output = await _recordAppService.GetArticlesAsync(GetPagedInput());
+            return Json(new { total = output.TotalCount, rows = output.Items });
+        }
     }
 }

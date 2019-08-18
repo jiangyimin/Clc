@@ -39,6 +39,7 @@ namespace Clc.Routes.Dto
         [StringLength(RouteTask.MaxRemarkLength)]
         public string Remark { get; set; }
 
+        public string CreateWorkerName { get; set; }
         // only for mds.js 
         public string Postfix { get; } = "Task";
     }

@@ -87,7 +87,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Affairs.Count() == 0)
             {
                 _context.Affairs.AddRange(new Affair[] {
-                    new Affair { TenantId = _tenantId, DepotId = 1, CarryoutDate = dd, Status = "安排", WorkplaceId = 1, StartTime = "06:30", EndTime="12:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
+                    new Affair { TenantId = _tenantId, DepotId = 1, CarryoutDate = dd, Status = "安排", WorkplaceId = 1, StartTime = "06:20", EndTime="12:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
                     new Affair { TenantId = _tenantId, DepotId = 1, CarryoutDate = dd, Status = "安排", WorkplaceId = 1, StartTime = "13:30", EndTime="21:00", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
                     new Affair { TenantId = _tenantId, DepotId = 1, CarryoutDate = dd, Status = "安排", WorkplaceId = 2, StartTime = "06:30", EndTime="12:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
                     new Affair { TenantId = _tenantId, DepotId = 1, CarryoutDate = dd, Status = "安排", WorkplaceId = 2, StartTime = "15:30", EndTime="20:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 

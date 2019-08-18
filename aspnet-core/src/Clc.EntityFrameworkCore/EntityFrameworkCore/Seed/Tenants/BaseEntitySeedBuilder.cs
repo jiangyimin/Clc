@@ -158,6 +158,9 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10008", Name = "程涛", PostId = 5, Password = "123456", Rfid = "10008", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10009", Name = "吴风涛", PostId = 6, Password = "123456", Rfid = "10009", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10010", Name = "郭杰", PostId = 6, Password = "123456", Rfid = "10010", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                });
+                _context.SaveChanges();
+                _context.Workers.AddRange(new Worker[] {
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20001", Name = "赵帅", PostId = 7, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Article, Rfid = "20001", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20002", Name = "裴孟林", PostId = 7, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Article, Rfid = "20002", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20003", Name = "滕帅斌", PostId = 8, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Box, Rfid = "20003", AdditiveInfo = "142701198001041239", IsActive = true }, 
@@ -190,8 +193,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Article { TenantId = _tenantId, DepotId = 1, Cn = "01A002", Name = "市区2号枪(枪号08041638)", ArticleTypeId = 1, Rfid = "102" }, 
                     new Article { TenantId = _tenantId, DepotId = 1, Cn = "01A003", Name = "市区3号枪(枪号03041436)", ArticleTypeId = 1, Rfid = "103" }, 
                     new Article { TenantId = _tenantId, DepotId = 1, Cn = "01A004", Name = "市区4号枪(枪号08041639)", ArticleTypeId = 1, Rfid = "104" }, 
-                    new Article { TenantId = _tenantId, DepotId = 1, Cn = "01B001", Name = "市区1号弹夹", ArticleTypeId = 2, Rfid = "203" }, 
-                    new Article { TenantId = _tenantId, DepotId = 1, Cn = "01B002", Name = "市区2号弹夹", ArticleTypeId = 2, Rfid = "204" },
+                    new Article { TenantId = _tenantId, DepotId = 1, Cn = "01B001", Name = "市区1号弹夹", ArticleTypeId = 2, Rfid = "201" }, 
+                    new Article { TenantId = _tenantId, DepotId = 1, Cn = "01B002", Name = "市区2号弹夹", ArticleTypeId = 2, Rfid = "202" },
                     new Article { TenantId = _tenantId, DepotId = 1, Cn = "01B003", Name = "市区3号弹夹", ArticleTypeId = 2, Rfid = "203" }, 
                     new Article { TenantId = _tenantId, DepotId = 1, Cn = "01B004", Name = "市区4号弹夹", ArticleTypeId = 2, Rfid = "204" },
                     new Article { TenantId = _tenantId, DepotId = 1, Cn = "01C001", Name = "市区01号车", BindInfo = "001", ArticleTypeId = 3, Rfid = "301" },

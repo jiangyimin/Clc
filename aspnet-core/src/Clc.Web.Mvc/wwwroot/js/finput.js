@@ -16,18 +16,16 @@ var finput = finput || {};
     // onWoker
     finput.onWorker = function (rfid) { 
         window.parent.displayRfid1(rfid);
-        finput.onWorkerSelf(rfid);
+        finput.matchWorker(rfid);
     };
-    finput.onWorkerSelf = function () { };
+    finput.matchWorker = function () { alert("matchWorker") }
 
-    finput.showWorkerCommon = function (ret) {
+    finput.showWorker = function (ret) {
         finput.route = ret.routeMatched;
         finput.worker = ret.workerMatched;
-        if (ret.artilces != null)
-            finput.articles = ret.articles;
-        else
-            finput.articles = [];
-    
+        finput.articles = ret.articles;    
+        // alert(finput.articles.length);
+
         $('#dlg').dialog('open');
         dialogClosed = false;
         routeName.innerHTML = finput.route.routeName;
@@ -35,37 +33,20 @@ var finput = finput || {};
         worker.innerHTML = finput.worker.cn + ' ' + finput.worker.name;
         photo.src = "data:image/jpg;base64, " + finput.worker.photo;
         
-        finput.showWorkerSelf();
+        finput.showWorkerDetails();
     };
-    finput.ShowWorkerSelf = function () { }
+    finput.ShowWorkerDetails = function () { }
 
-    finput.onWorkerConfirm = function () { alert('onWorkerConfirm'); };
+    finput.onWorkerConfirm = function () { alert('onWorkerConfirm') };
 
     // OnArticle
     finput.onArticle = function (rfid) {
         window.parent.displayRfid2(rfid);
-        finput.onArticleSelf(rfid);
+        finput.articleScanned(rfid);
     };
-    finput.onArticleSelf = function () {};
-    finput.showArticleCommon = function (a) {
-        // alert(a.displayText);
-        if (finput.IsInArticles(a.articleId)) {
-            abp.notify.warn('此物品已扫描');
-            return;
-        }
-
-        abp.services.app.articleRecord.getArticleStatus(a.articleId).done(function (status) {
-            if (status == null) {
-                finput.articles.push(a);
-                $('#dl').datalist('loadData', finput.articles);
-            }
-            else {
-                abp.notify.error(status);
-            }
-        })
-    };
-
-    finput.onBox = function () { alert('onBox');};
+    finput.articleScanned = function () { alert("articleScanned")}
+    
+    finput.onBox = function () { alert('onBox') }
 
     finput.onkeydown = function() {
         var keyCode = event.keyCode;
@@ -105,11 +86,10 @@ var finput = finput || {};
         return false;
     }
 
-    finput.getArticleIds = function() {
-        var ids = [];
-        for (var i = 0; i < finput.articles.length; i++)
-            ids.push(finput.articles[i].articleId)
-        return ids;
+    finput.closeDialog = function() {
+        dialogClosed = true;
+        finput.articles = [];
+        $('#dl').datalist('loadData', []);
     }
 
     $(function () {
@@ -133,7 +113,7 @@ var finput = finput || {};
 
         $('#dlg').dialog({
             onClose: function() {
-                dialogClosed = true;
+                finput.closeDialog();
             }
         })
      });

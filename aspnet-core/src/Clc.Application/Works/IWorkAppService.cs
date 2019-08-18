@@ -26,6 +26,10 @@ namespace Clc.Works
         Task<List<RouteCDto>> GetRoutesForReturnAsync(DateTime carryouDate, int affairId);
 
         RouteWorkerMatchResult MatchWorkerForLend(DateTime carryoutDate, int affairId, string rfid);
+        RouteWorkerMatchResult MatchWorkerForReturn(DateTime carryoutDate, int affairId, string rfid);
+        
+        (string, RouteArticleCDto) MatchArticleForLend(string workerCn, string vehicleCn, string routeName, string articleTypeList, string rfid);
+        (string, RouteArticleCDto) MatchArticleForReturn(string rfid);
         
         #endregion
     }

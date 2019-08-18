@@ -701,36 +701,6 @@ namespace Clc.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ArticleRecords",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    TenantId = table.Column<int>(nullable: false),
-                    ArticleId = table.Column<int>(nullable: false),
-                    RouteWorkerId = table.Column<int>(nullable: false),
-                    LendTime = table.Column<DateTime>(nullable: false),
-                    ReturnTime = table.Column<DateTime>(nullable: true),
-                    AffairId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ArticleRecords", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ArticleRecords_Affairs_AffairId",
-                        column: x => x.AffairId,
-                        principalTable: "Affairs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ArticleRecords_RouteWorkers_RouteWorkerId",
-                        column: x => x.RouteWorkerId,
-                        principalTable: "RouteWorkers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Articles",
                 columns: table => new
                 {
@@ -749,12 +719,6 @@ namespace Clc.Migrations
                 {
                     table.PrimaryKey("PK_Articles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Articles_ArticleRecords_ArticleRecordId",
-                        column: x => x.ArticleRecordId,
-                        principalTable: "ArticleRecords",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_Articles_ArticleTypes_ArticleTypeId",
                         column: x => x.ArticleTypeId,
                         principalTable: "ArticleTypes",
@@ -766,6 +730,37 @@ namespace Clc.Migrations
                         principalTable: "Depots",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArticleRecords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    ArticleId = table.Column<int>(nullable: false),
+                    RouteWorkerId = table.Column<int>(nullable: false),
+                    LendTime = table.Column<DateTime>(nullable: false),
+                    ReturnTime = table.Column<DateTime>(nullable: true),
+                    LendWorkers = table.Column<string>(maxLength: 64, nullable: false),
+                    ReturnWorkers = table.Column<string>(maxLength: 64, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArticleRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ArticleRecords_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ArticleRecords_RouteWorkers_RouteWorkerId",
+                        column: x => x.RouteWorkerId,
+                        principalTable: "RouteWorkers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -793,13 +788,13 @@ namespace Clc.Migrations
                         column: x => x.RouteId,
                         principalTable: "Routes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_RouteArticles_RouteWorkers_RouteWorkerId",
                         column: x => x.RouteWorkerId,
                         principalTable: "RouteWorkers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -813,17 +808,12 @@ namespace Clc.Migrations
                     RouteTaskId = table.Column<int>(nullable: false),
                     InTime = table.Column<DateTime>(nullable: false),
                     OutTime = table.Column<DateTime>(nullable: true),
-                    AffairId = table.Column<int>(nullable: false)
+                    InWorkers = table.Column<string>(maxLength: 64, nullable: false),
+                    OutWorkers = table.Column<string>(maxLength: 64, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BoxRecords", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BoxRecords_Affairs_AffairId",
-                        column: x => x.AffairId,
-                        principalTable: "Affairs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_BoxRecords_RouteTasks_RouteTaskId",
                         column: x => x.RouteTaskId,
@@ -900,7 +890,7 @@ namespace Clc.Migrations
                         column: x => x.RouteTaskId,
                         principalTable: "RouteTasks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -941,7 +931,7 @@ namespace Clc.Migrations
                         column: x => x.RouteTaskId,
                         principalTable: "RouteTasks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -1005,11 +995,6 @@ namespace Clc.Migrations
                 column: "WorkerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ArticleRecords_AffairId",
-                table: "ArticleRecords",
-                column: "AffairId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ArticleRecords_ArticleId",
                 table: "ArticleRecords",
                 column: "ArticleId");
@@ -1055,11 +1040,6 @@ namespace Clc.Migrations
                 table: "Boxes",
                 columns: new[] { "TenantId", "Cn" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BoxRecords_AffairId",
-                table: "BoxRecords",
-                column: "AffairId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BoxRecords_BoxId",
@@ -1338,10 +1318,10 @@ namespace Clc.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ArticleRecords_Articles_ArticleId",
-                table: "ArticleRecords",
-                column: "ArticleId",
-                principalTable: "Articles",
+                name: "FK_Articles_ArticleRecords_ArticleRecordId",
+                table: "Articles",
+                column: "ArticleRecordId",
+                principalTable: "ArticleRecords",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
@@ -1359,14 +1339,6 @@ namespace Clc.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_AbpUsers_Workers_WorkerId",
                 table: "AbpUsers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_ArticleRecords_Affairs_AffairId",
-                table: "ArticleRecords");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_BoxRecords_Affairs_AffairId",
-                table: "BoxRecords");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Routes_Workers_CreateWorkerId",
@@ -1435,10 +1407,10 @@ namespace Clc.Migrations
                 name: "Signins");
 
             migrationBuilder.DropTable(
-                name: "PreRoutes");
+                name: "Affairs");
 
             migrationBuilder.DropTable(
-                name: "Affairs");
+                name: "PreRoutes");
 
             migrationBuilder.DropTable(
                 name: "Workplaces");

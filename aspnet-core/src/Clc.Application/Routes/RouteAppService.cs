@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq;
@@ -67,7 +68,7 @@ namespace Clc.Routes
 
         public async Task<List<RouteDto>> GetRoutesAsync(DateTime carryoutDate, string sorting)
         {
-            int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
             var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.CreateWorker);
             query = query.Where(x => x.DepotId == depotId && x.CarryoutDate == carryoutDate).OrderBy(sorting);
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
@@ -189,10 +190,10 @@ namespace Clc.Routes
         #region Son Tables
         public async Task<List<RouteWorkerDto>> GetRouteWorkers(int id, string sorting)
         {
-            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole, x => x.RouteArticles).Where(e => e.RouteId == id);
+            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole, x => x.Articles).Where(e => e.RouteId == id);
             query = query.OrderBy(x => x.WorkRole.Cn);            
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            var lst = entities.Select(MapTo).ToList();
+            var lst = entities.Select(MapToWorker).ToList();
             return lst;
         }
 
@@ -222,7 +223,7 @@ namespace Clc.Routes
 
         public async Task<List<RouteTaskDto>> GetRouteTasks(int id, string sorting)
         {
-            var query =_taskRepository.GetAllIncluding(x => x.Outlet, x => x.TaskType).Where(e => e.RouteId == id);
+            var query =_taskRepository.GetAllIncluding(x => x.Outlet, x => x.TaskType, x => x.CreateWorker).Where(e => e.RouteId == id);
             query = query.OrderBy(sorting);
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return ObjectMapper.Map<List<RouteTaskDto>>(entities);
@@ -366,16 +367,19 @@ namespace Clc.Routes
             await _taskRepository.InsertAsync(task);
         }
 
-        private RouteWorkerDto MapTo(RouteWorker rw)
+        private RouteWorkerDto MapToWorker(RouteWorker rw)
         {
             var dto = ObjectMapper.Map<RouteWorkerDto>(rw);
-            if (rw.RouteArticles == null) return dto;
+            var worker = WorkManager.GetWorker(rw.WorkerId);
+            dto.Signin = WorkManager.GetSigninInfo(worker.DepotId, rw.WorkerId);
 
-            foreach (var ra in rw.RouteArticles) 
+            if (rw.Articles == null) return dto;
+
+            foreach (var ra in rw.Articles) 
             {
                 var record = _articleRecordRepository.Get(ra.ArticleRecordId);
-                var a = WorkManager.GetArticle(record.AffairId);
-                var s = record.ReturnTime.HasValue ? string.Format("{0}已还", record.ReturnTime.Value.ToString("hh:MM")) : "未还";
+                var a = WorkManager.GetArticle(record.ArticleId);
+                var s = record.ReturnTime.HasValue ? string.Format("{0}已还", record.ReturnTime.Value.ToString("HH:mm")) : "未还";
                 dto.ArticleList += string.Format("{0}({1}) ", a.Name, s);
             }
 

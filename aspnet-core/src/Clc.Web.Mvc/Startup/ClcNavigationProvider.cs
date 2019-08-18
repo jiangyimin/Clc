@@ -69,8 +69,8 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Arrange_Affairs", new FixedLocalizableString("内部任务"), url: "Affairs"))
                 // 今日情况
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("今日情况"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Arrange)
-                    .AddItem(new MenuItemDefinition("Arrange_Checkin", new FixedLocalizableString("签到"), url: "Signins"))
-                    .AddItem(new MenuItemDefinition("Arrange_Article", new FixedLocalizableString("物品"), url: "ArticleWork/List"))
+                    .AddItem(new MenuItemDefinition("Arrange_Checkin", new FixedLocalizableString("签到"), url: "Today/Signins"))
+                    .AddItem(new MenuItemDefinition("Arrange_Article", new FixedLocalizableString("物品"), url: "Today/ArticleList"))
                 // Statistic
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
                 // Aux
@@ -80,15 +80,15 @@ namespace Clc.Web.Startup
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Article, new FixedLocalizableString("库房操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Article)
                     .AddItem(new MenuItemDefinition("Article_Lend", new FixedLocalizableString("领用"), url: "ArticleWork/Lend"))
                     .AddItem(new MenuItemDefinition("Article_Return", new FixedLocalizableString("归还"), url: "ArticleWork/Return"))
-                    .AddItem(new MenuItemDefinition("Article_List", new FixedLocalizableString("物品清单查询"), url: "ArticleWork/List"))
-                    .AddItem(new MenuItemDefinition("Article_Record", new FixedLocalizableString("物品记录查询"), url: "ArticleWork/Records"))
+                    .AddItem(new MenuItemDefinition("Article_List", new FixedLocalizableString("物品清单"), url: "ArticleWork/List"))
+                    .AddItem(new MenuItemDefinition("Article_Record", new FixedLocalizableString("物品记录查询"), url: "ArticleWork/RecordQuery"))
                 
                 // Box
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Box, new FixedLocalizableString("金库尾箱操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Box)
                     .AddItem(new MenuItemDefinition("Box_In", new FixedLocalizableString("入箱"), url: "BoxWork/InBox"))
                     .AddItem(new MenuItemDefinition("Box_Out", new FixedLocalizableString("出箱"), url: "BoxWork/OutBox"))
-                    .AddItem(new MenuItemDefinition("Box_List", new FixedLocalizableString("尾箱清单查询"), url: "BoxWork/List"))
-                    .AddItem(new MenuItemDefinition("Box_Record", new FixedLocalizableString("尾箱记录查询"), url: "BoxWork/Records"))
+                    .AddItem(new MenuItemDefinition("Box_List", new FixedLocalizableString("尾箱清单"), url: "BoxWork/List"))
+                    .AddItem(new MenuItemDefinition("Box_Record", new FixedLocalizableString("尾箱记录查询"), url: "BoxWork/RecordQuery"))
                  );
         }
 

@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Web.Models;
-using Abp.UI;
 using Clc.Authorization;
 using Clc.Controllers;
 using Clc.Works;
-using System.Threading.Tasks;
 using Clc.Routes;
+using Clc.ArticleRecords;
 
 namespace Clc.Web.Controllers
 {
@@ -17,17 +17,19 @@ namespace Clc.Web.Controllers
         private readonly IWorkAppService _workAppService;
         private readonly IRouteAppService _routeAppService;
 
-        public ArticleWorkController(IWorkAppService workAppService, IRouteAppService routeAppService)
+        private readonly IArticleRecordAppService _recordAppService;
+
+        public ArticleWorkController(IArticleRecordAppService recordAppService, IWorkAppService workAppService, IRouteAppService routeAppService)
         {
+            _recordAppService = recordAppService;
             _routeAppService = routeAppService;
             _workAppService = workAppService;
         }
 
-        public ActionResult Index()
+        public ActionResult List()
         {
             return View();
         }
-
 
         public ActionResult Lend()
         {
@@ -39,6 +41,11 @@ namespace Clc.Web.Controllers
             return View();
         }
 
+        public ActionResult RecordQuery()
+        {
+            return View();
+        }
+        
         [DontWrapResult]
         public async Task<JsonResult> GridData(DateTime carryoutDate, int affairId)
         {
@@ -53,5 +60,11 @@ namespace Clc.Web.Controllers
             return Json( new { rows = output });
         }
 
+        [DontWrapResult]
+        public async Task<JsonResult> GridDataArticle(bool isReturn)
+        {
+            var output = await _recordAppService.GetArticlesAsync(GetPagedInput());
+            return Json(new { total = output.TotalCount, rows = output.Items });
+        }
     }
 }

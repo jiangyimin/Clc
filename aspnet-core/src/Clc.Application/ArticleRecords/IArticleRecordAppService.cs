@@ -1,18 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Abp.Application.Services;
-using Clc.Works.Dto;
+using Abp.Application.Services.Dto;
+using Clc.ArticleRecords.Dto;
 
 namespace Clc.ArticleRecords
 {
     public interface IArticleRecordAppService : IApplicationService
     {
-        int Lend(int routeId, int routeWorkerId, int affairId, List<int> ids);
-        // void ReturnArticles(int routeId, int routeWorkerId, string remark);       
+        Task<PagedResultDto<ArticleRecordDto>> GetArticlesAsync(PagedAndSortedResultRequestDto requestDto);
+        int Lend(int routeId, int routeWorkerId, List<int> ids, string workers);
+        int Return(List<int> recordIds, string workers);       
 
 
         string GetArticleStatus(int articleId);
 
-        //Task<List<ArticleArticleRecordSearchDto>> SearchByDay(int depotId, DateTime theDay);
-        //Task<List<ArticleArticleRecordSearchDto>> SearchByArticleId(int depotId, int articleId, DateTime begin, DateTime end);
+        Task<List<ArticleRecordSearchDto>> SearchByDay(DateTime theDay);
+        Task<List<ArticleRecordSearchDto>> SearchByArticleId(int articleId, DateTime begin, DateTime end);
     }
 }

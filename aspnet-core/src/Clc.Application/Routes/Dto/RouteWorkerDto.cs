@@ -11,7 +11,7 @@ namespace Clc.Routes.Dto
     public class RouteWorkerDto : EntityDto
     {
          /// <summary>
-        /// 父
+        /// RouteId
         /// </summary>
         [Required]
         public int RouteId { get; set; }
@@ -27,6 +27,8 @@ namespace Clc.Routes.Dto
         public string WorkRoleArticleTypeList { get; set; }
 
         public string ArticleList { get; set; }
+
+        public string Signin { get; set; }
         
         // only for mds.js 
         public string Postfix { get; } = "Worker";

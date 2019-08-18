@@ -14,6 +14,7 @@ namespace Clc.Runtime
     [Description("物品领用记录")]
     public class ArticleRecord : Entity, IMustHaveTenant
     {
+        public const int MaxWorkersLength = 64;
         // Implement of IMustHaveTenant
         public int TenantId { get; set; }
 
@@ -43,8 +44,11 @@ namespace Clc.Runtime
         public DateTime? ReturnTime { get; set; }
 
         [Required]
-        public int AffairId { get; set; }
-        public virtual Affair Affair { get; set; }
+        [StringLength(MaxWorkersLength)]
+        public string LendWorkers { get; set; }
+        
+        [StringLength(MaxWorkersLength)]
+        public string ReturnWorkers { get; set; }
     }
 }
 

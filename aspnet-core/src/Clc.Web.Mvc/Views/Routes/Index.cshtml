@@ -19,7 +19,7 @@
         mds.masterInputName = 'routeId';
         // main
         mds.main = Object.assign({}, mds.dgDefault);
-        mds.main.sortName = "routeName";
+        mds.main.sortName = "startTime";
         mds.main.singleSelect = false;
         mds.main.columns = [[
             { field: "ck", checkbox: true },
@@ -48,6 +48,7 @@
         detail.columns = [[
             { field: "workRoleName", title: "工作角色", width: 80 },
             { field: "worker", title: "人员编号", width: 80, formatter: work.workerFormatter },
+            { field: "signin", title: "签到情况", width: 80 },
             { field: "articleList", title: "物品清单", width: 280 },
         ]];
         detail.insert = abp.services.app.route.insertWorker;

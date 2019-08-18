@@ -6,7 +6,7 @@ using Clc.Fields.Dto;
 
 namespace Clc.Web.Controllers
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_Fields)]
+    [AbpMvcAuthorize(PermissionNames.Pages_Fields, PermissionNames.Pages_Article)]
     public class ArticlesController : ClcCrudController<Article, ArticleDto>
     {
         public ArticlesController(IRepository<Article> repository)

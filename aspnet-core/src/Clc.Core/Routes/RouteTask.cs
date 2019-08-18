@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities;
 using Clc.Clients;
 using Clc.Fields;
@@ -64,6 +66,12 @@ namespace Clc.Routes
         public string OutletIdentifyInfo { get; set; }
 
         public float? Price { get; set; }
+
+        [ForeignKey("RouteTaskId")]
+        public virtual List<RouteInBox> InBoxes { get; set; }
+
+        [ForeignKey("RouteTaskId")]
+        public virtual List<RouteOutBox> OutBoxes { get; set; }
     }
 }
 

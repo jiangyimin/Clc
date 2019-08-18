@@ -9,8 +9,7 @@ namespace Clc.Works.Dto
         public WorkMapProfile()
         {
            CreateMap<Route, RouteCDto>()
-                .ForMember(x => x.Workers, opt => opt.Ignore())
-                .ForMember(x => x.Articles, opt => opt.Ignore());
+                .ForMember(x => x.Workers, opt => opt.Ignore());
         }
     }
 }

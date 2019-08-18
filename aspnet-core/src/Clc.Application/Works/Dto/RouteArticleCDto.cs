@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
@@ -11,15 +12,19 @@ namespace Clc.Works.Dto
     /// </summary>
     public class RouteArticleCDto
     {
-        public int RecordId { get; set; }
-
         public int ArticleId { get; set;}
         public string DisplayText { get; set; }
 
-        public RouteArticleCDto(Article a)
+        public int RecordId { get; set; }
+        public bool IsReturn { get; set; }
+        
+        public RouteArticleCDto(Article a, int recordId = 0, bool isReturn=false)
         {
             ArticleId = a.Id;
             DisplayText = a.Cn + " " + a.Name;
+
+            RecordId = recordId;
+            IsReturn = isReturn;
         }
     }
 }

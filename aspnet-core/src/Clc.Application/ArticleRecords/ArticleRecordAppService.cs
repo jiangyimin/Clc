@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq;
-using Clc;
+using Clc.ArticleRecords.Dto;
 using Clc.Authorization;
 using Clc.Fields;
 using Clc.Routes;
 using Clc.Runtime;
-using Clc.Works.Dto;
+using Clc.Works;
 
 namespace Clc.ArticleRecords
 {
-    [AbpAuthorize(PermissionNames.Pages_Article)]
+    [AbpAuthorize(PermissionNames.Pages_Article, PermissionNames.Pages_Arrange)]
     public class ArticleRecordAppService : ClcAppServiceBase, IArticleRecordAppService
     {
+        public WorkManager WorkManager { get; set; }
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
         private readonly IRepository<ArticleRecord> _recordRepository;
         private readonly IRepository<Article> _articleRepository;
         private readonly IRepository<RouteArticle> _routeArticleRepository;
-        // private readonly IRepository<Article> _articleRepository;
 
         public ArticleRecordAppService(IRepository<ArticleRecord> recordRepository, 
             IRepository<Article> articleRepository,
@@ -33,21 +34,26 @@ namespace Clc.ArticleRecords
             _routeArticleRepository = routeArticleRepository;
         }
 
-        // public async Task<List<ArticleListDto>> GetArticleList(int depotId, string sorting)
-        // {
-        //     var query = _articleRepository.GetAll().Where(a => a.DepotId == depotId).OrderBy(sorting);
-        //     var entities = await AsyncQueryableExecuter.ToListAsync(query);
+        public async Task<PagedResultDto<ArticleRecordDto>> GetArticlesAsync(PagedAndSortedResultRequestDto input)
+        {
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
+            
+            var query = _articleRepository.GetAllIncluding(x => x.ArticleType, x => x.ArticleRecord, x=>x.ArticleRecord.RouteWorker)
+                .Where(a => a.DepotId == depotId);
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+            if (!string.IsNullOrWhiteSpace(input.Sorting))
+                query = query.OrderBy(input.Sorting);                               // Applying Sorting
+            query = query.Skip(input.SkipCount).Take(input.MaxResultCount);         // Applying Paging
 
-        //     var dtos = new List<ArticleListDto>(entities.Select(ObjectMapper.Map<ArticleListDto>).ToList());
-        //     foreach (var dto in dtos)
-        //     {
-        //         dto.ArticleTypeName = DomainManager.GetArticleType(dto.ArticleTypeId).Name;
-        //         dto.ArticleRecordInfo = GetArticleRecordInfo(dto.ArticleRecordId);
-        //     }
-        //     return dtos;
-        // }
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
 
-        public int Lend(int routeId, int routeWorkerId, int affairId, List<int> ids)
+            return new PagedResultDto<ArticleRecordDto>(
+                totalCount,
+                entities.Select(MapToArticleRecordDto).ToList()
+            );
+        }
+
+        public int Lend(int routeId, int routeWorkerId, List<int> ids, string workers)
         {
             foreach (int id in ids)
             {               
@@ -55,11 +61,11 @@ namespace Clc.ArticleRecords
                     RouteWorkerId = routeWorkerId,
                     ArticleId = id,
                     LendTime = DateTime.Now,
-                    AffairId = affairId
+                    LendWorkers = workers
                 };
 
                 int recordId = _recordRepository.InsertAndGetId(record);
-                Article article = _articleRepository.Get(recordId);
+                Article article = _articleRepository.Get(id);
                 article.ArticleRecordId = recordId;
 
                 RouteArticle ra = new RouteArticle() {
@@ -86,66 +92,73 @@ namespace Clc.ArticleRecords
             }
             return null;
         }
-        // public void ReturnArticles(int routeId, int routeWorkerId, string remark)
-        // {
-        //     Route r = _routeRepository.Get(routeId);
-        //     r.Status = "还物";
-        //     RouteWorker rw = _routeWorkerRepository.Get(routeWorkerId);
-        //     rw.ReturnTime = DateTime.Now;
-        //     foreach (string id in rw.RecordList.Split())
-        //     {
-        //         ArticleRecord record = _recordRepository.Get(int.Parse(id));
-        //         record.ReturnTime = DateTime.Now;
-        //         record.Remark += $"【归还管理:{remark}】";
-        //     }
-        // }
 
-        // public async Task<List<ArticleRecordSearchDto>> SearchByDay(int depotId, DateTime theDay)
-        // {
-        //     var query = _recordRepository.GetAll().Where(a => a.DepotId == depotId && a.LendTime.Date == theDay);
-        //     var entities = await AsyncQueryableExecuter.ToListAsync(query);
+        public int Return(List<int> recordIds, string workers)
+        {
+            int i = 0;
+            foreach (var id in recordIds)
+            {  
+                var record = _recordRepository.Get(id);   
+                if (!record.ReturnTime.HasValue) {
+                    record.ReturnTime = DateTime.Now;
+                    record.ReturnWorkers = workers;
+                    _recordRepository.Update(record);
+                    i++;
+                }    
+            }  
+            return i; 
+        }
 
-        //     return MapToDto(entities);
- 
-        // }
-        // public async Task<List<ArticleRecordSearchDto>> SearchByArticleId(int depotId, int articleId, DateTime begin, DateTime end)
-        // {
-        //     var query = _recordRepository.GetAll().Where(a => a.DepotId == depotId && a.ArticleId == articleId &&
-        //         a.LendTime.Date >= begin && a.LendTime.Date <= end);
-        //     var entities = await AsyncQueryableExecuter.ToListAsync(query);
+        public async Task<List<ArticleRecordSearchDto>> SearchByDay(DateTime theDay)
+        {
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
+            var query = _recordRepository.GetAllIncluding(x => x.Article, x => x.RouteWorker)
+                .Where(x => x.LendTime.Date == theDay && x.Article.DepotId == depotId);
 
-        //     return MapToDto(entities);
-        // }
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return  entities.Select(MapToSearchDto).ToList(); 
+        }
+
+        public async Task<List<ArticleRecordSearchDto>> SearchByArticleId(int articleId, DateTime begin, DateTime end)
+        {
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
+            var query = _recordRepository.GetAllIncluding(x => x.Article, x => x.RouteWorker)
+                .Where(x => x.ArticleId == articleId && x.LendTime.Date >= begin && x.LendTime.Date <= end);
+            
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return  entities.Select(MapToSearchDto).ToList(); 
+        }
 
         #region util
 
-        // private string GetArticleRecordInfo(int? recordId)
-        // {
-        //     if (!recordId.HasValue) return null;
+        private ArticleRecordDto MapToArticleRecordDto(Article entity)
+        {
+            var dto = ObjectMapper.Map<ArticleRecordDto>(entity);
 
-        //     var r = _recordRepository.Get(recordId.Value);
+            var record = entity.ArticleRecord;
+            if (record == null) return dto;
 
-        //     string l = $"领用人：{r.WorkerName} 领用时间：{r.LendTime.ToString("yyyy-MM-dd HH:mm")} ";
-        //     string h = r.ReturnTime.HasValue ? $"【归还时间：{r.ReturnTime.Value.ToString("yyyy-MM-dd HH:mm")}】" : "【未还】";
-        //     return l+h;
-        // }
+            var worker = WorkManager.GetWorker(record.RouteWorker.WorkerId);
+            
+            string l = $"领用人：{worker.Name} 领用时间：{record.LendTime.ToString("yyyy-MM-dd HH:mm")} ";
+            string r = record.ReturnTime.HasValue ? $"【归还时间：{record.ReturnTime.Value.ToString("yyyy-MM-dd HH:mm")}】" : "【未还】";
+            dto.ArticleRecordInfo = l + r;
+            return dto;
+        }
 
-        // private List<ArticleRecordSearchDto> MapToDto(List<ArticleRecord> entities)
-        // {
-        //     List<ArticleRecordSearchDto> dtos = new List<ArticleRecordSearchDto>();
-        //     foreach (var r in entities)
-        //     {
-        //         var a = DomainManager.GetArticle(r.DepotId, r.ArticleId);
-        //         dtos.Add(new ArticleRecordSearchDto() {
-        //             Worker = r.WorkerCn + " " + r.WorkerName,
-        //             Article = a != null ? a.Cn + " " + a.Name : null,
-        //             LendTime = r.LendTime.ToString("yyyy-MM-dd HH:mm:ss"),
-        //             ReturnTime =  r.ReturnTime.HasValue ? r.ReturnTime.Value.ToString("yyyy-MM-dd HH:mm:ss") : null,
-        //             Remark = r.Remark
-        //         });
-        //     }
-        //     return dtos;
-        // }
+        private ArticleRecordSearchDto MapToSearchDto(ArticleRecord record)
+        {
+            var worker = WorkManager.GetWorker(record.RouteWorker.WorkerId);
+            
+            var dto = new ArticleRecordSearchDto();
+            dto.Article = record.Article.Name;
+            dto.Worker = worker.Cn + ' ' + worker.Name;
+            dto.LendTime = record.LendTime.ToString("yyyy-MM-dd HH:mm:ss");
+            dto.ReturnTime = record.ReturnTime.HasValue ? record.ReturnTime.Value.ToString("yyyy-MM-dd HH:mm:ss") : null;
+            dto.LendWorkers = record.LendWorkers;
+            dto.ReturnWorkers = record.ReturnWorkers;
+            return dto;
+        }
         #endregion
     }
 }

@@ -33,7 +33,7 @@ namespace Clc.Routes
         public WorkRole WorkRole { get; set; }  
 
         [ForeignKey("RouteWorkerId")]
-        public virtual List<RouteArticle> RouteArticles { get; set; }
+        public virtual List<RouteArticle> Articles { get; set; }
         [NotMapped]
         public string WorkerCn { 
             get {
