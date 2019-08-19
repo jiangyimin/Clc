@@ -25,6 +25,7 @@ namespace Clc.Works
         private readonly IRepository<Signin> _signinRepository;
         private readonly IRepository<Route> _routeRepository;
         private readonly IRepository<RouteArticle> _routeArticleRepository;
+        private readonly IRepository<RouteTask> _routeTaskRepository;
         private readonly IRouteCache _routeCache;
         private readonly IWorkRoleCache _workRoleCache;
         private readonly IRouteTypeCache _routeTypeCache;
@@ -32,6 +33,7 @@ namespace Clc.Works
         private readonly IArticleCache _articleCache;
         private readonly IArticleTypeCache _articleTypeCache;
         private readonly IBoxCache _boxCache;
+        private readonly IOutletCache _outletCache;
 
         public WorkAppService(IRepository<Signin> signinRepository,
             IRepository<Route> routeRepository,
@@ -41,7 +43,8 @@ namespace Clc.Works
             IRouteTypeCache routeTypeCache,
             IArticleCache articleCache,
             IArticleTypeCache articleTypeCache,
-            IBoxCache boxCache)
+            IBoxCache boxCache,
+            IOutletCache outletCache)
         {
             _signinRepository = signinRepository;
             _routeRepository = routeRepository;
@@ -52,6 +55,7 @@ namespace Clc.Works
             _articleCache = articleCache;
             _articleTypeCache = articleTypeCache;
             _boxCache = boxCache;
+            _outletCache = outletCache;
         }
 
         public bool VerifyUnlockPassword(string password)
@@ -89,11 +93,17 @@ namespace Clc.Works
             return dto;
         }
 
+        public string GetReportToManagers()
+        {
+            int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
+            return WorkManager.GetReportToManagers(depotId);
+        }
+
         #region signin
 
         public async Task<List<SigninDto>> GetSigninsAsync(DateTime carryoutDate)
         {
-            int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
             var query = _signinRepository.GetAllIncluding(x => x.Worker);
             query = query.Where(x => x.DepotId == depotId && x.CarryoutDate == carryoutDate);
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
@@ -115,26 +125,19 @@ namespace Clc.Works
         }
         #endregion
 
-        #region Route for Article and Box
+        #region Article
 
-        public async Task<List<RouteCDto>> GetRoutesForLendAsync(DateTime carryoutDate, int affairId)
+        public async Task<List<RouteCDto>> GetRoutesForArticleAsync(DateTime carryoutDate, int affairId)
         { 
             var lst = await GetRoutesForArticle(carryoutDate, affairId);
             lst.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
             return lst;
         }
 
-        public async Task<List<RouteCDto>> GetRoutesForReturnAsync(DateTime carryoutDate, int affairId)
-        { 
-            var lst = await GetRoutesForArticle(carryoutDate, affairId);
-            lst.Sort((a, b) => a.EndTime.CompareTo(b.EndTime));
-            return lst;
-        }
-
         public RouteWorkerMatchResult MatchWorkerForLend(DateTime carryoutDate, int affairId, string rfid)
         {
             var result = new RouteWorkerMatchResult();
-            var ret =  GetEqualRfidWorker(_routeCache.Get(carryoutDate, affairId), rfid);
+            var ret =  GetEqualRfidWorker(_routeCache.Get(carryoutDate, affairId, "Article"), rfid);
             if (ret.Item1 == null) {
                 result.Message = "未安排任务";
                 return result;
@@ -159,7 +162,7 @@ namespace Clc.Works
         public RouteWorkerMatchResult MatchWorkerForReturn(DateTime carryoutDate, int affairId, string rfid)
         {
             var result = new RouteWorkerMatchResult();
-            var ret =  GetEqualRfidWorker(_routeCache.Get(carryoutDate, affairId), rfid);
+            var ret =  GetEqualRfidWorker(_routeCache.Get(carryoutDate, affairId, "Article"), rfid);
             if (ret.Item1 == null) {
                 result.Message = "未安排任务";
                 return result;
@@ -213,10 +216,114 @@ namespace Clc.Works
         {
             var article = _articleCache.GetList().FirstOrDefault(x => x.Rfid == rfid);
             if (article == null) return ("此Rfid没有对应的物品", null);
+            if (!article.ArticleRecordId.HasValue) return ("此物品需要先领用", null);
+            
             return ("", new RouteArticleCDto(article));
         }
 
-        // 
+        #endregion
+
+        #region Box
+
+        public async Task<List<RouteCDto>> GetRoutesForBoxAsync(DateTime carryoutDate, int affairId)
+        { 
+            var lst = await GetRoutesForBox(carryoutDate, affairId);
+            lst.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
+            return lst;
+        }
+
+        public RouteWorkerMatchResult MatchWorkerForInBox(DateTime carryoutDate, int affairId, string rfid)
+        {
+            var result = new RouteWorkerMatchResult();
+            var ret =  GetEqualRfidWorker(_routeCache.Get(carryoutDate, affairId, "Box"), rfid);
+            if (ret.Item1 == null) {
+                result.Message = "未安排任务";
+                return result;
+            }
+                
+            // RULE JUDGE
+            if (string.IsNullOrEmpty(ret.Item2.Duties) || !ret.Item2.Duties.Contains("尾箱")) {
+               result.Message = "此人非尾箱交接人员";
+               return result;
+            }
+
+            result.RouteMatched = new RouteMatchedDto(ret.Item1);
+            result.WorkerMatched = ret.Item2;
+            result.Boxes = new List<RouteBoxCDto>();
+            return result;
+        }
+
+        public RouteWorkerMatchResult MatchWorkerForOutBox(DateTime carryoutDate, int affairId, string rfid)
+        {
+            var result = new RouteWorkerMatchResult();
+            var ret =  GetEqualRfidWorker(_routeCache.Get(carryoutDate, affairId, "Box"), rfid);
+            if (ret.Item1 == null) {
+                result.Message = "未安排任务";
+                return result;
+            }
+                
+            // RULE JUDGE
+            if (string.IsNullOrEmpty(ret.Item2.Duties) || !ret.Item2.Duties.Contains("尾箱")) {
+               result.Message = "此人非尾箱交接人员";
+               return result;
+            }
+
+            result.RouteMatched = new RouteMatchedDto(ret.Item1);
+            result.WorkerMatched = ret.Item2;
+            result.Boxes = new List<RouteBoxCDto>();
+            return result;
+        }
+
+        public (string, RouteBoxCDto) MatchInBox(DateTime carryoutDate, int affairId, int routeId, string rfid)
+        {
+            var box = _boxCache.GetList().FirstOrDefault(x => x.Cn == rfid);
+            if (box == null) return ("没有对应的尾箱", null);
+
+            var outlet = _outletCache[box.OutletId];
+            foreach (var route in _routeCache.Get(carryoutDate, affairId, "Box"))
+                foreach (var t in route.Tasks)
+                    if (t.OutletId == box.OutletId && t.TaskTypeId == 2) 
+                    {
+                        var dto = new RouteBoxCDto() { 
+                            TaskId = t.Id,
+                            OutletId = outlet.Id,
+                            Outlet = $"{outlet.Cn} {outlet.Name}",
+                            BoxId = box.Id, 
+                            DisplayText = box.Name,
+                        };
+                        return ("", dto);
+                    }
+            return ("此尾箱所属不在任务列表中", null);
+        }
+
+        public (string, RouteBoxCDto) MatchOutBox(DateTime carryoutDate, int affairId, int routeId, string rfid)
+        {
+            var box = _boxCache.GetList().FirstOrDefault(x => x.Cn == rfid);
+            if (box == null) return ("没有对应的尾箱", null);
+            if (!box.BoxRecordId.HasValue) return ("此尾箱需要先入库", null);
+
+            var outlet = _outletCache[box.OutletId];
+            foreach (var route in _routeCache.Get(carryoutDate, affairId, "Box"))
+                foreach (var t in route.Tasks)
+                    if (t.OutletId == box.OutletId && t.TaskTypeId == 1) 
+                    {
+                        var dto = new RouteBoxCDto() { 
+                            TaskId = t.Id,
+                            OutletId = outlet.Id,
+                            Outlet = $"{outlet.Cn} {outlet.Name}",
+                            BoxId = box.Id, 
+                            DisplayText = box.Name,
+                            RecordId = box.BoxRecordId.Value
+                        };
+                        return ("", dto);
+                    }
+            return ("此尾箱所属不在任务列表中", null);
+        }
+
+        #endregion
+
+        #region private
+
         private (RouteCDto, WorkerMatchedDto) GetEqualRfidWorker(List<RouteCDto> routes, string rfid)
         {           
             foreach (var route in routes)
@@ -225,7 +332,7 @@ namespace Clc.Works
                 {
                     var worker = WorkManager.GetWorker(w.WorkerId);
                     if (worker.Rfid == rfid) {
-                        WorkerMatchedDto dto = new WorkerMatchedDto(w.Id, worker, _workRoleCache[w.WorkRoleId].ArticleTypeList);
+                        WorkerMatchedDto dto = new WorkerMatchedDto(w.Id, worker, _workRoleCache[w.WorkRoleId]);
                         return (route, dto);
                     }
                 }
@@ -237,11 +344,12 @@ namespace Clc.Works
         {
             try 
             {
-                var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.Workers, x => x.Articles);
+                var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.Workers);
                 query = ApplyWhere(query, carryoutDate, affairId);
                 var entities = await AsyncQueryableExecuter.ToListAsync(query);
-                var lst = entities.Select(MapToDto).ToList();
-                _routeCache.Set(carryoutDate, affairId, lst);           // Cached
+                var lst = entities.Select(MapToDtoArticle).ToList();
+                
+                _routeCache.Set(carryoutDate, affairId, "Article", lst);           // Cached
                 return lst;
             }
             catch (Exception ex)
@@ -250,7 +358,25 @@ namespace Clc.Works
             }
         }
 
-        private RouteCDto MapToDto(Route route)
+        private async Task<List<RouteCDto>> GetRoutesForBox(DateTime carryoutDate, int affairId)
+        {
+            try 
+            {
+                var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.Workers, x => x.Tasks);
+                query = ApplyWhere(query, carryoutDate, affairId);
+                var entities = await AsyncQueryableExecuter.ToListAsync(query);
+                var lst = entities.Select(MapToDtoBox).ToList();
+                
+                _routeCache.Set(carryoutDate, affairId, "Box", lst);           // Cached
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+        }
+
+        private RouteCDto MapToDtoArticle(Route route)
         {
             var dto = ObjectMapper.Map<RouteCDto>(route);
             dto.Workers = new List<RouteWorkerCDto>();
@@ -260,6 +386,22 @@ namespace Clc.Works
             }
             return dto;
         }
+
+        private RouteCDto MapToDtoBox(Route route)
+        {
+            var dto = ObjectMapper.Map<RouteCDto>(route);
+            dto.Workers = new List<RouteWorkerCDto>();
+            foreach (var w in route.Workers)
+                dto.Workers.Add(new RouteWorkerCDto() { Id = w.Id, WorkerId = w.WorkerId, WorkRoleId = w.WorkRoleId});
+
+            dto.Tasks = new List<RouteTaskCDto>();
+            foreach (var t in route.Tasks)
+                dto.Tasks.Add(new RouteTaskCDto(t));
+
+            return dto;
+        }
+
+        
         private IQueryable<Route> ApplyWhere(IQueryable<Route> query, DateTime carryoutDate, int affairId)
         {
             List<int> depots = WorkManager.GetShareDepods(affairId);

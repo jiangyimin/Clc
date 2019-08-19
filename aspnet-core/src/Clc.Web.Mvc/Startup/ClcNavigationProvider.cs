@@ -71,6 +71,7 @@ namespace Clc.Web.Startup
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("今日情况"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Arrange)
                     .AddItem(new MenuItemDefinition("Arrange_Checkin", new FixedLocalizableString("签到"), url: "Today/Signins"))
                     .AddItem(new MenuItemDefinition("Arrange_Article", new FixedLocalizableString("物品"), url: "Today/ArticleList"))
+                    .AddItem(new MenuItemDefinition("Arrange_Article", new FixedLocalizableString("尾箱"), url: "Today/BoxList"))
                 // Statistic
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
                 // Aux

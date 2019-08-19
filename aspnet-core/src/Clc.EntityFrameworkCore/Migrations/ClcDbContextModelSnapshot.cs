@@ -1325,6 +1325,9 @@ namespace Clc.Migrations
 
                     b.Property<int?>("Radius");
 
+                    b.Property<string>("ReportTo")
+                        .HasMaxLength(50);
+
                     b.Property<int>("TenantId");
 
                     b.Property<string>("UnlockScreenPassword")
@@ -1737,8 +1740,6 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BoxId");
-
                     b.Property<int>("BoxRecordId");
 
                     b.Property<int>("RouteId");
@@ -1748,8 +1749,6 @@ namespace Clc.Migrations
                     b.Property<int>("TenantId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BoxId");
 
                     b.HasIndex("BoxRecordId");
 
@@ -1766,8 +1765,6 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BoxId");
-
                     b.Property<int>("BoxRecordId");
 
                     b.Property<int>("RouteId");
@@ -1777,8 +1774,6 @@ namespace Clc.Migrations
                     b.Property<int>("TenantId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BoxId");
 
                     b.HasIndex("BoxRecordId");
 
@@ -1888,6 +1883,8 @@ namespace Clc.Migrations
 
                     b.HasIndex("RouteWorkerId");
 
+                    b.HasIndex("TenantId", "LendTime");
+
                     b.ToTable("ArticleRecords");
                 });
 
@@ -1919,6 +1916,8 @@ namespace Clc.Migrations
                     b.HasIndex("BoxId");
 
                     b.HasIndex("RouteTaskId");
+
+                    b.HasIndex("TenantId", "InTime");
 
                     b.ToTable("BoxRecords");
                 });
@@ -2490,11 +2489,6 @@ namespace Clc.Migrations
 
             modelBuilder.Entity("Clc.Routes.RouteInBox", b =>
                 {
-                    b.HasOne("Clc.Clients.Box", "Box")
-                        .WithMany()
-                        .HasForeignKey("BoxId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Clc.Runtime.BoxRecord", "BoxRecord")
                         .WithMany()
                         .HasForeignKey("BoxRecordId")
@@ -2513,11 +2507,6 @@ namespace Clc.Migrations
 
             modelBuilder.Entity("Clc.Routes.RouteOutBox", b =>
                 {
-                    b.HasOne("Clc.Clients.Box", "Box")
-                        .WithMany()
-                        .HasForeignKey("BoxId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Clc.Runtime.BoxRecord", "BoxRecord")
                         .WithMany()
                         .HasForeignKey("BoxRecordId")
@@ -2547,7 +2536,7 @@ namespace Clc.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Clc.Routes.Route", "Route")
-                        .WithMany()
+                        .WithMany("Tasks")
                         .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade);
 

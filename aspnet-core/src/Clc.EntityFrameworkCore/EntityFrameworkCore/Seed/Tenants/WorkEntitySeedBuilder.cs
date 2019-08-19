@@ -32,8 +32,10 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.PreRoutes.Count() == 0)
             {
                 _context.PreRoutes.AddRange(new PreRoute[] {
-                    new PreRoute { TenantId = _tenantId, DepotId = 1, RouteName = "一号线", RouteTypeId = 1, VehicleId = 1, StartTime = "08:15", EndTime = "18:00", Mileage = (float)30.5 }, 
-                    new PreRoute { TenantId = _tenantId, DepotId = 1, RouteName = "二号线", RouteTypeId = 1, VehicleId = 2, StartTime = "08:50", EndTime = "18:30", Mileage = (float)38.5 }, 
+                    new PreRoute { TenantId = _tenantId, DepotId = 1, RouteName = "早一号线", RouteTypeId = 1, VehicleId = 1, StartTime = "08:15", EndTime = "12:00", Mileage = (float)23.5 }, 
+                    new PreRoute { TenantId = _tenantId, DepotId = 1, RouteName = "早二号线", RouteTypeId = 1, VehicleId = 2, StartTime = "08:50", EndTime = "12:30", Mileage = (float)30.5 }, 
+                    new PreRoute { TenantId = _tenantId, DepotId = 1, RouteName = "晚一号线", RouteTypeId = 1, VehicleId = 1, StartTime = "15:15", EndTime = "18:00", Mileage = (float)22.5 }, 
+                    new PreRoute { TenantId = _tenantId, DepotId = 1, RouteName = "晚二号线", RouteTypeId = 1, VehicleId = 2, StartTime = "16:50", EndTime = "18:30", Mileage = (float)31.5 }, 
                 }); 
                 _context.SaveChanges();
             }
@@ -67,16 +69,16 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new PreRouteTask { TenantId = _tenantId, PreRouteId = 1, ArriveTime = "09:00", OutletId = 1, TaskTypeId = 1 },
                     new PreRouteTask { TenantId = _tenantId, PreRouteId = 1, ArriveTime = "09:20", OutletId = 3, TaskTypeId = 1 },
                     new PreRouteTask { TenantId = _tenantId, PreRouteId = 1, ArriveTime = "09:35", OutletId = 5, TaskTypeId = 1 },
-                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 1, ArriveTime = "17:00", OutletId = 1, TaskTypeId = 2 },
-                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 1, ArriveTime = "17:15", OutletId = 3, TaskTypeId = 2 },
-                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 1, ArriveTime = "17:35", OutletId = 5, TaskTypeId = 2 },
+                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 2, ArriveTime = "17:00", OutletId = 1, TaskTypeId = 2 },
+                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 2, ArriveTime = "17:15", OutletId = 3, TaskTypeId = 2 },
+                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 2, ArriveTime = "17:35", OutletId = 5, TaskTypeId = 2 },
                     
-                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 2, ArriveTime = "09:02", OutletId = 2, TaskTypeId = 1 },
-                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 2, ArriveTime = "09:20", OutletId = 4, TaskTypeId = 1 },
-                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 2, ArriveTime = "10:55", OutletId = 9, TaskTypeId = 3 },
-                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 2, ArriveTime = "17:02", OutletId = 4, TaskTypeId = 2 },
-                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 2, ArriveTime = "17:16", OutletId = 6, TaskTypeId = 2 },
-                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 2, ArriveTime = "17:33", OutletId = 7, TaskTypeId = 2 },
+                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 3, ArriveTime = "09:02", OutletId = 2, TaskTypeId = 1 },
+                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 3, ArriveTime = "09:20", OutletId = 4, TaskTypeId = 1 },
+                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 3, ArriveTime = "10:55", OutletId = 9, TaskTypeId = 3 },
+                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 4, ArriveTime = "17:02", OutletId = 4, TaskTypeId = 2 },
+                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 4, ArriveTime = "17:16", OutletId = 6, TaskTypeId = 2 },
+                    new PreRouteTask { TenantId = _tenantId, PreRouteId = 4, ArriveTime = "17:33", OutletId = 7, TaskTypeId = 2 },
                 }); 
                 _context.SaveChanges();
             }

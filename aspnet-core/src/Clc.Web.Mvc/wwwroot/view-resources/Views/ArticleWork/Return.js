@@ -22,5 +22,16 @@
                 });
             }
         });
+
+        $('#dl').datalist({
+            data: finput.articles,
+            valueField: 'articleId',
+            textField: 'displayText',
+            lines: true,
+            textFormatter: function(value,row,index) {
+                return '<span style="font-size:24px">'+value+'</span>';
+            }
+        });
+
     });
 })();

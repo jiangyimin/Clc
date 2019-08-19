@@ -16,7 +16,7 @@ using Clc.Runtime;
 
 namespace Clc.Routes
 {
-    [AbpAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Article)]
+    [AbpAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Article, PermissionNames.Pages_Box)]
     public class RouteAppService : ClcAppServiceBase, IRouteAppService
     {
         public WorkManager WorkManager { get; set; }
@@ -223,10 +223,12 @@ namespace Clc.Routes
 
         public async Task<List<RouteTaskDto>> GetRouteTasks(int id, string sorting)
         {
-            var query =_taskRepository.GetAllIncluding(x => x.Outlet, x => x.TaskType, x => x.CreateWorker).Where(e => e.RouteId == id);
+            var query =_taskRepository.GetAllIncluding(x => x.Outlet, x => x.TaskType, x => x.CreateWorker, x => x.InBoxes, x => x.OutBoxes)
+                .Where(e => e.RouteId == id);
             query = query.OrderBy(sorting);
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            return ObjectMapper.Map<List<RouteTaskDto>>(entities);
+            var lst = entities.Select(MapToTask).ToList();
+            return lst;
         }
 
         public async Task<RouteTaskDto> UpdateTask(RouteTaskDto input)
@@ -385,6 +387,31 @@ namespace Clc.Routes
 
             return dto;
         }
+
+        private RouteTaskDto MapToTask(RouteTask rt)
+        {
+            var dto = ObjectMapper.Map<RouteTaskDto>(rt);
+
+            if (rt.InBoxes != null)
+                foreach (var ib in rt.InBoxes) 
+                {
+                    var record = _boxRecordRepository.Get(ib.BoxRecordId);
+                    var b = WorkManager.GetBox(record.BoxId);
+                    dto.InBoxList += string.Format("{0} {1}({2}) ", b.Cn, b.Name, record.InTime.ToString("HH:mm"));
+                }
+
+
+            if (rt.OutBoxes != null)
+                foreach (var ob in rt.OutBoxes) 
+                {
+                    var record = _boxRecordRepository.Get(ob.BoxRecordId);
+                    var b = WorkManager.GetBox(record.BoxId);
+                    dto.OutBoxList += string.Format("{0} {1}({2}) ", b.Cn, b.Name, record.OutTime.Value.ToString("HH:mm"));
+                }
+
+            return dto;
+        }
+
         #endregion
     }
 }

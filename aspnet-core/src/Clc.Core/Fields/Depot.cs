@@ -14,6 +14,7 @@ namespace Clc.Fields
         public const int MaxCnLength = 2;
         public const int MaxNameLength = 8;
         public const int MaxPasswordLength = 8;
+        public const int MaxReportToLength = 50;
 
 
         // Impement of IMustHaveTenant
@@ -55,6 +56,9 @@ namespace Clc.Fields
 
         [StringLength(MaxPasswordLength)]
         public string UnlockScreenPassword { get; set; }
+
+        [StringLength(MaxReportToLength)]
+        public string ReportTo { get; set; }
     }
 }
 

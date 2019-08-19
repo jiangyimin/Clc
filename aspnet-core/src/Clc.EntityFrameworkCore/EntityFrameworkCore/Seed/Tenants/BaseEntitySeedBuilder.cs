@@ -106,7 +106,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new WorkRole { TenantId = _tenantId, Cn = "02", Name = "车长", DefaultPostId = 3, ArticleTypeList = "A|B|D", mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "03", Name = "持枪员", DefaultPostId = 4, ArticleTypeList = "A|B|D", mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "04", Name = "主业务员", DefaultPostId = 5, mustHave = true, MaxNum = 2 }, 
-                    new WorkRole { TenantId = _tenantId, Cn = "05", Name = "业务员", DefaultPostId = 6, mustHave = true, MaxNum = 2 },
+                    new WorkRole { TenantId = _tenantId, Cn = "05", Name = "业务员", DefaultPostId = 6, Duties = "尾箱|交接", mustHave = true, MaxNum = 2 },
                     new WorkRole { TenantId = _tenantId, Cn = "06", Name = "库房管理员", DefaultPostId = 7, mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "07", Name = "金库管理员", DefaultPostId = 7, mustHave = true, MaxNum = 8 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "08", Name = "待命", mustHave = true, MaxNum = 5 }, 
@@ -121,7 +121,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Depots.Count() == 0)
             {
                 _context.Depots.AddRange(new Depot[] {
-                    new Depot { TenantId = _tenantId, Cn = "01", Name = "市区", Longitude = 114.022022, Latitude = 22.531167, UnlockScreenPassword = "654321" }, 
+                    new Depot { TenantId = _tenantId, Cn = "01", Name = "市区", Longitude = 114.022022, Latitude = 22.531167, UnlockScreenPassword = "654321", ReportTo = "90005|33336" }, 
                     new Depot { TenantId = _tenantId, Cn = "02", Name = "建行独立", Longitude = 114.016667, Latitude = 22.534167 }, 
                     new Depot { TenantId = _tenantId, Cn = "10", Name = "农行", Longitude = 114.016667, Latitude = 22.534167 }, 
                     // new Depot { TenantId = _tenantId, Cn = "91", Name = "监控", Longitude = 114.016667, Latitude = 22.534167 }, 
@@ -134,8 +134,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Workplaces.Count() == 0)
             {
                 _context.Workplaces.AddRange(new Workplace[] {
-                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "库房", WorkRoles = "库房管理员", ArticleTypeList = "A|B|C|D", MinDuration = 4, MaxDuration = 10, HasCloudDoor = true },
-                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "金库", WorkRoles = "金库管理员", MinDuration = 1, MaxDuration = 5, HasCloudDoor = true}, 
+                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "库房", WorkRoles = "库房管理员", ArticleTypeList = "A|B|C|D", MinDuration = 4, MaxDuration = 20, HasCloudDoor = true },
+                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "金库", WorkRoles = "金库管理员", MinDuration = 1, MaxDuration = 20, HasCloudDoor = true}, 
                     new Workplace { TenantId = _tenantId, DepotId = 1, Name = "待命室", WorkRoles = "待命", MinDuration = 4, MaxDuration = 12, HasCloudDoor = false}, 
                     // new Workplace { TenantId = _tenantId, DepotId = 4, Name = "监控室", AffairTypeId = 4 }, 
                 }); 
@@ -228,17 +228,17 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Outlets.Count() == 0)
             {
                 _context.Outlets.AddRange(new Outlet[] {
-                    new Outlet { TenantId = _tenantId, CustomerId = 1, Cn = "010102", Name = "工行分行营业部" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 1, Cn = "011001", Name = "工行大营支行" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 1, Cn = "011003", Name = "工行临汾分理处" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "020101", Name = "农行分行营业部" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "020102", Name = "农行万达支行" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "023110", Name = "农行武大分理处" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 3, Cn = "030410", Name = "中行惠凯丽分理处" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 3, Cn = "030511", Name = "中行杰拉德支行" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100401", Name = "南商南通分行", Weixins = "33336" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100402", Name = "南商美丽华分理处" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100101", Name = "南商工业园支行" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 1, Cn = "010102", Name = "工行分行营业部", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 1, Cn = "011001", Name = "工行大营支行", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 1, Cn = "011003", Name = "工行临汾分理处", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "020101", Name = "农行分行营业部", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "020102", Name = "农行万达支行", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "023110", Name = "农行武大分理处", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 3, Cn = "030410", Name = "中行惠凯丽分理处", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 3, Cn = "030511", Name = "中行杰拉德支行", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100401", Name = "南商南通分行", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100402", Name = "南商美丽华分理处", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
+                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100101", Name = "南商工业园支行", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
                 });
                 _context.SaveChanges();
             }
@@ -253,10 +253,18 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Box { TenantId = _tenantId, OutletId = 1, Cn = "01010212", Name = "12号箱" },
                     new Box { TenantId = _tenantId, OutletId = 2, Cn = "01100101", Name = "1号箱" },
                     new Box { TenantId = _tenantId, OutletId = 2, Cn = "01100103", Name = "3号箱" },
-                    new Box { TenantId = _tenantId, OutletId = 3, Cn = "02010105", Name = "5号箱" },
-                    new Box { TenantId = _tenantId, OutletId = 3, Cn = "02010106", Name = "6号箱" },
-                    new Box { TenantId = _tenantId, OutletId = 4, Cn = "02311015", Name = "15号箱" },
-                    new Box { TenantId = _tenantId, OutletId = 4, Cn = "02311016", Name = "16号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 3, Cn = "01100302", Name = "2号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 3, Cn = "01100304", Name = "4号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 4, Cn = "02010105", Name = "5号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 4, Cn = "02010106", Name = "6号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 5, Cn = "02010207", Name = "7号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 5, Cn = "02010208", Name = "8号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 6, Cn = "02311015", Name = "15号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 6, Cn = "02311016", Name = "16号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 7, Cn = "03041001", Name = "1号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 8, Cn = "03051101", Name = "1号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 9, Cn = "10040102", Name = "2号箱" },
+                    new Box { TenantId = _tenantId, OutletId = 9, Cn = "10040103", Name = "3号箱" },
                 });
                 _context.SaveChanges();
             }

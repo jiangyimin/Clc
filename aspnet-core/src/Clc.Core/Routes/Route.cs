@@ -91,6 +91,9 @@ namespace Clc.Routes
         public virtual List<RouteWorker> Workers { get; set; }
         
         [ForeignKey("RouteId")]
+        public virtual List<RouteTask> Tasks { get; set; }
+        
+        [ForeignKey("RouteId")]
         public virtual List<RouteArticle> Articles { get; set; }
 
         [ForeignKey("RouteId")]

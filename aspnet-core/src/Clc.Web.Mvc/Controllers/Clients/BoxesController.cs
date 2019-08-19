@@ -6,7 +6,7 @@ using Clc.Clients.Dto;
 
 namespace Clc.Web.Controllers
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_Clients)]
+    [AbpMvcAuthorize(PermissionNames.Pages_Clients, PermissionNames.Pages_Box)]
     public class BoxesController : ClcCrudController<Box, BoxDto>
     {
         public BoxesController(IRepository<Box> repository)

@@ -12,6 +12,7 @@ var finput = finput || {};
     finput.route = {};
     finput.worker = {};
     finput.articles = [];
+    finput.boxes = [];
 
     // onWoker
     finput.onWorker = function (rfid) { 
@@ -23,7 +24,9 @@ var finput = finput || {};
     finput.showWorker = function (ret) {
         finput.route = ret.routeMatched;
         finput.worker = ret.workerMatched;
-        finput.articles = ret.articles;    
+        finput.articles = ret.articles;
+        finput.outlets = ret.outlets;
+        finput.boxes = ret.boxes;  
         // alert(finput.articles.length);
 
         $('#dlg').dialog('open');
@@ -46,7 +49,11 @@ var finput = finput || {};
     };
     finput.articleScanned = function () { alert("articleScanned")}
     
-    finput.onBox = function () { alert('onBox') }
+    finput.onBox = function (rfid) {
+        window.parent.displayRfid2(rfid);
+        finput.boxScanned(rfid);
+    }
+    finput.boxScanned = function() { alert("boxScanned") }
 
     finput.onkeydown = function() {
         var keyCode = event.keyCode;
@@ -76,11 +83,20 @@ var finput = finput || {};
         }
     }
 
-    //
     finput.IsInArticles = function(articleId) {
         for (var i = 0; i < finput.articles.length; i++)
         {
             if (finput.articles[i].articleId === articleId)
+                return true;
+        }
+        return false;
+    }
+
+    finput.isInBoxes = function(boxId) {
+        // alert("boxId="+boxId);
+        for (var i = 0; i < finput.boxes.length; i++)
+        {
+            if (finput.boxes[i].boxId === boxId)
                 return true;
         }
         return false;
@@ -100,16 +116,6 @@ var finput = finput || {};
 
         // set envent
         window.document.onkeydown = finput.onkeydown;
-
-        $('#dl').datalist({
-            data: finput.articles,
-            valueField: 'articleId',
-            textField: 'displayText',
-            lines: true,
-            textFormatter: function(value,row,index) {
-                return '<span style="font-size:24px">'+value+'</span>';
-            }
-        });
 
         $('#dlg').dialog({
             onClose: function() {

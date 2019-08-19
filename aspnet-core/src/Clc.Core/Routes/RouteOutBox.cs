@@ -24,13 +24,6 @@ namespace Clc.Routes
         public int RouteId { get; set; }
 
         /// <summary>
-        /// Box
-        /// </summary>
-        [Required]
-        public int BoxId { get; set; }
-        public Box Box { get; set; }
-
-        /// <summary>
         /// RouteTask
         /// </summary>
         public int RouteTaskId { get; set; }

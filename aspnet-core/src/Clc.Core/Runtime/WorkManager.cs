@@ -157,6 +157,11 @@ namespace Clc.Works
             return s.SigninTime.ToString("HH:mm") + " 签到";
         }
 
+        public string GetReportToManagers(int depotId)
+        {
+            //return "90005";
+            return _depotCache[depotId].ReportTo;
+        }
         #endregion
 
         #region Affair, Article, Box, 

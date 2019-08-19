@@ -7,19 +7,19 @@ using Clc.Authorization;
 using Clc.Controllers;
 using Clc.Works;
 using Clc.Routes;
-using Clc.ArticleRecords;
+using Clc.BoxRecords;
 
 namespace Clc.Web.Controllers
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_Article)]
-    public class ArticleWorkController : ClcControllerBase
+    [AbpMvcAuthorize(PermissionNames.Pages_Box)]
+    public class BoxWorkController : ClcControllerBase
     {
         private readonly IWorkAppService _workAppService;
         private readonly IRouteAppService _routeAppService;
 
-        private readonly IArticleRecordAppService _recordAppService;
+        private readonly IBoxRecordAppService _recordAppService;
 
-        public ArticleWorkController(IArticleRecordAppService recordAppService, IWorkAppService workAppService, IRouteAppService routeAppService)
+        public BoxWorkController(IBoxRecordAppService recordAppService, IWorkAppService workAppService, IRouteAppService routeAppService)
         {
             _recordAppService = recordAppService;
             _routeAppService = routeAppService;
@@ -31,12 +31,12 @@ namespace Clc.Web.Controllers
             return View();
         }
 
-        public ActionResult Lend()
+        public ActionResult InBox()
         {
             return View();
         }
 
-        public ActionResult Return()
+        public ActionResult OutBox()
         {
             return View();
         }
@@ -49,21 +49,21 @@ namespace Clc.Web.Controllers
         [DontWrapResult]
         public async Task<JsonResult> GridData(DateTime carryoutDate, int affairId)
         {
-            var output = await _workAppService.GetRoutesForArticleAsync(carryoutDate, affairId);
+            var output = await _workAppService.GetRoutesForBoxAsync(carryoutDate, affairId);
             return Json( new { rows = output });
         }
 
         [DontWrapResult]
-        public async Task<JsonResult> GridDataWorker(int id)
+        public async Task<JsonResult> GridDataTask(int id)
         {
-            var output = await _routeAppService.GetRouteWorkers(id, GetSorting());
+            var output = await _routeAppService.GetRouteTasks(id, GetSorting());
             return Json( new { rows = output });
         }
 
         [DontWrapResult]
-        public async Task<JsonResult> GridDataArticle(bool isReturn)
+        public async Task<JsonResult> GridDataBox(bool isReturn)
         {
-            var output = await _recordAppService.GetArticlesAsync(GetPagedInput());
+            var output = await _recordAppService.GetBoxesAsync(GetPagedInput());
             return Json(new { total = output.TotalCount, rows = output.Items });
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using Clc.Fields;
+using Clc.Types;
 
 namespace Clc.Works.Dto
 {
@@ -15,8 +16,9 @@ namespace Clc.Works.Dto
         public string Photo { get; set; }
         public string Rfid { get; set; }
         public string ArticleTypeList { get; set; }
+        public string Duties { get; set; }
 
-        public WorkerMatchedDto(int id, Worker w, string lst)
+        public WorkerMatchedDto(int id, Worker w, WorkRole role)
         {
             RouteWorkerId = id;
             Id = w.Id;
@@ -24,7 +26,8 @@ namespace Clc.Works.Dto
             Name = w.Name;
             Rfid = w.Rfid;
             Photo = w.Photo != null ? Convert.ToBase64String(w.Photo) : null;
-            ArticleTypeList = lst;
+            ArticleTypeList = role.ArticleTypeList;
+            Duties = role.Duties;
         }
     }
 }

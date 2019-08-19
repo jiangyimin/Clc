@@ -1,12 +1,11 @@
 ﻿<table id="dg" class="easyui-datagrid" toolbar="#tb"
         fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true"
-        url="GridDataArticle" pagination="true" pageSize="20" sortName="cn">
+        url="GridDataBox" pagination="true" pageSize="20" sortName="cn">
     <thead>
         <tr>
             <th field="cn" width="60" align="center">编号</th>
             <th field="name" width="100">名称</th>
-            <th field="articleTypeName" width="60">物品类型</th>
-            <th field="articleRecordInfo" width="320">领用归还信息</th>
+            <th field="boxRecordInfo" width="320">出入箱信息</th>
         </tr>
     </thead>
 </table>
@@ -20,7 +19,7 @@
     <script type="text/javascript">      
         function reportTo() {
             abp.ajax({
-                url: 'ReportArticleTo',
+                url: 'ReportBoxTo',
                 success: function (data) {
                     abp.notify.info("报告已发出");
                 }

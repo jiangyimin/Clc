@@ -3,9 +3,8 @@ using Clc.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Senparc.Weixin.Work.AdvancedAPIs;
 using Senparc.Weixin.Work.Containers;
-using Senparc.Weixin.Work.AdvancedAPIs.Mass;
 
-namespace Tbs.Web.MessageHandlers
+namespace Clc.Web.MessageHandlers
 {
     public class WeixinUtils
     {
@@ -31,7 +30,7 @@ namespace Tbs.Web.MessageHandlers
             var accessToken = AccessTokenContainer.GetToken(corpId, secret);
 
             
-            MassApi.SendTextCardAsync(accessToken, agentId, title, desc, "", null, toUser);   
+            MassApi.SendTextCardAsync(accessToken, agentId, title, desc, "work.weixin.qq.com", null, toUser);   
         } 
 
     }

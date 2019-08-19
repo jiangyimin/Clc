@@ -6,7 +6,7 @@ namespace Clc.Works
 {
     public interface IRouteCache
     {
-        List<RouteCDto> Get(DateTime carroutDate, int affairId);
-        void Set(DateTime carroutDate, int affairId, List<RouteCDto> routes);
+        List<RouteCDto> Get(DateTime carroutDate, int affairId, string type);
+        void Set(DateTime carroutDate, int affairId, string type, List<RouteCDto> routes);
     }
 }

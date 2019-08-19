@@ -17,6 +17,7 @@
             { field: "radius", title: "签到半径(米)", width: 100 },
             { field: "activeRouteNeedCheckin", title: "激活线路先签到", width: 100 },
             { field: "unlockScreenPassword", title: "解屏密码", width: 100 },
+            { field: "reportTo", title: "报送到", width: 100 },
         ]];
     </script>
 }
@@ -52,6 +53,10 @@
             </tr>
                 <th><label for="unlockScreenPassword">解屏密码：</label></th>
                 <td><input name="unlockScreenPassword" class="easyui-textbox" data-options="validType:'length[2, @Depot.MaxPasswordLength]'" style="width: 100%"></td>
+            </tr>
+            </tr>
+                <th><label for="reportTo">报送到：</label></th>
+                <td><input name="reportTo" class="easyui-textbox" data-options="validType:'length[2, @Depot.MaxReportToLength]'" style="width: 100%"></td>
             </tr>
         </table>
     </form>

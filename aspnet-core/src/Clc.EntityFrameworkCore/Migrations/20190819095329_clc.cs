@@ -64,7 +64,8 @@ namespace Clc.Migrations
                     Latitude = table.Column<double>(nullable: true),
                     Radius = table.Column<int>(nullable: true),
                     ActiveRouteNeedCheckin = table.Column<bool>(nullable: false),
-                    UnlockScreenPassword = table.Column<string>(maxLength: 8, nullable: true)
+                    UnlockScreenPassword = table.Column<string>(maxLength: 8, nullable: true),
+                    ReportTo = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -860,19 +861,12 @@ namespace Clc.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
                     RouteId = table.Column<int>(nullable: false),
-                    BoxId = table.Column<int>(nullable: false),
                     RouteTaskId = table.Column<int>(nullable: false),
                     BoxRecordId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RouteInBoxes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RouteInBoxes_Boxes_BoxId",
-                        column: x => x.BoxId,
-                        principalTable: "Boxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RouteInBoxes_BoxRecords_BoxRecordId",
                         column: x => x.BoxRecordId,
@@ -901,19 +895,12 @@ namespace Clc.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
                     RouteId = table.Column<int>(nullable: false),
-                    BoxId = table.Column<int>(nullable: false),
                     RouteTaskId = table.Column<int>(nullable: false),
                     BoxRecordId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RouteOutBoxes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RouteOutBoxes_Boxes_BoxId",
-                        column: x => x.BoxId,
-                        principalTable: "Boxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RouteOutBoxes_BoxRecords_BoxRecordId",
                         column: x => x.BoxRecordId,
@@ -1005,6 +992,11 @@ namespace Clc.Migrations
                 column: "RouteWorkerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ArticleRecords_TenantId_LendTime",
+                table: "ArticleRecords",
+                columns: new[] { "TenantId", "LendTime" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Articles_ArticleRecordId",
                 table: "Articles",
                 column: "ArticleRecordId");
@@ -1050,6 +1042,11 @@ namespace Clc.Migrations
                 name: "IX_BoxRecords_RouteTaskId",
                 table: "BoxRecords",
                 column: "RouteTaskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BoxRecords_TenantId_InTime",
+                table: "BoxRecords",
+                columns: new[] { "TenantId", "InTime" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_TenantId_Cn",
@@ -1146,11 +1143,6 @@ namespace Clc.Migrations
                 column: "RouteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RouteInBoxes_BoxId",
-                table: "RouteInBoxes",
-                column: "BoxId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RouteInBoxes_BoxRecordId",
                 table: "RouteInBoxes",
                 column: "BoxRecordId");
@@ -1164,11 +1156,6 @@ namespace Clc.Migrations
                 name: "IX_RouteInBoxes_RouteTaskId",
                 table: "RouteInBoxes",
                 column: "RouteTaskId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RouteOutBoxes_BoxId",
-                table: "RouteOutBoxes",
-                column: "BoxId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RouteOutBoxes_BoxRecordId",

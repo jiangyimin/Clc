@@ -97,6 +97,10 @@
         return row.workerCn + ' ' + row.workerName;
     }
 
+    work.outletFormatter = function(val, row, index) {
+        return row.outletCn + ' ' + row.outletName;
+    }
+
     // document ready
     $(function () {
          // 侦听F1

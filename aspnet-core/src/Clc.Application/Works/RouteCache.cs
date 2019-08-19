@@ -16,16 +16,17 @@ namespace Clc.Works
             _cacheManager = cacheManager;
         }
 
-        public List<RouteCDto> Get(DateTime CarryoutDate, int affairId)
+        public List<RouteCDto> Get(DateTime CarryoutDate, int affairId, string type)
         {
-            string cacheKey = CarryoutDate.Date.ToString() + affairId.ToString();
+            string cacheKey = CarryoutDate.Date.ToString() + affairId.ToString() + type;
             return (List<RouteCDto>)_cacheManager.GetCache(CacheName)
                 .Get(cacheKey, () => throw new Exception("Invaid"));
         }
-        public void Set(DateTime CarryoutDate, int affairId, List<RouteCDto> routes)
+        public void Set(DateTime CarryoutDate, int affairId, string type, List<RouteCDto> routes)
         {
-            string cacheKey = CarryoutDate.Date.ToString() + affairId.ToString();
+            string cacheKey = CarryoutDate.Date.ToString() + affairId.ToString() + type;
             _cacheManager.GetCache(CacheName).Set(cacheKey, routes);
         }
+
     }
 }

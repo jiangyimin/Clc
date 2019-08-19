@@ -43,7 +43,7 @@ namespace Clc.Clients
         /// Rfid 
         /// </summary>
         [StringLength(MaxRemarkLength)]
-        public string Contact { get; set; }
+        public string Ramark { get; set; }
 
         /// <summary>
         /// 最近进出记录

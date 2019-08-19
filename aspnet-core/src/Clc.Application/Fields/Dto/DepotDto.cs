@@ -25,5 +25,7 @@ namespace Clc.Fields.Dto
         
         [StringLength(Depot.MaxPasswordLength)]
         public string UnlockScreenPassword { get; set; }
+
+        public string ReportTo { get; set; }
     }
 }

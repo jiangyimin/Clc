@@ -87,7 +87,7 @@ namespace Clc.ArticleRecords
                 var record = _recordRepository.Get(article.ArticleRecordId.Value);
                 if (!record.ReturnTime.HasValue)
                 {
-                    return string.Format("此物已于{0}被领用", record.LendTime.ToShortDateString());
+                    return "此物品还在库中";
                 }
             }
             return null;
@@ -127,6 +127,19 @@ namespace Clc.ArticleRecords
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return  entities.Select(MapToSearchDto).ToList(); 
+        }
+
+        public async Task<List<ArticleReportDto>> GetReportData()
+        {
+            var query = _articleRepository.GetAllIncluding(x => x.ArticleType, x => x.ArticleRecord)
+                .Where(x => x.ArticleRecord != null && x.ArticleRecord.LendTime.Date == DateTime.Now.Date)
+                .GroupBy(x => new { x.ArticleType.Name } )
+                .Select( p => new ArticleReportDto {
+                    Name = p.Key.Name,
+                    LendCount = p.Count(),
+                    UnReturnCount = p.Count( x => !x.ArticleRecord.ReturnTime.HasValue)
+                });
+            return await AsyncQueryableExecuter.ToListAsync(query);            
         }
 
         #region util
