@@ -31,5 +31,9 @@ namespace Clc.Controllers
             return $"{Request.Form["sort"]} {Request.Form["order"]}";
         }
 
+        protected string AbsoluteUri()
+        {
+            return $"{Request.Scheme}://{Request.Host}{Request.Path}{Request.QueryString}";
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Clc.ArticleRecords;
 using Clc.Web.MessageHandlers;
 using Clc.BoxRecords;
+using Microsoft.AspNetCore.Http;
 
 namespace Clc.Web.Controllers
 {
@@ -50,23 +51,23 @@ namespace Clc.Web.Controllers
             var data = await _articleRecordAppService.GetReportData();
             foreach(var a in data)
             {
-                string title = string.Format("今日<{0}>领用情况" + a.Name);
+                string title = string.Format("今日<{0}>领用情况", a.Name);
                 string desc = string.Format("已领数量：{0}， 未还数量：{1}", a.LendCount, a.UnReturnCount);
                 WeixinUtils.SendTextCard("app03", toUser, title, desc);
             }
         }
         public async Task ReportBoxTo()
         {
-            var toUser = _workAppService.GetReportToManagers();
+            // var toUser = _workAppService.GetReportToManagers();
             var data = await _boxRecordAppService.GetReportData();
 
             foreach(var a in data)
             {
-                string title = a.Name;
-                string desc = string.Format("今日入库尾箱数量：{0}", a.InCount);
+                string title = a.OutletName;
+                string desc = string.Format("贵行的{0}于{1}入库", a.BoxName, a.InTime);
                 if (!string.IsNullOrEmpty(a.ToUser))
                     WeixinUtils.SendTextCard("app04", a.ToUser, title, desc);
-                WeixinUtils.SendTextCard("app03", toUser, title, desc);
+                //WeixinUtils.SendTextCard("app03", toUser, title, desc);
             }
         }
 

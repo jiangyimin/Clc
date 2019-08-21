@@ -1,0 +1,32 @@
+﻿@model Clc.Weixin.Dto.WxIdentifyDto
+@{
+    ViewBag.Title = "网点输入密码";
+    Layout = "~/Views/Shared/_WeixinLayout.cshtml";
+}
+    
+@section footer
+{
+    <script type="text/javascript">
+        function verifyOutlet() {
+            document.fm.action = "/WwApp02/VerifyOutlet";
+            document.fm.submit();
+        }
+    </script>
+}
+
+<form class="weui-cells weui-cells_form" name="fm" method="post">
+    <input type="hidden" name="taskId" value="@Model.TaskId"/>
+    @Html.ValidationSummary()
+    <div class="weui-cells__title" style="margin-bottom:5px">银行网点使用区域</div>
+        <h1>@Model.OutletCn @Model.OutletName</h1>
+    </div>
+    <div class="weui-cell" style="margin-bottom:10px">
+        <div class="weui-cell__hd"><label for="Password" class="weui-label">网点密码:</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="password" type="password" pattern="[0-9]*" placeholder="请银行输入密码" />
+        </div>
+    </div>
+    <div>
+        <input class="weui-btn  weui-btn_primary" type="button" value="确定" onclick="verifyOutlet()" style="margin-bottom:5px" />
+    </div>
+</form>

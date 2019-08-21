@@ -61,11 +61,12 @@
         detail.sortName = "arriveTime";
         detail.columns = [[
             { field: "arriveTime", title: "到达时间", width: 80, sortable: true },
-            { field: "outletCn", title: "网点编号", width: 80 },
-            { field: "outletName", title: "网点名称", width: 100 },
+            { field: "outlet", title: "网点编号", width: 120, formatter: work.outletFormatter },
             { field: "taskTypeName", title: "任务类型", width: 80 },
             { field: "remark", title: "备注", width: 80 },
             { field: "identifyTime", title: "交接时间", width: 80, formatter: $.timeFormatter },
+            { field: "inBoxList", title: "入库尾箱", width: 200 },
+            { field: "outBoxList", title: "出库尾箱", width: 200 },
             { field: "createWorkerName", title: "创建人", width: 60 },
         ]];
         detail.insert = abp.services.app.route.insertTask;

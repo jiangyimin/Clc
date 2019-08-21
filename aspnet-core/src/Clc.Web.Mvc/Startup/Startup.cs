@@ -21,6 +21,7 @@ using Senparc.Weixin;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.Entities;
+using Senparc.Weixin.Work.Containers;
 
 namespace Clc.Web.Startup
 {
@@ -44,6 +45,7 @@ namespace Clc.Web.Startup
             AuthConfigurer.Configure(services, _appConfiguration);
 
             services.AddScoped<IWebResourceManager, WebResourceManager>();
+            services.AddSession(o => o.IdleTimeout = TimeSpan.FromSeconds(100));
 
             services.AddSignalR();
 
@@ -87,6 +89,8 @@ namespace Clc.Web.Startup
                 routes.MapHub<MyChatHub>("/signalr-myChatHub");
             });
 
+            app.UseSession();       // must befor UseMvc.
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -102,6 +106,7 @@ namespace Clc.Web.Startup
             IRegisterService register = RegisterService.Start(env, senparcSetting.Value)
                 .UseSenparcGlobal(false, null);
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value);
+
         }
     }
 }

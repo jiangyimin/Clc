@@ -118,8 +118,7 @@ namespace Clc.Works
             Worker worker = WorkManager.GetWorkerByRfid(rfid);
 
             if (worker == null) return "找不到此人";
-            if ( (!worker.LoanDepotId.HasValue && worker.DepotId != depotId) 
-                || (worker.LoanDepotId.HasValue) && worker.LoanDepotId != depotId ) return "此人不应在此运作中心签到";
+            if (worker.DepotId != depotId) return "此人不应在此运作中心签到";
             
             return WorkManager.DoSignin(depotId, worker.Id);
         }

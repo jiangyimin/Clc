@@ -123,7 +123,7 @@
         abp.event.on('myChatHub.connected', function() { // Register for connect event
             chatHub.invoke('sendMessage', "Hi everybody, I'm connected to the chat!"); // Send a message to the server
             abp.notify.info("与实时推送服务连接成功");
-            work.unlockScreen();
+            // work.unlockScreen();
         });
     });
 })(jQuery);

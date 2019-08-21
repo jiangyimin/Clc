@@ -19,7 +19,7 @@
             { field: "rfid", title: "RFID", width: 100 },         
             { field: "deviceId", title: "微信设备号", width: 120 },
             { field: "additiveInfo", title: "附加认证信息", width: 100 },
-            { field: "loanDepotId", title: "借用到", width: 60, loanDepotFormatter },
+            // { field: "loanDepotId", title: "借用到", width: 60, loanDepotFormatter },
             { field: "isActive", title: "启用", width: 60 }
         ]];
         crud.parentField = 'depotId';
@@ -151,10 +151,6 @@
             <tr>
                 <th><Label for="additiveInfo">附加认证信息:</Label></th>
                 <td><input name="additiveInfo" class="easyui-numberbox" style="width: 100%"></td>
-                <th><label for="loanDepotId">借用到:</label></th>
-                <td><input id="loanDepot" name="loanDepotId" class="easyui-combobox" style="width: 100%"></td>
-            </tr>
-            <tr>
                 <th><label for="isActive">启用：</label></th>
                 <td><input name="isActive" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
             </tr>

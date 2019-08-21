@@ -1,0 +1,47 @@
+﻿@model Clc.Web.Models.Weixin.LoginViewModel
+@{
+    ViewBag.Title = "登录";
+    Layout = "~/Views/Shared/_WeixinLayout.cshtml";
+}
+
+<form action ="/WwApp02/Login" method="post" onsubmit="checkSubmit()">
+    @Html.ValidationSummary()
+    <div class="weui-cells__title" style="margin-bottom:10px">员工登录</div>
+    <div  class="weui-cells">
+        <div class="weui-cell" style="margin-bottom:10px">
+            <input type="hidden" id="returnUrl" name="ReturnUrl" value="@Model.ReturnUrl" />
+            <div class="weui-cell__hd"><label for="workerCn" class="weui-label">工号:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="workerCn" type="text" placeholder="请输入工号" />
+            </div>
+        </div>
+        <div class="weui-cell" style="margin-bottom:10px">
+            <div class="weui-cell__hd"><label for="Password" class="weui-label">密码:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="password" type="password" placeholder="请输入密码" />
+            </div>
+        </div>
+        <div class="weui-cell" style="margin-bottom:10px">
+            <div class="weui-cell__hd"><label for="DeviceId" class="weui-label">设备号:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="deviceId" type="text" readonly="readonly" />
+            </div>
+        </div>
+        <div class="weui-cell">
+            <input type="submit" value="登录" class="weui-btn weui-btn_primary" />
+        </div>
+    </div>
+</form>
+
+@section footer
+{
+    <script type="text/javascript">
+        var checkSubmitFlg = false; 
+
+        function checkSubmit(){ 
+            if(checkSubmitFlg == true) return false; //当表单被提交过一次后checkSubmitFlg将变为true,根据判断将无法进行提交。
+            checkSubmitFlg = true; 
+            return true; 
+        } 
+    </script>
+}

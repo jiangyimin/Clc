@@ -1,0 +1,48 @@
+﻿@model Clc.Weixin.Dto.WxIdentifyDto
+@{
+    ViewBag.Title = "任务清单";
+    Layout = "~/Views/Shared/_WeixinLayout.cshtml";
+}
+
+<form name="fm" class="weui-panel weui-panel_access" method="post">
+    <div class="weui-panel__hd">任务列表</div>
+    @if (@Model.Tasks.Count > 0)
+    {
+        for (int i = 0; i < Model.Tasks.Count; i++)
+        {
+            <div class="weui-panel__bd">
+                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg" onclick="selectTask(@Model.Tasks[i].TaskId, @Model.Tasks[i].OutletId, '@Model.Tasks[i].IdentifyTime')">
+                    <div class="weui-media-box__bd">
+                        <h2 class="weui-media-box__title"> 网点：@Model.Tasks[i].OutletCn @Model.Tasks[i].OutletName</h2>
+                        <p class="weui-media-box__desc"> 时间：@Model.Tasks[i].ArriveTime (@Model.Tasks[i].TaskType) 确认：@Model.Tasks[i].IdentifyTime</p>
+                        @if (Model.Tasks[i].Remark != null) 
+                        {
+                            <p class="weui-media-box__title"> 备注：@Model.Tasks[i].Remark</p> 
+                        }                  
+                    </div>
+                </a>
+            </div>
+        }
+    }
+    <input type="hidden" name="taskId" />
+    <input type="hidden" name="outletId" />
+</form>
+
+@section footer {
+    <script>
+        function selectTask(taskId, outletId, identifyTime) {
+            if (identifyTime.length > 4) 
+            {
+                alert('已交接');
+                return;
+            }
+
+            document.fm.taskId.value = taskId;
+            document.fm.outletId.value = outletId;
+            document.fm.action = "/WwApp02/SelectTask";
+            document.fm.submit();
+        }
+    </script>
+}
+
+

@@ -78,7 +78,7 @@ namespace Clc.Web.MessageHandlers
         public override IWorkResponseMessageBase DefaultResponseMessage(IWorkRequestMessageBase requestMessage)
         {
             var responseMessage = this.CreateResponseMessage<ResponseMessageText>();
-            responseMessage.Content = "这是一条没有找到合适回复信息的默认消息。";
+            responseMessage.Content = "";   //"这是一条没有找到合适回复信息的默认消息。";
             return responseMessage;
          }
     }

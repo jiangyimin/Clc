@@ -41,7 +41,7 @@ namespace Clc.BoxRecords
 
         public async Task<PagedResultDto<BoxRecordDto>> GetBoxesAsync(PagedAndSortedResultRequestDto input)
         {         
-            var query = _boxRepository.GetAllIncluding(x => x.BoxRecord, x => x.BoxRecord.RouteTask);
+            var query = _boxRepository.GetAllIncluding(x => x.BoxRecord);
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
             if (!string.IsNullOrWhiteSpace(input.Sorting))
                 query = query.OrderBy(input.Sorting);                               // Applying Sorting
@@ -60,7 +60,6 @@ namespace Clc.BoxRecords
             foreach (var box in boxes)
             {               
                 BoxRecord record = new BoxRecord() {
-                    RouteTaskId = box.TaskId,
                     BoxId = box.BoxId,
                     InTime = DateTime.Now,
                     InWorkers = workers
@@ -115,7 +114,7 @@ namespace Clc.BoxRecords
 
         public async Task<List<BoxRecordSearchDto>> SearchByDay(DateTime theDay)
         {
-            var query = _recordRepository.GetAllIncluding(x => x.Box, x => x.RouteTask)
+            var query = _recordRepository.GetAllIncluding(x => x.Box)
                 .Where(x => x.InTime.Date == theDay);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
@@ -124,7 +123,7 @@ namespace Clc.BoxRecords
 
         public async Task<List<BoxRecordSearchDto>> SearchByBoxId(int boxId, DateTime begin, DateTime end)
         {
-            var query = _recordRepository.GetAllIncluding(x => x.Box, x => x.RouteTask)
+            var query = _recordRepository.GetAllIncluding(x => x.Box)
                 .Where(x => x.BoxId == boxId && x.InTime.Date >= begin && x.InTime.Date <= end);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
@@ -135,11 +134,11 @@ namespace Clc.BoxRecords
         {
             var query = _boxRepository.GetAllIncluding(x => x.Outlet, x => x.BoxRecord)
                 .Where(x => x.BoxRecord != null && x.BoxRecord.InTime.Date == DateTime.Now.Date)
-                .GroupBy(x => new { x.Outlet.Name, x.Outlet.Weixins } )
-                .Select( p => new BoxReportDto {
-                    Name = p.Key.Name,
-                    ToUser = p.Key.Weixins,
-                    InCount = p.Count()
+                .Select( x => new BoxReportDto {
+                    OutletName = x.Outlet.Name, 
+                    ToUser = x.Outlet.Weixins,
+                    BoxName = x.Name,
+                    InTime = x.BoxRecord.InTime.ToString("yyyy/MM/dd HH:mm")
                 });
             return await AsyncQueryableExecuter.ToListAsync(query);            
         }
@@ -162,11 +161,9 @@ namespace Clc.BoxRecords
 
         private BoxRecordSearchDto MapToSearchDto(BoxRecord record)
         {
-            var worker = WorkManager.GetWorker(record.RouteTask.Id);
-            
             var dto = new BoxRecordSearchDto();
             dto.Box = record.Box.Name;
-            dto.Worker = worker.Cn + ' ' + worker.Name;
+            // dto.Worker = worker.Cn + ' ' + worker.Name;
             dto.InTime = record.InTime.ToString("yyyy-MM-dd HH:mm:ss");
             dto.OutTime = record.OutTime.HasValue ? record.OutTime.Value.ToString("yyyy-MM-dd HH:mm:ss") : null;
             dto.InWorkers = record.InWorkers;

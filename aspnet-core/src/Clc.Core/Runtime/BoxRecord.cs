@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities;
 using Clc.Affairs;
 using Clc.Clients;
@@ -27,13 +28,6 @@ namespace Clc.Runtime
         public virtual Box Box { get; set; }
 
         /// <summary>
-        /// 外键：领用人
-        /// </summary>
-        [Required]
-        public int RouteTaskId { get; set; }
-        public virtual RouteTask RouteTask { get; set; }
-
-        /// <summary>
         /// 进时间
         /// </summary>
         [Required]
@@ -49,7 +43,7 @@ namespace Clc.Runtime
         public string InWorkers { get; set; }
         
         [StringLength(MaxWorkersLength)]
-        public string OutWorkers { get; set; }
+        public string OutWorkers { get; set; }        
     }
 }
 

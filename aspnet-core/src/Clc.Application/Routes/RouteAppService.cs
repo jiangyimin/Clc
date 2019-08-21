@@ -16,6 +16,7 @@ using Clc.Runtime;
 
 namespace Clc.Routes
 {
+    // [AbpAllowAnonymous]
     [AbpAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Article, PermissionNames.Pages_Box)]
     public class RouteAppService : ClcAppServiceBase, IRouteAppService
     {
@@ -36,6 +37,7 @@ namespace Clc.Routes
         private readonly IRepository<ArticleRecord> _articleRecordRepository;
         private readonly IRepository<BoxRecord> _boxRecordRepository;
         private readonly ITaskTypeCache _taskTypeCache;
+        private readonly IWorkRoleCache _workRoleCache;
 
         public RouteAppService(IRepository<Route> routeRepository, 
             IRepository<RouteWorker> workerRepository,
@@ -49,7 +51,8 @@ namespace Clc.Routes
             IRepository<PreRouteTask> preRouteTaskRepository, 
             IRepository<ArticleRecord> articleRecordRepository,           
             IRepository<BoxRecord> boxRecordRepository,           
-            ITaskTypeCache taskTypeCache)
+            ITaskTypeCache taskTypeCache,
+            IWorkRoleCache workRoleCache)
         {
             _routeRepository = routeRepository;
             _workerRepository = workerRepository;
@@ -64,6 +67,7 @@ namespace Clc.Routes
             _articleRecordRepository = articleRecordRepository;
             _boxRecordRepository = boxRecordRepository;
             _taskTypeCache = taskTypeCache;
+            _workRoleCache = workRoleCache;
         }
 
         public async Task<List<RouteDto>> GetRoutesAsync(DateTime carryoutDate, string sorting)
@@ -291,6 +295,44 @@ namespace Clc.Routes
 
         #endregion
 
+        #region other public 
+
+        [AbpAllowAnonymous]
+        public (Route, int) FindRouteForIdentify(int depotId, int workerId)
+        {
+            var query = _routeRepository.GetAllIncluding(x => x.Workers)
+                    .Where(x => x.DepotId == depotId && x.CarryoutDate == DateTime.Today && x.Status == "激活");
+            var routes = query.ToList();
+
+            foreach (Route route in routes)
+            {
+                bool found = false;
+                int subId = 0;
+                foreach (RouteWorker rw in route.Workers)
+                {
+                    var workRole = _workRoleCache[rw.WorkRoleId];
+                    if (rw.WorkerId == workerId && workRole.Duties.Contains("交接")) found = true;
+                    if (!string.IsNullOrEmpty(workRole.Duties) && workRole.Duties.Contains("辅助交接")) subId = rw.WorkerId;                    
+                }
+
+                if (found && subId != 0) {
+                    route.Tasks = _taskRepository.GetAllList(t => t.RouteId == route.Id);
+                    return (route, subId);
+                }
+            }
+            return (null, 0);
+        }
+
+        [AbpAllowAnonymous]
+        public void SetIdentifyTime(int taskId)
+        {
+            var task = _taskRepository.Get(taskId);
+            task.IdentifyTime = DateTime.Now;
+            _taskRepository.Update(task);
+         }
+
+        #endregion
+        
         #region private
         private async Task<int> CopyInsertRouteAndGetId(Route src, int depotId, DateTime carroutDate,int workerId)
         {
@@ -406,7 +448,8 @@ namespace Clc.Routes
                 {
                     var record = _boxRecordRepository.Get(ob.BoxRecordId);
                     var b = WorkManager.GetBox(record.BoxId);
-                    dto.OutBoxList += string.Format("{0} {1}({2}) ", b.Cn, b.Name, record.OutTime.Value.ToString("HH:mm"));
+                    if (record.OutTime.HasValue)
+                        dto.OutBoxList += string.Format("{0} {1}({2}) ", b.Cn, b.Name, record.OutTime.Value.ToString("HH:mm"));
                 }
 
             return dto;

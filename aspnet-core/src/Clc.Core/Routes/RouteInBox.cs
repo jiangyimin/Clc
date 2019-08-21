@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities;
 using Clc.Clients;
 using Clc.Runtime;
@@ -30,6 +31,7 @@ namespace Clc.Routes
 
         [Required]
         public int BoxRecordId { get; set; }
+
         public BoxRecord BoxRecord { get; set; }
     }
 }

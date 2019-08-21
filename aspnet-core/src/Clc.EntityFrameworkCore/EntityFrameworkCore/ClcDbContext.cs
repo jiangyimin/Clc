@@ -163,8 +163,6 @@ namespace Clc.EntityFrameworkCore
 
             modelBuilder.Entity<BoxRecord>()
                 .HasOne(b => b.Box).WithMany().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<BoxRecord>()
-                .HasOne(b => b.RouteTask).WithMany().OnDelete(DeleteBehavior.Restrict);
 
             // Affairs
             modelBuilder.Entity<Affair>()
@@ -201,10 +199,11 @@ namespace Clc.EntityFrameworkCore
 
             modelBuilder.Entity<RouteArticle>()
                 .HasOne(b => b.ArticleRecord).WithMany().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<RouteInBox>()
-                .HasOne(b => b.BoxRecord).WithMany().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<RouteOutBox>()
-                .HasOne(b => b.BoxRecord).WithMany().OnDelete(DeleteBehavior.Restrict);            
+
+            //modelBuilder.Entity<RouteInBox>()
+            //    .HasOne(b => b.BoxRecord).WithMany().OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<RouteOutBox>()
+            //    .HasOne(b => b.BoxRecord).WithMany().OnDelete(DeleteBehavior.Restrict);            
         }
     }
 }

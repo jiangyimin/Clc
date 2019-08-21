@@ -9,7 +9,7 @@
 
         public const string AppName = "现金物流云";
 
-        public const int MaxPhotoLength = 200 * 1024;       // 200K
+        public const int MaxPhotoLength = 50 * 1024;       // 50K
 
     }
 }

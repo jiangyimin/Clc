@@ -76,7 +76,7 @@ var mds = mds || {};
     };
     mds.edit = function(postfix, index) {
         _dfd = mds.getUpdateDfd(postfix);
-        alert(_dfd);
+        // alert(_dfd);
         $('#dlg' + postfix).dialog('open').dialog('setTitle', '编辑');
 
         var $fm = $('#fm' + postfix);
@@ -94,7 +94,7 @@ var mds = mds || {};
         abp.message.confirm('确认要删除此记录吗?', '请确认', function (r) {
             if (r) {
                 _dfd = mds.getDeleteDfd(postfix);
-                alert(_dfd);
+                // alert(_dfd);
                 _dfd(row.id).done(function () {
                     abp.notify.info('删除操作成功')
                     mds.reload(postfix);

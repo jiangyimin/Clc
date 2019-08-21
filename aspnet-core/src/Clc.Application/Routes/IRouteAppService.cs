@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
+using Clc.Fields;
 using Clc.Routes.Dto;
 
 namespace Clc.Routes
@@ -36,5 +37,8 @@ namespace Clc.Routes
         Task<List<RouteInBoxDto>> GetRouteInBoxes(int id, string sorting);
         Task<List<RouteOutBoxDto>> GetRouteOutBoxes(int id, string sorting);
         #endregion
+
+        (Route, int) FindRouteForIdentify(int depotId, int workerId);
+        void SetIdentifyTime(int taskId);
     }
 }

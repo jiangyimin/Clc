@@ -87,12 +87,6 @@ namespace Clc.Fields
         /// 是否启用
         /// </summary>
         public bool IsActive { get; set; }
-
-        /// <summary>
-        /// 暂时借用到
-        /// </summary>
-        public int? LoanDepotId { get; set; }
-        public Depot LoanDepot { get; set; }
     }
 }
 

@@ -1167,14 +1167,14 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(10);
 
-                    b.Property<string>("Contact")
-                        .HasMaxLength(50);
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20);
 
                     b.Property<int>("OutletId");
+
+                    b.Property<string>("Ramark")
+                        .HasMaxLength(50);
 
                     b.Property<int>("TenantId");
 
@@ -1391,8 +1391,6 @@ namespace Clc.Migrations
 
                     b.Property<bool>("IsActive");
 
-                    b.Property<int?>("LoanDepotId");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(8);
@@ -1415,8 +1413,6 @@ namespace Clc.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DepotId");
-
-                    b.HasIndex("LoanDepotId");
 
                     b.HasIndex("PostId");
 
@@ -1907,15 +1903,11 @@ namespace Clc.Migrations
                     b.Property<string>("OutWorkers")
                         .HasMaxLength(64);
 
-                    b.Property<int>("RouteTaskId");
-
                     b.Property<int>("TenantId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BoxId");
-
-                    b.HasIndex("RouteTaskId");
 
                     b.HasIndex("TenantId", "InTime");
 
@@ -2347,10 +2339,6 @@ namespace Clc.Migrations
                         .HasForeignKey("DepotId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Clc.Fields.Depot", "LoanDepot")
-                        .WithMany()
-                        .HasForeignKey("LoanDepotId");
-
                     b.HasOne("Clc.Types.Post", "Post")
                         .WithMany()
                         .HasForeignKey("PostId")
@@ -2492,7 +2480,7 @@ namespace Clc.Migrations
                     b.HasOne("Clc.Runtime.BoxRecord", "BoxRecord")
                         .WithMany()
                         .HasForeignKey("BoxRecordId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Clc.Routes.Route")
                         .WithMany("InBoxes")
@@ -2510,7 +2498,7 @@ namespace Clc.Migrations
                     b.HasOne("Clc.Runtime.BoxRecord", "BoxRecord")
                         .WithMany()
                         .HasForeignKey("BoxRecordId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Clc.Routes.Route")
                         .WithMany("OutBoxes")
@@ -2582,11 +2570,6 @@ namespace Clc.Migrations
                     b.HasOne("Clc.Clients.Box", "Box")
                         .WithMany()
                         .HasForeignKey("BoxId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Clc.Routes.RouteTask", "RouteTask")
-                        .WithMany()
-                        .HasForeignKey("RouteTaskId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

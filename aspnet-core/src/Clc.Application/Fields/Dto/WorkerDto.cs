@@ -80,7 +80,7 @@ namespace Clc.Fields.Dto
         public void AddValidationErrors(CustomValidationContext context)
         {
             if (PhotoFile != null && PhotoFile.Length > MaxPhotoLength)
-                context.Results.Add(new ValidationResult("照片文件不能大于10K!"));
+                context.Results.Add(new ValidationResult("照片文件不能大于50K!"));
         }
 
         public void Normalize()

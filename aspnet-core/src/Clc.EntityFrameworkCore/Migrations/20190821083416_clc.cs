@@ -216,8 +216,7 @@ namespace Clc.Migrations
                     Photo = table.Column<byte[]>(nullable: true),
                     DeviceId = table.Column<string>(maxLength: 50, nullable: true),
                     AdditiveInfo = table.Column<string>(maxLength: 20, nullable: true),
-                    IsActive = table.Column<bool>(nullable: false),
-                    LoanDepotId = table.Column<int>(nullable: true)
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -228,12 +227,6 @@ namespace Clc.Migrations
                         principalTable: "Depots",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Workers_Depots_LoanDepotId",
-                        column: x => x.LoanDepotId,
-                        principalTable: "Depots",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Workers_Posts_PostId",
                         column: x => x.PostId,
@@ -806,7 +799,6 @@ namespace Clc.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
                     BoxId = table.Column<int>(nullable: false),
-                    RouteTaskId = table.Column<int>(nullable: false),
                     InTime = table.Column<DateTime>(nullable: false),
                     OutTime = table.Column<DateTime>(nullable: true),
                     InWorkers = table.Column<string>(maxLength: 64, nullable: false),
@@ -815,12 +807,6 @@ namespace Clc.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BoxRecords", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BoxRecords_RouteTasks_RouteTaskId",
-                        column: x => x.RouteTaskId,
-                        principalTable: "RouteTasks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -833,7 +819,7 @@ namespace Clc.Migrations
                     OutletId = table.Column<int>(nullable: false),
                     Cn = table.Column<string>(maxLength: 10, nullable: false),
                     Name = table.Column<string>(maxLength: 20, nullable: false),
-                    Contact = table.Column<string>(maxLength: 50, nullable: true),
+                    Ramark = table.Column<string>(maxLength: 50, nullable: true),
                     BoxRecordId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -872,7 +858,7 @@ namespace Clc.Migrations
                         column: x => x.BoxRecordId,
                         principalTable: "BoxRecords",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RouteInBoxes_Routes_RouteId",
                         column: x => x.RouteId,
@@ -906,7 +892,7 @@ namespace Clc.Migrations
                         column: x => x.BoxRecordId,
                         principalTable: "BoxRecords",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RouteOutBoxes_Routes_RouteId",
                         column: x => x.RouteId,
@@ -1037,11 +1023,6 @@ namespace Clc.Migrations
                 name: "IX_BoxRecords_BoxId",
                 table: "BoxRecords",
                 column: "BoxId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BoxRecords_RouteTaskId",
-                table: "BoxRecords",
-                column: "RouteTaskId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BoxRecords_TenantId_InTime",
@@ -1265,11 +1246,6 @@ namespace Clc.Migrations
                 column: "DepotId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Workers_LoanDepotId",
-                table: "Workers",
-                column: "LoanDepotId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Workers_PostId",
                 table: "Workers",
                 column: "PostId");
@@ -1330,10 +1306,6 @@ namespace Clc.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Routes_Workers_CreateWorkerId",
                 table: "Routes");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_RouteTasks_Workers_CreateWorkerId",
-                table: "RouteTasks");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_RouteWorkers_Workers_WorkerId",
@@ -1400,7 +1372,13 @@ namespace Clc.Migrations
                 name: "PreRoutes");
 
             migrationBuilder.DropTable(
+                name: "RouteTasks");
+
+            migrationBuilder.DropTable(
                 name: "Workplaces");
+
+            migrationBuilder.DropTable(
+                name: "TaskTypes");
 
             migrationBuilder.DropTable(
                 name: "Workers");
@@ -1427,31 +1405,25 @@ namespace Clc.Migrations
                 name: "RouteWorkers");
 
             migrationBuilder.DropTable(
-                name: "BoxRecords");
-
-            migrationBuilder.DropTable(
-                name: "Boxes");
-
-            migrationBuilder.DropTable(
-                name: "RouteTasks");
-
-            migrationBuilder.DropTable(
-                name: "Outlets");
-
-            migrationBuilder.DropTable(
                 name: "Routes");
-
-            migrationBuilder.DropTable(
-                name: "TaskTypes");
-
-            migrationBuilder.DropTable(
-                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "RouteTypes");
 
             migrationBuilder.DropTable(
                 name: "Vehicles");
+
+            migrationBuilder.DropTable(
+                name: "BoxRecords");
+
+            migrationBuilder.DropTable(
+                name: "Boxes");
+
+            migrationBuilder.DropTable(
+                name: "Outlets");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropIndex(
                 name: "IX_AbpUsers_WorkerId",
