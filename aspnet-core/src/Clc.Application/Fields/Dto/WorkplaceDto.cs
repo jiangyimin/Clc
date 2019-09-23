@@ -41,8 +41,11 @@ namespace Clc.Fields.Dto
         /// </summary>
         public int MaxDuration { get; set; }     
         /// <summary>
-        /// 是否云端开门
-        public string HasCloudDoor { get; set; }
+        /// 云端开门
+        [StringLength(Workplace.IpAddressLength)]
+        public string DoorIp { get; set; }
+        [StringLength(Workplace.IpAddressLength)]
+        public string CameraIp { get; set; }
     }
 }
 

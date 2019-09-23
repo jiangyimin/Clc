@@ -186,7 +186,8 @@ namespace Clc.Migrations
                     ShareDepotList = table.Column<string>(maxLength: 50, nullable: true),
                     MinDuration = table.Column<int>(nullable: false),
                     MaxDuration = table.Column<int>(nullable: false),
-                    HasCloudDoor = table.Column<bool>(nullable: false)
+                    DoorIp = table.Column<string>(nullable: true),
+                    CameraIp = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -587,6 +588,41 @@ namespace Clc.Migrations
                         principalTable: "Workers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DoorRecords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    WorkplaceId = table.Column<int>(nullable: false),
+                    OpenAffairId = table.Column<int>(nullable: false),
+                    ApplyAffairId = table.Column<int>(nullable: true),
+                    CreateTime = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoorRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DoorRecords_Affairs_ApplyAffairId",
+                        column: x => x.ApplyAffairId,
+                        principalTable: "Affairs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DoorRecords_Affairs_OpenAffairId",
+                        column: x => x.OpenAffairId,
+                        principalTable: "Affairs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DoorRecords_Workplaces_WorkplaceId",
+                        column: x => x.WorkplaceId,
+                        principalTable: "Workplaces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1042,6 +1078,31 @@ namespace Clc.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_DoorRecords_ApplyAffairId",
+                table: "DoorRecords",
+                column: "ApplyAffairId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoorRecords_OpenAffairId",
+                table: "DoorRecords",
+                column: "OpenAffairId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoorRecords_WorkplaceId",
+                table: "DoorRecords",
+                column: "WorkplaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoorRecords_TenantId_CreateTime",
+                table: "DoorRecords",
+                columns: new[] { "TenantId", "CreateTime" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoorRecords_TenantId_WorkplaceId",
+                table: "DoorRecords",
+                columns: new[] { "TenantId", "WorkplaceId" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Outlets_CustomerId",
                 table: "Outlets",
                 column: "CustomerId");
@@ -1343,6 +1404,9 @@ namespace Clc.Migrations
 
             migrationBuilder.DropTable(
                 name: "AffairWorkers");
+
+            migrationBuilder.DropTable(
+                name: "DoorRecords");
 
             migrationBuilder.DropTable(
                 name: "PreRouteTasks");

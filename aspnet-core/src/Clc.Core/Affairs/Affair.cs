@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities;
 using Clc.Fields;
 
@@ -61,6 +63,9 @@ namespace Clc.Affairs
         public int CreateWorkerId { get; set; }
         public Worker CreateWorker { get; set; }
         public DateTime CreateTime { get; set; }
+
+        [ForeignKey("AffairId")]
+        public virtual List<AffairWorker> Workers { get; set; }
     }
 }
 

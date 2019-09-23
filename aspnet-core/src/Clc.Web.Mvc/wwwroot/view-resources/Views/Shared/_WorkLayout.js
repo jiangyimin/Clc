@@ -101,6 +101,15 @@
         return row.outletCn + ' ' + row.outletName;
     }
 
+    work.getWorkersString = function() {
+        var str = '';
+        for (var i=0; i< work.myWork.workers.length; i++)
+        {
+            str = str + work.myWork.workers[i].name + ' ';
+        }
+        return str; 
+    }
+
     // document ready
     $(function () {
          // 侦听F1

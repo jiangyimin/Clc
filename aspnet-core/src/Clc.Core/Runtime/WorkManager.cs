@@ -197,13 +197,14 @@ namespace Clc.Works
             return null;
         }
 
-        public string GetWorkersFromAffairId(int affairId) 
+        public List<int> GetWorkersFromAffairId(int affairId) 
         {
             var lst = _affairWorkerRepository.GetAllIncluding(x => x.Affair).Where(x => x.AffairId == affairId).ToList();
-            string workers = "";
+
+            List<int> workers = new List<int>();
             foreach (var w in lst)
             {
-                workers += _workerCache[w.WorkerId].Name + " ";
+                workers.Add(w.WorkerId);
             }
             return workers;
         }

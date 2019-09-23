@@ -88,7 +88,15 @@ namespace Clc.Works
                 dto.Status = aw.Affair.Status;
                 dto.StartTime = ClcUtils.GetDateTime(aw.Affair.StartTime);
                 dto.EndTime = ClcUtils.GetDateTime(aw.Affair.EndTime, aw.Affair.IsTomorrow);
-                dto.Workers = WorkManager.GetWorkersFromAffairId(aw.Affair.Id);
+                var lst = WorkManager.GetWorkersFromAffairId(aw.Affair.Id);
+                dto.Workers = new List<MyWorkerDto>();
+                foreach (int id in lst)
+                {
+                    var w = WorkManager.GetWorker(id);
+                    dto.Workers.Add(new MyWorkerDto() 
+                        {Cn = w.Cn, Name = w.Name, Rfid = w.Rfid, Photo = w.Photo != null ? Convert.ToBase64String(w.Photo) : null}
+                    );
+                }
             }
             return dto;
         }

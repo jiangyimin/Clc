@@ -1,0 +1,112 @@
+﻿@{
+    Layout = "~/Views/Shared/_WorkLayout.cshtml";
+}
+
+@section workScripts
+{
+    <environment names="Development">
+        <script src="~/js/finput.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Monitors/OpenDoor.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/js/finput.min.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Monitors/OpenDoor.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+@section funcScripts
+{
+    <script type="text/javascript">
+	    var ws;
+        function initWS() {
+            ws = new WebSocket("ws://127.0.0.1:4649/M500Net");
+            ws.onopen = function () {
+                console.log("Open connection to websocket");
+                abp.notify.info('连接到门禁控制')
+            };
+            ws.onclose = function () {
+                console.log("Close connection to websocket");
+                // 断线重连
+                initWS();
+            }
+
+            ws.onmessage = function (e) {
+                abp.notify.info(e.data);
+            }
+        }
+    
+        initWS();
+        function openDoor() {
+            var row = $('#dg').datagrid('getSelected');
+            if (!row) {
+                abp.notify.error("选择要打开的门禁", "", { positionClass : 'toast-top-center'} );
+                return;
+            };
+            ws && ws.send(row.doorIp);
+
+            abp.services.app.monitor.insert(row.id, work.myWork.affairId).done(function(ret) {
+                abp.notify.info('记录成功')
+            });
+    	}
+
+        //var rfidsp = [];
+        //finput.matchWorker = function(rfid) {
+        //};
+    </script>
+}
+
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'west', title:'门禁列表', split:true, border:false" style="width:300px">
+        <div id="tb">
+            <span id="workers"></span>
+        </div>
+        <table id="dg" class="easyui-datagrid" toolbar="#tb"
+                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">
+            <thead>
+                <tr>
+                    <th field="depotName" width="60">大队</th>
+                    <th field="name" width="60">场所名称</th>
+                    <th field="doorIp" width="80">地址</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div data-options="region:'center'">
+       <div id="tt" class="easyui-tabs" data-options="fit:true, border:false">
+            <div title="操作" style="display:none;">
+                <div class="easyui-layout" fit="true">
+                    <div data-options="region:'north', title:'监控人员操作', split:true, border:false" style="height:50%">
+                        <div style="float:left">
+                            <div class="easyui-panel" title="My Panel1" style="width:200px;height:220px"></div>
+                        </div>
+                        <div style="float:left">
+                            <div class="easyui-panel" title="My Panel2" style="float:left;width:200px;height:220px"></div>
+                        </div>
+                        <div style="float:left">
+                            <div class="easyui-panel" title="My Panel3" style="float:left;width:200px;height:220px"></div>
+                        </div>
+                        <div style="float:left">
+                            <a href="javascript:void(0)" class="easyui-linkbutton" style="float:left;width:100px;height:100px" iconCls="icon-reload" plain="true" onclick="openDoor()">开门</a>
+                        </div>
+                    </div>
+                    <div data-options="region:'center', title:'申请人员信息'">
+                    </div>
+                </div>
+            </div>
+            <div title="开门记录" style="display:none;">
+                <table id="dgRecord" class="easyui-datagrid" pagination="true" pageSize="20" 
+                    fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true">
+                    <thead>
+                        <tr>
+                            <th field="createTime" width="80" formatter="$.datetimeFormatter">开门时间</th>
+                            <th field="workerplaceName" width="80">门</th>
+                            <th field="openWorkers" width="120">监控人员</th>
+                            <th field="applyWorkers" width="120">申请人员</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

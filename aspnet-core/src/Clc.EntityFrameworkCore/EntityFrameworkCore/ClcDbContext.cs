@@ -39,6 +39,8 @@ namespace Clc.EntityFrameworkCore
         public DbSet<ArticleRecord> ArticleRecords { get; set; }
         public DbSet<BoxRecord> BoxRecords { get; set; }
 
+        public DbSet<DoorRecord> DoorRecords { get; set; }
+
         // Affairs
         public DbSet<Affair> Affairs { get; set; }
         public DbSet<AffairWorker> AffairWorkers { get; set; }
@@ -138,6 +140,12 @@ namespace Clc.EntityFrameworkCore
                 b.HasIndex(e => new { e.TenantId, e.InTime });
             });
 
+            modelBuilder.Entity<DoorRecord>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.CreateTime });
+                b.HasIndex(e => new { e.TenantId, e.WorkplaceId });
+            });
+
             //
             // DeleteBehavior
             //
@@ -160,9 +168,13 @@ namespace Clc.EntityFrameworkCore
             modelBuilder.Entity<ArticleRecord>()
                 .HasOne(b => b.RouteWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
 
-
             modelBuilder.Entity<BoxRecord>()
                 .HasOne(b => b.Box).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DoorRecord>()
+                .HasOne(b => b.OpenAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<DoorRecord>()
+                .HasOne(b => b.ApplyAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
 
             // Affairs
             modelBuilder.Entity<Affair>()

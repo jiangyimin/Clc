@@ -9,7 +9,6 @@ using Abp.Domain.Repositories;
 using Abp.Linq;
 using Clc.BoxRecords.Dto;
 using Clc.Authorization;
-using Clc.Fields;
 using Clc.Routes;
 using Clc.Runtime;
 using Clc.Works;

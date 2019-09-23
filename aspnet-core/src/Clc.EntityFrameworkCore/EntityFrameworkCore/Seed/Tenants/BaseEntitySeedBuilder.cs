@@ -108,9 +108,9 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new WorkRole { TenantId = _tenantId, Cn = "04", Name = "主业务员", DefaultPostId = 5, Duties = "尾箱|交接", mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "05", Name = "业务员", DefaultPostId = 6, Duties = "辅助交接", mustHave = true, MaxNum = 2 },
                     new WorkRole { TenantId = _tenantId, Cn = "06", Name = "库房管理员", DefaultPostId = 7, mustHave = true, MaxNum = 2 }, 
-                    new WorkRole { TenantId = _tenantId, Cn = "07", Name = "金库管理员", DefaultPostId = 7, mustHave = true, MaxNum = 8 }, 
+                    new WorkRole { TenantId = _tenantId, Cn = "07", Name = "金库管理员", DefaultPostId = 8, mustHave = true, MaxNum = 8 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "08", Name = "待命", mustHave = true, MaxNum = 5 }, 
-                    //new WorkRole { TenantId = _tenantId, Cn = "09", Name = "监控员", DefaultPostId = 7, mustHave = true, MaxNum = 3 },
+                    new WorkRole { TenantId = _tenantId, Cn = "09", Name = "监控员", DefaultPostId = 10, mustHave = true, MaxNum = 3 },
                  }); 
                 _context.SaveChanges();
             }
@@ -122,9 +122,9 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             {
                 _context.Depots.AddRange(new Depot[] {
                     new Depot { TenantId = _tenantId, Cn = "01", Name = "市区", Longitude = 114.022022, Latitude = 22.531167, UnlockScreenPassword = "654321", ReportTo = "90005|33336" }, 
-                    new Depot { TenantId = _tenantId, Cn = "02", Name = "建行独立", Longitude = 114.016667, Latitude = 22.534167 }, 
-                    new Depot { TenantId = _tenantId, Cn = "10", Name = "农行", Longitude = 114.016667, Latitude = 22.534167 }, 
-                    // new Depot { TenantId = _tenantId, Cn = "91", Name = "监控", Longitude = 114.016667, Latitude = 22.534167 }, 
+                    new Depot { TenantId = _tenantId, Cn = "02", Name = "建行独立", Longitude = 114.016667, Latitude = 22.534167, UnlockScreenPassword = "654321"}, 
+                    new Depot { TenantId = _tenantId, Cn = "10", Name = "农行", Longitude = 114.016667, Latitude = 22.534167, UnlockScreenPassword = "654321"}, 
+                    new Depot { TenantId = _tenantId, Cn = "91", Name = "监控", Longitude = 114.016667, Latitude = 22.534167, UnlockScreenPassword = "654321"}, 
                 }); 
                 _context.SaveChanges();
             }
@@ -134,10 +134,10 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Workplaces.Count() == 0)
             {
                 _context.Workplaces.AddRange(new Workplace[] {
-                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "库房", WorkRoles = "库房管理员", ArticleTypeList = "A|B|C|D", MinDuration = 4, MaxDuration = 20, HasCloudDoor = true },
-                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "金库", WorkRoles = "金库管理员", MinDuration = 1, MaxDuration = 20, HasCloudDoor = true}, 
-                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "待命室", WorkRoles = "待命", MinDuration = 4, MaxDuration = 12, HasCloudDoor = false}, 
-                    // new Workplace { TenantId = _tenantId, DepotId = 4, Name = "监控室", AffairTypeId = 4 }, 
+                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "库房", WorkRoles = "库房管理员", ArticleTypeList = "A|B|C|D", MinDuration = 4, MaxDuration = 20, DoorIp = "192.168.1.100,1", CameraIp = "192.168.20.120" },
+                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "金库", WorkRoles = "金库管理员", MinDuration = 1, MaxDuration = 20, DoorIp = "192.168.2.100,2" }, 
+                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "待命室", WorkRoles = "待命", MinDuration = 4, MaxDuration = 12}, 
+                    new Workplace { TenantId = _tenantId, DepotId = 4, Name = "监控室", WorkRoles = "监控员", MinDuration = 6, MaxDuration = 16 }, 
                 }); 
                 _context.SaveChanges();
             }
@@ -158,6 +158,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10008", Name = "程涛", PostId = 5, Password = "123456", Rfid = "10008", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10009", Name = "吴风涛", PostId = 6, Password = "123456", Rfid = "10009", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "10010", Name = "郭杰", PostId = 6, Password = "123456", Rfid = "10010", AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 4, Cn = "33333", Name = "李明二", PostId = 1, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Captain, Rfid = "33336", AdditiveInfo = "142701198001041239", IsActive = true },
                 });
                 _context.SaveChanges();
                 _context.Workers.AddRange(new Worker[] {
@@ -165,8 +166,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20002", Name = "裴孟林", PostId = 7, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Article, Rfid = "20002", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20003", Name = "滕帅斌", PostId = 8, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Box, Rfid = "20003", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20004", Name = "申晓强", PostId = 8, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Box, Rfid = "20004", AdditiveInfo = "142701198001041239", IsActive = true }, 
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20005", Name = "王宽", PostId = 9, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.ArticleAndBox, Rfid = "20005", AdditiveInfo = "142701198001041239", IsActive = true },
-                    new Worker { TenantId = _tenantId, DepotId = 2, Cn = "33333", Name = "陈灼", PostId = 1, Password = "123456", Rfid = "33333", AdditiveInfo = "142701198001041239", IsActive = true },
+                    new Worker { TenantId = _tenantId, DepotId = 4, Cn = "20015", Name = "王宽", PostId = 10, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Monitor, Rfid = "20015", AdditiveInfo = "142701198001041239", IsActive = true },
+                    new Worker { TenantId = _tenantId, DepotId = 4, Cn = "20016", Name = "陈灼", PostId = 10, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Monitor, Rfid = "20016", AdditiveInfo = "142701198001041239", IsActive = true },
                 }); 
                 _context.SaveChanges();
             }
@@ -236,10 +237,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Outlet { TenantId = _tenantId, CustomerId = 2, Cn = "023110", Name = "农行武大分理处", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
                     new Outlet { TenantId = _tenantId, CustomerId = 3, Cn = "030410", Name = "中行惠凯丽分理处", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
                     new Outlet { TenantId = _tenantId, CustomerId = 3, Cn = "030511", Name = "中行杰拉德支行", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100401", Name = "南商南通分行", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100402", Name = "南商美丽华分理处", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
-                    new Outlet { TenantId = _tenantId, CustomerId = 4, Cn = "100101", Name = "南商工业园支行", Password = "123456", Ciphertext = "654321", Weixins = "33336" },
-                });
+               });
                 _context.SaveChanges();
             }
 
@@ -261,10 +259,6 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Box { TenantId = _tenantId, OutletId = 5, Cn = "02010208", Name = "8号箱" },
                     new Box { TenantId = _tenantId, OutletId = 6, Cn = "02311015", Name = "15号箱" },
                     new Box { TenantId = _tenantId, OutletId = 6, Cn = "02311016", Name = "16号箱" },
-                    new Box { TenantId = _tenantId, OutletId = 7, Cn = "03041001", Name = "1号箱" },
-                    new Box { TenantId = _tenantId, OutletId = 8, Cn = "03051101", Name = "1号箱" },
-                    new Box { TenantId = _tenantId, OutletId = 9, Cn = "10040102", Name = "2号箱" },
-                    new Box { TenantId = _tenantId, OutletId = 9, Cn = "10040103", Name = "3号箱" },
                 });
                 _context.SaveChanges();
             }

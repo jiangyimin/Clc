@@ -17,6 +17,7 @@ namespace Clc.Fields
         public const int MaxWorkRolesLength = ClcConsts.NormalStringLength;
          public const int ArticleTypeListLength = ClcConsts.NormalStringLength;
         public const int ShareDepotListLength = ClcConsts.NormalStringLength;
+        public const int IpAddressLength = 20;
 
         // Impement of IMustHaveTenant
         public int TenantId { get; set; }
@@ -57,8 +58,11 @@ namespace Clc.Fields
         /// </summary>
         public int MaxDuration { get; set; }     
         /// <summary>
-        /// 是否云端开门
-        public bool HasCloudDoor { get; set; }
+        /// 云端开门
+        [StringLength(Workplace.IpAddressLength)]
+        public string DoorIp { get; set; }
+        [StringLength(Workplace.IpAddressLength)]
+        public string CameraIp { get; set; }
 
         #region methods
 

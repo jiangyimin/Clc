@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clc.Migrations
 {
     [DbContext(typeof(ClcDbContext))]
-    [Migration("20190821083416_clc")]
+    [Migration("20190921031113_clc")]
     partial class clc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1433,9 +1433,11 @@ namespace Clc.Migrations
                     b.Property<string>("ArticleTypeList")
                         .HasMaxLength(50);
 
+                    b.Property<string>("CameraIp");
+
                     b.Property<int>("DepotId");
 
-                    b.Property<bool>("HasCloudDoor");
+                    b.Property<string>("DoorIp");
 
                     b.Property<int>("MaxDuration");
 
@@ -1916,6 +1918,37 @@ namespace Clc.Migrations
                     b.ToTable("BoxRecords");
                 });
 
+            modelBuilder.Entity("Clc.Runtime.DoorRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ApplyAffairId");
+
+                    b.Property<DateTime>("CreateTime");
+
+                    b.Property<int>("OpenAffairId");
+
+                    b.Property<int>("TenantId");
+
+                    b.Property<int>("WorkplaceId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplyAffairId");
+
+                    b.HasIndex("OpenAffairId");
+
+                    b.HasIndex("WorkplaceId");
+
+                    b.HasIndex("TenantId", "CreateTime");
+
+                    b.HasIndex("TenantId", "WorkplaceId");
+
+                    b.ToTable("DoorRecords");
+                });
+
             modelBuilder.Entity("Clc.Runtime.Signin", b =>
                 {
                     b.Property<int>("Id")
@@ -2240,7 +2273,7 @@ namespace Clc.Migrations
             modelBuilder.Entity("Clc.Affairs.AffairWorker", b =>
                 {
                     b.HasOne("Clc.Affairs.Affair", "Affair")
-                        .WithMany()
+                        .WithMany("Workers")
                         .HasForeignKey("AffairId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -2573,6 +2606,24 @@ namespace Clc.Migrations
                         .WithMany()
                         .HasForeignKey("BoxId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Clc.Runtime.DoorRecord", b =>
+                {
+                    b.HasOne("Clc.Affairs.Affair", "ApplyAffair")
+                        .WithMany()
+                        .HasForeignKey("ApplyAffairId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Clc.Affairs.Affair", "OpenAffair")
+                        .WithMany()
+                        .HasForeignKey("OpenAffairId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Clc.Fields.Workplace", "Workplace")
+                        .WithMany()
+                        .HasForeignKey("WorkplaceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Clc.Runtime.Signin", b =>

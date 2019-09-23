@@ -15,7 +15,8 @@
             { field: "shareDepotList", title: "共享中心列表", width: 100 },
             { field: "minDuration", title: "最短班次小时", width: 80 },
             { field: "maxDuration", title: "最长班次小时", width: 80 },
-            { field: "hasCloudDoor", title: "带云门", width: 80 },
+            { field: "doorIp", title: "门禁IP地址", width: 80 },
+            { field: "cameraIp", title: "视频IP地址", width: 80 },
         ]];
         crud.parentField = 'depotId';
         crud.children = true;
@@ -100,9 +101,13 @@
                 <td><input name="maxDuration" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><label for="hasCloudDoor">带云门: </label></th>
-                <td><input name="hasCloudDoor" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'">
-                </td>
+                <th><label for="doorIp">门禁IP地址: </label></th>
+                <td><input name="doorIp" class="easyui-textbox" data-options="validType:'length[8, @Workplace.IpAddressLength]'"></td>
+            </tr>
+            <tr>
+                <th><label for="cameraIp">视频IP地址: </label></th>
+                <td><input name="cameraIp" class="easyui-textbox" data-options="validType:'length[8, @Workplace.IpAddressLength]'"></td>
+            </tr>
         </table>
     </form>
 </div>

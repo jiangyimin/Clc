@@ -1,9 +1,5 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Abp.Application.Services.Dto;
-using Abp.AutoMapper;
-using Clc.Fields;
-using Clc.Runtime;
+using System.Collections.Generic;
 
 namespace Clc.Works.Dto
 {
@@ -22,8 +18,16 @@ namespace Clc.Works.Dto
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-        public string Workers { get; set; }
+        public List<MyWorkerDto> Workers { get; set; }
 
+    }
+
+    public class MyWorkerDto
+    {
+        public string Cn { get; set; }
+        public string Name { get; set; }
+        public string Rfid { get; set; }
+        public string Photo { get; set; }
     }
 }
 

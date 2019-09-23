@@ -3,7 +3,7 @@
     $(function() {
         abp.services.app.work.getMyWork().done(function (wk) {
             work.myWork = wk;
-            workers.innerHTML = '库房管理人：' + work.getWorkersString();
+            workers.innerHTML = '库房管理人：' + work.myWork.workers;
             // get today
             abp.services.app.work.getTodayString().done(function (dd) {
                 $('#dd').datebox('setValue', dd);
@@ -32,5 +32,6 @@
                 return '<span style="font-size:24px">'+value+'</span>';
             }
         });
+
     });
 })();
