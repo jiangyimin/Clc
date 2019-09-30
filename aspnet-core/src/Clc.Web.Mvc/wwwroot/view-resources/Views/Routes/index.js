@@ -1,6 +1,6 @@
 (function() {        
     $(function() {    
-        isCaptain = true;
+        work.isCaptain = true;
         // get today
         abp.services.app.work.getTodayString().done(function (d) {
             mds.today = d;
@@ -20,7 +20,8 @@
             }
 
             ids = [];
-            for (var row of checkedRows) {
+            for (var i = 0; i < checkedRows.length; i++) {
+                var row = checkedRows[i];
                 if (row.status == "安排") ids.push(row.id);
             };
 

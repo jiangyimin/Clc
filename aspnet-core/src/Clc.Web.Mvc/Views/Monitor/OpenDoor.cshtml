@@ -46,7 +46,7 @@
             ws && ws.send(row.doorIp);
 
             abp.services.app.monitor.insert(row.id, work.myWork.affairId).done(function(ret) {
-                abp.notify.info('记录成功')
+                // abp.notify.info('记录成功')
             });
     	}
 
@@ -57,7 +57,7 @@
 }
 
 <div class="easyui-layout" fit="true">
-    <div data-options="region:'west', title:'门禁列表', split:true, border:false" style="width:300px">
+    <div data-options="region:'west', title:'门禁列表', split:true, border:false" style="width:350px">
         <div id="tb">
             <span id="workers"></span>
         </div>
@@ -76,16 +76,7 @@
        <div id="tt" class="easyui-tabs" data-options="fit:true, border:false">
             <div title="操作" style="display:none;">
                 <div class="easyui-layout" fit="true">
-                    <div data-options="region:'north', title:'监控人员操作', split:true, border:false" style="height:50%">
-                        <div style="float:left">
-                            <div class="easyui-panel" title="My Panel1" style="width:200px;height:220px"></div>
-                        </div>
-                        <div style="float:left">
-                            <div class="easyui-panel" title="My Panel2" style="float:left;width:200px;height:220px"></div>
-                        </div>
-                        <div style="float:left">
-                            <div class="easyui-panel" title="My Panel3" style="float:left;width:200px;height:220px"></div>
-                        </div>
+                    <div data-options="region:'north', title:'监控人员信息', split:true, border:false" style="height:50%">
                         <div style="float:left">
                             <a href="javascript:void(0)" class="easyui-linkbutton" style="float:left;width:100px;height:100px" iconCls="icon-reload" plain="true" onclick="openDoor()">开门</a>
                         </div>

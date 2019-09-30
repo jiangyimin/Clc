@@ -178,7 +178,8 @@ namespace Clc.Affairs
         public async Task DeleteWorker(int id)
         {
             await _workerRepository.DeleteAsync(id);
-        }
+            CurrentUnitOfWork.SaveChanges();
+         }
 
         public async Task<List<AffairTaskDto>> GetAffairTasks(int id, string sorting)
         {

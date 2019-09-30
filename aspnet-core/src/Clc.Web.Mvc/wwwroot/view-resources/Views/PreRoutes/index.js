@@ -1,6 +1,6 @@
 (function() {        
     $(function() {    
-        isCaptain = true;
+        work.isCaptain = true;
 
         $('#dg').datagrid({
             url: 'PreRoutes/GridData'

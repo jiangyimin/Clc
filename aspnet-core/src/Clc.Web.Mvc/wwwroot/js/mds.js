@@ -1,5 +1,6 @@
 var mds = mds || {};
 (function ($) {
+    // alert('enter mds');
     var _dfd = null;
 
     mds.dgDefault = {
@@ -8,9 +9,9 @@ var mds = mds || {};
         columns: [[]],
         operatorColumn: true, 
         singleSelect: true, 
-        insert: () => {},
-        update: () => {},
-        delete: () => {},
+        insert: function() {},
+        update: function() {},
+        delete: function() {},
     };
     mds.controllerName = '';
     mds.masterInputName = '';
@@ -26,7 +27,7 @@ var mds = mds || {};
     mds.getUrl = function() {};
 
     mds.reload = function (postfix) {
-        $dg = $('#dg' + postfix);
+        var $dg = $('#dg' + postfix);
         if (postfix === mds.main.postfix) {
             mds.masterCurrentRow = null;
             mds.reloadSelectedTab();
@@ -94,7 +95,7 @@ var mds = mds || {};
         abp.message.confirm('确认要删除此记录吗?', '请确认', function (r) {
             if (r) {
                 _dfd = mds.getDeleteDfd(postfix);
-                // alert(_dfd);
+                // alert(_dfd);alert(row.id);
                 _dfd(row.id).done(function () {
                     abp.notify.info('删除操作成功')
                     mds.reload(postfix);
@@ -165,9 +166,8 @@ var mds = mds || {};
             mds.main.columns[0].push({field: "operator", title: "操作", width: 80, align: "center", formatter: mds.operator});
         }
 
-
-        for (var detail of mds.details) {
-            // alert(detail.postfix);
+        for (var i = 0; i < mds.details.length; i++) {
+            var detail = mds.details[i];
             if (detail.operatorColumn) {
                 detail.columns[0].push({ field: "postfix", title: "Postfix", width: 80, hidden: true });
                 detail.columns[0].push({field: "operator", title: "操作", width: 80, align: "center", formatter: mds.operator});

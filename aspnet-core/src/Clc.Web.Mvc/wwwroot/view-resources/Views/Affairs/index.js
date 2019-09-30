@@ -1,7 +1,7 @@
 (function() {        
     $(function() {    
-        isCaptain = true;
-        // get today
+        work.isCaptain = true;
+       // get today
         abp.services.app.work.getTodayString().done(function (d) {
             mds.today = d;
             $('#dd').datebox('setValue', mds.today);
@@ -14,7 +14,8 @@
         $('#tomorror').checkbox({
             onChange: function() {
                 if ($('#tomorror').checkbox('options').checked) {
-                    var t = getTomorrow(mds.today);
+                    var t = work.getTomorrow(mds.today);
+                    // alert(t);
                     $('#dd').datebox('setValue', t);
                     $('#dg').datagrid({
                         url: 'Affairs/GridData?CarryoutDate=' + t
@@ -37,7 +38,8 @@
             }
 
             ids = [];
-            for (var row of checkedRows) {
+            for (var i = 0; i < checkedRows.length; i++) {
+                var row = checkedRows[i];
                 if (row.status == "安排") ids.push(row.id);
             };
             // alert(ids);
