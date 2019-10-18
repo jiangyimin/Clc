@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
 using Clc.Runtime;
-using Clc.Types;
 
 namespace Clc.Fields
 {

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Clc.Fields.Dto;
 
 namespace Clc.Fields
 {
@@ -12,5 +14,9 @@ namespace Clc.Fields
 
         List<WorkerListItem> GetWorkerListItems(bool all = false);
         List<VehicleListItem> GetVehicleListItems(bool all = false);
+
+        // WorkerFile
+        Task<PagedResultDto<WorkerFileDto>> GetPagedResult(int depotId, PagedAndSortedResultRequestDto input);
+        List<ComboboxItemDto> GetWorkerComboItems(int depotId);
     }
 }

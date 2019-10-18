@@ -45,6 +45,11 @@
             };
             ws && ws.send(row.doorIp);
 
+            $('#btn').linkbutton('disable');
+            setTimeout(function() {
+                $('#btn').linkbutton('enable');
+            }, 2000);
+
             abp.services.app.monitor.insert(row.id, work.myWork.affairId).done(function(ret) {
                 // abp.notify.info('记录成功')
             });
@@ -78,7 +83,7 @@
                 <div class="easyui-layout" fit="true">
                     <div data-options="region:'north', title:'监控人员信息', split:true, border:false" style="height:50%">
                         <div style="float:left">
-                            <a href="javascript:void(0)" class="easyui-linkbutton" style="float:left;width:100px;height:100px" iconCls="icon-reload" plain="true" onclick="openDoor()">开门</a>
+                            <a id="btn" href="javascript:void(0)" class="easyui-linkbutton" style="float:left;width:100px;height:100px" iconCls="icon-reload" plain="true" onclick="openDoor()">开门</a>
                         </div>
                     </div>
                     <div data-options="region:'center', title:'申请人员信息'">
@@ -91,7 +96,7 @@
                     <thead>
                         <tr>
                             <th field="createTime" width="80" formatter="$.datetimeFormatter">开门时间</th>
-                            <th field="workerplaceName" width="80">门</th>
+                            <th field="workplaceName" width="80">门</th>
                             <th field="openWorkers" width="120">监控人员</th>
                             <th field="applyWorkers" width="120">申请人员</th>
                         </tr>

@@ -8,10 +8,12 @@ var finput = finput || {};
         boxRfidLength: 8,
     };
     
-
+    finput.index = 0;
     finput.route = {};
     finput.worker = {};
+    finput.worker2 = {};
     finput.articles = [];
+    finput.articles2 = [];
     finput.boxes = [];
 
     // onWoker
@@ -24,9 +26,16 @@ var finput = finput || {};
     finput.showWorker = function (ret) {
         finput.route = ret.routeMatched;
         finput.worker = ret.workerMatched;
+        finput.worker2 = ret.workerMatched2;
         finput.articles = ret.articles;
+        finput.articles2 = ret.articles2;
         finput.outlets = ret.outlets;
         finput.boxes = ret.boxes;  
+        if (finput.worker2 == null)
+            finput.index = 0;
+        else
+            finput.index = 1;
+            
         // alert(finput.articles.length);
 
         $('#dlg').dialog('open');

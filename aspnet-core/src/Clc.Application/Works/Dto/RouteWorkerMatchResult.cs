@@ -7,7 +7,10 @@ namespace Clc.Works.Dto
         public RouteMatchedDto RouteMatched { get; set; }
         public WorkerMatchedDto WorkerMatched { get; set; }
 
+        public WorkerMatchedDto WorkerMatched2 { get; set; }
+
         public List<RouteArticleCDto> Articles { get; set; }
+        public List<RouteArticleCDto> Articles2 { get; set; }
         public List<RouteBoxCDto> Boxes { get; set; }
     }
 }

@@ -118,3 +118,21 @@
         </div>
     </div>
 </div>
+
+@*弹窗*@
+<div id="dlg2" class="easyui-dialog" title="物品领用" closed="true" modal="true" align="center" style="height: 600px; width: 1300x;">
+    <div class="easyui-layout" fit="true">
+        <div data-options="region:'west', border:true" style="width:250px">
+            <!-- <div style="font-size:48px; align: 'center'; backgroud-color: darkslategray; color: white"> -->
+                <p id="routeName1" class="route"></p>
+                <p id="vehicle1" class="route"></p>
+            <!-- </div> -->
+            <img id="photo1" alt="照片" src="" style="margin-left:20px; width:200px; height:220px;" />
+            <p id="worker1" class="worker"></p>
+        </div>
+        <div data-options="region:'center'" style="border:3px solid #ccc; padding:10px">
+            <div id="dl1" class="esayui-datalist" fit="true" fitColumns="true" striped="true">
+            </div>
+        </div>
+    </div>
+</div>

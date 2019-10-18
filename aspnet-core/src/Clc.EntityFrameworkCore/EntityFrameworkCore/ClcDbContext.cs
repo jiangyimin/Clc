@@ -26,8 +26,10 @@ namespace Clc.EntityFrameworkCore
         public DbSet<Depot> Depots { get; set; }
         public DbSet<Workplace> Workplaces { get; set; }
         public DbSet<Worker> Workers { get; set; }
+        public DbSet<WorkerFile> WorkerFiles { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Article> Articles { get; set; }
+        public DbSet<ArticleTypeBind> ArticleTypeBinds { get; set; }
 
         // Clients
         public DbSet<Customer> Customers { get; set; }
@@ -85,6 +87,11 @@ namespace Clc.EntityFrameworkCore
                 b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
             });
 
+            modelBuilder.Entity<WorkerFile>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.WorkerId}).IsUnique();
+            });
+
             modelBuilder.Entity<Vehicle>(b =>
             {
                 b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
@@ -93,6 +100,11 @@ namespace Clc.EntityFrameworkCore
             modelBuilder.Entity<Article>(b =>
             {
                 b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
+            });
+
+            modelBuilder.Entity<ArticleTypeBind>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.ArticleTypeId}).IsUnique();
             });
             
             // Clients

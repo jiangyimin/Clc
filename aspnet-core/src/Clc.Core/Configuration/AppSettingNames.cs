@@ -22,6 +22,7 @@
         {
             public const string Radius = "Rule.Radius";
             public const string MinCheckinInterval = "Rule.MinCheckinInterval";
+            public const string DoubleArticleRoles = "Rule.DoubleArticleRoles";
 
         }
     }

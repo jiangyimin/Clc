@@ -32,8 +32,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             CreateRoleAndUser(StaticRoleNames.Tenants.Hrm, permissions, false, StaticRoleNames.Tenants.Hrm, User.UserDefaultPassword);
 
             // Hrq RoleAndUser
-            permissions = new string[] { PermissionNames.Pages_Hrq };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Hrq, permissions, false, StaticRoleNames.Tenants.Hrq, User.UserDefaultPassword);
+            // permissions = new string[] { PermissionNames.Pages_Hrq };
+            // CreateRoleAndUser(StaticRoleNames.Tenants.Hrq, permissions, false, StaticRoleNames.Tenants.Hrq, User.UserDefaultPassword);
 
             // Query RoleAndUser
             permissions = new string[] { PermissionNames.Pages_Query };

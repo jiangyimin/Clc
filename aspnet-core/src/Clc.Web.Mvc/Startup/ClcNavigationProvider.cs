@@ -42,20 +42,20 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Field_Workers", new FixedLocalizableString("工作人员"), url: "Workers"))
                     .AddItem(new MenuItemDefinition("Field_Vehicles", new FixedLocalizableString("车辆"), url: "Vehicles"))
                     .AddItem(new MenuItemDefinition("Field_Articles", new FixedLocalizableString("物品"), url: "Articles"))
+                    .AddItem(new MenuItemDefinition("Field_ArticleTypeBinds", new FixedLocalizableString("物品类型绑定"), url: "ArticleTypeBinds"))
                 // Clients
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Clients, new FixedLocalizableString("客户"), icon: "fa fa-th-large", requiredPermissionName: PermissionNames.Pages_Clients)
                     .AddItem(new MenuItemDefinition("Client_Customers", new FixedLocalizableString("客户"), url: "Customers"))
                     .AddItem(new MenuItemDefinition("Client_Outlets", new FixedLocalizableString("网点"), url: "Outlets"))
                     .AddItem(new MenuItemDefinition("Client_Boxes", new FixedLocalizableString("尾箱"), url: "Boxes"))
-                 // Hrm
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrm, new FixedLocalizableString("档案管理"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrm)
-                    .AddItem(new MenuItemDefinition("Hrm_Workers", new FixedLocalizableString("人员档案"), url: "WorkerFiles"))
-                    .AddItem(new MenuItemDefinition("Hrm_Documents", new FixedLocalizableString("文件档案"), url: "Documents"))
-                // Hrq
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrq, new FixedLocalizableString("档案管理"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrq)
-                    .AddItem(new MenuItemDefinition("Hrm_Workers", new FixedLocalizableString("人员档案"), url: "WorkerFiles"))
-                    .AddItem(new MenuItemDefinition("Hrm_Documents", new FixedLocalizableString("文件档案"), url: "Documents"))
-               // Query
+                // Hrm
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrm, new FixedLocalizableString("档案编辑"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrm)
+                    .AddItem(new MenuItemDefinition("Hrm_WorkerFiles", new FixedLocalizableString("人员"), url: "WorkerFiles"))
+                    // .AddItem(new MenuItemDefinition("Hrm_Documents", new FixedLocalizableString("文件档案"), url: "Documents"))
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrq, new FixedLocalizableString("档案查看"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrm)
+                    .AddItem(new MenuItemDefinition("Hrq_WorkerFiles", new FixedLocalizableString("查看人员"), url: "WorkerFiles/Hrq"))
+                    // .AddItem(new MenuItemDefinition("Hrm_Documents", new FixedLocalizableString("文件档案"), url: "Documents"))
+                // Query
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Query, new FixedLocalizableString("配置"), icon: "fa fa-globe", requiredPermissionName: PermissionNames.Pages_Query)
                     .AddItem(new MenuItemDefinition("Keeper_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Keeper/ArticleRecords"))
                     .AddItem(new MenuItemDefinition("Dispatcher_DaySettlesQuery", new FixedLocalizableString("日结查询"), url: "DaySettles/DaySettlesQuery"))

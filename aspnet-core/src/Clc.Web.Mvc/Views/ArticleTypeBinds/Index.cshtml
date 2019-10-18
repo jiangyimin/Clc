@@ -1,0 +1,96 @@
+﻿@using Clc.Fields
+@{
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+}
+
+@section customScript
+{
+    <script type="text/javascript">
+        crud.dgDefault.name = 'ArticleTypeBinds';
+        crud.dgDefault.sortName = 'articleTypeId';
+        crud.dgDefault.columns = [[
+            { field: "cn", title: "编号", width: 100 },
+            { field: "articleTypeId", title: "类型", width: 80, formatter: articleTypeFormatter },
+            { field: "bindStyle", title: "绑定内容", width: 100 }
+        ]];
+        crud.parentField = 'depotId';
+        crud.children = true;
+
+        // formatter
+        function articleTypeFormatter (val) {
+            return crud.getComboTextByInt('#articleType', val);
+        }
+        
+    </script>
+}
+
+@section endScript
+{
+    <script type="text/javascript">
+        crud.startfunction = function () {
+            abp.services.app.type.getComboItems('ArticleType').done(function(d) {
+                crud.setComboBox('#articleType', d);
+            });
+            abp.services.app.type.getComboItems('BindStyle').done(function(d) { 
+                crud.setComboBox('#bindStyle', d);
+            });
+
+            abp.services.app.field.getComboItems('DepotWithCn').done(function(depots) {
+                crud.setComboBox('#depotId', depots);
+                var treeData = [];
+                depots.forEach( function (val, index, arr) {
+                    treeData.push({ id: val.value, text: val.displayText });
+                });
+                $('#tree').tree({
+                    data: treeData,
+                    onSelect: function (node) {
+                        crud.parentId = node.id;
+                        $('#datagrid').datagrid({
+                            url: crud.dgDefault.name + '/GetPagedData/' + 'DepotId=' + node.id
+                        });
+                    }
+                });
+            });
+        };
+
+        crud.endfunction = function () {
+            var title = abp.setting.get('VI.DepotTitleName');
+            $('#cc').layout('panel', 'west').panel({title:title});
+        };
+    </script>
+}
+
+@section headHtml
+{
+    <div id="cc" class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'west', split:true, minWidth:80, width:120">
+            <ul id="tree" class="easyui-tree" style="margin-top:6px"></ul>
+        </div>
+        <div data-options="region:'center', border:false">
+}
+@section footHtml
+{
+        </div>
+    </div>
+}
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 400px; padding: 10px;">
+    <form id="fm" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl">
+            <input id="id" name="id" type="hidden">
+            <tr>
+                <th><label for="depotId">所属：</label></th>
+                <td><input id="depotId" name="depotId" readonly="true" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="articleTypeId">类型：</label></th>
+                <td><input id="articleType" name="articleTypeId" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="bindStyle">绑定方式: </label></th>
+                <td><input id="bindStyle" name="bindStyle" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>

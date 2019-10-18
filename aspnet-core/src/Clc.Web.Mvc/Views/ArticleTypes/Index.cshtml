@@ -40,8 +40,10 @@
                 <th><label for="name">名称：</label></th>
                 <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @ArticleType.MaxNameLength]'" style="width: 100%"></td>
             </tr>
+            <tr>
                 <th><label for="bindStyle">绑定方式: </label></th>
-                <td><select id="bindStyle" name="bindStyle" class="easyui-combobox" style="width: 100%" /></td>
+                <td><input id="bindStyle" name="bindStyle" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
         </table>
     </form>
 </div>

@@ -44,7 +44,7 @@ namespace Clc.Monitors
 
         public async Task<PagedResultDto<DoorRecordDto>> GetRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input)
         {
-            var query = _recordRepository.GetAllIncluding(x => x.WorkplaceId, x => x.OpenAffair, x => x.ApplyAffair)
+            var query = _recordRepository.GetAllIncluding(x => x.Workplace, x => x.OpenAffair, x=> x.OpenAffair.Workers, x => x.ApplyAffair, x => x.ApplyAffair.Workers)
                 .Where(x => x.WorkplaceId == workplaceId);
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
@@ -73,15 +73,22 @@ namespace Clc.Monitors
         {
             var dto = ObjectMapper.Map<DoorRecordDto>(entity);
 
-            foreach (AffairWorker w in entity.OpenAffair.Workers)
+            if (entity.OpenAffair.Workers != null)
             {
-                var worker = WorkManager.GetWorker(w.WorkerId);
-                dto.OpenWorkers = string.Format("{0} {1}, ", worker.Id, worker.Name);
+                foreach (AffairWorker w in entity.OpenAffair.Workers)
+                {
+                    var worker = WorkManager.GetWorker(w.WorkerId);
+                    dto.OpenWorkers += string.Format("{0} {1}, ", worker.Cn, worker.Name);
+                }
             }
-            foreach (AffairWorker w in entity.ApplyAffair.Workers)
+
+            if (entity.ApplyAffair != null && entity.ApplyAffair.Workers != null)
             {
-                var worker = WorkManager.GetWorker(w.WorkerId);
-                dto.OpenWorkers = string.Format("{0} {1}, ", worker.Id, worker.Name);
+                foreach (AffairWorker w in entity.ApplyAffair.Workers)
+                {
+                    var worker = WorkManager.GetWorker(w.WorkerId);
+                    dto.OpenWorkers += string.Format("{0} {1}, ", worker.Cn, worker.Name);
+                }
             }
             return dto;
         }

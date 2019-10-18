@@ -22,7 +22,8 @@ namespace Clc.Fields
         public const int RfidMaxLength = 18;
         public const int MaxDeviceId = 50;
         public const int MaxAdditiveInfoLength = 20;
- 
+        public const int FingerLength = 1024;
+  
         /// <summary>
         /// 所属中心
         /// </summary>
@@ -82,6 +83,12 @@ namespace Clc.Fields
         // 附加认证信息
         [StringLength(MaxAdditiveInfoLength)]
         public string AdditiveInfo { get; set; }
+
+        /// <summary>
+        /// 指纹
+        /// </summary>
+        [StringLength(FingerLength)]
+        public string Finger { get; set; }
 
         /// <summary>
         /// 是否启用

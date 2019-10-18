@@ -6,10 +6,12 @@ using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq;
 using Abp.UI;
+using Clc.Configuration;
 using Clc.Fields;
 using Clc.Routes;
 using Clc.Runtime;
 using Clc.Runtime.Cache;
+using Clc.Types;
 using Clc.Works.Dto;
 
 namespace Clc.Works
@@ -163,9 +165,12 @@ namespace Clc.Works
 
             result.RouteMatched = new RouteMatchedDto(ret.Item1);
             result.WorkerMatched = ret.Item2;
-            result.Articles = new List<RouteArticleCDto>();
+            result.WorkerMatched2 = ret.Item3;
+            result.Articles = GetArticles(ret.Item2.RouteWorkerId);
+            result.Articles2 = GetArticles(ret.Item3.RouteWorkerId);
             return result;
         }
+        
         public RouteWorkerMatchResult MatchWorkerForReturn(DateTime carryoutDate, int affairId, string rfid)
         {
             var result = new RouteWorkerMatchResult();
@@ -182,13 +187,9 @@ namespace Clc.Works
 
             result.RouteMatched = new RouteMatchedDto(ret.Item1);
             result.WorkerMatched = ret.Item2;
-            result.Articles = new List<RouteArticleCDto>();
-            var articles = _routeArticleRepository.GetAllIncluding(x => x.ArticleRecord).Where(x => x.RouteWorkerId == result.WorkerMatched.RouteWorkerId).ToList();
-            foreach (var a in articles)
-            {
-                var article = WorkManager.GetArticle(a.ArticleRecord.ArticleId);
-                result.Articles.Add(new RouteArticleCDto(article, a.ArticleRecordId, a.ArticleRecord.ReturnTime.HasValue));
-            }
+            result.WorkerMatched2 = ret.Item3;
+            result.Articles = GetArticles(ret.Item2.RouteWorkerId);
+            result.Articles2 = GetArticles(ret.Item3.RouteWorkerId);
             return result;
         }
 
@@ -331,7 +332,7 @@ namespace Clc.Works
 
         #region private
 
-        private (RouteCDto, WorkerMatchedDto) GetEqualRfidWorker(List<RouteCDto> routes, string rfid)
+        private (RouteCDto, WorkerMatchedDto, WorkerMatchedDto) GetEqualRfidWorker(List<RouteCDto> routes, string rfid)
         {           
             foreach (var route in routes)
             {
@@ -340,11 +341,48 @@ namespace Clc.Works
                     var worker = WorkManager.GetWorker(w.WorkerId);
                     if (worker.Rfid == rfid) {
                         WorkerMatchedDto dto = new WorkerMatchedDto(w.Id, worker, _workRoleCache[w.WorkRoleId]);
-                        return (route, dto);
+                        WorkerMatchedDto dto2 = GetAnotherWorkerMathcedDto(route.Workers, _workRoleCache[w.WorkRoleId]);
+                        return (route, dto, dto2);
                     }
                 }
             }
-            return (null, null);
+            return (null, null, null);
+        }
+
+        private WorkerMatchedDto GetAnotherWorkerMathcedDto(List<RouteWorkerCDto> workers, WorkRole workRole)
+        {
+            string anotherRole = GetAnotherRoleName(workRole);
+            if ( anotherRole!= null )
+            {
+                foreach (var w in workers)
+                {
+                    var role = _workRoleCache[w.WorkRoleId];
+                    if (role.Name == anotherRole)
+                        return new WorkerMatchedDto(w.Id, WorkManager.GetWorker(w.WorkerId), role);
+                }
+            }
+            return null;
+        }
+
+        private string GetAnotherRoleName(WorkRole workRole)
+        {
+            string doubleRoles = SettingManager.GetSettingValueAsync(AppSettingNames.Rule.DoubleArticleRoles).Result;
+            string[] array = doubleRoles.Split('|');
+            if (array[0] == workRole.Name) return array[1];
+            if (array[1] == workRole.Name) return array[0];
+            return null;
+        }
+
+        private List<RouteArticleCDto> GetArticles(int workerId)
+        {
+            List<RouteArticleCDto> ret = new List<RouteArticleCDto>();
+            var articles = _routeArticleRepository.GetAllIncluding(x => x.ArticleRecord).Where(x => x.RouteWorkerId == workerId).ToList();
+            foreach (var a in articles)
+            {
+                var article = WorkManager.GetArticle(a.ArticleRecord.ArticleId);
+                ret.Add(new RouteArticleCDto(article, a.ArticleRecordId, a.ArticleRecord.ReturnTime.HasValue));
+            }
+            return ret;
         }
 
         private async Task<List<RouteCDto>> GetRoutesForArticle(DateTime carryoutDate, int affairId)

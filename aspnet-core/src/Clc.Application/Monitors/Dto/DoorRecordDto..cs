@@ -8,7 +8,7 @@ namespace Clc.BoxRecords.Dto
     [AutoMapFrom(typeof(DoorRecord))]
     public class DoorRecordDto : EntityDto
     {
-        public DateTime CreatTime { get; set; }
+        public DateTime CreateTime { get; set; }
 
         /// <summary>
         /// 物品名

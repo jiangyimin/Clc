@@ -1,0 +1,206 @@
+﻿@using Clc.Fields
+@{
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+}
+
+@section customScript
+{
+    <script type="text/javascript">
+        crud.dgDefault.name = 'WorkerFiles';
+        crud.dgDefault.sortName = 'fileCn';
+        var title = abp.setting.get('VI.DepotTitleName');
+        crud.dgDefault.columns = [[
+            { field: "fileCn", title: "档案编号", width: 80, sortable: true },
+            { field: "workerCn", title: "编号", width: 60, sortable: true },
+            { field: "workerName", title: "名称", width: 60 },
+            { field: "hiredate", title: "入职日期", width: 80, sortable: true, formatter: $.dateFormatter },
+            { field: "sex", title: "性别", width: 60 },
+            { field: "birthday", title: "出生日期", width: 80, sortable: true, formatter: $.dateFormatter },
+            { field: "politicalStatus", title: "政治面貌", width: 60 },
+            { field: "education", title: "文化程度", width: 60 },
+            { field: "licenseType", title: "驾驶证", width: 60 },
+            { field: "workLicenseCn", title: "上岗证编号", width: 100 },
+            { field: "certificateCn", title: "保安资格证", width: 100 },
+            { field: "armLicenceCn", title: "持枪证", width: 100 },
+            { field: "status", title: "在职", width: 60 },
+        ]];
+        crud.parentField = 'depotId';
+        crud.children = true;
+    </script>
+}
+
+@section endScript
+{
+    <script type="text/javascript">
+        crud.startfunction = function () {
+            abp.services.app.type.getComboItems('Sex').done(function(d) {
+                crud.setComboBox('#sex', d);
+            });
+            abp.services.app.type.getComboItems('PoliticalStatus').done(function(d) {
+                crud.setComboBox('#politicalStatus', d);
+            });
+
+            abp.services.app.type.getComboItems('Education').done(function(d) {
+                crud.setComboBox('#education', d);
+            });
+
+            abp.services.app.type.getComboItems('MaritalStatus').done(function(d) {
+                crud.setComboBox('#maritalStatus', d);
+            });
+
+            abp.services.app.type.getComboItems('LicenseType').done(function(d) {
+                crud.setComboBox('#licenseType', d);
+            });                
+            
+            abp.services.app.type.getComboItems('Status').done(function(d) {
+                crud.setComboBox('#status', d);
+            });
+
+            abp.services.app.field.getComboItems('Depot').done(function(depots) {
+                crud.setComboBox('#depotId', depots);
+                var treeData = [];
+                depots.forEach( function (val, index, arr) {
+                    treeData.push({ id: val.value, text: val.displayText });
+                });
+                $('#tree').tree({
+                    data: treeData,
+                    onSelect: function (node) {
+                        crud.parentId = node.id;
+                        $('#datagrid').datagrid({
+                            url: crud.dgDefault.name + '/GetFilePagedData/' + node.id
+                        });
+                        abp.services.app.field.getWorkerComboItems(node.id).done(function(ret) {
+                            crud.setComboBox('#workerId', ret);
+                        });
+                    }
+                });
+            });
+              
+        };
+
+    </script>
+}
+
+@section headHtml
+{
+    <div id="cc" class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'west', split:true, minWidth:80, width:120">
+            <ul id="tree" class="easyui-tree" style="margin-top:6px"></ul>
+        </div>
+        <div data-options="region:'center', border:false">
+}
+@section footHtml
+{
+        </div>
+    </div>
+}
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 800px; height: 600px; padding: 10px;">
+    <form id="fm" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl2">
+            <input id="id" name="id" type="hidden">
+            <tr>
+                <th><label for="depotId">所属：</label></th>
+                <td><input id="depotId" name="depotId" readonly="true" class="easyui-combobox" style="width: 100%"></td>
+                <th><label for="workerId">人员：</label></th>
+                <td><input id="workerId" name="workerId" class="easyui-combobox" data-options="required:true" style="width: 220px"></td>
+            </tr>
+            <tr>
+                <th><label for="fileCn">文件编号：</label></th>
+                <td><input name="fileCn" class="easyui-textbox" data-options="required:true, validType:'length[1, @WorkerFile.MaxFileCnLength]'" style="width: 100%"></td>
+                <th><label for="hiredate">入职日期：</label></th>
+                <td><input name="hiredate" class="easyui-datebox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="sex">性别：</label></th>
+                <td><input id="sex" name="sex" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
+                <th><Label for="endValidity">身份证有效期:</Label></th>
+                <td><input name="endValidity" class="easyui-datebox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="birthday">出生日期:</label></th>
+                <td><input name="birthday" class="easyui-datebox" style="width: 100%"></td>
+                <th><Label for="ethnicity">民族:</Label></th>
+                <td><input name="ethnicity" class="easyui-textbox" data-options="validType:'length[1, @WorkerFile.MaxEthnicityLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="nativeplace">籍贯:</Label></th>
+                <td><input name="nativeplace" class="easyui-textbox" data-options="validType:'length[1, @WorkerFile.MaxNativeplaceLength]'" style="width: 100%"></td>
+                <th><Label for="residenceAddress">户籍地址:</Label></th>
+                <td><input name="residenceAddress" class="easyui-textbox" data-options="validType:'length[1, @WorkerFile.MaxAddressLength]'" style="width: 100%"></td>
+            <tr>
+                <th><Label for="policeStation">户籍派出所:</Label></th>
+                <td><input name="policeStation" class="easyui-textbox" data-options="validType:'length[1, @WorkerFile.MaxAddressLength]'" style="width: 100%"></td>
+                <th><Label for="address">现住地址:</Label></th>
+                <td><input name="address" class="easyui-textbox" data-options="validType:'length[1, @WorkerFile.MaxAddressLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="politicalStatus">政治面貌：</label></th>
+                <td><input id="politicalStatus" name="politicalStatus" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
+                <th><label for="education">文化程度：</label></th>
+                <td><input id="education" name="education" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="school">毕业院校:</Label></th>
+                <td><input name="school" class="easyui-textbox" style="width: 100%"></td>
+                <th><Label for="stature">身高:</Label></th>
+                <td><input name="stature" class="easyui-numberbox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="weight">体重:</Label></th>
+                <td><input name="weight" class="easyui-numberbox" style="width: 100%"></td>
+                <th><Label for="maritalStatus">婚姻状况:</Label></th>
+                <td><input id="maritalStatus" name="maritalStatus" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="contact">联系电话:</Label></th>
+                <td><input name="contact" class="easyui-textbox" style="width: 100%"></td>
+                <th><Label for="licenseType">驾驶证类型:</Label></th>
+                <td><input id="licenseType" name="licenseType" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="introductory">介绍人信息:</Label></th>
+                <td><input name="introductory" class="easyui-textbox" style="width: 100%"></td>
+                <th><Label for="insurance">购买保险:</Label></th>
+                <td><input name="insurance" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="workLicenseCn">上岗证编号:</Label></th>
+                <td><input name="workLicenseCn" class="easyui-textbox" style="width: 100%"></td>
+                <th><Label for="certificateCn">保安资格证:</Label></th>
+                <td><input name="certificateCn" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="armLicenceCn">持枪证编号:</Label></th>
+                <td><input name="armLicenceCn" class="easyui-textbox" style="width: 100%"></td>
+                <th><Label for="ceteficationRecord">证件记录:</Label></th>
+                <td><input name="ceteficationRecord" class="easyui-textbox" multiline="true" style="width: 100%;height:60px"></td>
+            </tr>
+            <tr>
+                <th><Label for="jobChangeRecord">岗位变动:</Label></th>
+                <td><input name="jobChangeRecord" class="easyui-textbox" multiline="true" style="width: 100%;height:80px"></td>
+                <th><Label for="mobilityRecord">人事调动记录:</Label></th>
+                <td><input name="mobilityRecord" class="easyui-textbox" multiline="true" style="width: 100%;height:80px"></td>
+            </tr>
+            <tr>
+                <th><Label for="trainingRecord">培训记录:</Label></th>
+                <td><input name="trainingRecord" class="easyui-textbox" multiline="true" style="width: 100%;height:80px"></td>
+                <th><Label for="rewardPunishRecord">奖惩记录:</Label></th>
+                <td><input name="rewardPunishRecord" class="easyui-textbox" multiline="true" style="width: 100%;height:80px"></td>
+            </tr>
+            <tr>
+                <th><Label for="status">在职:</Label></th>
+                <td><input id="status"  name="status" class="easyui-combobox" style="width: 100%"></td>
+                <th><Label for="remark">备注:</Label></th>
+                <td><input name="remark" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="quitFileCn">离职档案编号：</label></th>
+                <td><input name="quitFileCn" class="easyui-textbox" data-options="validType:'length[1, @WorkerFile.MaxFileCnLength]'" style="width: 100%"></td>
+                <th><label for="quitdate">离职日期：</label></th>
+                <td><input name="quitdate" class="easyui-datebox" style="width: 100%"></td>
+            </tr>
+         </table>
+    </form>
+</div>

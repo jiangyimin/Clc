@@ -95,6 +95,12 @@ namespace Clc.Configuration
                     new FixedLocalizableString("最小签到间隔(分钟)"),
                     scopes: SettingScopes.Tenant
                 ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.DoubleArticleRoles, 
+                    "车长|持枪员", 
+                    new FixedLocalizableString("双人领物角色"),
+                    scopes: SettingScopes.Tenant
+                ),
             };
         }
     }
