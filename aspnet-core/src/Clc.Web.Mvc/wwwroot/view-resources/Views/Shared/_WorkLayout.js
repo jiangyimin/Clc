@@ -7,7 +7,7 @@
     work.parseMessage = function(msg) {
         var cmd = msg.split(' ', 2);
         if (cmd[0] !== work.myWork.workerCn) return;
-        //alert( cmd[0] + cmd[1]);
+        // alert( cmd[0] + cmd[1] + work.myWork.workerCn);
 
         if (cmd[1] == "lockScreen") work.lockScreen();
         else {

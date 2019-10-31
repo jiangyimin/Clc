@@ -17,6 +17,7 @@ namespace Clc.Fields
 
         public const int MaxCnLength = 8;
         public const int MaxNameLength = 8;
+        public const int MaxWorkRolesLength = 30;
         public const int MaxPasswordLength = 10;
         public const string PasswordRegex = "^[0-9]{6}$";
         public const int RfidMaxLength = 18;
@@ -52,13 +53,19 @@ namespace Clc.Fields
         public Post Post { get; set; }
 
         /// <summary>
+        /// 其他可担任角色列表
+        /// </summary>
+        [StringLength(MaxWorkRolesLength)]
+        public string WorkRoles { get; set; }
+
+        /// <summary>
         /// 登录密码
         /// </summary>
         [StringLength(MaxPasswordLength)]
         public string Password { get; set; }
 
         /// <summary>
-        /// 工作人员角色名
+        /// 工作人员登录角色名
         /// </summary>
         [StringLength(Role.MaxNameLength)]
         public string WorkerRoleName { get; set; }
@@ -89,6 +96,11 @@ namespace Clc.Fields
         /// </summary>
         [StringLength(FingerLength)]
         public string Finger { get; set; }
+        /// <summary>
+        /// 指纹2
+        /// </summary>
+        [StringLength(FingerLength)]
+        public string Finger2 { get; set; }
 
         /// <summary>
         /// 是否启用

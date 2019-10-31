@@ -15,8 +15,17 @@ namespace Clc.Types.Dto
 
         [Required]
         [StringLength(Post.MaxNameLength)]
-        public string Name { get; set; }       
+        public string Name { get; set; }   
 
+        [StringLength(Post.MaxNameLength)]
+        public string DefaultWorkRoleName { get; set; }       
+
+        /// <summary>
+        /// 企业微信应用号
+        /// </summary>
+        [StringLength(Post.MaxNameLength)]
+        public string AppName { get; set; }  
+          
         [StringLength(Role.MaxNameLength)]
         public string WorkerRoleName { get; set; }
     }

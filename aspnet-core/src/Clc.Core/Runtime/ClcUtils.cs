@@ -75,5 +75,14 @@ namespace Clc.Runtime
                     DateTime.Now <= start.Add(TimeSpan.FromMinutes(deadline))) return true;
             return false;
         }
+
+        public static string GetRandomNumber(int length)
+        {
+            Random rnd = new Random();
+            string ret = string.Empty;
+            for (int i = 0; i < length; i++)
+                ret += rnd.Next(9);
+            return ret;
+        }
     }
 }

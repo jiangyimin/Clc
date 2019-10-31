@@ -19,6 +19,7 @@ namespace Clc.Works
         private readonly IWorkplaceCache _workplaceCache;
         private readonly IDepotCache _depotCache;
         private readonly IArticleCache _articleCache;
+        private readonly IPostCache _postCache;
         private readonly IBoxCache _boxCache;
 
         private readonly ISigninCache _signinCache;
@@ -30,6 +31,7 @@ namespace Clc.Works
             IWorkplaceCache workplaceCache,
             IDepotCache depotCache,
             IArticleCache articleCache,
+            IPostCache postCache,
             IBoxCache boxCache,
             ISigninCache signinCache,
             IRepository<Signin> signinRepository,
@@ -40,6 +42,7 @@ namespace Clc.Works
             _workplaceCache = workplaceCache;
             _depotCache = depotCache;
             _articleCache = articleCache;
+            _postCache = postCache;
             _boxCache = boxCache;
             _signinCache = signinCache;
 
@@ -82,6 +85,27 @@ namespace Clc.Works
         {
             return _workerCache[workerId].Name;
         }
+
+        public string GetWorkerPostAppName(Worker worker)
+        {
+            return _postCache[worker.PostId].AppName;
+        }
+
+        public bool IsCaptain(int workerId)
+        {
+            var worker = _workerCache[workerId];
+            return worker.WorkerRoleName == ClcConsts.CaptainRoleName;
+        }
+        
+        public string GetCaptainOrAgentCn(int workerId)
+        {
+            var worker = _workerCache[workerId];
+            if (string.IsNullOrEmpty(_depotCache[worker.DepotId].AgentCn))
+                return worker.Cn;
+            else
+                return _depotCache[worker.DepotId].AgentCn;
+        }
+        
         public bool IsWorkerRoleUser(string workerCn)
         {
             var w = _workerCache.GetList().Find(x => x.Cn == workerCn);
@@ -124,6 +148,11 @@ namespace Clc.Works
 
         #region Other
 
+        public string GetDepotAgentCn(int depotId)
+        {
+            return _depotCache[depotId].AgentCn;
+        }
+        
         public Workplace GetWorkplace(int id)
         {
             return _workplaceCache[id];

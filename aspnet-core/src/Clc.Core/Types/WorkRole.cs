@@ -33,12 +33,6 @@ namespace Clc.Types
         public string Name { get; set; }
            
         /// <summary>
-        /// 缺省的工作岗位
-        /// </summary>
-        public int? DefaultPostId { get; set; }
-        public Post DefaultPost { get; set; }
-
-        /// <summary>
         /// 职责列表（职责名系统内定）
         /// </summary>
         [StringLength(MaxDutiesLength)]

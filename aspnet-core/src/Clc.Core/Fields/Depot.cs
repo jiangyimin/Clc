@@ -59,6 +59,9 @@ namespace Clc.Fields
 
         [StringLength(MaxReportToLength)]
         public string ReportTo { get; set; }
+
+        [StringLength(Worker.MaxCnLength)]
+        public string AgentCn { get; set; }
     }
 }
 

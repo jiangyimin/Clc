@@ -12,6 +12,25 @@
         );
     }
 
+    $('#VerifyButton').click(function (e) {
+        e.preventDefault();
+        if (!_$Form.form('validate'))
+            return;
+            
+        $('#VerifyButton').attr("disabled", true);
+        setTimeout(function () {
+            $('#VerifyButton').attr("disabled", false);
+        }, 5000);
+        abp.ajax({
+            contentType: 'application/x-www-form-urlencoded',
+            url: "SendVerifyCode",
+            data: _$Form.serialize()
+        }).done(function(ret) {
+            if (ret.success == true)
+                abp.notify.info('已向'+$('#UserName').val()+'发送了验证码');
+        });
+    })
+
     $('#LoginButton').click(function (e) {
         e.preventDefault();
         if (!_$Form.form('validate'))

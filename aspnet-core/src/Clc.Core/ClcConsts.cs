@@ -13,6 +13,7 @@
         public const string UserEmailServerName = "@tenant.com";
         public const string CaptainRoleName = "Captain";
 
+        public const int VerifyCodeLength = 6;
         public const int NormalStringLength = 50;
         public const int LargeStringLength = 500;
 

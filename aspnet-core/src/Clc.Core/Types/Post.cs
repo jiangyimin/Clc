@@ -28,7 +28,19 @@ namespace Clc.Types
         /// </summary>
         [Required]
         [StringLength(MaxNameLength)]
-        public string Name { get; set; }        
+        public string Name { get; set; }    
+
+        /// <summary>
+        /// 缺省的角色名称
+        /// </summary>
+        [StringLength(MaxNameLength)]
+        public string DefaultWorkRoleName { get; set; }    
+
+        /// <summary>
+        /// 企业微信应用名
+        /// </summary>
+        [StringLength(MaxNameLength)]
+        public string AppName { get; set; }    
     }
 }
 

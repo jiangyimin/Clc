@@ -21,7 +21,7 @@
     <form id="LoginForm" method="post" novalidate>
         @if (MultiTenancyConfig.IsEnabled) {
         <div class="form-group">
-            <input id="TenancyName" class="easyui-textbox" style="width:100%; height: 30px; padding-left:10px;" data-options="prompt:'公司名称'">
+            <input id="TenancyName" class="easyui-textbox" readonly style="width:100%; height: 30px; padding-left:10px;" value="Default">
         </div>
         }
         <div class="form-group">
@@ -31,6 +31,12 @@
         <div class="form-group">
             <input type="password" class="easyui-textbox" name="password" style="width: 100%; height: 30px; padding-left: 10px;"
                     data-options="prompt:'Password', iconCls:'icon-lock', iconWidth:38, required:true">
+        </div>
+        <div class="form-group">
+            <input type="text" class="easyui-textbox" name="verifyCode" data-options="prompt:'输入验证码'" style="width: 50%; height: 30px; padding-left: 10px;"> 
+            <span><button id="VerifyButton" class="easyui-linkbutton" style="width:150px; height:30px; margin-left: 12px;"> 
+                发送验证码
+            </button></span>
         </div>
         <div class="form-group">
             <label style="vertical-align: middle; height:30px;">

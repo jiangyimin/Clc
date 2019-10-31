@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Abp;
@@ -28,6 +29,10 @@ using Clc.MultiTenancy;
 using Clc.Sessions;
 using Clc.Web.Models.Account;
 using Clc.Runtime.Cache;
+using Clc.Runtime;
+using Clc.Works;
+using Clc.Web.MessageHandlers;
+using Clc.Configuration;
 
 namespace Clc.Web.Controllers
 {
@@ -44,7 +49,7 @@ namespace Clc.Web.Controllers
         private readonly ISessionAppService _sessionAppService;
         private readonly ITenantCache _tenantCache;
         private readonly INotificationPublisher _notificationPublisher;
-        private readonly IWorkerCache _workerCache;
+        private readonly WorkManager _workManager;
 
         public AccountController(
             UserManager userManager,
@@ -58,7 +63,7 @@ namespace Clc.Web.Controllers
             ISessionAppService sessionAppService,
             ITenantCache tenantCache,
             INotificationPublisher notificationPublisher,
-            IWorkerCache workerCache)
+            WorkManager workManager)
         {
             _userManager = userManager;
             _multiTenancyConfig = multiTenancyConfig;
@@ -71,7 +76,7 @@ namespace Clc.Web.Controllers
             _sessionAppService = sessionAppService;
             _tenantCache = tenantCache;
             _notificationPublisher = notificationPublisher;
-            _workerCache = workerCache;
+            _workManager = workManager;
         }
 
         #region Login / Logout
@@ -93,6 +98,27 @@ namespace Clc.Web.Controllers
         }
 
         [HttpPost]
+        public virtual async Task<JsonResult> SendVerifyCode(LoginViewModel loginModel)
+        {
+            var v = await SettingManager.GetSettingValueAsync(AppSettingNames.Rule.VerifyLogin);
+
+            if (v == "true" && loginModel.UsernameOrEmailAddress != "admin")
+            {
+                var worker = _workManager.GetWorkerByCn(loginModel.UsernameOrEmailAddress);
+                if (worker == null) throw new UserFriendlyException("找不到此员工");
+                string appName = _workManager.GetWorkerPostAppName(worker);
+                if (string.IsNullOrEmpty(appName)) throw new UserFriendlyException("此员工无对应的微信应用");
+
+                string code = ClcUtils.GetRandomNumber(ClcConsts.VerifyCodeLength);
+                WeixinUtils.SendMessage(appName, worker.Cn, string.Format("你的登录验证码为：{0}", code));
+                HttpContext.Session.SetString("WorkerCn", loginModel.UsernameOrEmailAddress);
+                HttpContext.Session.SetString("VerifyCode", code);
+                return Json(new AjaxResponse() {Success = true});
+            }
+            return Json(new AjaxResponse {Success = false});
+        } 
+
+        [HttpPost]
         [UnitOfWork]
         public virtual async Task<JsonResult> Login(LoginViewModel loginModel, string returnUrl = "", string returnUrlHash = "")
         {
@@ -100,6 +126,12 @@ namespace Clc.Web.Controllers
             if (!string.IsNullOrWhiteSpace(returnUrlHash))
             {
                 returnUrl = returnUrl + returnUrlHash;
+            }
+
+            if (SettingManager.GetSettingValue(AppSettingNames.Rule.VerifyLogin) == "true" && loginModel.UsernameOrEmailAddress != "admin")
+            {
+                if (loginModel.UsernameOrEmailAddress != HttpContext.Session.GetString("WorkerCn")
+                    || loginModel.VerifyCode != HttpContext.Session.GetString("VerifyCode")) throw new UserFriendlyException("验证码不符");
             }
 
             var loginResult = await GetLoginResultAsync(loginModel.UsernameOrEmailAddress, loginModel.Password, GetTenancyNameOrNull());
@@ -124,11 +156,10 @@ namespace Clc.Web.Controllers
             if (loginResult.Result != AbpLoginResultType.Success)
             {   
                 // Lookup Workers
-                var item = _workerCache.GetList().FirstOrDefault(x=> x.Cn == usernameOrEmailAddress);
-                if (item == null)       // 无此人
+                var worker = _workManager.GetWorkerByCn(usernameOrEmailAddress);
+                if (worker == null)       // 无此人
                     throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
 
-                var worker = _workerCache[item.Id];
                 if (worker.Password != password)     // 密码错
                     throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
 

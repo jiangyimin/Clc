@@ -12,6 +12,9 @@ namespace Clc.Web.Models.Account
         [DisableAuditing]
         public string Password { get; set; }
 
+        [DisableAuditing]
+        public string VerifyCode { get; set; }
+
         public bool RememberMe { get; set; }
     }
 }

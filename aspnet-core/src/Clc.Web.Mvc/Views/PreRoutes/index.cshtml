@@ -70,6 +70,8 @@
 {
     <script type="text/javascript">
         mds.initfunction = function () {
+            setCurrentAgent();
+
             // comboBoxs
             abp.services.app.type.getComboItems('RouteType').done(function (data) {
                 $('#routeType').combobox({
@@ -85,13 +87,12 @@
                     textField: 'cnLicense'
                 });    
             });
+
             abp.services.app.field.getWorkerListItems().done(function (data) {
-                $('#worker').combobox({
-                    data: data,
-                    valueField: 'id',
-                    textField: 'cnNamePost'
-                })
+                // $('#worker').combobox({ data: data, valueField: 'id', textField: 'cnNamePost' });
+                $('#agent').combobox({ data: data, valueField: 'id', textField: 'cnNamePost' });               
             });
+
             abp.services.app.client.getComboItems('OutletWithCn').done(function (data) {
                 $('#outlet').combobox({
                     data: data,
@@ -131,6 +132,25 @@
             //alert(url);
             return url;
         }
+
+        function setCurrentAgent()
+        {
+            abp.services.app.work.getAgentString().done(function (data) {
+                $('#currentAgent').textbox('setValue', data);
+            });
+        }
+        function setAgent() {
+            var id = $('#agent').combobox('getValue')
+            abp.services.app.work.setAgent(id).done(function () {
+                setCurrentAgent();
+            });
+        }
+        function resetAgent()
+        {
+            abp.services.app.work.resetAgent().done(function () {
+                setCurrentAgent();
+            });
+        }
     </script>
 }
 
@@ -140,6 +160,11 @@
         <div id="tb">
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('')">刷新</a>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('')">添加</a>
+            <span class="datagrid-btn-separator" style="vertical-align: middle;display:inline-block;float:none"></span>
+            当前代理人：<input id='currentAgent' class="easyui-textbox" readonly style="width: 120px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="setAgent()">设置代理人</a>
+            <input id="agent" class="easyui-combobox" style="width: 170px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="resetAgent()">取消代理人</a>
         </div>
         <table id="dg" class="easyui-datagrid" toolbar="#tb">
         </table>
@@ -258,4 +283,3 @@
     <a name="save" class="easyui-linkbutton" iconCls="icon-save" onclick="mds.save('Task')">保存</a>
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlgTask').dialog('close')">取消</a>
 </div>
-

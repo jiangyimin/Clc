@@ -18,8 +18,6 @@ namespace Clc.Types.Dto
         [StringLength(WorkRole.MaxNameLength)]
         public string Name { get; set; } 
         
-        public int? DefaultPostId { get; set; }
-
         [StringLength(WorkRole.MaxArticleTypeListLength)]
         public string ArticleTypeList { get; set; }
 

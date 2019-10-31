@@ -84,6 +84,12 @@ namespace Clc.Configuration
             return new List<SettingDefinition>
             {
                 new SettingDefinition(
+                    AppSettingNames.Rule.VerifyLogin, 
+                    "false", 
+                    new FixedLocalizableString("校验码登录"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
                     AppSettingNames.Rule.Radius, 
                     "900", 
                     new FixedLocalizableString("半径(米)"),

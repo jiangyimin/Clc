@@ -11,7 +11,6 @@
         crud.dgDefault.columns = [[
             { field: "cn", title: "编号", width: 80, sortable: true },
             { field: "name", title: "名称", width: 80, sortable: true },
-            { field: "defaultPostId", title: "缺省岗位", width: 80, sortable: true, formatter: postFormatter  },
             { field: "articleTypeList", title: "领用物品类型", width: 80 },
             { field: "duties", title: "职责", width: 80 },
             { field: "mustHave", title: "是否必须", width: 80},
@@ -21,17 +20,6 @@
         function postFormatter (val) {
             return crud.getComboTextByInt('#defaultPost', val);
         }
-    </script>
-}
-
-@section endScript
-{
-    <script type="text/javascript">
-        crud.startfunction = function () {
-            abp.services.app.type.getComboItems('Post').done(function(d) { 
-                crud.setComboBox('#defaultPost', d);
-            });
-        }     
     </script>
 }
 
@@ -47,10 +35,6 @@
             <tr>
                 <th><label for="name">名称：</label></th>
                 <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @WorkRole.MaxNameLength]'" style="width: 100%"></td>
-            </tr>
-            <tr>
-                <th><label for="defaultPostId">缺省岗位：</label></th>
-                <td><input id="defaultPost" name="defaultPostId" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="artilceTypeList">物品类型列表：</label></th>

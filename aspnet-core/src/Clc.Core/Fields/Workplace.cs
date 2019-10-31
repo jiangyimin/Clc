@@ -16,6 +16,7 @@ namespace Clc.Fields
         public const int MaxWorkRolesLength = ClcConsts.NormalStringLength;
          public const int ArticleTypeListLength = ClcConsts.NormalStringLength;
         public const int ShareDepotListLength = ClcConsts.NormalStringLength;
+        public const int OpenDoorStyleLength = 20;
         public const int IpAddressLength = 20;
 
         // Impement of IMustHaveTenant
@@ -52,14 +53,29 @@ namespace Clc.Fields
         public string ShareDepotList { get; set; }
 
         public int MinDuration { get; set; }     
+
         /// <summary>
         /// 每班最长时长
         /// </summary>
-        public int MaxDuration { get; set; }     
+        public int MaxDuration { get; set; }   
+
         /// <summary>
         /// 云端开门
+        /// </summary>
         [StringLength(Workplace.IpAddressLength)]
         public string DoorIp { get; set; }
+
+        /// <summary>
+        /// 开门方式：1）直接申请 2）验证后申请 3）领抢任务申请
+        /// </summary>
+        [StringLength(Workplace.OpenDoorStyleLength)]
+        public string OpenDoorStyle { get; set; }
+
+        /// <summary>
+        /// 验证人数（0=全部）
+        /// </summary>
+        public int VerifyNumber { get; set; }   
+        
         [StringLength(Workplace.IpAddressLength)]
         public string CameraIp { get; set; }
 

@@ -1338,6 +1338,9 @@ namespace Clc.Migrations
 
                     b.Property<bool>("ActiveRouteNeedCheckin");
 
+                    b.Property<string>("AgentCn")
+                        .HasMaxLength(8);
+
                     b.Property<string>("Cn")
                         .IsRequired()
                         .HasMaxLength(2);
@@ -1419,6 +1422,9 @@ namespace Clc.Migrations
                     b.Property<string>("Finger")
                         .HasMaxLength(1024);
 
+                    b.Property<string>("Finger2")
+                        .HasMaxLength(1024);
+
                     b.Property<bool>("IsActive");
 
                     b.Property<string>("Name")
@@ -1436,6 +1442,9 @@ namespace Clc.Migrations
                         .HasMaxLength(18);
 
                     b.Property<int>("TenantId");
+
+                    b.Property<string>("WorkRoles")
+                        .HasMaxLength(30);
 
                     b.Property<string>("WorkerRoleName")
                         .HasMaxLength(32);
@@ -1586,10 +1595,15 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(8);
 
+                    b.Property<string>("OpenDoorStyle")
+                        .HasMaxLength(20);
+
                     b.Property<string>("ShareDepotList")
                         .HasMaxLength(50);
 
                     b.Property<int>("TenantId");
+
+                    b.Property<int>("VerifyNumber");
 
                     b.Property<string>("WorkRoles")
                         .IsRequired()
@@ -2145,9 +2159,15 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AppName")
+                        .HasMaxLength(8);
+
                     b.Property<string>("Cn")
                         .IsRequired()
                         .HasMaxLength(2);
+
+                    b.Property<string>("DefaultWorkRoleName")
+                        .HasMaxLength(8);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -2223,8 +2243,6 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(2);
 
-                    b.Property<int?>("DefaultPostId");
-
                     b.Property<string>("Duties")
                         .HasMaxLength(50);
 
@@ -2239,8 +2257,6 @@ namespace Clc.Migrations
                     b.Property<bool>("mustHave");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DefaultPostId");
 
                     b.ToTable("WorkRoles");
                 });
@@ -2797,13 +2813,6 @@ namespace Clc.Migrations
                         .WithMany()
                         .HasForeignKey("WorkerId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Clc.Types.WorkRole", b =>
-                {
-                    b.HasOne("Clc.Types.Post", "DefaultPost")
-                        .WithMany()
-                        .HasForeignKey("DefaultPostId");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>

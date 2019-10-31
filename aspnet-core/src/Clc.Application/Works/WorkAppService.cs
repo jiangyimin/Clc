@@ -28,6 +28,7 @@ namespace Clc.Works
         private readonly IRepository<Route> _routeRepository;
         private readonly IRepository<RouteArticle> _routeArticleRepository;
         private readonly IRepository<RouteTask> _routeTaskRepository;
+        private readonly IRepository<Depot> _depotRepository;
         private readonly IRouteCache _routeCache;
         private readonly IWorkRoleCache _workRoleCache;
         private readonly IRouteTypeCache _routeTypeCache;
@@ -40,6 +41,7 @@ namespace Clc.Works
         public WorkAppService(IRepository<Signin> signinRepository,
             IRepository<Route> routeRepository,
             IRepository<RouteArticle> routeArticleRepository,
+            IRepository<Depot> depotRepository,
             IRouteCache routeCache,
             IWorkRoleCache workRoleCache,
             IRouteTypeCache routeTypeCache,
@@ -51,6 +53,7 @@ namespace Clc.Works
             _signinRepository = signinRepository;
             _routeRepository = routeRepository;
             _routeArticleRepository = routeArticleRepository;
+            _depotRepository = depotRepository;
             _routeCache = routeCache;
             _workRoleCache = workRoleCache;
             _routeTypeCache = routeTypeCache;
@@ -71,6 +74,7 @@ namespace Clc.Works
         {
             return DateTime.Now.Date.ToString("yyyy-MM-dd");
         }
+
         public DateTime getNow()
         {
             return DateTime.Now;
@@ -81,8 +85,16 @@ namespace Clc.Works
             int workerId = GetCurrentUserWorkerIdAsync().Result; 
             int depotId = WorkManager.GetWorkerDepotId(workerId);         
             var dto = new MyWorkDto();
-            dto.WorkerCn = WorkManager.GetWorkerCn(workerId);
 
+            // For Captain
+            if (WorkManager.IsCaptain(workerId))
+            {
+                dto.WorkerCn = WorkManager.GetCaptainOrAgentCn(workerId);
+                return dto;
+            }
+
+            // Else for non-Captain
+            dto.WorkerCn = WorkManager.GetWorkerCn(workerId);
             var aw = WorkManager.GetValidAffairWorker(depotId, workerId);
             if (aw != null)
             {
@@ -109,6 +121,32 @@ namespace Clc.Works
             return WorkManager.GetReportToManagers(depotId);
         }
 
+        #region Agent
+        public string GetAgentString()
+        {
+            int workerId = GetCurrentUserWorkerIdAsync().Result; 
+            int depotId = WorkManager.GetWorkerDepotId(workerId);
+            string agentCn = WorkManager.GetDepotAgentCn(depotId);
+            var worker = WorkManager.GetWorkerByCn(agentCn);
+            if (worker == null) return null;
+            return string.Format("{0} {1}", worker.Cn, worker.Name);
+        }
+        public async Task SetAgent(int workerId)
+        {
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
+            var depot = _depotRepository.Get(depotId);
+            depot.AgentCn = WorkManager.GetWorker(workerId).Cn;
+        }
+
+        public async Task ResetAgent()
+        {
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
+            var depot = _depotRepository.Get(depotId);
+            depot.AgentCn = null;
+        }
+        #endregion
+
+        
         #region signin
 
         public async Task<List<SigninDto>> GetSigninsAsync(DateTime carryoutDate)

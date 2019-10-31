@@ -11,6 +11,8 @@
         crud.dgDefault.columns = [[
             { field: "cn", title: "编号", width: 80, sortable: true },
             { field: "name", title: "名称", width: 80, sortable: true },
+            { field: "defaultWorkRoleName", title: "缺省角色名", width: 80, sortable: true },
+            { field: "appName", title: "微信应用名", width: 80, sortable: true },
         ]];
     </script>
 }
@@ -27,6 +29,14 @@
             <tr>
                 <th><label for="name">名称：</label></th>
                 <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @Post.MaxNameLength]'" style="width: 100%"></td>
+            </tr>
+             <tr>
+                <th><label for="defaultWorkRoleName">缺省角色名：</label></th>
+                <td><input name="defaultWorkRoleName" class="easyui-textbox" data-options="validType:'length[1, @Post.MaxNameLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="appName">微信应用名：</label></th>
+                <td><input name="appName" class="easyui-textbox" style="width: 100%"></td>
             </tr>
         </table>
     </form>

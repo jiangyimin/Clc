@@ -45,7 +45,7 @@ namespace Clc.Web.MessageHandlers
             {
                 if (_workManager.IsWorkerRoleUser(requestMessage.FromUserName))
                 {
-                    _context.Clients.All.SendAsync("getMessage", requestMessage.FromUserName + " unlockScreen");
+                    _context.Clients.All.SendAsync("getMessage", requestMessage.FromUserName + " lockScreen");
                     responseMessage.Content = "你的锁屏命令已发出";
                 }
                 else 

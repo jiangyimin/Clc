@@ -13,8 +13,13 @@ namespace Clc.Works
         string GetTodayString();
         DateTime getNow();
         MyWorkDto GetMyWork();
-
         string GetReportToManagers();
+
+        #region Agent
+        string GetAgentString();
+        Task SetAgent(int workerId);
+        Task ResetAgent();
+        #endregion
 
         #region Signin
         Task<List<SigninDto>> GetSigninsAsync(DateTime carryoutDate);
