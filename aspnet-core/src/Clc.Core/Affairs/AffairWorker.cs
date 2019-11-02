@@ -31,6 +31,13 @@ namespace Clc.Affairs
         public int WorkRoleId { get; set; }
         public WorkRole WorkRole { get; set; }  
 
+        public bool OnDuty { get; set; }
+
+        public DateTime? CheckinTime { get; set; }
+        public DateTime? CheckoutTime { get; set; }
+
+        public DateTime? LastAskDoor { get; set; }
+
         [NotMapped]
         public string WorkerCn { 
             get {

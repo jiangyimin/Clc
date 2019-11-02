@@ -5,6 +5,13 @@
 
 @section customScript
 {
+    <environment names="Development">
+        <script src="~/js/finger.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/js/finger.min.js" asp-append-version="true"></script>
+    </environment>
+
     <script type="text/javascript">
         crud.dgDefault.name = 'Workers';
         crud.dgDefault.sortName = 'cn';
@@ -15,11 +22,14 @@
             { field: "postId", title: "岗位", width: 100, formatter: postFormatter },
             { field: "password", title: "登录密码", width: 80 },
             { field: "workerRoleName", title: "登录角色名", width: 80, sortable: true },
-            { field: "photoLength", title: "照片大小", width: 80 },
+            { field: "workRoles", title: "可担任角色列表", width: 80 },
             { field: "rfid", title: "RFID", width: 100 },         
             { field: "deviceId", title: "微信设备号", width: 120 },
             { field: "additiveInfo", title: "附加认证信息", width: 100 },
+            { field: "fingerLength", title: "指纹大小", width: 80 },
+            { field: "finger2Length", title: "指纹二大小", width: 80 },
             // { field: "loanDepotId", title: "借用到", width: 60, loanDepotFormatter },
+            { field: "photoLength", title: "照片大小", width: 80 },
             { field: "isActive", title: "启用", width: 60 }
         ]];
         crud.parentField = 'depotId';
@@ -32,6 +42,17 @@
         function loanDepotFormatter(val) {
             return crud.getComboTextByInt('#loadDepot', val);
         }
+
+        // finger
+        function getFinger(el) {
+            $('#'+el).textbox('setValue', finger.regCode(dlg.ZAZFingerActivex))
+        }
+        function validFinger(el) {
+            var dst = finger.getCode(dlg.ZAZFingerActivex);
+            var result = finger.match(dlg.ZAZFingerActivex, $('#'+el).textbox('getValue'), dst)
+            abp.notify.info("验证结果为:" + result);
+        }
+
     </script>
 }
 
@@ -114,8 +135,11 @@
 
 @*弹窗*@
 <div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 800px; padding: 10px;">
-    <form id="fm" class="easyui-form" method="post" novalidate>
-        <table class="edit-tbl2">
+    <object classid="clsid:87772C8D-3C8C-4E55-A886-5BA5DA384424" id="ZAZFingerActivex"
+        name="ZAZFingerActivex" width="0" height="0" accesskey="a" tabindex="0" title="finger">
+    </object>
+     <form id="fm" class="easyui-form" method="post" novalidate>
+       <table class="edit-tbl2">
             <input id="id" name="id" type="hidden">
             <tr>
                 <th><label for="depotId">所属:</label></th>
@@ -134,14 +158,11 @@
                 <td><input name="password" class="easyui-numberbox" style="width: 100%"></td>
             </tr>
             <tr>
-            <tr>
                 <th><Label for="workerRoleName">登录角色名: </Label></th>
                 <td><input name="workerRoleName" class="easyui-textbox" style="width: 100%"></td>
-                <th><Label for="PhotoImage">照片:</Label></th>
-                <td>
-                    <img id="preview" alt="" src="" style="width:100px; height:110px;" />
-                    <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
-                </td>
+                <th><Label for="workRoles">可担任角色列表: </Label></th>
+                <td><input name="workRoles" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
             <tr>
                 <th><Label for="rfid">RFID:</Label></th>
                 <td><input name="rfid" class="easyui-textbox" style="width: 100%"></td>
@@ -154,6 +175,27 @@
                 <th><label for="isActive">启用：</label></th>
                 <td><input name="isActive" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
             </tr>
-         </table>
+            <tr>
+                <th><Label for="PhotoImage">照片:</Label></th>
+                <td>
+                    <img id="preview" alt="" src="" style="width:100px; height:110px;" />
+                    <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
+                </td>
+            </tr>
+            <tr>
+                <th><label for="finger">指纹一：</label></th>
+                <td>
+                    <input id="finger" name="finger" class="easyui-textbox" style="width: 100%" >
+                    <a onclick="getFinger('finger')" class="easyui-linkbutton">获取指纹</a>
+                    <a onclick="validFinger('finger')" class="easyui-linkbutton">验证指纹</a>
+                </td>
+                <th><label for="finger2">指纹二：</label></th>
+                <td>
+                    <input id="finger2" name="finger2" class="easyui-textbox" style="width: 100%" >
+                    <a onclick="getFinger('finger2')" class="easyui-linkbutton">获取指纹</a>
+                    <a onclick="validFinger('finger2')" class="easyui-linkbutton">验证指纹</a>
+                </td>
+            </tr>
+        </table>
     </form>
 </div>

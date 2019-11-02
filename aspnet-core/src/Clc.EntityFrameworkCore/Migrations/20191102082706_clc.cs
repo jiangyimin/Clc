@@ -615,8 +615,8 @@ namespace Clc.Migrations
                     Photo = table.Column<byte[]>(nullable: true),
                     DeviceId = table.Column<string>(maxLength: 50, nullable: true),
                     AdditiveInfo = table.Column<string>(maxLength: 20, nullable: true),
-                    Finger = table.Column<string>(maxLength: 1024, nullable: true),
-                    Finger2 = table.Column<string>(maxLength: 1024, nullable: true),
+                    Finger = table.Column<string>(maxLength: 512, nullable: true),
+                    Finger2 = table.Column<string>(maxLength: 512, nullable: true),
                     IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -1294,7 +1294,11 @@ namespace Clc.Migrations
                     TenantId = table.Column<int>(nullable: false),
                     AffairId = table.Column<int>(nullable: false),
                     WorkerId = table.Column<int>(nullable: false),
-                    WorkRoleId = table.Column<int>(nullable: false)
+                    WorkRoleId = table.Column<int>(nullable: false),
+                    OnDuty = table.Column<bool>(nullable: false),
+                    CheckinTime = table.Column<DateTime>(nullable: true),
+                    CheckoutTime = table.Column<DateTime>(nullable: true),
+                    LastAskDoor = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {

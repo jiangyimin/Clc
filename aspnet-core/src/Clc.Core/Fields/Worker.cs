@@ -23,7 +23,7 @@ namespace Clc.Fields
         public const int RfidMaxLength = 18;
         public const int MaxDeviceId = 50;
         public const int MaxAdditiveInfoLength = 20;
-        public const int FingerLength = 1024;
+        public const int FingerLength = 512;
   
         /// <summary>
         /// 所属中心

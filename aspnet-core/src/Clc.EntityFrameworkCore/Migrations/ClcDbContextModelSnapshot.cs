@@ -974,6 +974,14 @@ namespace Clc.Migrations
 
                     b.Property<int>("AffairId");
 
+                    b.Property<DateTime?>("CheckinTime");
+
+                    b.Property<DateTime?>("CheckoutTime");
+
+                    b.Property<DateTime?>("LastAskDoor");
+
+                    b.Property<bool>("OnDuty");
+
                     b.Property<int>("TenantId");
 
                     b.Property<int>("WorkRoleId");
@@ -1420,10 +1428,10 @@ namespace Clc.Migrations
                         .HasMaxLength(50);
 
                     b.Property<string>("Finger")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(512);
 
                     b.Property<string>("Finger2")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(512);
 
                     b.Property<bool>("IsActive");
 
