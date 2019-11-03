@@ -26,7 +26,7 @@
             { field: "rfid", title: "RFID", width: 100 },         
             { field: "deviceId", title: "微信设备号", width: 120 },
             { field: "additiveInfo", title: "附加认证信息", width: 100 },
-            { field: "fingerLength", title: "指纹大小", width: 80 },
+            { field: "fingerLength", title: "指纹一大小", width: 80 },
             { field: "finger2Length", title: "指纹二大小", width: 80 },
             // { field: "loanDepotId", title: "借用到", width: 60, loanDepotFormatter },
             { field: "photoLength", title: "照片大小", width: 80 },
@@ -45,11 +45,14 @@
 
         // finger
         function getFinger(el) {
-            $('#'+el).textbox('setValue', finger.regCode(dlg.ZAZFingerActivex))
+            alert('请把手指放到指纹仪上');
+            $('#'+el).textbox('setValue', '');
+            var code = finger.regCode(fm.ZAZFingerActivex);
+            $('#'+el).textbox('setValue', code);
         }
         function validFinger(el) {
-            var dst = finger.getCode(dlg.ZAZFingerActivex);
-            var result = finger.match(dlg.ZAZFingerActivex, $('#'+el).textbox('getValue'), dst)
+            var dst = finger.getCode(fm.ZAZFingerActivex);
+            var result = finger.match(fm.ZAZFingerActivex, $('#'+el).textbox('getValue'), dst)
             abp.notify.info("验证结果为:" + result);
         }
 
@@ -135,11 +138,8 @@
 
 @*弹窗*@
 <div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 800px; padding: 10px;">
-    <object classid="clsid:87772C8D-3C8C-4E55-A886-5BA5DA384424" id="ZAZFingerActivex"
-        name="ZAZFingerActivex" width="0" height="0" accesskey="a" tabindex="0" title="finger">
-    </object>
-     <form id="fm" class="easyui-form" method="post" novalidate>
-       <table class="edit-tbl2">
+    <form id="fm" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl2">
             <input id="id" name="id" type="hidden">
             <tr>
                 <th><label for="depotId">所属:</label></th>
@@ -181,6 +181,12 @@
                     <img id="preview" alt="" src="" style="width:100px; height:110px;" />
                     <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
                 </td>
+                <th><Label for="FingerImage">指纹图:</Label></th>
+                <td>
+                    <object classid="clsid:87772C8D-3C8C-4E55-A886-5BA5DA384424" id="ZAZFingerActivex"
+                            name="ZAZFingerActivex" width="100" height="110" accesskey="a" tabindex="0" title="finger">
+                        <embed width="100" height="110"></embed>
+                    </object>
             </tr>
             <tr>
                 <th><label for="finger">指纹一：</label></th>

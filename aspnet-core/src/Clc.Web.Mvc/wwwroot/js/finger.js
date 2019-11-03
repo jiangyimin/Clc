@@ -14,6 +14,7 @@ var finger = finger || {};
         finger.init(activeX);
         var mesg = activeX.ZAZRegFinger();
         if (mesg == "0") {
+            alert(activeX.FingerCode);
             return activeX.FingerCode;
         }
         else {

@@ -25,6 +25,9 @@
             public const string MinCheckinInterval = "Rule.MinCheckinInterval";
             public const string DoubleArticleRoles = "Rule.DoubleArticleRoles";
 
+            public const string AskOpenInterval = "Rule.AskOpenInterval";
+            public const string AskOpenLength = "Rule.AskOpenLength";
+            public const string MinOnDutyNum = "Rule.MinOnDutyNum";
         }
     }
 }

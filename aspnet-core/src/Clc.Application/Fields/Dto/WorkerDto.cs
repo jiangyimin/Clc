@@ -75,6 +75,13 @@ namespace Clc.Fields.Dto
         public string AdditiveInfo { get; set; }
 
         public string IsActive { get; set; }
+
+        public byte[] Finger { get; set; }
+
+        public int FingerLength { get; set; }
+
+        public byte[] Finger2 { get; set; }
+        public int Finger2Length { get; set; }
         
         #region interface
         public void AddValidationErrors(CustomValidationContext context)

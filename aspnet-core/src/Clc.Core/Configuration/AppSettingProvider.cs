@@ -107,6 +107,24 @@ namespace Clc.Configuration
                     new FixedLocalizableString("双人领物角色"),
                     scopes: SettingScopes.Tenant
                 ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.AskOpenLength, 
+                    "60", 
+                    new FixedLocalizableString("申请开门有效时长(秒)"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.AskOpenLength, 
+                    "180", 
+                    new FixedLocalizableString("二次申请开门间隔(秒)"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.MinOnDutyNum, 
+                    "2", 
+                    new FixedLocalizableString("最少当班人数"),
+                    scopes: SettingScopes.Tenant
+                ),
             };
         }
     }

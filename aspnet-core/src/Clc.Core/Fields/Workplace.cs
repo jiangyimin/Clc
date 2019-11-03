@@ -52,6 +52,20 @@ namespace Clc.Fields
         [StringLength(ShareDepotListLength)]
         public string ShareDepotList { get; set; }
 
+        /// <summary>
+        /// 云端开门
+        /// </summary>
+        [StringLength(Workplace.IpAddressLength)]
+
+        public string DoorIp { get; set; }
+        [StringLength(Workplace.IpAddressLength)]
+        public string CameraIp { get; set; }
+
+        // Rules
+
+        /// <summary>
+        /// 每班最短时长
+        /// </summary>
         public int MinDuration { get; set; }     
 
         /// <summary>
@@ -60,25 +74,22 @@ namespace Clc.Fields
         public int MaxDuration { get; set; }   
 
         /// <summary>
-        /// 云端开门
+        /// 领物提前时间（分钟）
         /// </summary>
-        [StringLength(Workplace.IpAddressLength)]
-        public string DoorIp { get; set; }
+        public int AskOpenLead { get; set; }
+
+        /// <summary>
+        /// 领物关闭时间（分钟）
+        /// </summary>
+        public int AskOpenDeadline { get; set; }
+
 
         /// <summary>
         /// 开门方式：1）直接申请 2）验证后申请 3）领抢任务申请
         /// </summary>
         [StringLength(Workplace.OpenDoorStyleLength)]
-        public string OpenDoorStyle { get; set; }
-
-        /// <summary>
-        /// 验证人数（0=全部）
-        /// </summary>
-        public int VerifyNumber { get; set; }   
+        public string AskOpenStyle { get; set; }
         
-        [StringLength(Workplace.IpAddressLength)]
-        public string CameraIp { get; set; }
-
         #region methods
 
         public string CheckTimeZone(string startTime, string endTime, bool isTomorrow)
