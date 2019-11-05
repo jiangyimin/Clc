@@ -41,8 +41,8 @@ namespace Clc.PreRoutes
         /// <summary>
         /// 车辆
         /// </summary>
-        // [Required]
-        public int? VehicleId { get; set; }
+        [Required]
+        public int VehicleId { get; set; }
         public virtual Vehicle Vehicle { get; set; }
 
         /// <summary>

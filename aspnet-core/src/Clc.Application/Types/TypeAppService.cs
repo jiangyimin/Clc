@@ -16,6 +16,8 @@ namespace Clc.Types
         private readonly ITaskTypeCache _taskTypeCache;
         private readonly IWorkRoleCache _workRoleCache;
         private readonly IWorkplaceCache _workplaceCache;
+
+        private readonly List<string>　_askOpenStyleItems = new List<string>() {"直接", "验证", "任务"};
         private readonly List<string> _bindStyleItems = new List<string>() {"人", "车", "线路" };
         private readonly List<string> _sexItems = new List<string>() {"男", "女" };
         private readonly List<string> _politicalStatusItems = new List<string>() {"党员", "团员", "群众" };
@@ -76,6 +78,10 @@ namespace Clc.Types
                 case "WorkRole":
                     foreach (WorkRole t in _workRoleCache.GetList())
                         lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
+                    break;
+                case "AskOpenStyle":
+                    foreach (string t in _askOpenStyleItems)
+                        lst.Add(new ComboboxItemDto { Value = t, DisplayText = t });
                     break;
                 case "BindStyle":
                     foreach (string t in _bindStyleItems)

@@ -46,6 +46,24 @@ namespace Clc.Fields.Dto
         public string DoorIp { get; set; }
         [StringLength(Workplace.IpAddressLength)]
         public string CameraIp { get; set; }
+
+        /// <summary>
+        /// 申请开门提前时间（分钟）
+        /// </summary>
+        public int AskOpenLead { get; set; }
+
+        /// <summary>
+        /// 申请开门截止时间（分钟）
+        /// </summary>
+        public int AskOpenDeadline { get; set; }
+
+        /// <summary>
+        /// 开门方式：1）直接申请 2）验证后申请 3）领抢任务申请
+        /// </summary>
+        [StringLength(Workplace.AskOpenStyleLength)]
+        public string AskOpenStyle { get; set; }
+        
+
     }
 }
 

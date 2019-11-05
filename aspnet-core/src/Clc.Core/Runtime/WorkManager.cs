@@ -97,13 +97,14 @@ namespace Clc.Works
             return worker.WorkerRoleName == ClcConsts.CaptainRoleName;
         }
         
-        public string GetCaptainOrAgentCn(int workerId)
+        public int GetCaptainOrAgentId(int workerId)
         {
             var worker = _workerCache[workerId];
-            if (string.IsNullOrEmpty(_depotCache[worker.DepotId].AgentCn))
-                return worker.Cn;
+            var depot = _depotCache[worker.DepotId];
+            if (string.IsNullOrEmpty(depot.AgentCn))
+                return workerId;
             else
-                return _depotCache[worker.DepotId].AgentCn;
+                return GetWorkerByCn(depot.AgentCn).Id;
         }
         
         public bool IsWorkerRoleUser(string workerCn)

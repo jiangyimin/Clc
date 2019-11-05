@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clc.Migrations
 {
     [DbContext(typeof(ClcDbContext))]
-    [Migration("20191102082706_clc")]
+    [Migration("20191105083633_clc")]
     partial class clc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1429,11 +1429,11 @@ namespace Clc.Migrations
                     b.Property<string>("DeviceId")
                         .HasMaxLength(50);
 
-                    b.Property<string>("Finger")
-                        .HasMaxLength(512);
+                    b.Property<byte[]>("Finger")
+                        .HasMaxLength(1024);
 
-                    b.Property<string>("Finger2")
-                        .HasMaxLength(512);
+                    b.Property<byte[]>("Finger2")
+                        .HasMaxLength(1024);
 
                     b.Property<bool>("IsActive");
 
@@ -1589,6 +1589,13 @@ namespace Clc.Migrations
                     b.Property<string>("ArticleTypeList")
                         .HasMaxLength(50);
 
+                    b.Property<int>("AskOpenDeadline");
+
+                    b.Property<int>("AskOpenLead");
+
+                    b.Property<string>("AskOpenStyle")
+                        .HasMaxLength(20);
+
                     b.Property<string>("CameraIp")
                         .HasMaxLength(20);
 
@@ -1605,15 +1612,10 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(8);
 
-                    b.Property<string>("OpenDoorStyle")
-                        .HasMaxLength(20);
-
                     b.Property<string>("ShareDepotList")
                         .HasMaxLength(50);
 
                     b.Property<int>("TenantId");
-
-                    b.Property<int>("VerifyNumber");
 
                     b.Property<string>("WorkRoles")
                         .IsRequired()
@@ -1708,7 +1710,7 @@ namespace Clc.Migrations
 
                     b.Property<int>("TenantId");
 
-                    b.Property<int?>("VehicleId");
+                    b.Property<int>("VehicleId");
 
                     b.HasKey("Id");
 
@@ -1789,6 +1791,8 @@ namespace Clc.Migrations
 
                     b.Property<float>("ActualMileage");
 
+                    b.Property<int?>("AltVehicleId");
+
                     b.Property<DateTime>("CarryoutDate");
 
                     b.Property<DateTime>("CreateTime");
@@ -1826,9 +1830,11 @@ namespace Clc.Migrations
 
                     b.Property<int>("TenantId");
 
-                    b.Property<int?>("VehicleId");
+                    b.Property<int>("VehicleId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AltVehicleId");
 
                     b.HasIndex("CreateWorkerId");
 
@@ -1998,6 +2004,8 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AltWorkerId");
+
                     b.Property<int>("RouteId");
 
                     b.Property<int>("TenantId");
@@ -2007,6 +2015,8 @@ namespace Clc.Migrations
                     b.Property<int>("WorkerId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AltWorkerId");
 
                     b.HasIndex("RouteId");
 
@@ -2196,9 +2206,13 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ActivateLead");
+
                     b.Property<int>("LendArticleDeadline");
 
                     b.Property<int>("LendArticleLead");
+
+                    b.Property<bool>("MustAllSignin");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -2649,6 +2663,10 @@ namespace Clc.Migrations
 
             modelBuilder.Entity("Clc.Routes.Route", b =>
                 {
+                    b.HasOne("Clc.Fields.Vehicle", "AltVehicle")
+                        .WithMany()
+                        .HasForeignKey("AltVehicleId");
+
                     b.HasOne("Clc.Fields.Worker", "CreateWorker")
                         .WithMany()
                         .HasForeignKey("CreateWorkerId")
@@ -2757,6 +2775,10 @@ namespace Clc.Migrations
 
             modelBuilder.Entity("Clc.Routes.RouteWorker", b =>
                 {
+                    b.HasOne("Clc.Fields.Worker", "AltWorker")
+                        .WithMany()
+                        .HasForeignKey("AltWorkerId");
+
                     b.HasOne("Clc.Routes.Route", "Route")
                         .WithMany("Workers")
                         .HasForeignKey("RouteId")

@@ -13,6 +13,8 @@ using Clc.PreRoutes;
 using Clc.Runtime.Cache;
 using Clc.Works;
 using Clc.Runtime;
+using Clc.Types;
+using Clc.Configuration;
 
 namespace Clc.Routes
 {
@@ -38,6 +40,7 @@ namespace Clc.Routes
         private readonly IRepository<BoxRecord> _boxRecordRepository;
         private readonly ITaskTypeCache _taskTypeCache;
         private readonly IWorkRoleCache _workRoleCache;
+        private readonly IRouteTypeCache _routeTypeCache;
 
         public RouteAppService(IRepository<Route> routeRepository, 
             IRepository<RouteWorker> workerRepository,
@@ -50,7 +53,8 @@ namespace Clc.Routes
             IRepository<PreRouteWorker> preRouteWorkerRepository,
             IRepository<PreRouteTask> preRouteTaskRepository, 
             IRepository<ArticleRecord> articleRecordRepository,           
-            IRepository<BoxRecord> boxRecordRepository,           
+            IRepository<BoxRecord> boxRecordRepository,   
+            IRouteTypeCache routeTypeCache,        
             ITaskTypeCache taskTypeCache,
             IWorkRoleCache workRoleCache)
         {
@@ -66,6 +70,7 @@ namespace Clc.Routes
             _preRouteTaskRepository = preRouteTaskRepository;
             _articleRecordRepository = articleRecordRepository;
             _boxRecordRepository = boxRecordRepository;
+            _routeTypeCache = routeTypeCache;
             _taskTypeCache = taskTypeCache;
             _workRoleCache = workRoleCache;
         }
@@ -82,6 +87,8 @@ namespace Clc.Routes
         public async Task<RouteDto> Insert(RouteDto input)
         {
             int workerId = GetCurrentUserWorkerIdAsync().Result;
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+
             var entity = ObjectMapper.Map<Route>(input);
             entity.DepotId = WorkManager.GetWorkerDepotId(workerId);
             entity.CreateWorkerId = workerId;
@@ -103,18 +110,23 @@ namespace Clc.Routes
         {
             await _routeRepository.DeleteAsync(id);
         }
-        public async Task<int> Activate(List<int> ids)
+        public async Task<(string, int)> Activate(List<int> ids)
         {
             int count = 0;
             foreach (int id in ids)
             {
                 var route = _routeRepository.Get(id);
                 if (route.Status != "安排") continue;          // Skip
+                var result = CanActivateRoute(route);
+                if (result != null)
+                {
+                    return ($"{route.RouteName}不能激活：" + result, count);
+                }
                 route.Status = "激活";
                 await _routeRepository.UpdateAsync(route);
                 count++;            
             }
-            return count;
+            return (null, count);
         }
 
         public async Task<int> Close(List<int> ids)
@@ -131,16 +143,26 @@ namespace Clc.Routes
             return count;
         }
 
-        public Task Back(int id)
+        public async Task Back(int id)
         {
             var entity = _routeRepository.Get(id);
             entity.Status = "安排";
-            return _routeRepository.UpdateAsync(entity);
+            await _routeRepository.UpdateAsync(entity);
+
+            // for affairEvent
+            int workerId = await GetCurrentUserWorkerIdAsync();
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+            var worker = WorkManager.GetWorker(workerId);
+            string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
+            var ae = new RouteEvent() { RouteId = entity.Id, EventTime = DateTime.Now, Name = "回退线路", Issurer = issuer};
+            await _eventRepository.InsertAsync(ae);
         }
 
         public async Task<int> CreateFrom(DateTime carryoutDate, DateTime fromDate)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+
             int depotId = WorkManager.GetWorkerDepotId(workerId);
             var routes = _routeRepository.GetAllList(e=>e.DepotId == depotId && e.CarryoutDate == fromDate);
             foreach (Route r in routes)
@@ -167,6 +189,8 @@ namespace Clc.Routes
         public async Task<int> CreateFromPre(DateTime carryoutDate)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+
             int depotId = WorkManager.GetWorkerDepotId(workerId);
             var routes = _preRouteRepository.GetAllList(e => e.DepotId == depotId);
             try 
@@ -453,6 +477,45 @@ namespace Clc.Routes
                 }
 
             return dto;
+        }
+
+        private string CanActivateRoute(Route route)
+        {
+            var routeType = _routeTypeCache[route.RouteTypeId];
+
+            // check Active Ahead
+            var start  = ClcUtils.GetDateTime(route.StartTime).Subtract(new TimeSpan(0, routeType.ActivateLead, 0));
+            var end = ClcUtils.GetDateTime(route.EndTime);
+            if (!ClcUtils.NowInTimeZone(start, end))  return $"未到激活提前量({routeType.ActivateLead}分钟)或已过结束时间";
+
+            // check same workerId in same route
+            var workers = _workerRepository.GetAllList(w => w.RouteId == route.Id);
+            var r = workers.GroupBy(x => x.WorkerId).Where(g => g.Count() > 1).Select(g => g.Key).ToArray();
+            if (r.Length > 0) return "同一人被多次安排";
+
+            // check workRoles
+            List<string> strRoles = new List<string>(routeType.WorkRoles.Split('|', ','));
+            var roles = _workRoleCache.GetList().FindAll(x => strRoles.Contains(x.Name));
+            foreach (WorkRole role in roles) 
+            {
+                if (role.mustHave && workers.FirstOrDefault(w => w.WorkRoleId == role.Id) == null) {
+                    return  $"任务中必须安排{role.Name}角色";
+                }
+            }
+
+            // check signin
+            string unSigninNames = string.Empty;
+            foreach (RouteWorker worker in workers)
+            {
+                var w = WorkManager.GetWorker(worker.Id);
+                unSigninNames += WorkManager.GetSigninInfo(w.DepotId, w.Id) == "未签到"  ? w.Name + " " : string.Empty;
+                if (routeType.MustAllSignin && unSigninNames != string.Empty) 
+                {
+                    return  $"未签到的人员有{unSigninNames}";
+                }
+            }
+
+            return null;
         }
 
         #endregion

@@ -30,5 +30,15 @@ namespace Clc.Types.Dto
         /// 领物关闭时间（分钟）
         /// </summary>
         public int LendArticleDeadline { get; set; }
+
+        /// <summary>
+        /// 激活提前时间（分钟）
+        /// </summary>
+        public int ActivateLead { get; set; }
+        
+        /// <summary>
+        /// 激活必须全部签到
+        /// </summary>
+        public string MustAllSignin { get; set; }
     }
 }

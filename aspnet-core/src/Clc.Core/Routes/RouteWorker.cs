@@ -28,6 +28,9 @@ namespace Clc.Routes
         public int WorkerId { get; set; }
         public Worker Worker { get; set; }   
 
+        public int? AltWorkerId { get; set; }
+        public Worker AltWorker { get; set; }
+
         [Required]
         public int WorkRoleId { get; set; }
         public WorkRole WorkRole { get; set; }  

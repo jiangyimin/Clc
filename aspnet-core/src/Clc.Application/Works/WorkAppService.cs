@@ -86,10 +86,11 @@ namespace Clc.Works
             int depotId = WorkManager.GetWorkerDepotId(workerId);         
             var dto = new MyWorkDto();
 
-            // For Captain
+            // For Captain (Maybe be Agent)
             if (WorkManager.IsCaptain(workerId))
             {
-                dto.WorkerCn = WorkManager.GetCaptainOrAgentCn(workerId);
+                dto.WorkerId = WorkManager.GetCaptainOrAgentId(workerId);
+                dto.WorkerCn = WorkManager.GetWorkerCn(dto.WorkerId);
                 return dto;
             }
 

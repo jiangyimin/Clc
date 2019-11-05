@@ -14,7 +14,7 @@ namespace Clc.Routes
         Task<RouteDto> Update(RouteDto input);
         Task Delete(int id);
 
-        Task<int> Activate(List<int> ids);
+        Task<(string, int)> Activate(List<int> ids);
         Task<int> Close(List<int> ids);
         Task Back(int id);
 

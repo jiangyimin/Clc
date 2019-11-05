@@ -5,16 +5,15 @@ var finger = finger || {};
         activeX.spDeviceType = 2;
         activeX.spComPort = 1;
         activeX.spBaudRate = 6;
-        activeX.CharLen = 1024;
+        activeX.CharLen = 512;
         activeX.FingerCode = "";
-        activeX.TimeOut = 500;
+        activeX.TimeOut = 2000;
     };
 
     finger.regCode = function (activeX) {
         finger.init(activeX);
         var mesg = activeX.ZAZRegFinger();
         if (mesg == "0") {
-            alert(activeX.FingerCode);
             return activeX.FingerCode;
         }
         else {

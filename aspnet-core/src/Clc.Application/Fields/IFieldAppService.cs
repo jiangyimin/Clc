@@ -13,6 +13,7 @@ namespace Clc.Fields
         List<Workplace> GetWorkplaceItems(bool all = false);
 
         List<WorkerListItem> GetWorkerListItems(bool all = false);
+        List<ComboboxItemDto> GetWorkerItemsByWorkRole(int workRoleId);
         List<VehicleListItem> GetVehicleListItems(bool all = false);
 
         // WorkerFile

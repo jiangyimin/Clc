@@ -9,6 +9,7 @@ namespace Clc.Works.Dto
     public class MyWorkDto
     {
         // Me
+        public int WorkerId { get; set; }
         public string WorkerCn { get; set; }        
         
         public int AffairId { get; set; }

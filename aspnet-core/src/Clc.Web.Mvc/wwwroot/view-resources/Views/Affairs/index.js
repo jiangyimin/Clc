@@ -1,6 +1,10 @@
 (function() {        
     $(function() {    
         work.isCaptain = true;
+        abp.services.app.work.getMyWork().done(function (wk) {
+            work.myWork = wk;
+        });
+        
        // get today
         abp.services.app.work.getTodayString().done(function (d) {
             mds.today = d;
@@ -43,8 +47,9 @@
                 if (row.status == "安排") ids.push(row.id);
             };
             // alert(ids);
-            abp.services.app.affair.activate(ids).done(function (count) {
-                abp.notify.info('有' + count + '个任务被激活');
+            abp.services.app.affair.activate(ids).done(function (ret) {
+                abp.notify.info('有' + ret.item2 + '个任务被激活');
+                if (ret.item1) abp.notify.info(ret.item1);
                 mds.reload('');
             })
         });

@@ -38,8 +38,11 @@ namespace Clc.Routes
         /// <summary>
         /// RouteType
         /// </summary>
-        public int? VehicleId { get; set; }
+        public int VehicleId { get; set; }
         public Vehicle Vehicle { get; set; }
+
+        public int? AltVehicleId { get; set; }
+        public Vehicle AltVehicle { get; set; }
 
         /// <summary>
         /// RouteType

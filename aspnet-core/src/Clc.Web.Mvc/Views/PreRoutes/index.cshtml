@@ -63,6 +63,13 @@
         detail.delete = abp.services.app.preRoute.deleteTask;
         mds.details.push(detail);
 
+        $('#workRole').combobox({
+            onChange: function (val) {
+                abp.services.app.field.getWorkerItemsByWorkRole(val).done(function (data) {
+                    $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
+                });
+            }
+        });
     </script>
 }
 
@@ -89,7 +96,6 @@
             });
 
             abp.services.app.field.getWorkerListItems().done(function (data) {
-                // $('#worker').combobox({ data: data, valueField: 'id', textField: 'cnNamePost' });
                 $('#agent').combobox({ data: data, valueField: 'id', textField: 'cnNamePost' });               
             });
 
@@ -101,8 +107,7 @@
                 })
             });
             abp.services.app.type.getComboItems('TaskType').done(function (data) {
-                $('#taskType').combobox({
-                    data: data,
+                $('#taskType').combobox({data: data,
                     valueField: 'value',
                     textField: 'displayText'
                 })
@@ -116,7 +121,7 @@
                     data: data, 
                     valueField: 'id', 
                     textField: 'name'
-                });    
+                });  
             });
         }
 
@@ -131,6 +136,17 @@
 
             //alert(url);
             return url;
+        }
+
+        mds.beforeEdit = function (fm, postfix, row) {
+            if (postfix == 'Worker') {
+                abp.services.app.field.getWorkerItemsByWorkRole(row.workRoleId).done(function (data) {
+                    $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
+                    setTimeout(function() {fm.form('load', row)}, 300);
+                });
+                return true;
+            }
+            return false;
         }
 
         function setCurrentAgent()

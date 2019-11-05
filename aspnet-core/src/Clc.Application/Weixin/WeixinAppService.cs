@@ -73,12 +73,8 @@ namespace Clc.Weixin
                     Cn = sub.Cn, Name = sub.Name, AdditiveInfo = sub.AdditiveInfo, Photo = sub.Photo == null ? null : Convert.ToBase64String(sub.Photo)   
                 });
 
-
-            if (ret.Item1.VehicleId.HasValue) 
-            {
-                var v = _vehicleCache[ret.Item1.VehicleId.Value];
-                dto.Vehicle = new WeixinVehicleDto() {Cn = v.Cn, License = v.License, Photo = v.Photo == null ? null : Convert.ToBase64String(v.Photo) };
-            }
+            var v = ret.Item1.AltVehicleId.HasValue ? _vehicleCache[ret.Item1.AltVehicleId.Value] : _vehicleCache[ret.Item1.VehicleId];
+            dto.Vehicle = new WeixinVehicleDto() {Cn = v.Cn, License = v.License, Photo = v.Photo == null ? null : Convert.ToBase64String(v.Photo) };
 
             dto.RouteId = ret.Item1.Id;
             dto.RouteName = ret.Item1.RouteName;

@@ -29,7 +29,7 @@ namespace Clc.Types
         [Required]
         [StringLength(MaxWorkRolesLength)]
         public string WorkRoles { get; set; }
-
+        
         /// <summary>
         /// 领物提前时间（分钟）
         /// </summary>
@@ -39,5 +39,16 @@ namespace Clc.Types
         /// 领物关闭时间（分钟）
         /// </summary>
         public int LendArticleDeadline { get; set; }
+
+        /// <summary>
+        /// 激活提前时间（分钟）
+        /// </summary>
+        public int ActivateLead { get; set; }
+        
+        /// <summary>
+        /// 激活必须全部签到
+        /// </summary>
+        public bool MustAllSignin { get; set; }
+
     }
 }

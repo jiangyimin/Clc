@@ -21,6 +21,7 @@ namespace Clc.Fields
         private readonly IWorkerCache _workerCache;
         private readonly IVehicleCache _vehicleCache;
         private readonly IPostCache _postCache;
+        private readonly IWorkRoleCache _workRoleCache;
 
         private readonly IRepository<Worker> _workerRepository;
         private readonly IRepository<WorkerFile> _workerFileRepository;
@@ -30,6 +31,7 @@ namespace Clc.Fields
             IWorkerCache workerCache,
             IVehicleCache vehicleCache,
             IPostCache postCache,
+            IWorkRoleCache workRoleCache,
             IRepository<Worker> workerRepository, 
             IRepository<WorkerFile> workerFileRepository)
         {
@@ -38,6 +40,7 @@ namespace Clc.Fields
             _workerCache = workerCache;
             _vehicleCache = vehicleCache;
             _postCache = postCache;
+            _workRoleCache = workRoleCache;
             _workerRepository = workerRepository;
             _workerFileRepository = workerFileRepository;
         }
@@ -74,6 +77,25 @@ namespace Clc.Fields
             }
         }
 
+        public List<ComboboxItemDto> GetWorkerItemsByWorkRole(int workRoleId)        
+        {
+            var list = new List<ComboboxItemDto>();
+
+            int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
+            var lst = _workerCache.GetList().FindAll(x => x.DepotId == depotId);
+            lst.Sort( (a, b) => a.Cn.CompareTo(b.Cn) );
+
+            var role = _workRoleCache[workRoleId];
+            foreach (var w in lst)
+            {
+                var post = _postCache[w.PostId];
+                if ((!string.IsNullOrEmpty(post.DefaultWorkRoleName) && post.DefaultWorkRoleName == role.Name) 
+                    || (!string.IsNullOrEmpty(w.WorkRoles) && w.WorkRoles.Contains(role.Name)) )
+                    list.Add(new ComboboxItemDto { Value = w.Id.ToString(), DisplayText = w.CnNamePost });
+            }
+            return list;
+        }
+
         public List<WorkerListItem> GetWorkerListItems(bool all)        
         {
             if (all)
@@ -83,7 +105,7 @@ namespace Clc.Fields
             else
             {
                 int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
-                var lst = _workerCache.GetList().FindAll(x => x.DepotId == depotId || (x.LoanDepotId.HasValue && x.LoanDepotId.Value == depotId));
+                var lst = _workerCache.GetList().FindAll(x => x.DepotId == depotId);
                 lst.Sort( (a, b) => a.Cn.CompareTo(b.Cn) );
 
                 var list = ObjectMapper.Map<List<WorkerListItem>>(lst);

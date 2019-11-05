@@ -10,7 +10,7 @@ namespace Clc.Affairs
     {
         Task<List<AffairDto>> GetAffairsAsync(DateTime carryoutDate, string sorting);
 
-        Task<int> Activate(List<int> ids);
+        Task<(string, int)> Activate(List<int> ids);
         Task Back(int id);
 
         Task<int> CreateFrom(DateTime carryoutDate, DateTime fromDate);

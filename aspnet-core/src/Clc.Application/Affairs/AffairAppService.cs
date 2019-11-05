@@ -8,6 +8,9 @@ using Abp.Domain.Repositories;
 using Abp.Linq;
 using Clc.Affairs.Dto;
 using Clc.Authorization;
+using Clc.Runtime;
+using Clc.Runtime.Cache;
+using Clc.Types;
 using Clc.Works;
 
 namespace Clc.Affairs
@@ -23,16 +26,19 @@ namespace Clc.Affairs
         private readonly IRepository<AffairWorker> _workerRepository;
         private readonly IRepository<AffairTask> _taskRepository;
         private readonly IRepository<AffairEvent> _eventRepository;
+        private readonly IWorkRoleCache _workRoleCache;
 
         public AffairAppService(IRepository<Affair> affairRepository, 
             IRepository<AffairWorker> workerRepository,
             IRepository<AffairTask> taskRepository,
-            IRepository<AffairEvent> eventRepository)
+            IRepository<AffairEvent> eventRepository,
+            IWorkRoleCache workRoleCache)
         {
             _affairRepository = affairRepository;
             _workerRepository = workerRepository;
             _taskRepository = taskRepository;
             _eventRepository = eventRepository;
+            _workRoleCache = workRoleCache;
         }
 
         public async Task<List<AffairDto>> GetAffairsAsync(DateTime carryoutDate, string sorting)
@@ -48,6 +54,8 @@ namespace Clc.Affairs
         public async Task<AffairDto> Insert(AffairDto input)
         {
             int workerId = GetCurrentUserWorkerIdAsync().Result;
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+
             var entity = ObjectMapper.Map<Affair>(input);
             entity.DepotId = WorkManager.GetWorkerDepotId(workerId);
             entity.CreateWorkerId = workerId;
@@ -73,6 +81,8 @@ namespace Clc.Affairs
         public async Task<int> CreateFrom(DateTime carryoutDate, DateTime fromDate)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+
             int depotId = WorkManager.GetWorkerDepotId(workerId);
             var list = _affairRepository.GetAllList(e=>e.DepotId == depotId && e.CarryoutDate == fromDate);
             foreach (Affair a in list)
@@ -118,32 +128,49 @@ namespace Clc.Affairs
             return list.Count;
         }
 
-        public async Task<int> Activate(List<int> ids)
+        public async Task<(string, int)> Activate(List<int> ids)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
-            
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+             
             int count = 0;
             foreach (int id in ids)
             {
                 var affair = _affairRepository.Get(id);
                 if (affair.Status != "安排") continue;          // Skip
+                var result = CanActivateAffair(affair);
+                if (result != null)
+                {
+                    var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
+                    return ($"{wp.Name}不能激活："+ result, count);
+                }
                 affair.Status = "激活";
                 await _affairRepository.UpdateAsync(affair);
                 // for affairEvent
-                string issuer = string.Format("{0} {1}", WorkManager.GetWorkerCn(workerId), WorkManager.GetWorkerName(workerId));
-                var ae = new AffairEvent() { AffairId = affair.Id, EventTime = DateTime.Now, Name = "激活任务",Issurer = issuer};
+                var worker = WorkManager.GetWorker(workerId);
+                string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
+                var ae = new AffairEvent() { AffairId = affair.Id, EventTime = DateTime.Now, Name = "激活任务", Issurer = issuer};
                 await _eventRepository.InsertAsync(ae);
                 
                 count++;            
             }
-            return count;
+            return (null, count);
         }
 
-        public Task Back(int id)
+        public async Task Back(int id)
         {
-            var entity = _affairRepository.Get(id);
-            entity.Status = "安排";
-            return _affairRepository.UpdateAsync(entity);
+            int workerId = await GetCurrentUserWorkerIdAsync();
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+
+            var affair = _affairRepository.Get(id);
+            affair.Status = "安排";
+            await _affairRepository.UpdateAsync(affair);
+
+            // for affairEvent
+            var worker = WorkManager.GetWorker(workerId);
+            string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
+            var ae = new AffairEvent() { AffairId = affair.Id, EventTime = DateTime.Now, Name = "回退任务", Issurer = issuer};
+            await _eventRepository.InsertAsync(ae);
         }
         
         #region Son Tables
@@ -222,6 +249,36 @@ namespace Clc.Affairs
         }
 
         #endregion
+
+        #region priavte
+        private string CanActivateAffair(Affair affair)
+        {
+            // check workplace
+            var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
+
+            // check time
+            var start  = ClcUtils.GetDateTime(affair.StartTime).Subtract(new TimeSpan(12, 0, 0));
+            var end = ClcUtils.GetDateTime(affair.EndTime);
+            if (!ClcUtils.NowInTimeZone(start, end))  return $"未到激活提前量(半天)或已过结束时间";
+
+            // check same workerId in same route
+            var workers = _workerRepository.GetAllList(w => w.AffairId == affair.Id);
+            var r = workers.GroupBy(x => x.WorkerId).Where(g => g.Count() > 1).Select(g => g.Key).ToArray();
+            if (r.Length > 0) return "同一人被多次安排";
+
+            // check workRoles
+            List<string> strRoles = new List<string>(wp.WorkRoles.Split('|', ','));
+            var roles = _workRoleCache.GetList().FindAll(x => strRoles.Contains(x.Name));
+            foreach (WorkRole role in roles) 
+            {
+                if (role.mustHave && workers.FirstOrDefault(w => w.WorkRoleId == role.Id) == null) {
+                    return  $"任务中必须安排{role.Name}角色";
+                }
+            }
+
+            return null;
+        }
+        #endregion 
     }
 }
 

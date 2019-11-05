@@ -136,7 +136,7 @@
                 $('#fm'+mds.main.postfix).find('input[name="carryoutDate"]').attr('value', $('#dd').datebox('getValue'));
                 $('#fm'+mds.main.postfix).find('input[name="status"]').attr('value', '安排');
             }
-        };
+        }
 
         mds.getUrl = function(postfix, masterRow) {
             if (postfix == mds.main.postfix) 
@@ -151,6 +151,17 @@
             // alert(url);
             return url;
         }
+
+        mds.beforeEdit = function (fm, postfix, row) {
+            if (postfix == 'Worker') {
+                abp.services.app.field.getWorkerItemsByWorkRole(row.workRoleId).done(function (data) {
+                    $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
+                    setTimeout(function() {fm.form('load', row)}, 300);
+                });
+                return true;
+            }
+            return false;
+        }
     </script>
 }
 
@@ -162,7 +173,7 @@
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('')">刷新</a>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('')">添加</a>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="activate" href="javascript:void(0)" class="easyui-linkbutton">激活</a>
-            <!-- <a name="back" href="javascript:void(0)" class="easyui-linkbutton">退回</a> -->
+            <a name="back" href="javascript:void(0)" class="easyui-linkbutton">退回</a>
             <a name="close" href="javascript:void(0)" class="easyui-linkbutton">关闭</a>
             <a name="createFrom" href="javascript:void(0)" class="easyui-linkbutton">从指定日期生成</a>
             <input id="fromDate" class="easyui-datebox" style="width:120px">

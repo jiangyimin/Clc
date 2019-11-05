@@ -58,12 +58,12 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             {
                 _context.Posts.AddRange(new Post[] {
                     new Post { TenantId = _tenantId, Cn = "01", Name = "大队长", AppName = "App03" }, 
-                    new Post { TenantId = _tenantId, Cn = "02", Name = "司机", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "03", Name = "车长", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "04", Name = "持枪员", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "05", Name = "主业务员", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "06", Name = "业务员", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "07", Name = "物品库管员", AppName = "App01" },                     
+                    new Post { TenantId = _tenantId, Cn = "02", Name = "司机", DefaultWorkRoleName = "司机", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "03", Name = "车长", DefaultWorkRoleName = "车长", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "04", Name = "持枪员", DefaultWorkRoleName = "车长", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "05", Name = "主业务员", DefaultWorkRoleName = "主业务员", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "06", Name = "业务员", DefaultWorkRoleName = "业务员", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "07", Name = "物品库管员", DefaultWorkRoleName = "库房管理员", AppName = "App01" },                     
                     new Post { TenantId = _tenantId, Cn = "08", Name = "金库管理员", AppName = "App01" },                     
                     new Post { TenantId = _tenantId, Cn = "09", Name = "综合库管员", AppName = "App01" },                     
                     new Post { TenantId = _tenantId, Cn = "10", Name = "监控员", AppName = "App01" },
@@ -79,7 +79,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.RouteTypes.Count() == 0)
             {
                 _context.RouteTypes.AddRange(new RouteType[] {
-                    new RouteType { TenantId = _tenantId, Name = "押运", WorkRoles = "司机|车长|持枪员|主业务员|业务员", LendArticleLead = 60, LendArticleDeadline = 60 }
+                    new RouteType { TenantId = _tenantId, Name = "押运", WorkRoles = "司机|车长|持枪员|主业务员|业务员", LendArticleLead = 60, LendArticleDeadline = 60, ActivateLead = 120 }
                 }); 
                 _context.SaveChanges();
             }
@@ -134,8 +134,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Workplaces.Count() == 0)
             {
                 _context.Workplaces.AddRange(new Workplace[] {
-                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "库房", WorkRoles = "库房管理员", ArticleTypeList = "A|B|C|D", MinDuration = 4, MaxDuration = 20, DoorIp = "192.168.1.100,1", CameraIp = "192.168.20.120" },
-                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "金库", WorkRoles = "金库管理员", MinDuration = 1, MaxDuration = 20, DoorIp = "192.168.2.100,2" }, 
+                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "库房", WorkRoles = "库房管理员", ArticleTypeList = "A|B|C|D", MinDuration = 4, MaxDuration = 20, DoorIp = "192.168.1.100,1", CameraIp = "192.168.20.120", AskOpenStyle = "直接" },
+                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "金库", WorkRoles = "金库管理员", MinDuration = 1, MaxDuration = 20, DoorIp = "192.168.2.100,2", AskOpenStyle = "验证" }, 
                     new Workplace { TenantId = _tenantId, DepotId = 1, Name = "待命室", WorkRoles = "待命", MinDuration = 4, MaxDuration = 12}, 
                     new Workplace { TenantId = _tenantId, DepotId = 4, Name = "监控室", WorkRoles = "监控员", MinDuration = 6, MaxDuration = 16 }, 
                 }); 
@@ -168,7 +168,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Worker { TenantId = _tenantId, DepotId = 1, Cn = "20004", Name = "申晓强", PostId = 8, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Box, Rfid = "20004", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 4, Cn = "20015", Name = "王宽", PostId = 10, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Monitor, Rfid = "20015", AdditiveInfo = "142701198001041239", IsActive = true },
                     new Worker { TenantId = _tenantId, DepotId = 4, Cn = "20016", Name = "陈灼", PostId = 10, Password = "123456", WorkerRoleName = StaticRoleNames.Tenants.Monitor, Rfid = "20016", AdditiveInfo = "142701198001041239", IsActive = true },
-                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "90005", Name = "测试", PostId = 7, Password = "123456", Rfid = "90005", WorkerRoleName = StaticRoleNames.Tenants.ArticleAndBox, AdditiveInfo = "142701198001041239", IsActive = true }, 
+                    new Worker { TenantId = _tenantId, DepotId = 1, Cn = "90005", Name = "测试", PostId = 1, Password = "123456", Rfid = "90005", WorkerRoleName = StaticRoleNames.Tenants.Captain, AdditiveInfo = "142701198001041239", IsActive = true }, 
                 }); 
                 _context.SaveChanges();
             }

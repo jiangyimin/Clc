@@ -17,6 +17,9 @@
             { field: "maxDuration", title: "最长班次小时", width: 80 },
             { field: "doorIp", title: "门禁IP地址", width: 80 },
             { field: "cameraIp", title: "视频IP地址", width: 80 },
+            { field: "askOpenLead", title: "申请开门提前(分钟)", width: 80 },
+            { field: "askOpenDeadline", title: "申请开门截止(分钟)", width: 80 },
+            { field: "askOpenStyle", title: "申请开门方式", width: 80 },
         ]];
         crud.parentField = 'depotId';
         crud.children = true;
@@ -27,6 +30,10 @@
 {
     <script type="text/javascript">
         crud.startfunction = function () {
+            abp.services.app.type.getComboItems('AskOpenStyle').done(function(data) {
+                crud.setComboBox('#askOpenStyle', data);
+            });
+
             abp.services.app.field.getComboItems('Depot').done(function(depots) {
                 crud.setComboBox('#depotId', depots);
                 var treeData = [];
@@ -107,6 +114,18 @@
             <tr>
                 <th><label for="cameraIp">视频IP地址: </label></th>
                 <td><input name="cameraIp" class="easyui-textbox" data-options="validType:'length[8, @Workplace.IpAddressLength]'"></td>
+            </tr>
+            <tr>
+                <th><label for="askOpenLead">申请开门提前时间: </label></th>
+                <td><input name="askOpenLead" class="easyui-numberbox" data-options="required: true"></td>
+            </tr>
+            <tr>
+                <th><label for="askOpenDeadline">申请开门截止时间: </label></th>
+                <td><input name="askOpenDeadline" class="easyui-numberbox" data-options="required: true"></td>
+            </tr>
+            <tr>
+                <th><label for="askOpenStyle">申请开门方式: </label></th>
+                <td><input id="askOpenStyle" name="askOpenStyle" class="easyui-combobox" data-options="required: true"></td>
             </tr>
         </table>
     </form>

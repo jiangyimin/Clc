@@ -396,7 +396,9 @@ namespace Clc.Migrations
                     Name = table.Column<string>(maxLength: 8, nullable: false),
                     WorkRoles = table.Column<string>(maxLength: 50, nullable: false),
                     LendArticleLead = table.Column<int>(nullable: false),
-                    LendArticleDeadline = table.Column<int>(nullable: false)
+                    LendArticleDeadline = table.Column<int>(nullable: false),
+                    ActivateLead = table.Column<int>(nullable: false),
+                    MustAllSignin = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -579,12 +581,13 @@ namespace Clc.Migrations
                     WorkRoles = table.Column<string>(maxLength: 50, nullable: false),
                     ArticleTypeList = table.Column<string>(maxLength: 50, nullable: true),
                     ShareDepotList = table.Column<string>(maxLength: 50, nullable: true),
+                    DoorIp = table.Column<string>(maxLength: 20, nullable: true),
+                    CameraIp = table.Column<string>(maxLength: 20, nullable: true),
                     MinDuration = table.Column<int>(nullable: false),
                     MaxDuration = table.Column<int>(nullable: false),
-                    DoorIp = table.Column<string>(maxLength: 20, nullable: true),
-                    OpenDoorStyle = table.Column<string>(maxLength: 20, nullable: true),
-                    VerifyNumber = table.Column<int>(nullable: false),
-                    CameraIp = table.Column<string>(maxLength: 20, nullable: true)
+                    AskOpenLead = table.Column<int>(nullable: false),
+                    AskOpenDeadline = table.Column<int>(nullable: false),
+                    AskOpenStyle = table.Column<string>(maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -615,8 +618,8 @@ namespace Clc.Migrations
                     Photo = table.Column<byte[]>(nullable: true),
                     DeviceId = table.Column<string>(maxLength: 50, nullable: true),
                     AdditiveInfo = table.Column<string>(maxLength: 20, nullable: true),
-                    Finger = table.Column<string>(maxLength: 512, nullable: true),
-                    Finger2 = table.Column<string>(maxLength: 512, nullable: true),
+                    Finger = table.Column<byte[]>(maxLength: 1024, nullable: true),
+                    Finger2 = table.Column<byte[]>(maxLength: 1024, nullable: true),
                     IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -670,7 +673,7 @@ namespace Clc.Migrations
                     DepotId = table.Column<int>(nullable: false),
                     RouteName = table.Column<string>(maxLength: 20, nullable: false),
                     RouteTypeId = table.Column<int>(nullable: false),
-                    VehicleId = table.Column<int>(nullable: true),
+                    VehicleId = table.Column<int>(nullable: false),
                     StartTime = table.Column<string>(maxLength: 5, nullable: false),
                     EndTime = table.Column<string>(maxLength: 5, nullable: false),
                     Mileage = table.Column<float>(nullable: true),
@@ -816,7 +819,8 @@ namespace Clc.Migrations
                     DepotId = table.Column<int>(nullable: false),
                     CarryoutDate = table.Column<DateTime>(nullable: false),
                     RouteName = table.Column<string>(maxLength: 20, nullable: false),
-                    VehicleId = table.Column<int>(nullable: true),
+                    VehicleId = table.Column<int>(nullable: false),
+                    AltVehicleId = table.Column<int>(nullable: true),
                     RouteTypeId = table.Column<int>(nullable: false),
                     Status = table.Column<string>(maxLength: 2, nullable: false),
                     StartTime = table.Column<string>(maxLength: 5, nullable: false),
@@ -832,6 +836,12 @@ namespace Clc.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Routes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Routes_Vehicles_AltVehicleId",
+                        column: x => x.AltVehicleId,
+                        principalTable: "Vehicles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Routes_Workers_CreateWorkerId",
                         column: x => x.CreateWorkerId,
@@ -1438,11 +1448,18 @@ namespace Clc.Migrations
                     TenantId = table.Column<int>(nullable: false),
                     RouteId = table.Column<int>(nullable: false),
                     WorkerId = table.Column<int>(nullable: false),
+                    AltWorkerId = table.Column<int>(nullable: true),
                     WorkRoleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RouteWorkers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RouteWorkers_Workers_AltWorkerId",
+                        column: x => x.AltWorkerId,
+                        principalTable: "Workers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_RouteWorkers_Routes_RouteId",
                         column: x => x.RouteId,
@@ -2320,6 +2337,11 @@ namespace Clc.Migrations
                 column: "RouteTaskId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Routes_AltVehicleId",
+                table: "Routes",
+                column: "AltVehicleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Routes_CreateWorkerId",
                 table: "Routes",
                 column: "CreateWorkerId");
@@ -2364,6 +2386,11 @@ namespace Clc.Migrations
                 name: "IX_RouteTasks_TaskTypeId",
                 table: "RouteTasks",
                 column: "TaskTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RouteWorkers_AltWorkerId",
+                table: "RouteWorkers",
+                column: "AltWorkerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RouteWorkers_RouteId",
@@ -2466,6 +2493,10 @@ namespace Clc.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Routes_Workers_CreateWorkerId",
                 table: "Routes");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_RouteWorkers_Workers_AltWorkerId",
+                table: "RouteWorkers");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_RouteWorkers_Workers_WorkerId",
@@ -2658,10 +2689,10 @@ namespace Clc.Migrations
                 name: "Routes");
 
             migrationBuilder.DropTable(
-                name: "RouteTypes");
+                name: "Vehicles");
 
             migrationBuilder.DropTable(
-                name: "Vehicles");
+                name: "RouteTypes");
 
             migrationBuilder.DropTable(
                 name: "BoxRecords");

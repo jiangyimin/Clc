@@ -16,7 +16,7 @@ namespace Clc.Fields
         public const int MaxWorkRolesLength = ClcConsts.NormalStringLength;
          public const int ArticleTypeListLength = ClcConsts.NormalStringLength;
         public const int ShareDepotListLength = ClcConsts.NormalStringLength;
-        public const int OpenDoorStyleLength = 20;
+        public const int AskOpenStyleLength = 20;
         public const int IpAddressLength = 20;
 
         // Impement of IMustHaveTenant
@@ -74,12 +74,12 @@ namespace Clc.Fields
         public int MaxDuration { get; set; }   
 
         /// <summary>
-        /// 领物提前时间（分钟）
+        /// 申请开门提前时间（分钟）
         /// </summary>
         public int AskOpenLead { get; set; }
 
         /// <summary>
-        /// 领物关闭时间（分钟）
+        /// 申请开门截止时间（分钟）
         /// </summary>
         public int AskOpenDeadline { get; set; }
 
@@ -87,7 +87,7 @@ namespace Clc.Fields
         /// <summary>
         /// 开门方式：1）直接申请 2）验证后申请 3）领抢任务申请
         /// </summary>
-        [StringLength(Workplace.OpenDoorStyleLength)]
+        [StringLength(Workplace.AskOpenStyleLength)]
         public string AskOpenStyle { get; set; }
         
         #region methods

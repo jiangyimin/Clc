@@ -24,6 +24,7 @@ var mds = mds || {};
     mds.initfunction = function () {};
     mds.onselectfunction = function() {};
     mds.customerSetAddValue = function() {};
+    mds.beforeEdit = function() { return false };
     mds.getUrl = function() {};
 
     mds.reload = function (postfix) {
@@ -63,6 +64,9 @@ var mds = mds || {};
     };
 
     mds.operatorIsEnable = function(row) {
+        if (!row.status) return true;
+        if (row.status != "安排")
+            return false;
         return true;
     };
 
@@ -81,8 +85,9 @@ var mds = mds || {};
         $('#dlg' + postfix).dialog('open').dialog('setTitle', '编辑');
 
         var $fm = $('#fm' + postfix);
-        var row = $('#dg' + postfix).datagrid('getRows')[index];                
-        $fm.form('load', row);
+        var row = $('#dg' + postfix).datagrid('getRows')[index]; 
+        
+        if (!mds.beforeEdit($fm, postfix, row)) $fm.form('load', row);
 
         if (postfix !== '') {           // 处理子表的父id
             var masterDom = 'input[name="' + mds.masterInputName + '"]';
