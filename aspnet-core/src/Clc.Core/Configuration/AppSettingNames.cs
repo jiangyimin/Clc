@@ -22,12 +22,21 @@
         {
             public const string VerifyLogin = "Rule.VerifyLogin";
             public const string Radius = "Rule.Radius";
-            public const string MinCheckinInterval = "Rule.MinCheckinInterval";
             public const string DoubleArticleRoles = "Rule.DoubleArticleRoles";
 
-            public const string AskOpenInterval = "Rule.AskOpenInterval";
-            public const string AskOpenLength = "Rule.AskOpenLength";
-            public const string MinOnDutyNum = "Rule.MinOnDutyNum";
+            public const string MinWorkersOnDuty = "Rule.MinWorkersOnDuty";
+
+            public const string EnableDynEmergPassword = "Rule.EnableDynEmergPassword";
         }
+
+        public static class TimeRule
+        {
+            public const string DaysChangeReadonly = "TimeRule.DaysChangeReadonly";
+            public const string RecheckInterval = "TimeRule.RecheckInterval";
+            public const string MinSigninInterval = "TimeRule.MinSigninInterval";
+            public const string AskOpenInterval = "Rule.AskOpenInterval";
+            public const string AskOpenPeriod = "Rule.AskOpenPeriod";  
+        }
+
     }
 }

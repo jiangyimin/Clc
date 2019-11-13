@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clc.Migrations
 {
     [DbContext(typeof(ClcDbContext))]
-    [Migration("20191105083633_clc")]
+    [Migration("20191113101502_clc")]
     partial class clc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -870,8 +870,6 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(5);
 
-                    b.Property<bool>("IsTomorrow");
-
                     b.Property<string>("Remark")
                         .HasMaxLength(50);
 
@@ -943,8 +941,6 @@ namespace Clc.Migrations
                     b.Property<string>("EndTime")
                         .IsRequired()
                         .HasMaxLength(5);
-
-                    b.Property<bool>("IsTomorrow");
 
                     b.Property<string>("Remark")
                         .HasMaxLength(50);
@@ -1351,11 +1347,15 @@ namespace Clc.Migrations
                     b.Property<string>("AgentCn")
                         .HasMaxLength(8);
 
+                    b.Property<bool>("AllowCardWhenCheckin");
+
                     b.Property<string>("Cn")
                         .IsRequired()
                         .HasMaxLength(2);
 
                     b.Property<double?>("Latitude");
+
+                    b.Property<bool>("LocalUnlockScreen");
 
                     b.Property<double?>("Longitude");
 
@@ -1395,9 +1395,12 @@ namespace Clc.Migrations
 
                     b.Property<string>("License")
                         .IsRequired()
-                        .HasMaxLength(7);
+                        .HasMaxLength(10);
 
                     b.Property<byte[]>("Photo");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(50);
 
                     b.Property<int>("TenantId");
 
@@ -1429,13 +1432,16 @@ namespace Clc.Migrations
                     b.Property<string>("DeviceId")
                         .HasMaxLength(50);
 
-                    b.Property<byte[]>("Finger")
+                    b.Property<string>("Finger")
                         .HasMaxLength(1024);
 
-                    b.Property<byte[]>("Finger2")
+                    b.Property<string>("Finger2")
                         .HasMaxLength(1024);
 
                     b.Property<bool>("IsActive");
+
+                    b.Property<string>("LoginRoleNames")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1453,11 +1459,8 @@ namespace Clc.Migrations
 
                     b.Property<int>("TenantId");
 
-                    b.Property<string>("WorkRoles")
-                        .HasMaxLength(30);
-
-                    b.Property<string>("WorkerRoleName")
-                        .HasMaxLength(32);
+                    b.Property<string>("WorkRoleNames")
+                        .HasMaxLength(100);
 
                     b.HasKey("Id");
 
@@ -1603,6 +1606,9 @@ namespace Clc.Migrations
 
                     b.Property<string>("DoorIp")
                         .HasMaxLength(20);
+
+                    b.Property<string>("EmergPassword")
+                        .HasMaxLength(8);
 
                     b.Property<int>("MaxDuration");
 
@@ -2061,6 +2067,50 @@ namespace Clc.Migrations
                     b.ToTable("ArticleRecords");
                 });
 
+            modelBuilder.Entity("Clc.Runtime.AskDoorRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Agree");
+
+                    b.Property<int>("AskAffairId");
+
+                    b.Property<DateTime>("AskTime");
+
+                    b.Property<string>("AskWorkers")
+                        .HasMaxLength(200);
+
+                    b.Property<int?>("MonitorAffairId");
+
+                    b.Property<DateTime?>("ProcessTime");
+
+                    b.Property<string>("Remark");
+
+                    b.Property<int?>("RouteId");
+
+                    b.Property<int>("TenantId");
+
+                    b.Property<int>("WorkplaceId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AskAffairId");
+
+                    b.HasIndex("MonitorAffairId");
+
+                    b.HasIndex("RouteId");
+
+                    b.HasIndex("WorkplaceId");
+
+                    b.HasIndex("TenantId", "AskTime");
+
+                    b.HasIndex("TenantId", "WorkplaceId", "AskTime");
+
+                    b.ToTable("AskDoorRecords");
+                });
+
             modelBuilder.Entity("Clc.Runtime.BoxRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -2091,17 +2141,25 @@ namespace Clc.Migrations
                     b.ToTable("BoxRecords");
                 });
 
-            modelBuilder.Entity("Clc.Runtime.DoorRecord", b =>
+            modelBuilder.Entity("Clc.Runtime.EmergDoorRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApplyAffairId");
-
                     b.Property<DateTime>("CreateTime");
 
-                    b.Property<int>("OpenAffairId");
+                    b.Property<string>("EmergDoorPassword");
+
+                    b.Property<int>("IssueId");
+
+                    b.Property<string>("Leader");
+
+                    b.Property<int?>("MonitorAffairId");
+
+                    b.Property<DateTime?>("ProcessTime");
+
+                    b.Property<string>("Remark");
 
                     b.Property<int>("TenantId");
 
@@ -2109,17 +2167,57 @@ namespace Clc.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplyAffairId");
+                    b.HasIndex("IssueId");
 
-                    b.HasIndex("OpenAffairId");
+                    b.HasIndex("MonitorAffairId");
 
                     b.HasIndex("WorkplaceId");
 
                     b.HasIndex("TenantId", "CreateTime");
 
-                    b.HasIndex("TenantId", "WorkplaceId");
+                    b.HasIndex("TenantId", "WorkplaceId", "CreateTime");
 
-                    b.ToTable("DoorRecords");
+                    b.ToTable("EmergDoorRecords");
+                });
+
+            modelBuilder.Entity("Clc.Runtime.Issue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(512);
+
+                    b.Property<DateTime>("CreateTime");
+
+                    b.Property<int>("CreateWorkerId");
+
+                    b.Property<int>("DepotId");
+
+                    b.Property<string>("ProcessContent")
+                        .HasMaxLength(512);
+
+                    b.Property<string>("ProcessStyle");
+
+                    b.Property<DateTime>("ProcessTime");
+
+                    b.Property<int?>("ProcessWorkerId");
+
+                    b.Property<int>("TenantId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreateWorkerId");
+
+                    b.HasIndex("DepotId");
+
+                    b.HasIndex("ProcessWorkerId");
+
+                    b.HasIndex("TenantId", "DepotId", "CreateTime");
+
+                    b.ToTable("Issues");
                 });
 
             modelBuilder.Entity("Clc.Runtime.Signin", b =>
@@ -2131,6 +2229,8 @@ namespace Clc.Migrations
                     b.Property<DateTime>("CarryoutDate");
 
                     b.Property<int>("DepotId");
+
+                    b.Property<string>("SigninStyle");
 
                     b.Property<DateTime>("SigninTime");
 
@@ -2433,8 +2533,8 @@ namespace Clc.Migrations
 
             modelBuilder.Entity("Clc.Affairs.AffairTask", b =>
                 {
-                    b.HasOne("Clc.Affairs.Affair", "Affair")
-                        .WithMany()
+                    b.HasOne("Clc.Affairs.Affair")
+                        .WithMany("Tasks")
                         .HasForeignKey("AffairId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -2808,6 +2908,28 @@ namespace Clc.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("Clc.Runtime.AskDoorRecord", b =>
+                {
+                    b.HasOne("Clc.Affairs.Affair", "AskAffair")
+                        .WithMany()
+                        .HasForeignKey("AskAffairId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Clc.Affairs.Affair", "MonitorAffair")
+                        .WithMany()
+                        .HasForeignKey("MonitorAffairId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Clc.Routes.Route", "Route")
+                        .WithMany()
+                        .HasForeignKey("RouteId");
+
+                    b.HasOne("Clc.Fields.Workplace", "Workplace")
+                        .WithMany()
+                        .HasForeignKey("WorkplaceId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Clc.Runtime.BoxRecord", b =>
                 {
                     b.HasOne("Clc.Clients.Box", "Box")
@@ -2816,22 +2938,40 @@ namespace Clc.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("Clc.Runtime.DoorRecord", b =>
+            modelBuilder.Entity("Clc.Runtime.EmergDoorRecord", b =>
                 {
-                    b.HasOne("Clc.Affairs.Affair", "ApplyAffair")
+                    b.HasOne("Clc.Runtime.Issue", "Issue")
                         .WithMany()
-                        .HasForeignKey("ApplyAffairId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Clc.Affairs.Affair", "OpenAffair")
+                    b.HasOne("Clc.Affairs.Affair", "MonitorAffair")
                         .WithMany()
-                        .HasForeignKey("OpenAffairId")
+                        .HasForeignKey("MonitorAffairId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Clc.Fields.Workplace", "Workplace")
                         .WithMany()
                         .HasForeignKey("WorkplaceId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Clc.Runtime.Issue", b =>
+                {
+                    b.HasOne("Clc.Fields.Worker", "CreateWorker")
+                        .WithMany()
+                        .HasForeignKey("CreateWorkerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Clc.Fields.Depot", "Depot")
+                        .WithMany()
+                        .HasForeignKey("DepotId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clc.Fields.Worker", "ProcessWorker")
+                        .WithMany()
+                        .HasForeignKey("ProcessWorkerId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Clc.Runtime.Signin", b =>

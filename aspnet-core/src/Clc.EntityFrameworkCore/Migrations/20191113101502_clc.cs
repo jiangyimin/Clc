@@ -359,10 +359,12 @@ namespace Clc.Migrations
                     Longitude = table.Column<double>(nullable: true),
                     Latitude = table.Column<double>(nullable: true),
                     Radius = table.Column<int>(nullable: true),
-                    ActiveRouteNeedCheckin = table.Column<bool>(nullable: false),
                     UnlockScreenPassword = table.Column<string>(maxLength: 8, nullable: true),
                     ReportTo = table.Column<string>(maxLength: 50, nullable: true),
-                    AgentCn = table.Column<string>(maxLength: 8, nullable: true)
+                    AgentCn = table.Column<string>(maxLength: 8, nullable: true),
+                    ActiveRouteNeedCheckin = table.Column<bool>(nullable: false),
+                    AllowCardWhenCheckin = table.Column<bool>(nullable: false),
+                    LocalUnlockScreen = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -555,8 +557,9 @@ namespace Clc.Migrations
                     TenantId = table.Column<int>(nullable: false),
                     DepotId = table.Column<int>(nullable: false),
                     Cn = table.Column<string>(maxLength: 8, nullable: false),
-                    License = table.Column<string>(maxLength: 7, nullable: false),
-                    Photo = table.Column<byte[]>(nullable: true)
+                    License = table.Column<string>(maxLength: 10, nullable: false),
+                    Photo = table.Column<byte[]>(nullable: true),
+                    Remark = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -587,7 +590,8 @@ namespace Clc.Migrations
                     MaxDuration = table.Column<int>(nullable: false),
                     AskOpenLead = table.Column<int>(nullable: false),
                     AskOpenDeadline = table.Column<int>(nullable: false),
-                    AskOpenStyle = table.Column<string>(maxLength: 20, nullable: true)
+                    AskOpenStyle = table.Column<string>(maxLength: 20, nullable: true),
+                    EmergPassword = table.Column<string>(maxLength: 8, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -611,15 +615,15 @@ namespace Clc.Migrations
                     Cn = table.Column<string>(maxLength: 8, nullable: false),
                     Name = table.Column<string>(maxLength: 8, nullable: false),
                     PostId = table.Column<int>(nullable: false),
-                    WorkRoles = table.Column<string>(maxLength: 30, nullable: true),
+                    WorkRoleNames = table.Column<string>(maxLength: 100, nullable: true),
                     Password = table.Column<string>(maxLength: 10, nullable: true),
-                    WorkerRoleName = table.Column<string>(maxLength: 32, nullable: true),
+                    LoginRoleNames = table.Column<string>(maxLength: 100, nullable: true),
                     Rfid = table.Column<string>(maxLength: 18, nullable: true),
                     Photo = table.Column<byte[]>(nullable: true),
                     DeviceId = table.Column<string>(maxLength: 50, nullable: true),
                     AdditiveInfo = table.Column<string>(maxLength: 20, nullable: true),
-                    Finger = table.Column<byte[]>(maxLength: 1024, nullable: true),
-                    Finger2 = table.Column<byte[]>(maxLength: 1024, nullable: true),
+                    Finger = table.Column<string>(maxLength: 1024, nullable: true),
+                    Finger2 = table.Column<string>(maxLength: 1024, nullable: true),
                     IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -781,7 +785,6 @@ namespace Clc.Migrations
                     Status = table.Column<string>(maxLength: 2, nullable: false),
                     StartTime = table.Column<string>(maxLength: 5, nullable: false),
                     EndTime = table.Column<string>(maxLength: 5, nullable: false),
-                    IsTomorrow = table.Column<bool>(nullable: false),
                     Remark = table.Column<string>(maxLength: 50, nullable: true),
                     CreateWorkerId = table.Column<int>(nullable: false),
                     CreateTime = table.Column<DateTime>(nullable: false)
@@ -807,6 +810,45 @@ namespace Clc.Migrations
                         principalTable: "Workplaces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Issues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    CreateTime = table.Column<DateTime>(nullable: false),
+                    DepotId = table.Column<int>(nullable: false),
+                    CreateWorkerId = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(maxLength: 512, nullable: false),
+                    ProcessStyle = table.Column<string>(nullable: true),
+                    ProcessTime = table.Column<DateTime>(nullable: false),
+                    ProcessWorkerId = table.Column<int>(nullable: true),
+                    ProcessContent = table.Column<string>(maxLength: 512, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Issues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Issues_Workers_CreateWorkerId",
+                        column: x => x.CreateWorkerId,
+                        principalTable: "Workers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Issues_Depots_DepotId",
+                        column: x => x.DepotId,
+                        principalTable: "Depots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Issues_Workers_ProcessWorkerId",
+                        column: x => x.ProcessWorkerId,
+                        principalTable: "Workers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -878,7 +920,8 @@ namespace Clc.Migrations
                     DepotId = table.Column<int>(nullable: false),
                     CarryoutDate = table.Column<DateTime>(nullable: false),
                     WorkerId = table.Column<int>(nullable: false),
-                    SigninTime = table.Column<DateTime>(nullable: false)
+                    SigninTime = table.Column<DateTime>(nullable: false),
+                    SigninStyle = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1267,7 +1310,6 @@ namespace Clc.Migrations
                     WorkplaceId = table.Column<int>(nullable: false),
                     StartTime = table.Column<string>(maxLength: 5, nullable: false),
                     EndTime = table.Column<string>(maxLength: 5, nullable: false),
-                    IsTomorrow = table.Column<bool>(nullable: false),
                     Remark = table.Column<string>(maxLength: 50, nullable: true),
                     CreateWorkerId = table.Column<int>(nullable: false),
                     CreateTime = table.Column<DateTime>(nullable: false)
@@ -1334,34 +1376,84 @@ namespace Clc.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DoorRecords",
+                name: "EmergDoorRecords",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(nullable: false),
+                    CreateTime = table.Column<DateTime>(nullable: false),
                     WorkplaceId = table.Column<int>(nullable: false),
-                    OpenAffairId = table.Column<int>(nullable: false),
-                    ApplyAffairId = table.Column<int>(nullable: true),
-                    CreateTime = table.Column<DateTime>(nullable: false)
+                    IssueId = table.Column<int>(nullable: false),
+                    Leader = table.Column<string>(nullable: true),
+                    EmergDoorPassword = table.Column<string>(nullable: true),
+                    MonitorAffairId = table.Column<int>(nullable: true),
+                    ProcessTime = table.Column<DateTime>(nullable: true),
+                    Remark = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DoorRecords", x => x.Id);
+                    table.PrimaryKey("PK_EmergDoorRecords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DoorRecords_Affairs_ApplyAffairId",
-                        column: x => x.ApplyAffairId,
+                        name: "FK_EmergDoorRecords_Issues_IssueId",
+                        column: x => x.IssueId,
+                        principalTable: "Issues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EmergDoorRecords_Affairs_MonitorAffairId",
+                        column: x => x.MonitorAffairId,
                         principalTable: "Affairs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DoorRecords_Affairs_OpenAffairId",
-                        column: x => x.OpenAffairId,
+                        name: "FK_EmergDoorRecords_Workplaces_WorkplaceId",
+                        column: x => x.WorkplaceId,
+                        principalTable: "Workplaces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AskDoorRecords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    AskTime = table.Column<DateTime>(nullable: false),
+                    WorkplaceId = table.Column<int>(nullable: false),
+                    AskAffairId = table.Column<int>(nullable: false),
+                    AskWorkers = table.Column<string>(maxLength: 200, nullable: true),
+                    RouteId = table.Column<int>(nullable: true),
+                    MonitorAffairId = table.Column<int>(nullable: true),
+                    Agree = table.Column<bool>(nullable: false),
+                    Remark = table.Column<string>(nullable: true),
+                    ProcessTime = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AskDoorRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AskDoorRecords_Affairs_AskAffairId",
+                        column: x => x.AskAffairId,
                         principalTable: "Affairs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DoorRecords_Workplaces_WorkplaceId",
+                        name: "FK_AskDoorRecords_Affairs_MonitorAffairId",
+                        column: x => x.MonitorAffairId,
+                        principalTable: "Affairs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AskDoorRecords_Routes_RouteId",
+                        column: x => x.RouteId,
+                        principalTable: "Routes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AskDoorRecords_Workplaces_WorkplaceId",
                         column: x => x.WorkplaceId,
                         principalTable: "Workplaces",
                         principalColumn: "Id",
@@ -2162,6 +2254,36 @@ namespace Clc.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_AskDoorRecords_AskAffairId",
+                table: "AskDoorRecords",
+                column: "AskAffairId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AskDoorRecords_MonitorAffairId",
+                table: "AskDoorRecords",
+                column: "MonitorAffairId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AskDoorRecords_RouteId",
+                table: "AskDoorRecords",
+                column: "RouteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AskDoorRecords_WorkplaceId",
+                table: "AskDoorRecords",
+                column: "WorkplaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AskDoorRecords_TenantId_AskTime",
+                table: "AskDoorRecords",
+                columns: new[] { "TenantId", "AskTime" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AskDoorRecords_TenantId_WorkplaceId_AskTime",
+                table: "AskDoorRecords",
+                columns: new[] { "TenantId", "WorkplaceId", "AskTime" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Boxes_BoxRecordId",
                 table: "Boxes",
                 column: "BoxRecordId");
@@ -2200,29 +2322,49 @@ namespace Clc.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoorRecords_ApplyAffairId",
-                table: "DoorRecords",
-                column: "ApplyAffairId");
+                name: "IX_EmergDoorRecords_IssueId",
+                table: "EmergDoorRecords",
+                column: "IssueId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoorRecords_OpenAffairId",
-                table: "DoorRecords",
-                column: "OpenAffairId");
+                name: "IX_EmergDoorRecords_MonitorAffairId",
+                table: "EmergDoorRecords",
+                column: "MonitorAffairId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoorRecords_WorkplaceId",
-                table: "DoorRecords",
+                name: "IX_EmergDoorRecords_WorkplaceId",
+                table: "EmergDoorRecords",
                 column: "WorkplaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoorRecords_TenantId_CreateTime",
-                table: "DoorRecords",
+                name: "IX_EmergDoorRecords_TenantId_CreateTime",
+                table: "EmergDoorRecords",
                 columns: new[] { "TenantId", "CreateTime" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoorRecords_TenantId_WorkplaceId",
-                table: "DoorRecords",
-                columns: new[] { "TenantId", "WorkplaceId" });
+                name: "IX_EmergDoorRecords_TenantId_WorkplaceId_CreateTime",
+                table: "EmergDoorRecords",
+                columns: new[] { "TenantId", "WorkplaceId", "CreateTime" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issues_CreateWorkerId",
+                table: "Issues",
+                column: "CreateWorkerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issues_DepotId",
+                table: "Issues",
+                column: "DepotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issues_ProcessWorkerId",
+                table: "Issues",
+                column: "ProcessWorkerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issues_TenantId_DepotId_CreateTime",
+                table: "Issues",
+                columns: new[] { "TenantId", "DepotId", "CreateTime" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Outlets_CustomerId",
@@ -2605,7 +2747,10 @@ namespace Clc.Migrations
                 name: "ArticleTypeBinds");
 
             migrationBuilder.DropTable(
-                name: "DoorRecords");
+                name: "AskDoorRecords");
+
+            migrationBuilder.DropTable(
+                name: "EmergDoorRecords");
 
             migrationBuilder.DropTable(
                 name: "PreRouteTasks");
@@ -2639,6 +2784,9 @@ namespace Clc.Migrations
 
             migrationBuilder.DropTable(
                 name: "AbpEditions");
+
+            migrationBuilder.DropTable(
+                name: "Issues");
 
             migrationBuilder.DropTable(
                 name: "Affairs");

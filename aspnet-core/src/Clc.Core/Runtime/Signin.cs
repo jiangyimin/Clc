@@ -11,9 +11,7 @@ namespace Clc.Runtime
     /// </summary>
     [Description("签到")]
     public class Signin : Entity, IMustHaveTenant
-    {        
-        public const int MaxWorkerLength = 20;
-        
+    {                
         // Impement of IMustHaveTenant
         public int TenantId { get; set; }
 
@@ -34,6 +32,8 @@ namespace Clc.Runtime
         
         // 签到时间
         public DateTime SigninTime { get; set; }
+
+        public string SigninStyle { get; set; }
 
     }
 }

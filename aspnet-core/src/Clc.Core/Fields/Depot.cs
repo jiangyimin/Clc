@@ -49,11 +49,6 @@ namespace Clc.Fields
         /// </summary>
         public int? Radius { get; set; }
     
-        /// <summary>
-        /// 激活线路是否需要全部签到
-        /// </summary>
-        public bool ActiveRouteNeedCheckin { get; set; }
-
         [StringLength(MaxPasswordLength)]
         public string UnlockScreenPassword { get; set; }
 
@@ -62,6 +57,21 @@ namespace Clc.Fields
 
         [StringLength(Worker.MaxCnLength)]
         public string AgentCn { get; set; }
+
+        /// <summary>
+        /// 激活线路是否需要全部签到
+        /// </summary>
+        public bool ActiveRouteNeedCheckin { get; set; }
+
+        /// <summary>
+        /// 验入允许刷卡
+        /// </summary>
+        public bool AllowCardWhenCheckin { get; set; }
+
+        /// <summary>
+        /// 本地解屏
+        /// </summary>
+        public bool LocalUnlockScreen { get; set; }
     }
 }
 

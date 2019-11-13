@@ -54,7 +54,7 @@ namespace Clc.Affairs
         [Required]
         [StringLength(ClcConsts.TimeLength)]
         public string EndTime { get; set; }
-        public bool IsTomorrow { get; set; }
+        // public bool IsTomorrow { get; set; }
 
         [StringLength(MaxRemarkLength)]
         public string Remark { get; set; }
@@ -66,6 +66,9 @@ namespace Clc.Affairs
 
         [ForeignKey("AffairId")]
         public virtual List<AffairWorker> Workers { get; set; }
+
+        [ForeignKey("AffairId")]
+        public virtual List<AffairTask> Tasks { get; set; }
     }
 }
 

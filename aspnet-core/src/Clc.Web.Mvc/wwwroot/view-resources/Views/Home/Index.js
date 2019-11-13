@@ -23,6 +23,36 @@
                 }
             });
         }
+
+        // common: finger and  signalR
+        initFingerActivex();
+        abp.notify.info('指纹仪已准备好');
+        abp.services.app.work.getMe().done(function(ret) {
+            meRoleName = ret.item1;
+            meCn = ret.item2;
+            if (meRoleName == "system") unlockScreen();
+        });
+
+         // 侦听ESC for unlockscreen, 
+         document.onkeyup = EscKeyUp;
+         // Signalr
+         var chatHub = null;
+         abp.signalr.startConnection(abp.appPath + 'signalr-myChatHub', function(connection) {
+             chatHub = connection; // Save a reference to the hub
+         
+             connection.on('getMessage', function(message) { // Register for incoming messages
+                 parseMessage(message);
+                 console.log('received message: ' + message);
+             });
+         }).then(function(connection) {
+             abp.log.debug('Connected to myChatHub server!');
+             abp.event.trigger('myChatHub.connected');
+         });
+         
+         abp.event.on('myChatHub.connected', function() { // Register for connect event
+             chatHub.invoke('sendMessage', "Hi everybody, I'm connected to the chat!"); // Send a message to the server
+             abp.notify.info("与实时推送服务连接成功");
+         });
     });
 
     function addTab(title, url, icon) {
@@ -74,7 +104,7 @@
                 break;
             case "tab-menu-closeleft":
                 if (index == 0) {
-                    mfx.notify.warn("左边没有可关闭标签。");
+                    abp.notify.warn("左边没有可关闭标签。");
                     return;
                 }
                 for (var i = 0; i < index; i++) {
@@ -86,7 +116,7 @@
                 break;
             case "tab-menu-closeright":
                 if (index == tabs.length - 1) {
-                    mfx.notify.warn("右边没有可关闭标签。");
+                    abp.notify.warn("右边没有可关闭标签。");
                     return;
                 }
                 for (var i = index + 1; i < tabs.length; i++) {
@@ -121,3 +151,98 @@
         }
     }
 })();
+
+window.onbeforeunload=function(event){
+    var ret = ZAZFingerActivex.ZAZCloseOCX();
+}
+
+function displayRfid1(str) {
+    rfid1.innerHTML = str;
+}
+function displayRfid2(str) {
+    rfid2.innerHTML = str;
+}
+
+function initFingerActivex() {
+    ZAZFingerActivex.spDeviceType = 2;
+    ZAZFingerActivex.spComPort = 1;
+    ZAZFingerActivex.spBaudRate = 6;
+    ZAZFingerActivex.CharLen = 512;
+    ZAZFingerActivex.FingerCode = "";
+    ZAZFingerActivex.TimeOut = 2000;
+}
+
+function regFingerCode() {
+    var mesg = ZAZFingerActivex.ZAZRegFinger();
+    if (mesg == "0") {
+        return ZAZFingerActivex.FingerCode;
+    }
+    else {
+        return "";
+    }
+}
+
+function getFingerCode() {
+    var mesg = ZAZFingerActivex.ZAZGetImgCode();
+    if (mesg == "0") {
+        return ZAZFingerActivex.FingerCode;
+    }
+    else {
+        return "";
+    }
+}
+
+function matchFinger(src, dst)
+{
+    return ZAZFingerActivex.ZAZMatch(src, dst);
+}
+
+var meRoleName = '';
+var meCn = '';
+
+function EscKeyUp() {
+    if (meRoleName == 'system') return;
+    if( event && event.keyCode === 27) {
+        $('#dlgUnlock').dialog('open');
+        $('#password').next('span').find('input').focus();  //.textbox-txt
+    }
+}
+
+function verifyUnlockPassword() {
+    var pwd = $('#password').textbox('getValue');
+    abp.services.app.work.verifyUnlockPassword(pwd).done(function(result) {
+        if (result == true) {
+            abp.notify.info("密码正确，解锁屏幕");
+            $('#dlgUnlock').dialog('close');
+            unlockScreen();
+        }
+        else
+            abp.notify.error("密码错误");
+    });    
+}
+
+function lockScreen() {
+    var lockdiv = document.getElementById("lockDiv");
+    if (lockdiv != null) {
+        lockdiv.style.display = "block";
+    }
+}
+
+function unlockScreen() {
+    var lockdiv = document.getElementById("lockDiv");
+    if (lockdiv != null) {
+        lockdiv.style.display = "none";
+    }
+}
+
+function parseMessage(msg) {
+    var cmd = msg.split(' ', 2);
+    if (cmd[0] == "lockScreen") {
+        if (cmd[1] == meCn) lockScreen();
+    }
+    else if (cmd[0] == "unlockScreen") {
+        if (cmd[1] == meCn) unlockScreen();
+    }
+    else if (cmd[0] == "openDoor") {
+    }
+}

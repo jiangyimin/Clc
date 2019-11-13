@@ -23,6 +23,7 @@ namespace Clc.Affairs
         /// </summary>
         [Required]
         public int WorkplaceId { get; set; }
+        public string WorkplaceName { get; set; }
 
         /// <summary>
         /// 开始时间
@@ -37,13 +38,14 @@ namespace Clc.Affairs
         [Required]
         [StringLength(ClcConsts.TimeLength)]
         public string EndTime { get; set; }
-        public string IsTomorrow { get; set; }
+        // public string IsTomorrow { get; set; }
 
         [StringLength(AffairTask.MaxRemarkLength)]
         public string Remark { get; set; }
 
         [Required]
         public int CreateWorkerId { get; set; }
+        public string CreateWorkerName { get; set; }
         public DateTime CreateTime { get; set; }
 
         // only for mds.js 

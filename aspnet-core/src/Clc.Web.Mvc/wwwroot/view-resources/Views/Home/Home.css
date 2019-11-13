@@ -4,12 +4,11 @@
     height: 100%; 
     overflow: hidden;
 }
+
 .bar-left {
     float: left;
 }
-.bar-right {
-    float: right;
-}
+
 .topbar .bar-left img {
     margin-left: 10px;
     height: 46px;
@@ -38,6 +37,21 @@
     font-size: large; 
     padding-left: 60px;
     display: inline-block;
+    vertical-align: middle;
+}
+
+.bar-right {
+    float: right;
+}
+.topbar .bar-right object {
+    margin-left: 10px;
+    height: 46px;
+    width: 90px;
+    vertical-align: middle;
+}
+.topbar .bar-right a {
+    color: white; 
+    margin: 10px;
     vertical-align: middle;
 }
 

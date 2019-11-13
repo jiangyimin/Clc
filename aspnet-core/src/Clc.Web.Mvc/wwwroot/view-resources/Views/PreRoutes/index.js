@@ -1,10 +1,5 @@
 (function() {        
-    $(function() {    
-        work.isCaptain = true;
-        abp.services.app.work.getMyWork().done(function (wk) {
-            work.myWork = wk;
-        });
-
+    $(function() {
         $('#dg').datagrid({
             url: 'PreRoutes/GridData'
         });

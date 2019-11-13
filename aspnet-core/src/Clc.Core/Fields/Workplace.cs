@@ -16,8 +16,9 @@ namespace Clc.Fields
         public const int MaxWorkRolesLength = ClcConsts.NormalStringLength;
          public const int ArticleTypeListLength = ClcConsts.NormalStringLength;
         public const int ShareDepotListLength = ClcConsts.NormalStringLength;
-        public const int AskOpenStyleLength = 20;
         public const int IpAddressLength = 20;
+        public const int AskOpenStyleLength = 20;
+        public const int MaxPasswordLength = 8;
 
         // Impement of IMustHaveTenant
         public int TenantId { get; set; }
@@ -87,15 +88,20 @@ namespace Clc.Fields
         /// <summary>
         /// 开门方式：1）直接申请 2）验证后申请 3）领抢任务申请
         /// </summary>
-        [StringLength(Workplace.AskOpenStyleLength)]
+        [StringLength(AskOpenStyleLength)]
         public string AskOpenStyle { get; set; }
         
+        /// <summary>
+        ///  紧急开门密码
+        /// </summary>
+        [StringLength(MaxPasswordLength)]
+        public string EmergPassword { get; set; }
         #region methods
 
-        public string CheckTimeZone(string startTime, string endTime, bool isTomorrow)
+        public string CheckTimeZone(string startTime, string endTime)
         {
             DateTime start = ClcUtils.GetDateTime(startTime);
-            DateTime end = ClcUtils.GetDateTime(endTime, isTomorrow);
+            DateTime end = ClcUtils.GetDateTime(endTime);
             if (start > end)
                 return "结束时间不能小于开始时间!";
             if (end.Subtract(start).TotalHours < MinDuration)

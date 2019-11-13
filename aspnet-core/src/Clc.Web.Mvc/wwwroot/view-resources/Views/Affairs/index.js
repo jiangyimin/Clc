@@ -1,13 +1,7 @@
 (function() {        
     $(function() {    
-        work.isCaptain = true;
-        abp.services.app.work.getMyWork().done(function (wk) {
-            work.myWork = wk;
-        });
-        
-       // get today
-        abp.services.app.work.getTodayString().done(function (d) {
-            mds.today = d;
+        abp.services.app.work.getMyAffairWork().done(function (wk) {
+            mds.today = wk.today;
             $('#dd').datebox('setValue', mds.today);
             $('#dg').datagrid({
                 url: 'Affairs/GridData?CarryoutDate=' + mds.today
@@ -34,6 +28,17 @@
             }
         })
 
+        $('#tb').children('a[name="event"]').click(function (e) {
+            if (mds.masterCurrentRow === null ) {   
+                abp.notify.error("先选择任务");
+                return;
+            };
+            $('#dlgEvent').dialog('open');
+            $('#dgEvent').datagrid({
+                url: "Affairs/GridDataEvent/" + mds.masterCurrentRow.id
+            });
+        })            
+
         $('#tb').children('a[name="activate"]').click(function (e) {
             var checkedRows = $('#dg').datagrid("getChecked");
             if (checkedRows.length === 0) {
@@ -49,7 +54,12 @@
             // alert(ids);
             abp.services.app.affair.activate(ids).done(function (ret) {
                 abp.notify.info('有' + ret.item2 + '个任务被激活');
-                if (ret.item1) abp.notify.info(ret.item1);
+                // Cache active affairs
+                abp.services.app.affair.setActiveAffairCache(mds.today).done(function() {
+                    abp.notify.info("下达最新的激活任务信息");
+                });
+
+                if (ret.item1) abp.notify.error(ret.item1);
                 mds.reload('');
             })
         });

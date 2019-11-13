@@ -114,15 +114,15 @@ namespace Clc.Users
             );
         }
 
-        public async Task resetWorkerUsersToLatest()
+        public async Task AddWorkerUsers()
         {
             var users = await Repository.GetAllListAsync();
-            foreach (WorkerListItem worker in _workerCache.GetList())
+            foreach (WorkerCacheItem worker in _workerCache.GetList())
             {
-                string roleName = _workerCache[worker.Id].WorkerRoleName;
-               
-                if (!string.IsNullOrWhiteSpace(roleName))
+                if (!string.IsNullOrWhiteSpace(_workerCache[worker.Id].LoginRoleNames))
                 {
+                    string[] roles = _workerCache[worker.Id].LoginRoleNames.Split(',', '|');
+               
                     // User
                     string userName = "Worker" + worker.Cn;
                     var user = users.FirstOrDefault(x => x.UserName == userName);
@@ -132,19 +132,21 @@ namespace Clc.Users
                         var newUser = User.CreateUser(AbpSession.TenantId??0, userName, User.WorkerUserDefaultPassword);
                         newUser.WorkerId = worker.Id;
                         CheckErrors(await _userManager.CreateAsync(newUser));
-                        CheckErrors(await _userManager.AddToRoleAsync(newUser, roleName));                      
-                    }
-                    else 
-                    {
-                        var roles = await _userManager.GetRolesAsync(user);
-                        if (!roles.Contains(roleName))
-                        {
-                            CheckErrors(await _userManager.RemoveFromRolesAsync(user, roles));
-                            CheckErrors(await _userManager.AddToRoleAsync(user, roleName));
-                        }
-                        CheckErrors(await _userManager.ChangePasswordAsync(user, User.WorkerUserDefaultPassword));
+                        CheckErrors(await _userManager.SetRoles(newUser, roles));                      
                     }
                 }
+            }
+        }
+
+        public async Task UpdateWorkerUser(EntityDto<long> input)
+        {
+            var user = await _userManager.GetUserByIdAsync(input.Id);
+
+            if (user != null) 
+            {
+                string roleNames = _workerCache[user.WorkerId.Value].LoginRoleNames;
+                string[] roles = roleNames == null ? new string[0] : roleNames.Split(',', '|');
+                CheckErrors(await _userManager.SetRoles(user, roles));
             }
         }
 

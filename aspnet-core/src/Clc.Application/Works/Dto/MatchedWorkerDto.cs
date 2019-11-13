@@ -4,7 +4,7 @@ using Clc.Types;
 
 namespace Clc.Works.Dto
 {
-    public class WorkerMatchedDto
+    public class MatchedWorkerDto
     {
         public int RouteWorkerId { get; set; }
 
@@ -18,7 +18,7 @@ namespace Clc.Works.Dto
         public string ArticleTypeList { get; set; }
         public string Duties { get; set; }
 
-        public WorkerMatchedDto(int id, Worker w, WorkRole role)
+        public MatchedWorkerDto(int id, Worker w, WorkRole role)
         {
             RouteWorkerId = id;
             Id = w.Id;

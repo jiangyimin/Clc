@@ -21,25 +21,3 @@
     @RenderSection("funcScripts", false);
 }
 
-<!-- Page Lock -->
-<div id="lockDiv" class="lock-mask">
-    <p>正在锁屏中...</p> 
-</div>
-<!-- #END# Page Loader -->
-
-@RenderBody()
-
-@*弹窗*@
-<div id="dlgUnlock" class="easyui-dialog" closed="true" modal="true" title="验证解屏密码" buttons="#dlgUnlock-buttons" style="z-index::8889; width: 400px; padding: 10px;">
-    <form id="fmUnlock" class="easyui-form" method="post" novalidate>
-        <table class="edit-tbl">
-            <tr>
-                <th><label for="password">解屏密码：</label></th>
-                <td><input id="password" name="password" class="easyui-textbox" data-options="required:true, validType:'length[2, @Depot.MaxPasswordLength]'" style="width: 100%"></td>
-            </tr>
-        </table>
-    </form>
-</div>
-<div id="dlgUnlock-buttons">
-	<a href="#" class="easyui-linkbutton" plain="true" onclick="work.verifyUnlockPassword()">确定</a>
-</div>

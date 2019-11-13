@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Abp.Dependency;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Caching;
@@ -22,9 +23,12 @@ namespace Clc.Runtime.Cache
 
         public Signin Get(int depotId, int workerId)
         {
-            string cacheKey = depotId.ToString() + workerId.ToString() + DateTime.Now.Date.ToString();
-            return _cacheManager.GetCache(CacheName)
-                .Get(cacheKey, () => _signinRepository.FirstOrDefault(x => x.DepotId == depotId && x.CarryoutDate == DateTime.Now.Date && x.WorkerId == workerId));
+            string cacheKey = depotId.ToString() + DateTime.Now.Date.ToString();
+            var list = _cacheManager.GetCache(CacheName).Get(cacheKey, () => {
+                return _signinRepository.GetAll().Where(x => x.CarryoutDate == DateTime.Now.Date && x.DepotId == depotId).ToList();
+            });
+            
+            return list.LastOrDefault(x => x.WorkerId == workerId);
         }
     }
 }

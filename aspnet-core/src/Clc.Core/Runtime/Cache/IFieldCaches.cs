@@ -14,7 +14,7 @@ namespace Clc.Runtime.Cache
     {
     }
 
-    public interface IWorkerCache : IEntityListCache<Worker, Worker, WorkerListItem>
+    public interface IWorkerCache : IEntityListCache<Worker, Worker, WorkerCacheItem>
     {
     }
 

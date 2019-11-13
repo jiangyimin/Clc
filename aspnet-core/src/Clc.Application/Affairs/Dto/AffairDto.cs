@@ -20,8 +20,9 @@ namespace Clc.Affairs.Dto
         /// <summary>
         /// Workplace
         /// </summary>
-        // [Required]
         public int WorkplaceId { get; set; }
+        public string WorkplaceName { get; set; }
+        public string WorkplaceAskOpenStyle { get; set; }
 
         /// <summary>
         /// 状态（生成，活动，结束, 日结）
@@ -42,12 +43,11 @@ namespace Clc.Affairs.Dto
         [Required]
         [StringLength(ClcConsts.TimeLength)]
         public string EndTime { get; set; }
-        public string IsTomorrow { get; set; }
+        // public string IsTomorrow { get; set; }
 
         [StringLength(Affair.MaxRemarkLength)]
         public string Remark { get; set; }
 
-        public string WorkplaceName { get; set; }
         public string CreateWorkerName { get; set; }
 
         // only for mds.js 
@@ -65,7 +65,7 @@ namespace Clc.Affairs.Dto
             WorkManager workManager = IocManager.Instance.Resolve<WorkManager>();
 
             var workplace = workManager.GetWorkplace(WorkplaceId);           
-            string result = workplace.CheckTimeZone(StartTime, EndTime, IsTomorrow == "on" ? true : false);
+            string result = workplace.CheckTimeZone(StartTime, EndTime);
             if (!string.IsNullOrEmpty(result))
                  context.Results.Add(new ValidationResult(result));
         }

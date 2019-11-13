@@ -9,16 +9,32 @@
         });
 
         // resetWorkerUsers
-        $('#tb').children('a[name="resetToLatest"]').click(function (e) {
-            abp.message.confirm('确定重置到最新吗？', '请确定', function (isConfirmed) {
+        $('#tb').children('a[name="adds"]').click(function (e) {
+            abp.message.confirm('确定批量增加用户吗？', '请确定', function (isConfirmed) {
                 if (isConfirmed) {
                     abp.ui.setBusy(_$dg);
-                    _userService.resetWorkerUsersToLatest().done(function () {
-                        abp.notify.info("成功重置");
+                    _userService.addWorkerUsers().done(function () {
+                        abp.notify.info("成功添加");
                         _$dg.datagrid('reload');
                     }).always(function() {
                         abp.ui.clearBusy(_$dg);
                     });
+                }
+            });
+        });
+
+        $('#tb').children('a[name="update"]').click(function (e) {
+            var row = _$dg.datagrid('getSelected');
+            if (!row) {
+                abp.notify.error("选择要更新的行", "", { positionClass : 'toast-top-center'} );
+                return;
+            }
+            abp.message.confirm('确定更新这一行吗？', '请确定', function (isConfirmed) {
+                if (isConfirmed) {
+                    _userService.updateWorkerUser(row).done(function () {
+                        abp.notify.info(row.userName + " 已更新！");
+                        _$dg.datagrid('reload'); 
+                   });
                 }
             });
         });

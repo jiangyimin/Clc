@@ -47,9 +47,9 @@ namespace Clc.Web.Controllers
         }
         
         [DontWrapResult]
-        public async Task<JsonResult> GridData(DateTime carryoutDate, int affairId)
+        public JsonResult GridData(DateTime carryoutDate, int depotId, int affairId)
         {
-            var output = await _workAppService.GetRoutesForArticleAsync(carryoutDate, affairId);
+            var output = _workAppService.GetActiveRoutes(carryoutDate, depotId, affairId);
             return Json( new { rows = output });
         }
 

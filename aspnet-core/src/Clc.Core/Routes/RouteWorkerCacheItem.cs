@@ -1,17 +1,16 @@
-using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Clc.Routes;
 
-namespace Clc.Works.Dto
+namespace Clc.Routes
 {
     /// <summary>
-    /// ArtRouteWorkerDto
+    /// RouteCacheItem
     /// </summary>
-    public class RouteWorkerCDto
+    [AutoMapFrom(typeof(RouteWorker))]
+    public class RouteWorkerCacheItem : EntityDto
     {
-        public int Id { get; set; }
         public int WorkerId { get; set; }
+        public int? AltWorkerId { get; set; }
 
         public int WorkRoleId { get; set; }
     }

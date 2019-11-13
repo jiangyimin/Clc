@@ -40,8 +40,10 @@ namespace Clc.EntityFrameworkCore
         public DbSet<Signin> Signins { get; set; }
         public DbSet<ArticleRecord> ArticleRecords { get; set; }
         public DbSet<BoxRecord> BoxRecords { get; set; }
+        public DbSet<Issue> Issues { get; set; }
 
-        public DbSet<DoorRecord> DoorRecords { get; set; }
+        public DbSet<AskDoorRecord> AskDoorRecords { get; set; }
+        public DbSet<EmergDoorRecord> EmergDoorRecords { get; set; }
 
         // Affairs
         public DbSet<Affair> Affairs { get; set; }
@@ -152,10 +154,21 @@ namespace Clc.EntityFrameworkCore
                 b.HasIndex(e => new { e.TenantId, e.InTime });
             });
 
-            modelBuilder.Entity<DoorRecord>(b =>
+            modelBuilder.Entity<Issue>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.DepotId, e.CreateTime });
+            });
+
+            modelBuilder.Entity<AskDoorRecord>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.AskTime });
+                b.HasIndex(e => new { e.TenantId, e.WorkplaceId, e.AskTime });
+            });
+
+            modelBuilder.Entity<EmergDoorRecord>(b =>
             {
                 b.HasIndex(e => new { e.TenantId, e.CreateTime });
-                b.HasIndex(e => new { e.TenantId, e.WorkplaceId });
+                b.HasIndex(e => new { e.TenantId, e.WorkplaceId, e.CreateTime });
             });
 
             //
@@ -183,10 +196,18 @@ namespace Clc.EntityFrameworkCore
             modelBuilder.Entity<BoxRecord>()
                 .HasOne(b => b.Box).WithMany().OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<DoorRecord>()
-                .HasOne(b => b.OpenAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<DoorRecord>()
-                .HasOne(b => b.ApplyAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Issue>()
+                .HasOne(b => b.CreateWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Issue>()
+                .HasOne(b => b.ProcessWorker).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AskDoorRecord>()
+                .HasOne(b => b.AskAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<AskDoorRecord>()
+                .HasOne(b => b.MonitorAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EmergDoorRecord>()
+                .HasOne(b => b.MonitorAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
 
             // Affairs
             modelBuilder.Entity<Affair>()

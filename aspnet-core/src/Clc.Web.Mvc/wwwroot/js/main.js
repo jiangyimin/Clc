@@ -70,7 +70,7 @@
         },
 
         timeFormatter: function (val) {
-            if (val) return val.substr(11, 5);
+            if (val) return val.substr(11, 8);
         },
 
         datetimeFormatter: function (val) {

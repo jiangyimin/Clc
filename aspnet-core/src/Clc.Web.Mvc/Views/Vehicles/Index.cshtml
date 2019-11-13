@@ -13,6 +13,7 @@
             { field: "cn", title: "编号", width: 100, sortable: true },
             { field: "license", title: "车牌", width: 100 },
             { field: "photoLength", title: "照片大小", width: 80 },
+            { field: "remark", title: "备注", width: 80 },
         ]];
         crud.parentField = 'depotId';
         crud.children = true;        
@@ -90,11 +91,11 @@
             </tr>
             <tr>
                 <th><label for="cn">编号：</label></th>
-                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @Worker.MaxCnLength]'" style="width: 100%"></td>
+                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @Vehicle.MaxCnLength]'" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><Label for="license">车牌:</Label></th>
-                <td><input name="license" class="easyui-textbox" data-options="required:true, validType:'length[1, @Worker.MaxNameLength]'" style="width: 100%"></td>
+                <td><input name="license" class="easyui-textbox" data-options="required:true, validType:'length[7, @Vehicle.MaxLicenseLength]'" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><Label for="PhotoImage">照片:</Label></th>
@@ -102,6 +103,10 @@
                     <img id="preview" alt="" src="" style="width:100px; height:110px;" />
                     <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
                 </td>
+            </tr>
+            <tr>
+                <th><Label for="remark">备注:</Label></th>
+                <td><input name="remark" class="easyui-textbox" data-options="validType:'length[1, @Vehicle.MaxRemarkLength]'" style="width: 100%"></td>
             </tr>
         </table>
     </form>

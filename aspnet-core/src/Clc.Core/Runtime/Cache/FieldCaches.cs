@@ -30,7 +30,7 @@ namespace Clc.Runtime.Cache
         }
     }
 
-    public class WorkerCache : EntityListCache<Worker, Worker, WorkerListItem>, IWorkerCache, ITransientDependency
+    public class WorkerCache : EntityListCache<Worker, Worker, WorkerCacheItem>, IWorkerCache, ITransientDependency
     {
         public WorkerCache(ICacheManager cacheManager, IRepository<Worker> repository, IObjectMapper objectMapper)
             : base(cacheManager, repository, objectMapper)

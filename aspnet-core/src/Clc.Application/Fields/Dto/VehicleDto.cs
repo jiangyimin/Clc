@@ -26,7 +26,7 @@ namespace Clc.Fields.Dto
         /// 车牌
         /// </summary>
         [Required]
-        [StringLength(Vehicle.LicenseLength)]
+        [StringLength(Vehicle.MaxLicenseLength)]
         public string License { get; set; }
 
         /// <summary>
@@ -36,6 +36,11 @@ namespace Clc.Fields.Dto
         public int PhotoLength { get; set; }
         public IFormFile PhotoFile { get; set; }
 
+        /// <summary>
+        /// 备注
+        /// </summary>
+        [StringLength(Vehicle.MaxRemarkLength)]
+        public string Remark { get; set; }      
         #region interface
         public void AddValidationErrors(CustomValidationContext context)
         {

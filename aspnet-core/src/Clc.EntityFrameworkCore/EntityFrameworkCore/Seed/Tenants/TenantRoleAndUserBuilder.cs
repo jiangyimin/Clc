@@ -32,19 +32,15 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             CreateRoleAndUser(StaticRoleNames.Tenants.Hrm, permissions, false, StaticRoleNames.Tenants.Hrm, User.UserDefaultPassword);
 
             // Hrq RoleAndUser
-            // permissions = new string[] { PermissionNames.Pages_Hrq };
-            // CreateRoleAndUser(StaticRoleNames.Tenants.Hrq, permissions, false, StaticRoleNames.Tenants.Hrq, User.UserDefaultPassword);
-
-            // Query RoleAndUser
-            permissions = new string[] { PermissionNames.Pages_Query };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Query, permissions, false, StaticRoleNames.Tenants.Query, User.UserDefaultPassword);
+            permissions = new string[] { PermissionNames.Pages_Hrq };
+            CreateRoleAndUser(StaticRoleNames.Tenants.Hrq, permissions, false, StaticRoleNames.Tenants.Hrq, User.UserDefaultPassword);
 
             //
             // Worker Roles
             //
             // Captain
             permissions = new string[] { 
-                PermissionNames.Pages_Arrange, PermissionNames.Pages_Statistic
+                PermissionNames.Pages_Arrange, PermissionNames.Pages_Statistic, PermissionNames.Pages_Query
             };
 
             CreateRole(StaticRoleNames.Tenants.Captain, permissions, true);
@@ -53,7 +49,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             permissions = new string[] { PermissionNames.Pages_Aux };
             CreateRole(StaticRoleNames.Tenants.Aux, permissions, true);
             // Monitor 
-            permissions = new string[] { PermissionNames.Pages_Monitor };
+            permissions = new string[] { PermissionNames.Pages_Monitor, PermissionNames.Pages_Query };
             CreateRole(StaticRoleNames.Tenants.Monitor, permissions, true);
 
             // Article
@@ -63,10 +59,6 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             // Box
             permissions = new string[] { PermissionNames.Pages_Box };
             CreateRole(StaticRoleNames.Tenants.Box, permissions, true);
-
-            // ArticleAndBox
-            permissions = new string[] { PermissionNames.Pages_Article, PermissionNames.Pages_Box };
-            CreateRole(StaticRoleNames.Tenants.ArticleAndBox, permissions, true);           
         }
 
         private void CreateRoleAndUser(string roleName, string[] permissions, bool isWorkerRole, string userName, string password)

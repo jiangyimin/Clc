@@ -11,7 +11,8 @@ namespace Clc.Fields
     public class Vehicle : Entity, IMustHaveTenant
     {
         public const int MaxCnLength = 8;
-        public const int LicenseLength = 7;
+        public const int MaxLicenseLength = 10;
+        public const int MaxRemarkLength = 50;
 
         // Impement of IMustHaveTenant
         public int TenantId { get; set; }
@@ -31,13 +32,19 @@ namespace Clc.Fields
         /// 车牌号码
         /// </summary>
         [Required]
-        [StringLength(LicenseLength)]
+        [StringLength(MaxLicenseLength)]
         public string License { get; set; }
 
         /// <summary>
         /// 照片
         /// </summary>
         public byte[] Photo { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        [StringLength(MaxRemarkLength)]
+        public string Remark { get; set; }      
     }
 }
 

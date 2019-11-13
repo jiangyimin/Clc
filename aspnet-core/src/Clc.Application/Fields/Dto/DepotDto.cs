@@ -21,11 +21,15 @@ namespace Clc.Fields.Dto
 
         public int? Radius { get; set; }
         
-        public string ActiveRouteNeedCheckin { get; set; }
         
         [StringLength(Depot.MaxPasswordLength)]
         public string UnlockScreenPassword { get; set; }
 
         public string ReportTo { get; set; }
+
+        public string ActiveRouteNeedCheckin { get; set; }
+
+        public string AllowCardWhenCheckin { get; set; }
+        public string LocalUnlockScreen { get; set; }
     }
 }

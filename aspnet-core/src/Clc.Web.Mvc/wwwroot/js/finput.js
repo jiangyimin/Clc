@@ -7,6 +7,10 @@ var finput = finput || {};
         articleRfidLength: 3,
         boxRfidLength: 8,
     };
+
+    finput.DetectWorker = true;
+    finput.DetectArticle = false;
+    finput.DetectBox = false;
     
     finput.index = 0;
     finput.route = {};
@@ -69,18 +73,13 @@ var finput = finput || {};
         var c = String.fromCharCode(keyCode);
         if (keyCode == 13 && currentRfid != '') {
             if (currentRfid.length == finput.rfidLength.workerRfidLength) {
-                if (dialogClosed == true)
-                    finput.onWorker(currentRfid);
-                else
-                    finput.onWorkerConfirm(currentRfid);
+                if (finput.DetectWorker == true) finput.onWorker(currentRfid);
             }
             else if (currentRfid.length == finput.rfidLength.articleRfidLength) {
-                if (dialogClosed == false)
-                    finput.onArticle(currentRfid);
+                if (finput.DetectArticle == true) finput.onArticle(currentRfid);
             }
             else if (currentRfid.length == finput.rfidLength.boxRfidLength) {
-                if (dialogClosed == false)
-                    finput.onBox(currentRfid);
+                if (finput.DetectBox == true) finput.onBox(currentRfid);
             }
             else {
                 abp.notify.error("输入的Rfid长度不对");

@@ -19,18 +19,13 @@
     <environment names="Staging,Production">
         <script src="~/view-resources/Views/Home/Index.min.js" asp-append-version="true"></script>
     </environment>
-
-    <script type="text/javascript">
-
-        function displayRfid1(str) {
-            rfid1.innerHTML = str;
-        }
-        function displayRfid2(str) {
-            rfid2.innerHTML = str;
-        }
-    </script>    
-
 }
+
+<!-- Page Lock -->
+<div id="lockDiv" class="lock-mask">
+    <p>正在锁屏中...</p> 
+</div>
+<!-- #END# Page Loader -->
 
 <!-- body -->
 <div class="easyui-layout" fit="true">
@@ -40,8 +35,9 @@
                 @await Component.InvokeAsync(typeof(TopBarTitleViewComponent))
             </div>
             <div class="bar-right">
-                <a href="#" class="easyui-linkbutton" style="color: white; margin-right: 5px; " plain="true">修改密码</a>
-                <a href="/Account/Logout" class="easyui-linkbutton" style="color: white; margin: 10px; " plain="true" iconCls="icon-cancel">退出</a>
+                <object classid="clsid:87772C8D-3C8C-4E55-A886-5BA5DA384424" id="ZAZFingerActivex"></object>
+                <!-- <a href="#" class="easyui-linkbutton" style="color: white; margin-right: 5px; " plain="true">修改密码</a> -->
+                <a href="/Account/Logout" class="easyui-linkbutton" plain="true" iconCls="icon-cancel">退出</a>
             </div>
         </div>
     </div>
@@ -107,4 +103,20 @@
     <a id="submit" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save">提交</a>
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlg').dialog('close')">取消</a>
 </div>
+
+@*unLock弹窗*@
+<div id="dlgUnlock" class="easyui-dialog" closed="true" modal="true" title="验证解屏密码" buttons="#dlgUnlock-buttons" style="z-index::8889; width: 400px; padding: 10px;">
+    <form id="fmUnlock" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl">
+            <tr>
+                <th><label for="password">解屏密码：</label></th>
+                <td><input id="password" name="password" class="easyui-textbox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dlgUnlock-buttons">
+	<a href="#" class="easyui-linkbutton" plain="true" onclick="verifyUnlockPassword()">确定</a>
+</div>
+
 

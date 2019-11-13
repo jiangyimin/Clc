@@ -41,6 +41,7 @@ namespace Clc.Routes
         private readonly ITaskTypeCache _taskTypeCache;
         private readonly IWorkRoleCache _workRoleCache;
         private readonly IRouteTypeCache _routeTypeCache;
+        private readonly IRouteCache _routeCache;
 
         public RouteAppService(IRepository<Route> routeRepository, 
             IRepository<RouteWorker> workerRepository,
@@ -56,7 +57,8 @@ namespace Clc.Routes
             IRepository<BoxRecord> boxRecordRepository,   
             IRouteTypeCache routeTypeCache,        
             ITaskTypeCache taskTypeCache,
-            IWorkRoleCache workRoleCache)
+            IWorkRoleCache workRoleCache,
+            IRouteCache routeCache)
         {
             _routeRepository = routeRepository;
             _workerRepository = workerRepository;
@@ -73,6 +75,7 @@ namespace Clc.Routes
             _routeTypeCache = routeTypeCache;
             _taskTypeCache = taskTypeCache;
             _workRoleCache = workRoleCache;
+            _routeCache = routeCache;
         }
 
         public async Task<List<RouteDto>> GetRoutesAsync(DateTime carryoutDate, string sorting)
@@ -127,6 +130,17 @@ namespace Clc.Routes
                 count++;            
             }
             return (null, count);
+        }
+
+        public async Task SetActiveRouteCache(DateTime carryoutDate)
+        {
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
+            // 为激活任务设置缓存
+            var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Workers).Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && x.Status != "安排");
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            var lst = ObjectMapper.Map<List<RouteCacheItem>>(entities);
+            if (lst.Count > 0)
+                _routeCache.Set(carryoutDate, depotId, lst);
         }
 
         public async Task<int> Close(List<int> ids)

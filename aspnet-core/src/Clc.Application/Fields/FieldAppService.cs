@@ -64,17 +64,14 @@ namespace Clc.Fields
             return lst;
         }
 
-        public List<Workplace> GetWorkplaceItems(bool all)
+        public List<Workplace> GetWorkplaceItems(bool justVault)
         {
-            if (all)
-            {
-                return _workplaceCache.GetList();
-            }
+            int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
+            var lst = _workplaceCache.GetList();
+            if (justVault)
+                return lst.FindAll(x => x.DepotId == depotId && x.Name.Contains("金库"));
             else
-            {
-                int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
-                return _workplaceCache.GetList().FindAll(x => x.DepotId == depotId);
-            }
+                return lst.FindAll(x => x.DepotId == depotId);
         }
 
         public List<ComboboxItemDto> GetWorkerItemsByWorkRole(int workRoleId)        
@@ -96,11 +93,11 @@ namespace Clc.Fields
             return list;
         }
 
-        public List<WorkerListItem> GetWorkerListItems(bool all)        
+        public List<WorkerCacheItem> GetWorkerCacheItems(bool all)        
         {
             if (all)
             {
-                return ObjectMapper.Map<List<WorkerListItem>>(_workerCache.GetList());
+                return ObjectMapper.Map<List<WorkerCacheItem>>(_workerCache.GetList());
             }
             else
             {
@@ -108,7 +105,7 @@ namespace Clc.Fields
                 var lst = _workerCache.GetList().FindAll(x => x.DepotId == depotId);
                 lst.Sort( (a, b) => a.Cn.CompareTo(b.Cn) );
 
-                var list = ObjectMapper.Map<List<WorkerListItem>>(lst);
+                var list = ObjectMapper.Map<List<WorkerCacheItem>>(lst);
                 list.ForEach(x => x.PostName = _postCache[x.PostId].Name);
                 return list;
             }

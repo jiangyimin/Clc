@@ -13,6 +13,7 @@ namespace Clc.Configuration
             lst.AddRange(GetVISettingDefinitions(context));
             lst.AddRange(GetConstSettingDefinitions(context));
             lst.AddRange(GetRuleSettingDefinitions(context));
+            lst.AddRange(GetTimeRuleSettingDefinitions(context));
             // return new[]
             // {
             //     new SettingDefinition(AppSettingNames.UiTheme, "red", scopes: SettingScopes.Application | SettingScopes.Tenant | SettingScopes.User, isVisibleToClients: true)
@@ -96,33 +97,58 @@ namespace Clc.Configuration
                     scopes: SettingScopes.Tenant
                 ),
                 new SettingDefinition(
-                    AppSettingNames.Rule.MinCheckinInterval, 
-                    "180", 
-                    new FixedLocalizableString("最小签到间隔(分钟)"),
-                    scopes: SettingScopes.Tenant
-                ),
-                new SettingDefinition(
                     AppSettingNames.Rule.DoubleArticleRoles, 
                     "车长|持枪员", 
                     new FixedLocalizableString("双人领物角色"),
                     scopes: SettingScopes.Tenant
                 ),
                 new SettingDefinition(
-                    AppSettingNames.Rule.AskOpenLength, 
-                    "60", 
-                    new FixedLocalizableString("申请开门有效时长(秒)"),
-                    scopes: SettingScopes.Tenant
-                ),
-                new SettingDefinition(
-                    AppSettingNames.Rule.AskOpenLength, 
-                    "180", 
-                    new FixedLocalizableString("二次申请开门间隔(秒)"),
-                    scopes: SettingScopes.Tenant
-                ),
-                new SettingDefinition(
-                    AppSettingNames.Rule.MinOnDutyNum, 
+                    AppSettingNames.Rule.MinWorkersOnDuty, 
                     "2", 
                     new FixedLocalizableString("最少当班人数"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.EnableDynEmergPassword, 
+                    "false", 
+                    new FixedLocalizableString("动态应急开门密码"),
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
+                ),
+            };
+        }
+        private IEnumerable<SettingDefinition> GetTimeRuleSettingDefinitions(SettingDefinitionProviderContext context)
+        {
+            return new List<SettingDefinition>
+            {
+                new SettingDefinition(
+                    AppSettingNames.TimeRule.DaysChangeReadonly, 
+                    "2", 
+                    new FixedLocalizableString("再次申请开门间隔(秒)"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.TimeRule.RecheckInterval, 
+                    "0",            // 0: 不需要重新验证
+                    new FixedLocalizableString("重新验证间隔(分钟)"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.TimeRule.MinSigninInterval, 
+                    "60", 
+                    new FixedLocalizableString("最小签到间隔(分钟)"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.TimeRule.AskOpenInterval, 
+                    "120", 
+                    new FixedLocalizableString("再次申请开门间隔(秒)"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.TimeRule.AskOpenPeriod, 
+                    "60", 
+                    new FixedLocalizableString("申请开门周期(秒)"),
                     scopes: SettingScopes.Tenant
                 ),
             };

@@ -3,17 +3,15 @@ using Abp.AutoMapper;
 namespace Clc.Fields
 {
     /// <summary>
-    /// WorkerListItem
+    /// WorkerCacheItem
     /// </summary>
     [AutoMapFrom(typeof(Worker))]
-    public class WorkerListItem
+    public class WorkerCacheItem
     {
         public int Id { get; set; }
 
         public int DepotId { get; set; }
         
-        // public int? LoanDepotId { get; set; }
-
         public string Cn { get; set; }
 
         public string Name { get; set; }
@@ -23,6 +21,9 @@ namespace Clc.Fields
         public string PostName { get; set; }
 
         public string WorkRoles { get; set; }
+
+        public string Finger { get; set; }
+        public string Finger2 { get; set; }
 
         public string CnNamePost { 
             get {

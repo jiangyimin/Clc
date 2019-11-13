@@ -17,11 +17,12 @@ namespace Clc.Fields
 
         public const int MaxCnLength = 8;
         public const int MaxNameLength = 8;
-        public const int MaxWorkRolesLength = 30;
+
+        public const int MaxRoleNamesLength = 100;
         public const int MaxPasswordLength = 10;
         public const string PasswordRegex = "^[0-9]{6}$";
-        public const int RfidMaxLength = 18;
-        public const int MaxDeviceId = 50;
+        public const int MaxRfidLength = 18;
+        public const int MaxDeviceIdLength = 50;
         public const int MaxAdditiveInfoLength = 20;
         public const int FingerLength = 1024;
   
@@ -53,10 +54,10 @@ namespace Clc.Fields
         public Post Post { get; set; }
 
         /// <summary>
-        /// 其他可担任角色列表
+        /// 可担任角色列表
         /// </summary>
-        [StringLength(MaxWorkRolesLength)]
-        public string WorkRoles { get; set; }
+        [StringLength(MaxRoleNamesLength)]
+        public string WorkRoleNames { get; set; }
 
         /// <summary>
         /// 登录密码
@@ -65,15 +66,15 @@ namespace Clc.Fields
         public string Password { get; set; }
 
         /// <summary>
-        /// 工作人员登录角色名
+        /// 登录角色列表
         /// </summary>
-        [StringLength(Role.MaxNameLength)]
-        public string WorkerRoleName { get; set; }
+        [StringLength(MaxRoleNamesLength)]
+        public string LoginRoleNames { get; set; }
 
         /// <summary>
         /// IDCardNo 
         /// </summary>
-        [StringLength(RfidMaxLength)]
+        [StringLength(MaxRfidLength)]
         public string Rfid { get; set; }
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace Clc.Fields
         /// <summary>
         /// 微信设备Id
         /// </summary>
-        [StringLength(MaxDeviceId)]
+        [StringLength(MaxDeviceIdLength)]
         public string DeviceId { get; set; }
 
         // 附加认证信息
@@ -95,12 +96,12 @@ namespace Clc.Fields
         /// 指纹
         /// </summary>
         [StringLength(FingerLength)]
-        public byte[] Finger { get; set; }
+        public string Finger { get; set; }
         /// <summary>
         /// 指纹2
         /// </summary>
         [StringLength(FingerLength)]
-        public byte[] Finger2 { get; set; }
+        public string Finger2 { get; set; }
 
         /// <summary>
         /// 是否启用

@@ -163,7 +163,7 @@ namespace Clc.Web.Controllers
                 if (worker.Password != password)     // 密码错
                     throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
 
-                if (string.IsNullOrEmpty(worker.WorkerRoleName) || worker.IsActive == false || string.IsNullOrEmpty(worker.Password))
+                if (string.IsNullOrEmpty(worker.LoginRoleNames) || worker.IsActive == false || string.IsNullOrEmpty(worker.Password))
                     throw new UserFriendlyException("你没有登录权限");
 
                 loginResult = await _logInManager.LoginAsync("Worker" + usernameOrEmailAddress, Clc.Authorization.Users.User.WorkerUserDefaultPassword, tenancyName);

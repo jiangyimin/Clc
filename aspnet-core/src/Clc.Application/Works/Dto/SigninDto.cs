@@ -15,10 +15,6 @@ namespace Clc.Works.Dto
     {        
         public const int MaxWorkerLength = 20;
         
-
-        // 签到时间
-        public DateTime SigninTime { get; set; }
-
         // 签到地点
         [Required]
         public int DepotId { get; set; }
@@ -31,6 +27,14 @@ namespace Clc.Works.Dto
         public string WorkerCn { get; set; }
         public string WorkerName { get; set; }
         
+
+        // 签到时间
+        public DateTime SigninTime { get; set; }
+
+
+        // 签到方式
+        public string SigninStyle { get; set; }
+
     }
 }
 

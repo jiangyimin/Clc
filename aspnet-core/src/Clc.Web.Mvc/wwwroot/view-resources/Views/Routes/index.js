@@ -1,9 +1,7 @@
 (function() {        
     $(function() {    
-        work.isCaptain = true;
-        // get today
-        abp.services.app.work.getTodayString().done(function (d) {
-            mds.today = d;
+        abp.services.app.work.getMyAffairWork().done(function (wk) {
+            mds.today = wk.today;
             $('#dd').datebox('setValue', mds.today);
 
             $('#dg').datagrid({

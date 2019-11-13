@@ -15,9 +15,11 @@
             { field: "longitude", title: "经度", width: 120 },
             { field: "latitude", title: "纬度", width: 120 },
             { field: "radius", title: "签到半径(米)", width: 100 },
-            { field: "activeRouteNeedCheckin", title: "激活线路先签到", width: 100 },
             { field: "unlockScreenPassword", title: "解屏密码", width: 100 },
             { field: "reportTo", title: "报送到", width: 100 },
+            { field: "activeRouteNeedCheckin", title: "激活线路先签到", width: 80 },
+            { field: "allowCardWhenCheckin", title: "验入允许刷卡", width: 80 },
+            { field: "localUnlockScreen", title: "本地解屏", width: 80 },
         ]];
     </script>
 }
@@ -57,6 +59,18 @@
             </tr>
                 <th><label for="reportTo">报送到：</label></th>
                 <td><input name="reportTo" class="easyui-textbox" data-options="validType:'length[2, @Depot.MaxReportToLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="activeRouteNeedCheckin">激活线路先签到: </label></th>
+                <td><input name="activeRouteNeedCheckin" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
+            </tr>
+            <tr>
+                <th><label for="allowCardWhenCheckin">验入允许刷卡: </label></th>
+                <td><input name="allowCardWhenCheckin" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
+            </tr>
+            <tr>
+                <th><label for="localUnlockScreen">本地解屏: </label></th>
+                <td><input name="localUnlockScreen" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
             </tr>
         </table>
     </form>

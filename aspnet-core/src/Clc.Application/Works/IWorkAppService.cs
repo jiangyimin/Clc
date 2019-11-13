@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
-using Clc.Routes.Dto;
+using Clc.Fields;
+using Clc.Routes;
 using Clc.Works.Dto;
 
 namespace Clc.Works
@@ -10,9 +11,12 @@ namespace Clc.Works
     public interface IWorkAppService : IApplicationService
     {
         bool VerifyUnlockPassword(string password);
-        string GetTodayString();
-        DateTime getNow();
-        MyWorkDto GetMyWork();
+        bool AllowCardWhenCheckin();   
+        (string, string) GetMe();
+        MyAffairWorkDto GetMyAffairWork();
+        
+        List<RouteCacheItem> GetActiveRoutes(DateTime carryouDate, int depotId, int affairId);
+
         string GetReportToManagers();
 
         #region Agent
@@ -21,18 +25,26 @@ namespace Clc.Works
         Task ResetAgent();
         #endregion
 
-        #region Signin
+        #region Signin and Checkin
         Task<List<SigninDto>> GetSigninsAsync(DateTime carryoutDate);
-
-        string SigninByRfid(string rfid);
+        (bool, string) SigninByRfid(string rfid);
+        (bool, string) SigninByFinger(string finger);
         
+        
+        (bool, string) CheckinByFinger(string finger, int workerId, DateTime carryoutDate, int depotId, int affairId);
+        (bool, string) CheckinByRfid(string rfid, DateTime carryoutDate, int depotId, int affairId);
+
         #endregion Signin
 
+        #region Door
+        (bool, string) AskOpenDoor(DateTime carryoutDate, int depotId, int affairId);
+        (bool, string) AskOpenDoorTask(DateTime carryoutDate, int depotId, int affairTaskId);
+        
+        #endregion
         #region article
-        Task<List<RouteCDto>> GetRoutesForArticleAsync(DateTime carryouDate, int affairId);
 
-        RouteWorkerMatchResult MatchWorkerForLend(DateTime carryoutDate, int affairId, string rfid);
-        RouteWorkerMatchResult MatchWorkerForReturn(DateTime carryoutDate, int affairId, string rfid);
+        // style = 0 为领物
+        RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, DateTime carryoutDate, int depotId, int affairId, string rfid);
         
         (string, RouteArticleCDto) MatchArticleForLend(string workerCn, string vehicleCn, string routeName, string articleTypeList, string rfid);
         (string, RouteArticleCDto) MatchArticleForReturn(string rfid);
@@ -40,10 +52,8 @@ namespace Clc.Works
         #endregion
 
         #region box
-        Task<List<RouteCDto>> GetRoutesForBoxAsync(DateTime carryouDate, int affairId);
 
-        RouteWorkerMatchResult MatchWorkerForInBox(DateTime carryoutDate, int affairId, string rfid);
-        RouteWorkerMatchResult MatchWorkerForOutBox(DateTime carryoutDate, int affairId, string rfid);
+        RouteWorkerMatchResult MatchWorkerForBox(DateTime carryoutDate, int depotId, int affairId, string rfid);
         
         (string, RouteBoxCDto) MatchInBox(DateTime carryoutDate, int affairId, int routeId, string rfid);
         (string, RouteBoxCDto) MatchOutBox(DateTime carryoutDate, int affairId, int routeId, string rfid);

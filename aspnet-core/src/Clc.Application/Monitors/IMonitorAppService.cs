@@ -11,8 +11,8 @@ namespace Clc.Monitors
     {
         Task<List<DoorDto>> GetDoorsAsync();
 
-        Task<PagedResultDto<DoorRecordDto>> GetRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input);
+        Task<PagedResultDto<AskDoorRecordDto>> GetRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input);
 
-        Task Insert(int doorId, int affairId);
+        Task Insert(int doorId, int affairId, string askWorkers);
     }
 }

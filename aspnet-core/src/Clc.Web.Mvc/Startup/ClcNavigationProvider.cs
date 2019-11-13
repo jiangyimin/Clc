@@ -55,31 +55,45 @@ namespace Clc.Web.Startup
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrq, new FixedLocalizableString("档案查看"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrm)
                     .AddItem(new MenuItemDefinition("Hrq_WorkerFiles", new FixedLocalizableString("查看人员"), url: "WorkerFiles/Hrq"))
                     // .AddItem(new MenuItemDefinition("Hrm_Documents", new FixedLocalizableString("文件档案"), url: "Documents"))
-                // Query
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Query, new FixedLocalizableString("配置"), icon: "fa fa-globe", requiredPermissionName: PermissionNames.Pages_Query)
-                    .AddItem(new MenuItemDefinition("Keeper_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Keeper/ArticleRecords"))
-                    .AddItem(new MenuItemDefinition("Dispatcher_DaySettlesQuery", new FixedLocalizableString("日结查询"), url: "DaySettles/DaySettlesQuery"))
-               // PlaceC
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("中心监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
-                    .AddItem(new MenuItemDefinition("Monitor_OpenDoor", new FixedLocalizableString("开门"), url: "Monitor/OpenDoor"))
- 
+                               
                 // Arrange
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("工作安排"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
                     .AddItem(new MenuItemDefinition("Arrange_PreRoutes", new FixedLocalizableString("预排线路"), url: "PreRoutes"))
                     .AddItem(new MenuItemDefinition("Arrange_Routes", new FixedLocalizableString("线路任务"), url: "Routes"))
                     .AddItem(new MenuItemDefinition("Arrange_Affairs", new FixedLocalizableString("内部任务"), url: "Affairs"))
+                    .AddItem(new MenuItemDefinition("Arrange_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Monitor/KeyPoints"))
                 // 今日情况
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("今日情况"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Arrange)
-                    .AddItem(new MenuItemDefinition("Arrange_Checkin", new FixedLocalizableString("签到"), url: "Today/Signins"))
+                    .AddItem(new MenuItemDefinition("Arrange_Signin", new FixedLocalizableString("签到"), url: "Today/Signins"))
                     .AddItem(new MenuItemDefinition("Arrange_Article", new FixedLocalizableString("物品"), url: "Today/ArticleList"))
-                    .AddItem(new MenuItemDefinition("Arrange_Article", new FixedLocalizableString("尾箱"), url: "Today/BoxList"))
+                    .AddItem(new MenuItemDefinition("Arrange_Box", new FixedLocalizableString("尾箱"), url: "Today/BoxList"))
+                    .AddItem(new MenuItemDefinition("Arrange_Route", new FixedLocalizableString("线路"), url: "Today/RouteList"))
+                    .AddItem(new MenuItemDefinition("Arrange_Vehicle", new FixedLocalizableString("车辆"), url: "Today/VehicleList"))
+                
                 // Statistic
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
+                    .AddItem(new MenuItemDefinition("Statistic_Worker", new FixedLocalizableString("人"), url: "Checkin/Home"))
+                    .AddItem(new MenuItemDefinition("Statistic_Vehicle", new FixedLocalizableString("车"), url: "Monitor/AskOpenDoor"))
+                    .AddItem(new MenuItemDefinition("Statistic_RouteTask", new FixedLocalizableString("押运任务"), url: "Monitor/EmergOpenDoor"))
+
+                // Monitor
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("中心监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
+                    .AddItem(new MenuItemDefinition("Monitor_Checkin", new FixedLocalizableString("验入/申请"), url: "Checkin"))
+                    .AddItem(new MenuItemDefinition("Monitor_AskOpenDoor", new FixedLocalizableString("申请方式开门"), url: "Monitor/AskOpenDoor"))
+                    .AddItem(new MenuItemDefinition("Monitor_EmergOpenDoor", new FixedLocalizableString("应急方式开门"), url: "Monitor/EmergOpenDoor"))
+                    .AddItem(new MenuItemDefinition("Monitor_Records", new FixedLocalizableString("开门记录查询"), url: "Monitor/RecordQuery"))
+                    .AddItem(new MenuItemDefinition("Monitor_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Monitor/KeyPoints"))
+                    .AddItem(new MenuItemDefinition("Monitor_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Monitor/ArticleRecords"))
+
+
                 // Aux
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Aux, new FixedLocalizableString("辅助调度"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Aux)
+                    .AddItem(new MenuItemDefinition("Aux_Checkin", new FixedLocalizableString("验入/申请"), url: "Checkin"))
+                    .AddItem(new MenuItemDefinition("Aux_TaskArrange", new FixedLocalizableString("押运任务安排"), url: "Aux/Tasks"))
 
                 // Article
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Article, new FixedLocalizableString("库房操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Article)
+                    .AddItem(new MenuItemDefinition("Article_Checkin", new FixedLocalizableString("验入/申请"), url: "Checkin"))
                     .AddItem(new MenuItemDefinition("Article_Lend", new FixedLocalizableString("领用"), url: "ArticleWork/Lend"))
                     .AddItem(new MenuItemDefinition("Article_Return", new FixedLocalizableString("归还"), url: "ArticleWork/Return"))
                     .AddItem(new MenuItemDefinition("Article_List", new FixedLocalizableString("物品清单"), url: "ArticleWork/List"))
@@ -87,6 +101,7 @@ namespace Clc.Web.Startup
                 
                 // Box
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Box, new FixedLocalizableString("金库尾箱操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Box)
+                    .AddItem(new MenuItemDefinition("Box_Checkin", new FixedLocalizableString("验入/申请"), url: "Checkin"))
                     .AddItem(new MenuItemDefinition("Box_In", new FixedLocalizableString("入箱"), url: "BoxWork/InBox"))
                     .AddItem(new MenuItemDefinition("Box_Out", new FixedLocalizableString("出箱"), url: "BoxWork/OutBox"))
                     .AddItem(new MenuItemDefinition("Box_List", new FixedLocalizableString("尾箱清单"), url: "BoxWork/List"))

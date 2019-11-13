@@ -1,8 +1,4 @@
-@{
-    Layout = "~/Views/Shared/_WorkLayout.cshtml";
-}
-
-@section workScripts
+@section Scripts
 {
     <environment names="Development">
         <script src="~/js/mds.js" asp-append-version="true"></script>
@@ -75,10 +71,6 @@
         mds.details.push(detail);
 
     </script>
-}
-
-@section funcScripts
-{
     <script type="text/javascript">
         mds.initfunction = function () {
             // comboBoxs
@@ -96,7 +88,7 @@
                     textField: 'cnLicense'
                 });    
             });
-            abp.services.app.field.getWorkerListItems().done(function (data) {
+            abp.services.app.field.getWorkerCacheItems().done(function (data) {
                 $('#worker').combobox({
                     data: data,
                     valueField: 'id',

@@ -43,11 +43,17 @@ namespace Clc.Fields.Dto
         public string Password { get; set; }
 
         /// <summary>
-        /// 工作人员角色名
+        /// 登录角色列表
         /// </summary>
-        [StringLength(Role.MaxNameLength)]
-        
-        public string WorkerRoleName { get; set; }
+        [StringLength(Worker.MaxRoleNamesLength)]        
+        public string LoginRoleNames { get; set; }
+
+        /// <summary>
+        /// 可担任角色列表
+        /// </summary>
+        [StringLength(Worker.MaxRoleNamesLength)]
+        public string WorkRoleNames { get; set; }
+
         /// <summary>
         /// 照片
         /// </summary>
@@ -59,13 +65,13 @@ namespace Clc.Fields.Dto
         /// <summary>
         /// Rfid 
         /// </summary>
-        [StringLength(Worker.RfidMaxLength)]
+        [StringLength(Worker.MaxRfidLength)]
         public string Rfid { get; set; }
 
         /// <summary>
         /// 微信设备Id
         /// </summary>
-        [StringLength(Worker.MaxDeviceId)]
+        [StringLength(Worker.MaxDeviceIdLength)]
         public string DeviceId { get; set; }
 
         /// <summary>
@@ -76,12 +82,9 @@ namespace Clc.Fields.Dto
 
         public string IsActive { get; set; }
 
-        public byte[] Finger { get; set; }
+        public string Finger { get; set; }
 
-        public int FingerLength { get; set; }
-
-        public byte[] Finger2 { get; set; }
-        public int Finger2Length { get; set; }
+        public string Finger2 { get; set; }
         
         #region interface
         public void AddValidationErrors(CustomValidationContext context)

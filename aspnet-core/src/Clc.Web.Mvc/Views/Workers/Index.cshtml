@@ -5,13 +5,6 @@
 
 @section customScript
 {
-    <environment names="Development">
-        <script src="~/js/finger.js" asp-append-version="true"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="~/js/finger.min.js" asp-append-version="true"></script>
-    </environment>
-
     <script type="text/javascript">
         crud.dgDefault.name = 'Workers';
         crud.dgDefault.sortName = 'cn';
@@ -21,14 +14,13 @@
             { field: "name", title: "名称", width: 80 },
             { field: "postId", title: "岗位", width: 100, formatter: postFormatter },
             { field: "password", title: "登录密码", width: 80 },
-            { field: "workerRoleName", title: "登录角色名", width: 80, sortable: true },
-            { field: "workRoles", title: "可担任角色列表", width: 80 },
+            { field: "loginRoleNames", title: "登录角色列表", width: 80 },
+            { field: "workRoleNames", title: "可担任角色列表", width: 80 },
             { field: "rfid", title: "RFID", width: 100 },         
             { field: "additiveInfo", title: "附加认证信息", width: 100 },
             { field: "deviceId", title: "微信设备号", width: 120 },
-            { field: "fingerLength", title: "指一大小", width: 60 },
-            { field: "finger2Length", title: "指二大小", width: 60 },
-            // { field: "loanDepotId", title: "借用到", width: 60, loanDepotFormatter },
+            { field: "finger", title: "指一", width: 60, formatter: fingerFormatter },
+            { field: "finger2", title: "指二", width: 60, formatter: fingerFormatter },
             { field: "photoLength", title: "照片大小", width: 60 },
             { field: "isActive", title: "启用", width: 60 }
         ]];
@@ -39,21 +31,22 @@
         function postFormatter(val) {
             return crud.getComboTextByInt('#post', val);
         }
-        function loanDepotFormatter(val) {
-            return crud.getComboTextByInt('#loadDepot', val);
+
+        function fingerFormatter(val) {
+            if (val && val.length == 1024)
+                return '(有)'
         }
 
         // finger
         function getFinger(el) {
-            alert('请把手指放到指纹仪上');
-            var code = finger.regCode(fm.ZAZFingerActivex);
-            //alert(code.length);
-
+            alert("请把手指放指纹仪上");
+            var code = window.parent.regFingerCode();
             $('#'+el).textbox('setValue', code);
         }
+
         function validFinger(el) {
-            var dst = finger.getCode(fm.ZAZFingerActivex);
-            var result = finger.match(fm.ZAZFingerActivex, $('#'+el).textbox('getValue'), dst);
+            var dst = window.parent.getFingerCode();
+            var result = window.parent.matchFinger($('#'+el).textbox('getValue'), dst);
             abp.notify.info("验证结果为:" + result);
         }
 
@@ -66,14 +59,6 @@
         crud.startfunction = function () {
             abp.services.app.type.getComboItems('Post').done(function(d) {
                 crud.setComboBox('#post', d);
-            });
-
-            abp.services.app.user.getRoles(true).done(function(d) {
-                $('#workerRoleName').combobox({
-                    data: d, 
-                    valueField: 'name', 
-                    textField: 'displayName'
-                });
             });
 
             abp.services.app.field.getComboItems('Depot').done(function(depots) {
@@ -159,16 +144,16 @@
                 <td><input name="password" class="easyui-numberbox" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><Label for="workerRoleName">登录角色名: </Label></th>
-                <td><input name="workerRoleName" class="easyui-textbox" style="width: 100%"></td>
-                <th><Label for="workRoles">可担任角色列表: </Label></th>
-                <td><input name="workRoles" class="easyui-textbox" style="width: 100%"></td>
+                <th><Label for="loginRoleNames">登录角色列表: </Label></th>
+                <td><input name="loginRoleNames" class="easyui-textbox" data-options="validType:'length[1, @Worker.MaxRoleNamesLength]'" style="width: 100%"></td>
+                <th><Label for="workRoleNames">可担任角色列表: </Label></th>
+                <td><input name="workRoleNames" class="easyui-textbox" data-options="validType:'length[1, @Worker.MaxRoleNamesLength]'" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><Label for="rfid">RFID:</Label></th>
-                <td><input name="rfid" class="easyui-textbox" style="width: 100%"></td>
+                <td><input name="rfid" class="easyui-textbox" data-options="validType:'length[1, @Worker.MaxRfidLength]'" style="width: 100%"></td>
                 <th><Label for="deviceId">微信设备号:</Label></th>
-                <td><input name="deviceId" class="easyui-textbox" style="width: 100%"></td>
+                <td><input name="deviceId" class="easyui-textbox" data-options="validType:'length[1, @Worker.MaxDeviceIdLength]'" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><Label for="additiveInfo">附加认证信息:</Label></th>
@@ -181,12 +166,6 @@
                 <td>
                     <img id="preview" alt="" src="" style="width:100px; height:110px;" />
                     <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
-                </td>
-                <th><Label for="FingerImage">指纹图:</Label></th>
-                <td>
-                    <object classid="clsid:87772C8D-3C8C-4E55-A886-5BA5DA384424" id="ZAZFingerActivex"
-                        name="ZAZFingerActivex" width="100" height="110" style="z-index:1">
-                    </object>
                 </td>
             </tr>
             <tr>

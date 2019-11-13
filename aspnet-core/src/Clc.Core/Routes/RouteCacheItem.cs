@@ -1,19 +1,15 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Clc.Routes;
 
-namespace Clc.Works.Dto
+namespace Clc.Routes
 {
     /// <summary>
-    /// RouteDto
+    /// RouteCacheItem
     /// </summary>
     [AutoMapFrom(typeof(Route))]
-    public class RouteCDto : EntityDto
+    public class RouteCacheItem : EntityDto
     {
-        [Required]
-        [StringLength(Route.MaxNameLength)]
         public string RouteName { get; set; }
 
         public string Status { get; set; }
@@ -29,9 +25,9 @@ namespace Clc.Works.Dto
 
         public string Remark { get; set; }
 
-        public List<RouteWorkerCDto> Workers { get; set; }
+        public List<RouteWorkerCacheItem> Workers { get; set; }
 
-        public List<RouteTaskCDto> Tasks { get; set; }
+        // public List<RouteTaskCacheItem> Tasks { get; set; }
     }
 }
 

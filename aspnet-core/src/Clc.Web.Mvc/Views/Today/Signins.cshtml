@@ -1,8 +1,4 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-@section scripts
+﻿@section Scripts
 {
     <environment names="Development">
         <script src="~/js/finput.js" asp-append-version="true"></script>
@@ -14,23 +10,42 @@
 
     <script type="text/javascript">
 
+        var allowCardWhenCheckin = true;
         $(function() {
             // get today
-            abp.services.app.work.getTodayString().done(function (dd) {
-                $('#dd').datebox('setValue', dd);
+            abp.services.app.work.getMyAffairWork().done(function (wk) {
+                $('#dd').datebox('setValue', wk.today);
 
                 $('#dg').datagrid({
-                    url: 'GridData?CarryoutDate=' + dd
+                    url: 'GridData?CarryoutDate=' + wk.today
                 });
+            });
+            abp.services.app.work.allowCardWhenCheckin().done(function (ret) {
+                allowCardWhenCheckin = ret;
             });
         });
 
-
+        function scanFinger() {
+            var finger = window.parent.getFingerCode();
+            if (finger != '') {
+                abp.services.app.work.signinByFinger(finger).done(function(ret) {
+                    abp.notify.info(ret.item2);
+                    if (ret.item1) 
+                        $('#dg').datagrid('reload');
+                });
+            }
+        };
+        
         finput.onWorker = function(rfid) {
+            if (!allowCardWhenCheckin) {
+                abp.notify.error('系统设置为不允许刷卡签到');
+                return;
+            }
+
             window.parent.displayRfid1(rfid);
-            abp.services.app.work.signinByRfid(rfid).done(function(data) {
-                abp.notify.info(data);
-                $('#dg').datagrid('reload');
+            abp.services.app.work.signinByRfid(rfid).done(function(ret) {
+                abp.notify.info(ret.item2);
+                if (ret.item1) $('#dg').datagrid('reload');
             });
         };
     </script>
@@ -39,7 +54,8 @@
 <div id="tb">
     日期: <input id="dd" class="easyui-datebox"  readonly="true" style="width:120px">
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
-    &nbsp;&nbsp;&nbsp;请刷卡补签
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="scanFinger()">识别指纹</a>
 </div>
 
 <table id="dg" class="easyui-datagrid" toolbar="#tb"
@@ -49,6 +65,7 @@
             <th field="workerCn" width="100">人员编号</th>
             <th field="workerName" width="100">人员姓名</th>
             <th field="signinTime" width="100" formatter="$.timeFormatter">签到时间</th>
+            <th field="signinStyle" width="100">签到方式</th>
         </tr>
     </thead>
 </table>

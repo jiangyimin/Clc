@@ -29,7 +29,7 @@ namespace Clc
             var user = await GetCurrentUserAsync();
             if (user.WorkerId.HasValue == false)
             {
-                throw new UserFriendlyException("必须是运行场所的工作人员登录");
+                return 0;
             }
             return user.WorkerId.Value;
         }

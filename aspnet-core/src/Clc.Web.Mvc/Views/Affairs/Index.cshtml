@@ -1,8 +1,4 @@
-﻿@{
-    Layout = "~/Views/Shared/_WorkLayout.cshtml";
-}
-
-@section workScripts
+﻿@section Scripts
 {
     <environment names="Development">
         <script src="~/js/mds.js" asp-append-version="true"></script>
@@ -26,6 +22,7 @@
             { field: "carryoutDate", title: "日期", width: 80, align: "center", formatter: $.dateFormatter },
             { field: "status", title: "状态", width: 50, align: "center" },
             { field: "workplaceName", title: "地点", width: 80 },
+            { field: "workplaceAskOpenStyle", title: "申请开门方式", width: 60 },
             { field: "startTime", title: "开始时间", width: 80, sortable: true },
             { field: "endTime", title: "结束时间", width: 80 },
             { field: "isTomorrow", title: "明天结束", width: 60 },
@@ -40,9 +37,13 @@
         var detail = Object.assign({}, mds.dgDefault);
         detail.postfix = "Worker";
         detail.columns = [[
-            { field: "workRoleName", title: "工作角色", width: 80 },
             { field: "workerCn", title: "人员编号", width: 80 },
             { field: "workerName", title: "人员姓名", width: 80 },
+            { field: "workRoleName", title: "工作角色", width: 80 },
+            { field: "workRoleDuties", title: "职责", width: 80 },
+            { field: "checkinTime", title: "验入时间", width: 80, formatter: $.timeFormatter },
+            { field: "checkoutTime", title: "验出时间", width: 80, formatter: $.timeFormatter },
+            { field: "lastAskDoor", title: "最后申请开门时间", width: 80, formatter: $.timeFormatter },
         ]];
         detail.insert = abp.services.app.affair.insertWorker;
         detail.update = abp.services.app.affair.updateWorker;
@@ -50,25 +51,26 @@
         mds.details.push(detail);
 
         detail = Object.assign({}, mds.dgDefault);
-        detail.postfix = "Event";
+        detail.postfix = "Task";
+        detail.sortName = "startTime";
         detail.columns = [[
-            { field: "eventTime", title: "发生时间", width: 80, formatter: $.datetimeFormatter },
-            { field: "name", title: "名称", width: 80, align: "center" },
-            { field: "description", title: "具体描述", width: 150 },
-            { field: "issurer", title: "创建者", width: 80 },
+            { field: "workplaceName", title: "场所", width: 80 },
+            { field: "startTime", title: "开始时间", width: 80, sortable: true },
+            { field: "endTime", title: "结束时间", width: 80, sortable: true },
+            { field: "isTomorrow", title: "明天结束", width: 60 },
+            { field: "remark", title: "备注", width: 80 },
+            { field: "createWorkerName", title: "创建人", width: 60 },
         ]];
-        detail.operatorColumn = false;
+        detail.insert = abp.services.app.affair.insertTask;
+        detail.update = abp.services.app.affair.updateTask;
+        detail.delete = abp.services.app.affair.deleteTask;
         mds.details.push(detail);
-
     </script>
-}
 
-@section funcScripts
-{
     <script type="text/javascript">
         mds.initfunction = function () {
             // comboBoxs
-            abp.services.app.field.getWorkerListItems().done(function (data) {
+            abp.services.app.field.getWorkerCacheItems().done(function (data) {
                 $('#worker').combobox({
                     data: data,
                     valueField: 'id',
@@ -77,13 +79,12 @@
             });
 
             abp.services.app.field.getWorkplaceItems().done(function (data) {
-                $('#workplace').combobox({
-                    data: data, 
-                    valueField: 'id', 
-                    textField: 'name'
-                });    
+                $('#workplace').combobox({data: data, valueField: 'id', textField: 'name' });
+            });    
+            abp.services.app.field.getWorkplaceItems(true).done(function (data) {
+                $('#workplace2').combobox({data: data, valueField: 'id', textField: 'name' });    
             });
-        }
+        };
 
         mds.onselectfunction = function (masterRow) {
             // alert("onselect=" + masterRow.workplaceId);
@@ -140,6 +141,7 @@
             <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('')">刷新</a>
             <a name="add" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('')">添加</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a name="event" href="javascript:void(0)" class="easyui-linkbutton">任务事件</a>
             <a name="activate" href="javascript:void(0)" class="easyui-linkbutton">激活</a>
             <a name="back" href="javascript:void(0)" class="easyui-linkbutton">退回</a>
             <a name="createFrom" href="javascript:void(0)" class="easyui-linkbutton">从指定日期生成</a>
@@ -159,11 +161,12 @@
                 <table id="dgWorker" class="easyui-datagrid" toolbar="#tbWorker">
                 </table>
             </div>
-            <div title="任务事件" style="display:none;">
-                <div id="tbEvent">
-                    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Event')">刷新</a>
+            <div title="金库子任务"" style="display:none;">
+                <div id="tbTask">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Task')">刷新</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('Task')">添加</a>
                 </div>
-                <table id="dgEvent" class="easyui-datagrid" toolbar="#tbEvent">
+                <table id="dgTask" class="easyui-datagrid" toolbar="#tbTask">
                 </table>
             </div>
        </div>
@@ -228,3 +231,51 @@
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlgWorker').dialog('close')">取消</a>
 </div>
 
+@*Task弹窗*@
+<div id="dlgTask" class="easyui-dialog" closed="true" modal="true" buttons="#dlgTask-buttons" align="center" style="width: 400px; padding: 10px;">
+    <form id="fmTask" method="post" novalidate>
+        <table class="edit-tbl">
+            <input name="id" type="hidden" >
+            <input name="affairId" type="hidden">
+            <tr>
+                <th><Label for="workplaceId">场所:</Label></th>
+                <td><input id="workplace2" name="workplaceId" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="startTime">开始时间:</Label></th>
+                <td><input name="startTime" class="easyui-timespinner" data-options="required: true" style="width:100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="endTime">结束时间:</Label></th>
+                <td><input name="endTime" class="easyui-timespinner" data-options="required: true" style="width:100%"></td>
+            </tr>
+            <tr>
+                <th><label for="isTomorrow">明天结束: </label></th>
+                <td><input name="isTomorrow" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
+            </tr>
+            <tr>
+                <th><Label for="remark">备注:</Label></th>
+                <td><input name="remark" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dlgTask-buttons">
+    <a name="save" class="easyui-linkbutton" iconCls="icon-save" onclick="mds.save('Task')">保存</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlgTask').dialog('close')">取消</a>
+</div>
+
+@*Event弹窗*@
+<div id="dlgEvent" class="easyui-dialog" closed="true" modal="true" title="事件列表" align="center" style="width:900px; height:650px; padding: 10px;">
+    <table id="dgEvent" class="easyui-datagrid"
+            fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true">
+        <thead>
+            <tr>
+                <th field="eventTime" width="80" formatter="$.datetimeFormatter">发生时间</th>
+                <th field="name" width="80">名称</th>
+                <th field="description" width="150">具体描述</th>
+                <th field="issurer" width="120">创建者</th>
+            </tr>
+        </thead>
+    </table>
+</div>

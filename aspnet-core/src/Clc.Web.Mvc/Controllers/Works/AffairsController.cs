@@ -39,14 +39,21 @@ namespace Clc.Web.Controllers
         [DontWrapResult]
         public async Task<JsonResult> GridDataWorker(int id)
         {
-            var output = await _affairAppService.GetAffairWorkers(id);
+            var output = await _affairAppService.GetAffairWorkersAsync(id);
+            return Json( new { rows = output });
+        }
+
+        [DontWrapResult]
+        public async Task<JsonResult> GridDataTask(int id)
+        {
+            var output = await _affairAppService.GetAffairTasksAsync(id, GetSorting());
             return Json( new { rows = output });
         }
 
         [DontWrapResult]
         public async Task<JsonResult> GridDataEvent(int id)
         {
-            var output = await _affairAppService.GetAffairEvents(id, GetSorting());
+            var output = await _affairAppService.GetAffairEventsAsync(id);
             return Json( new { rows = output });
         }
     }

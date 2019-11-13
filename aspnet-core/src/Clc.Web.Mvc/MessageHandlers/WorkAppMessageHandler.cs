@@ -29,48 +29,37 @@ namespace Clc.Web.MessageHandlers
         public override IWorkResponseMessageBase OnEvent_ClickRequest(RequestMessageEvent_Click requestMessage)
         {
             var responseMessage = this.CreateResponseMessage<ResponseMessageText>();
-            if (requestMessage.EventKey == "解屏") 
+            var result = _workManager.ClickEventMessageHandler(requestMessage.FromUserName, requestMessage.EventKey);
+
+            if (result.Item1)
             {
-                if (_workManager.IsWorkerRoleUser(requestMessage.FromUserName))
-                {
-                    _context.Clients.All.SendAsync("getMessage", requestMessage.FromUserName + " unlockScreen");
-                    responseMessage.Content = "你的解屏命令已发出";
-                }
-                else 
-                {
-                    responseMessage.Content = "你不需要解屏";
+                responseMessage.Content = "系统已受理 " + requestMessage.EventKey;
+                if (result.Item2 != null) {
+                    _context.Clients.All.SendAsync("getMessage", result.Item2 );
                 }
             }
-            else if (requestMessage.EventKey == "锁屏") 
+            else 
             {
-                if (_workManager.IsWorkerRoleUser(requestMessage.FromUserName))
-                {
-                    _context.Clients.All.SendAsync("getMessage", requestMessage.FromUserName + " lockScreen");
-                    responseMessage.Content = "你的锁屏命令已发出";
-                }
-                else 
-                {
-                    responseMessage.Content = "你不需要锁屏";
-                }
+                responseMessage.Content = result.Item2;
             }
             return responseMessage;
         }
 
-        public override IWorkResponseMessageBase OnLocationRequest(RequestMessageLocation requestMessage)
+        public override IWorkResponseMessageBase OnEvent_LocationRequest(RequestMessageEvent_Location requestMessage)
         {
             var responseMessage = this.CreateResponseMessage<ResponseMessageText>();
 
             var worker = _workManager.GetWorkerByCn(requestMessage.FromUserName);
             if (worker == null) {
-                responseMessage.Content = "非工作人员不需要签到";
+                responseMessage.Content = "未登记在工作人员表中";
             }
             else 
             {   
                 int depotId = _workManager.GetWorkerDepotId(worker.Id);
-                if (_workManager.IsInDepotRadius(depotId, (float)requestMessage.Location_X, (float)requestMessage.Location_Y))
+                if (_workManager.IsInDepotRadius(depotId, (float)requestMessage.Latitude, (float)requestMessage.Longitude))
                     responseMessage.Content = _workManager.DoSignin(1, depotId, worker.Id);
                 else 
-                    responseMessage.Content = "你未在中心范围内";
+                    responseMessage.Content = "你未在有效范围内";
             }
             return responseMessage;
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +20,7 @@ using Senparc.Weixin;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.Entities;
-using Senparc.Weixin.Work.Containers;
+using Microsoft.AspNetCore.Http;
 
 namespace Clc.Web.Startup
 {
@@ -40,6 +39,15 @@ namespace Clc.Web.Startup
             services.AddMvc(
                 options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())
             );
+
+            services.AddAuthentication("WxApp01")
+                .AddCookie(options => {
+                    options.LoginPath = new PathString("/WxApp01Account/Login/"); 
+                });
+            services.AddAuthentication("WxApp03")
+                .AddCookie(options => {
+                    options.LoginPath = new PathString("/WxApp02Account/Login/"); 
+                });
 
             IdentityRegistrar.Register(services);
             AuthConfigurer.Configure(services, _appConfiguration);

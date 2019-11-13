@@ -8,6 +8,8 @@
 
         public const bool MultiTenancyEnabled = true;
 
+        public const int CookieAuthExpireTime = 60;         // minutes
+
         public const int EntityListCacheSlidingExpireTime = 20;
 
         public const string UserEmailServerName = "@tenant.com";
