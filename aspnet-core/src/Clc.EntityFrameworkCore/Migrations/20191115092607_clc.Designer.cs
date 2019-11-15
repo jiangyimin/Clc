@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clc.Migrations
 {
     [DbContext(typeof(ClcDbContext))]
-    [Migration("20191113101502_clc")]
+    [Migration("20191115092607_clc")]
     partial class clc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2073,9 +2073,11 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Agree");
+                    b.Property<string>("Approver");
 
                     b.Property<int>("AskAffairId");
+
+                    b.Property<string>("AskReason");
 
                     b.Property<DateTime>("AskTime");
 
@@ -2147,13 +2149,15 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ApproverId");
+
+                    b.Property<DateTime?>("ApproverTime");
+
                     b.Property<DateTime>("CreateTime");
 
                     b.Property<string>("EmergDoorPassword");
 
                     b.Property<int>("IssueId");
-
-                    b.Property<string>("Leader");
 
                     b.Property<int?>("MonitorAffairId");
 
@@ -2166,6 +2170,8 @@ namespace Clc.Migrations
                     b.Property<int>("WorkplaceId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApproverId");
 
                     b.HasIndex("IssueId");
 
@@ -2940,6 +2946,11 @@ namespace Clc.Migrations
 
             modelBuilder.Entity("Clc.Runtime.EmergDoorRecord", b =>
                 {
+                    b.HasOne("Clc.Fields.Worker", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApproverId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Clc.Runtime.Issue", "Issue")
                         .WithMany()
                         .HasForeignKey("IssueId")

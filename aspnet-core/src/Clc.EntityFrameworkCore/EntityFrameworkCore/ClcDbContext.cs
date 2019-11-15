@@ -207,6 +207,8 @@ namespace Clc.EntityFrameworkCore
                 .HasOne(b => b.MonitorAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EmergDoorRecord>()
+                .HasOne(b => b.Approver).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmergDoorRecord>()
                 .HasOne(b => b.MonitorAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
 
             // Affairs

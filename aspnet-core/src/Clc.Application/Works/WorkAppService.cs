@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq;
 using Clc.Affairs;
 using Clc.Configuration;
 using Clc.Fields;
+using Clc.Fields.Dto;
 using Clc.Routes;
 using Clc.Runtime;
 using Clc.Runtime.Cache;
@@ -83,7 +85,7 @@ namespace Clc.Works
             if (workerId == 0) 
                 return ("system", "");
             
-            if (WorkManager.IsCaptain(workerId))
+            if (WorkManager.WorkerHasDefaultWorkRoleName(workerId, "队长"))
                 workerId = WorkManager.GetCaptainOrAgentId(workerId);
 
             var worker = WorkManager.GetWorker(workerId);
@@ -144,6 +146,24 @@ namespace Clc.Works
             var depot = _depotRepository.Get(depotId);
             depot.AgentCn = null;
         }
+
+        public List<ComboboxItemDto> GetLeaders() 
+        {
+            var leaders = WorkManager.GetWorkersByDefaultWorkRoleName("公司领导");
+            var lst = new List<ComboboxItemDto>();
+            if (leaders != null)
+                foreach (var w in leaders)
+                    lst.Add(new ComboboxItemDto { Value = w.Id.ToString(), DisplayText = $"{w.Cn} {w.Name}"});
+
+            return lst;
+        }
+        public List<WorkplaceDto> GetDoors()
+        {
+            int workerId = GetCurrentUserWorkerIdAsync().Result;
+            var lst = WorkManager.GetDoors(workerId);
+            return ObjectMapper.Map<List<WorkplaceDto>>(lst);
+        }
+
         #endregion
 
         #region signin
@@ -207,19 +227,6 @@ namespace Clc.Works
         }
  
         #endregion
-
-        #region Door
-        public (bool, string) AskOpenDoor(DateTime carryoutDate, int depotId, int affairId)
-        {
-            return (false, "To do");
-        }
-        public (bool, string) AskOpenDoorTask(DateTime carryoutDate, int depotId, int affairTaskId)
-        {
-            return (false, "To do");
-
-        }
-        #endregion
-        
 
         #region Article
 

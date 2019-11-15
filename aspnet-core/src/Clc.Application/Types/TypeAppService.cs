@@ -25,6 +25,7 @@ namespace Clc.Types
         private readonly List<string> _maritalStatusItems = new List<string>() {"已婚", "未婚", "离异" };
         private readonly List<string> _licenseTypeItems = new List<string>() {"A照", "B照", "C照" };
         private readonly List<string> _statusItems = new List<string>() {"在职", "离职" };
+        private readonly List<string> _processStyleItems = new List<string>() {"报送", "应急开门", "值班信息" };
 
         public TypeAppService(DutyProvider dutyProvider, 
             IArticleTypeCache articleTypeCache,
@@ -109,6 +110,10 @@ namespace Clc.Types
                     break;
                 case "Status":
                     foreach (string t in _statusItems)
+                        lst.Add(new ComboboxItemDto { Value = t, DisplayText = t });
+                    break;
+                case "ProcessStyle":
+                    foreach (string t in _processStyleItems)
                         lst.Add(new ComboboxItemDto { Value = t, DisplayText = t });
                     break;
                 default:

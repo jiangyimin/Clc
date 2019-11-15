@@ -26,7 +26,7 @@
 
         // common: finger and  signalR
         initFingerActivex();
-        abp.notify.info('指纹仪已准备好');
+        // abp.notify.info('指纹仪已准备好');
         abp.services.app.work.getMe().done(function(ret) {
             meRoleName = ret.item1;
             meCn = ret.item2;

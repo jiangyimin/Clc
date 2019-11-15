@@ -32,5 +32,11 @@ namespace Clc.Web.Controllers
                 )
             );
         }
+
+        public ActionResult WeixinNotify(string message)
+        {
+            ViewBag.Message = message;
+            return View("WeixinNotify");
+        }
     }
 }

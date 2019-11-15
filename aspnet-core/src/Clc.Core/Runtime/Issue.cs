@@ -38,12 +38,12 @@ namespace Clc.Runtime
         [StringLength(MaxContentLength)]
         public string Content { get; set; }
 
-        // 目前有两种：1）报告  2）应急开门
+        // 目前有三种：1）报告  2）应急开门 3) 值班
         public string ProcessStyle { get; set; }
 
 
         // 签到时间
-        public DateTime ProcessTime { get; set; }
+        public DateTime? ProcessTime { get; set; }
 
         public int? ProcessWorkerId { get; set; }
         public Worker ProcessWorker { get; set; }

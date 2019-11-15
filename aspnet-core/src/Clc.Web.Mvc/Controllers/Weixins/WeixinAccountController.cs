@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
 using Clc.Works;
 using Clc.Configuration;
 using Clc.Controllers;
@@ -17,39 +18,49 @@ using Senparc.Weixin.Work.Containers;
 namespace Clc.Web.Controllers
 {
     [IgnoreAntiforgeryToken]
-    public class WxApp01AccountController : ClcControllerBase
+    public class WeixinAccountController : ClcControllerBase
     {
         public WorkManager WorkManager { get; set; }
-        private readonly string _secret;
-        private readonly string _agentId;
-        private readonly string _corpId;
 
-        public WxApp01AccountController(IHostingEnvironment env)
+        private readonly IConfigurationRoot _appConfiguration;
+        private readonly string _corpId;
+        private string _secret;
+        private string _agentId;
+        
+        static public readonly Dictionary<string, string> _appDict = new Dictionary<string, string>() {
+            {"EmergDoor", "App01"},
+            {"TTT", "App02"}
+        };
+
+        public WeixinAccountController(IHostingEnvironment env)
         {
-            var appConfiguration = env.GetAppConfiguration();
-            _secret = appConfiguration[string.Format("SenparcWeixinSetting:{0}:Secret", "App01")];
-            _agentId = appConfiguration[string.Format("SenparcWeixinSetting:{0}:AgentId", "App01")];
-            _corpId = appConfiguration["SenparcWeixinSetting:CorpId"];
+            _appConfiguration = env.GetAppConfiguration();
+            _corpId = _appConfiguration["SenparcWeixinSetting:CorpId"];
         }
 
         public ActionResult Login(string returnUrl, string code) 
         {
+            // 根据 returnUrl 得到 AppName， 然后得到_secret和_agentId
+            string appName = _appDict[GetActionOfUrl(returnUrl)];
+            _secret = _appConfiguration[string.Format("SenparcWeixinSetting:{0}:Secret", appName)];
+            _agentId = _appConfiguration[string.Format("SenparcWeixinSetting:{0}:AgentId", appName)];
+
             if (string.IsNullOrEmpty(code))
             {
-                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                // return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
 
             var vm = new LoginViewModel() {
                 ReturnUrl = returnUrl
             };
 
-            var accessToken = AccessTokenContainer.GetToken(_corpId, _secret);           
             try {
+                var accessToken = AccessTokenContainer.GetToken(_corpId, _secret);           
                 GetUserInfoResult userInfo = OAuth2Api.GetUserId(accessToken, code);
                 vm.WorkerCn = userInfo.UserId;
             }
             catch {
-                Logger.Info(string.Format("accessKey={0} code={1}, corpId={2}, secret={3}", accessToken, code, _corpId, _secret));
+                Logger.Error("微信登录错误");
             }
 
             return View(vm);
@@ -58,7 +69,7 @@ namespace Clc.Web.Controllers
         public async Task Logout()  // Task<ActionResult> Logout()
         {
             //注销登录的用户，相当于ASP.NET中的FormsAuthentication.SignOut  
-            await HttpContext.SignOutAsync("WxApp01");  // CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             // return RedirectToAction("InList", "Weixin");
         }
         
@@ -74,8 +85,8 @@ namespace Clc.Web.Controllers
 
             var claims = new[] 
             { 
+                new Claim("UserId", worker.Id.ToString()),
                 new Claim("Cn", vm.WorkerCn),
-                new Claim("App", "App01"),
             };
 
             var claimsIdentity = new ClaimsIdentity(
@@ -88,20 +99,21 @@ namespace Clc.Web.Controllers
             {
                 //登录用户，相当于ASP.NET中的FormsAuthentication.SetAuthCookie
                 await HttpContext.SignInAsync(
-                    "WxApp01",      //CookieAuthenticationDefaults.AuthenticationScheme, 
+                    CookieAuthenticationDefaults.AuthenticationScheme, 
                     user,
                     new AuthenticationProperties() {
                         ExpiresUtc = DateTime.UtcNow.AddMinutes(ClcConsts.CookieAuthExpireTime)
                     });
             }).Wait();
 
-            string action = GetActionOfReturnUrl(vm.ReturnUrl);
-            return RedirectToAction(action, "Weixin");
+            string action = GetActionOfUrl(vm.ReturnUrl);
+            return RedirectToAction(action, "WwApp01");
+            // return RedirectToPage(vm.ReturnUrl);
         }
 
         #region Utils
 
-        private string GetActionOfReturnUrl(string url)
+        private string GetActionOfUrl(string url)
         {
             int i = url.LastIndexOf('/');
             return url.Substring(i + 1, url.Length - i - 1);

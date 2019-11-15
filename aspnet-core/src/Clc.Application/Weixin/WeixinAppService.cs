@@ -7,6 +7,7 @@ using Clc.Works;
 using Clc.Weixin.Dto;
 using Clc.Fields;
 using Clc.Runtime.Cache;
+using Clc.Runtime;
 
 namespace Clc.Weixin
 {
@@ -14,23 +15,20 @@ namespace Clc.Weixin
     {
         public WorkManager WorkManager { get; set; }
         private readonly IRouteAppService _routeAppService;
-        private readonly IRepository<Worker> _workerRepository;
-
         private readonly IOutletCache _outletCache;
         private readonly ITaskTypeCache _taskTypeCache;
         private readonly IVehicleCache _vehicleCache;
 
-        public WeixinAppService(IRouteAppService routeAppService, IRepository<Worker> workerRepository,
+        public WeixinAppService(IRouteAppService routeAppService,
             IOutletCache outletCache, ITaskTypeCache taskTypeCache, IVehicleCache vehicleCache)
         {
             _routeAppService = routeAppService;
-            _workerRepository = workerRepository;
             _outletCache = outletCache;
             _taskTypeCache = taskTypeCache;
             _vehicleCache = vehicleCache;
         }
 
-        public WxIdentifyDto Login(string workerCn, string password, string deviceId)
+            public WxIdentifyDto Login(string workerCn, string password, string deviceId)
         {
             WxIdentifyDto dto = new WxIdentifyDto();
 

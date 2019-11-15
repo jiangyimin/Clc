@@ -40,13 +40,9 @@ namespace Clc.Web.Startup
                 options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())
             );
 
-            services.AddAuthentication("WxApp01")
+            services.AddAuthentication()
                 .AddCookie(options => {
-                    options.LoginPath = new PathString("/WxApp01Account/Login/"); 
-                });
-            services.AddAuthentication("WxApp03")
-                .AddCookie(options => {
-                    options.LoginPath = new PathString("/WxApp02Account/Login/"); 
+                    options.LoginPath = new PathString("/WeixinAccount/Login/"); 
                 });
 
             IdentityRegistrar.Register(services);
@@ -78,7 +74,8 @@ namespace Clc.Web.Startup
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Error");
+                // app.UseDeveloperExceptionPage();
             }
             else
             {

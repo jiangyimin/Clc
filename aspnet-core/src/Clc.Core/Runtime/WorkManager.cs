@@ -120,12 +120,24 @@ namespace Clc.Works
             return _postCache[worker.PostId].AppName;
         }
 
-        public bool IsCaptain(int workerId)
+        public List<WorkerCacheItem> GetWorkersByDefaultWorkRoleName(string name)
         {
-            var worker = _workerCache[workerId];
-            return worker.LoginRoleNames.Contains(ClcConsts.CaptainRoleName);
-        }
+            var lst = new List<WorkerCacheItem>();
+            foreach (var w in _workerCache.GetList())
+            {
+                var roleName = _postCache[w.PostId].DefaultWorkRoleName;
+                if (!string.IsNullOrEmpty(roleName) && roleName == name)
+                    lst.Add(w);
+            }
+            return lst;
+        } 
         
+        public bool WorkerHasDefaultWorkRoleName(int workerId, string name)
+        {
+           var post = _postCache[_workerCache[workerId].PostId];
+           return post.DefaultWorkRoleName == name;
+        }
+
         public int GetCaptainOrAgentId(int workerId)
         {
             var worker = _workerCache[workerId];
@@ -161,6 +173,11 @@ namespace Clc.Works
             return _workplaceCache[id];
         }
 
+        public List<Workplace> GetDoors(int workerId)
+        {
+            var depotId = _workerCache[workerId].DepotId;
+            return _workplaceCache.GetList().FindAll(x => x.DepotId == depotId && !string.IsNullOrWhiteSpace(x.DoorIp));
+        }
         public string GetUnlockPassword(int depotId)
         {
             return _depotCache[depotId].UnlockScreenPassword;
@@ -184,7 +201,7 @@ namespace Clc.Works
 
         #endregion
 
-        #region Signin Checkin
+        #region Signin/Checkin/Door
         public (bool, string) DoSignin(int depotId, int workerId, string style)
         {
             // Get Signin 
@@ -251,7 +268,7 @@ namespace Clc.Works
             else
                 return (false, "指纹不匹配");
         }
-
+        
         public string GetReportToManagers(int depotId)
         {
             //return "90005";

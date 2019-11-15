@@ -1385,7 +1385,8 @@ namespace Clc.Migrations
                     CreateTime = table.Column<DateTime>(nullable: false),
                     WorkplaceId = table.Column<int>(nullable: false),
                     IssueId = table.Column<int>(nullable: false),
-                    Leader = table.Column<string>(nullable: true),
+                    ApproverId = table.Column<int>(nullable: false),
+                    ApproverTime = table.Column<DateTime>(nullable: true),
                     EmergDoorPassword = table.Column<string>(nullable: true),
                     MonitorAffairId = table.Column<int>(nullable: true),
                     ProcessTime = table.Column<DateTime>(nullable: true),
@@ -1394,6 +1395,12 @@ namespace Clc.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmergDoorRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmergDoorRecords_Workers_ApproverId",
+                        column: x => x.ApproverId,
+                        principalTable: "Workers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_EmergDoorRecords_Issues_IssueId",
                         column: x => x.IssueId,
@@ -1426,10 +1433,11 @@ namespace Clc.Migrations
                     AskAffairId = table.Column<int>(nullable: false),
                     AskWorkers = table.Column<string>(maxLength: 200, nullable: true),
                     RouteId = table.Column<int>(nullable: true),
+                    AskReason = table.Column<string>(nullable: true),
+                    Approver = table.Column<string>(nullable: true),
                     MonitorAffairId = table.Column<int>(nullable: true),
-                    Agree = table.Column<bool>(nullable: false),
-                    Remark = table.Column<string>(nullable: true),
-                    ProcessTime = table.Column<DateTime>(nullable: true)
+                    ProcessTime = table.Column<DateTime>(nullable: true),
+                    Remark = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2320,6 +2328,11 @@ namespace Clc.Migrations
                 table: "Depots",
                 columns: new[] { "TenantId", "Cn" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmergDoorRecords_ApproverId",
+                table: "EmergDoorRecords",
+                column: "ApproverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmergDoorRecords_IssueId",

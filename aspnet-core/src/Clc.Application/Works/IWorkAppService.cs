@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
+using Abp.Application.Services.Dto;
 using Clc.Fields;
+using Clc.Fields.Dto;
 using Clc.Routes;
 using Clc.Works.Dto;
 
@@ -19,10 +21,14 @@ namespace Clc.Works
 
         string GetReportToManagers();
 
-        #region Agent
+        #region Agent / Workers
         string GetAgentString();
         Task SetAgent(int workerId);
         Task ResetAgent();
+
+        List<ComboboxItemDto> GetLeaders();
+        List<WorkplaceDto> GetDoors();
+
         #endregion
 
         #region Signin and Checkin
@@ -36,11 +42,6 @@ namespace Clc.Works
 
         #endregion Signin
 
-        #region Door
-        (bool, string) AskOpenDoor(DateTime carryoutDate, int depotId, int affairId);
-        (bool, string) AskOpenDoorTask(DateTime carryoutDate, int depotId, int affairTaskId);
-        
-        #endregion
         #region article
 
         // style = 0 为领物

@@ -26,6 +26,15 @@ namespace Clc.Controllers
             return input;
         }
 
+        protected PagedResultRequestDto GetOnlyPagedInput()
+        {
+            PagedAndSortedResultRequestDto input = new PagedAndSortedResultRequestDto();
+            // input.Sorting = GetSorting();
+            input.MaxResultCount = int.Parse(Request.Form["rows"]);
+            input.SkipCount = (int.Parse(Request.Form["page"]) - 1) * input.MaxResultCount;
+            return input;
+        }
+
         protected string GetSorting()
         {
             return $"{Request.Form["sort"]} {Request.Form["order"]}";

@@ -45,7 +45,7 @@ namespace Clc.Web.MessageHandlers
             return responseMessage;
         }
 
-        public override IWorkResponseMessageBase OnEvent_LocationRequest(RequestMessageEvent_Location requestMessage)
+        public override IWorkResponseMessageBase OnLocationRequest(RequestMessageLocation requestMessage)
         {
             var responseMessage = this.CreateResponseMessage<ResponseMessageText>();
 
@@ -56,7 +56,7 @@ namespace Clc.Web.MessageHandlers
             else 
             {   
                 int depotId = _workManager.GetWorkerDepotId(worker.Id);
-                if (_workManager.IsInDepotRadius(depotId, (float)requestMessage.Latitude, (float)requestMessage.Longitude))
+                if (_workManager.IsInDepotRadius(depotId, (float)requestMessage.Location_X, (float)requestMessage.Location_Y))
                     responseMessage.Content = _workManager.DoSignin(1, depotId, worker.Id);
                 else 
                     responseMessage.Content = "你未在有效范围内";

@@ -1,0 +1,26 @@
+﻿@model Clc.Web.Models.Weixin.ApproveEmergDoorRecordViewModel
+@{
+    ViewBag.Title = "审批应急开门";
+    Layout = "~/Views/Shared/_WeixinLayout.cshtml";
+}
+
+<form name="fm" action ="WwApp03/ApproveEmergDoor" method="post" onsubmit="onSubmit()">
+    @Html.ValidationSummary()
+    <div class="weui-cells">
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd"><label class="weui-label">场地门:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="workplaceNme" readonly type=”text" value="@Model.WorkplaceName">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">申请原因:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="issueContent" readonly type="text" valule="@Model.IssueContent">
+            </div>
+        </div>
+        <div class="weui-btn-area">
+            <input type="submit" value="同意" class="weui-btn weui-btn_primary" />
+        </div>
+    </div>
+</form>

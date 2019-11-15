@@ -36,9 +36,11 @@ namespace Clc.Runtime
         public virtual Issue Issue { get; set; }
 
         /// <summary>
-        /// 审批信息：审批
+        /// 审批信息：审批人
         /// </summary>
-        public string Leader { get; set; }
+        public int ApproverId { get; set; }
+        public Worker Approver { get; set; }
+        public DateTime? ApproverTime { get; set; }
 
         /// <summary>
         /// 审批信息：开门密码

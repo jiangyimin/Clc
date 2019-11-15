@@ -50,6 +50,12 @@ namespace Clc.Runtime
         public int? RouteId { get; set; }
         public virtual Route Route { get; set; }
 
+        // 申请原因
+        public string AskReason { get; set; }
+
+        // 审批人
+        public string Approver { get; set; }
+
         /// <summary>
         /// 下面为开门人信息
         /// </summary>
@@ -57,14 +63,11 @@ namespace Clc.Runtime
         public int? MonitorAffairId { get; set; }
         public virtual Affair MonitorAffair { get; set; }
 
-        // 同意还是拒绝
-        public bool Agree { get; set; }
-
-        // 说明。比如拒绝原因
-        public string Remark { get; set; }
-
         // 处理时间
         public DateTime? ProcessTime { get; set; }
+
+        // 特殊情况说明
+        public string Remark { get; set; }
     }
 }
 

@@ -69,6 +69,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Arrange_Box", new FixedLocalizableString("尾箱"), url: "Today/BoxList"))
                     .AddItem(new MenuItemDefinition("Arrange_Route", new FixedLocalizableString("线路"), url: "Today/RouteList"))
                     .AddItem(new MenuItemDefinition("Arrange_Vehicle", new FixedLocalizableString("车辆"), url: "Today/VehicleList"))
+                    .AddItem(new MenuItemDefinition("Arrange_Issue", new FixedLocalizableString("大事记录"), url: "Issue"))
                 
                 // Statistic
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)

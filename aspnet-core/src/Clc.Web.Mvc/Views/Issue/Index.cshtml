@@ -1,0 +1,132 @@
+﻿@using Clc.Runtime
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            abp.services.app.type.getComboItems('ProcessStyle').done(function(data) {
+                $('#processStyle').combobox({
+                    data: data, 
+                    valueField: 'value', 
+                    textField: 'displayText'
+                })
+            });
+            abp.services.app.work.getLeaders().done(function(data) {
+                $('#toLeader').combobox({
+                    data: data, 
+                    valueField: 'value', 
+                    textField: 'displayText'
+                })
+            });
+            abp.services.app.work.getDoors().done(function(data) {
+                $('#doorId').combobox({
+                    data: data, 
+                    valueField: 'id', 
+                    textField: 'name'
+                })
+            });
+        });
+
+        function operator (val, row, index) {
+            if (!row.processWorkerName)
+                return '<a href="javascript:void(0)" onclick="process(' + index + ')">处理事件</a>';
+        }
+
+        function add() {
+            $('#dlg').dialog('open').dialog('setTitle', '增加');
+            $('#fm').form('clear');           
+        }
+
+        function save() {
+            if (!$('#fm').form('validate')) {
+                abp.notify.error('字段输入有错误');
+                return;
+            }
+    
+            var dto = $('#fm').serializeFormToObject();     //serializeFormToObject is defined in main.js
+            abp.services.app.issue.insert(dto).done(function (data) {
+                abp.notify.info("成功添加");
+                $('#dg').datagrid('reload');
+                $('#dlg').dialog('close');
+            })
+        }
+    
+        function process(index) {
+            var r = $('#dg').datagrid('getRows')[index];
+            if (r.processStyle == "应急开门") {
+                var doorId = $('#doorId').combobox('getValue');
+                if (!doorId) {
+                    abp.notify.error('请选择需要应急开的门');
+                    return;
+                }
+                var leaderId = $('#toLeader').combobox('getValue');
+                if (!leaderId) {
+                    abp.notify.error('请选择审批领导');
+                    return;
+                }
+                var txt = $('#toLeader').combobox('getText');
+                abp.ajax({
+                    contentType: 'application/x-www-form-urlencoded',
+                    url: 'Issue/ProcessIssueEmergDoor',
+                    data: {issueId: r.id, doorId: doorId, content: r.content, leaderId: leaderId, leader: txt }   
+                }).done(function (data) {
+                    abp.notify.info(data.content);
+                    $('#dg').datagrid('reload');
+                });
+            }
+            else {
+                abp.ajax({
+                    contentType: 'application/x-www-form-urlencoded',
+                    url: 'Issue/ProcessIssueReport',
+                    data: {issueId: r.id, depotId: r.depotId, content: r.content }   
+                }).done(function (data) {
+                    abp.notify.info(data.content);
+                });
+            }
+        };
+    </script>
+}
+
+<div id="tb">
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="add()">新增</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;场地门:
+    <input id="doorId" class="easyui-combobox" style="width:120">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发送到:
+    <input id="toLeader" class="easyui-combobox" style="width:120">
+</div>
+<table id="dg" class="easyui-datagrid" toolbar="#tb"
+        fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true"
+        url="Issue/GridData" pagination="true" pageSize="20" >
+    <thead>
+        <tr>
+            <th field="createTime" width="100" formatter="$.datetimeFormatter">生成时间</th>
+            <th field="createWorkerName" width="80">创建人</th>
+            <th field="processStyle" width="80">事件类型</th>
+            <th field="content" width="160">内容</th>
+            <th field="processWorkerName" width="80">处理人</th>
+            <th field="processContent" width="100">处理结果</th>
+            <th field="processTime" width="80" formatter="$.datetimeFormatter">处理时间</th>
+            <th field="operator" width="80" align="center" formatter="operator">操作</th>
+        </tr>
+    </thead>
+</table>
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 400px; padding: 10px;">
+    <form id="fm" method="post" novalidate>
+        <table class="edit-tbl">
+            <tr>
+                <th><Label for="processStyle">大事类型:</Label></th>
+                <td><input id="processStyle" name="processStyle" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="content">内容:</Label></th>
+                <td><input name="content" class="easyui-textbox" data-options="required: true, validType:'length[1, @Issue.MaxContentLength]'"style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dlg-buttons">
+    <a name="save" class="easyui-linkbutton" iconCls="icon-save" onclick="save()">保存</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlg').dialog('close')">取消</a>
+</div>
