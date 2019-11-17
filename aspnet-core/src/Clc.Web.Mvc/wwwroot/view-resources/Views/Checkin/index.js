@@ -1,19 +1,22 @@
 (function() {        
     $(function() {
-        abp.services.app.work.getMyAffairWork().done(function (wk) {
-            work.me = wk;
-            $('#dd').datebox('setValue', work.me.today);
-            if (!work.validate()) return; 
-            showAffair(work.me.affairId);
+        abp.services.app.work.allowCardWhenCheckin().done(function (ret) {
+            allowCardWhenCheckin = ret;
         });
 
+        // set work.me
+        work.me.today = $('#dd').datebox('getValue');
+        work.me.depotId = depotId.value,
+        work.me.affairId = affairId.value;
+
+        showAffair();
+
         $('#tb').children('a[name="reload"]').click(function (e) {
-            if (!work.validate()) return; 
-            showAffair(work.me.affairId);
+            showAffair();
         });
     
-        $('#tb').children('a[name="askOpenDoor"]').click(function (e) {
-            if (!work.validate()) return; 
+        $('#tb').children('a[name="askOpen"]').click(function (e) {
+            if (!work.validate(affairId.value)) return; 
 
             abp.message.confirm('确认要申请开门吗?', '确认', function (r) {
                 if (r) {
@@ -24,7 +27,7 @@
             });
         });  
 
-        $('#tb').children('a[name="askOpenDoorTask"]').click(function (e) {
+        $('#tb').children('a[name="askOpenTask"]').click(function (e) {
             if (!work.validate()) return; 
 
             abp.message.confirm('确认要申请开门吗?', '确认', function (r) {
@@ -37,20 +40,14 @@
         });    
     });
 
-    function showAffair(id) {
-        abp.services.app.work.allowCardWhenCheckin().done(function (ret) {
-            allowCardWhenCheckin = ret;
-        });
-
-        abp.services.app.affair.getAffair(id).done(function (dto) {
-            $('#fm').form('load', dto);
-        });
+    function showAffair() {
+        if (!work.validate(affairId.value)) return; 
         
         $('#dg').datagrid({
-            url: 'Checkin/GridDataWorker/' + id
+            url: 'Checkin/GridDataWorker/' + affairId.value
         });
         $('#dgTask').datagrid({
-            url: 'Checkin/GridDataTask/' +id
+            url: 'Checkin/GridDataTask/' + affairId.value
         });
     }
 })();

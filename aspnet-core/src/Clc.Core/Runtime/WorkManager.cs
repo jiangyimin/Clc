@@ -71,7 +71,7 @@ namespace Clc.Works
 
         public Worker GetWorkerByRfid(string rfid) 
         {
-            var w = _workerCache.GetList().Find(x => x.Rfid == rfid);
+            var w = _workerCache.GetList().Find(x => !string.IsNullOrEmpty(x.Rfid) && x.Rfid == rfid);
             if (w != null) return _workerCache[w.Id];
             return null;
         }
@@ -166,6 +166,21 @@ namespace Clc.Works
         public Depot GetDepot(int depotId)
         {
             return _depotCache[depotId];
+        }
+        public List<int> GetShareDepods(DateTime carryoutDate, int depotId, int affairId)
+        {
+            var affair = _affairCache.GetAffair(carryoutDate, depotId, affairId);
+            var wp = _workplaceCache[affair.WorkplaceId];
+            var depots = new List<int>() { wp.DepotId };
+            if (!string.IsNullOrEmpty(wp.ShareDepotList))
+            {
+                var lst = _depotCache.GetList();
+                foreach (var cn in wp.ShareDepotList.Split())
+                {
+                    depots.Add(lst.First(x => x.Cn == cn).Id);
+                }
+            }
+            return depots;
         }
         
         public Workplace GetWorkplace(int id)
@@ -278,20 +293,32 @@ namespace Clc.Works
 
         #region Affair，Article, Box,
 
-        public List<int> GetShareDepods(DateTime carryoutDate, int depotId, int affairId)
+        public AffairCacheItem FindDutyAffairByWorkerId(int workerId)
         {
-            var affair = _affairCache.GetAffair(carryoutDate, depotId, affairId);
-            var wp = _workplaceCache[affair.WorkplaceId];
-            var depots = new List<int>() { wp.DepotId };
-            if (!string.IsNullOrEmpty(wp.ShareDepotList))
+            int depotId = GetWorkerDepotId(workerId);
+
+            foreach (var affair in _affairCache.Get(DateTime.Now.Date, depotId))
             {
-                var lst = _depotCache.GetList();
-                foreach (var cn in wp.ShareDepotList.Split())
-                {
-                    depots.Add(lst.First(x => x.Cn == cn).Id);
-                }
+                if (!ClcUtils.NowInTimeZone(affair.StartTime, affair.EndTime)) continue;
+                // me in worker
+                foreach (var worker in affair.Workers)
+                    if (worker.WorkerId == workerId) return affair;
             }
-            return depots;
+            return null;
+        }
+
+        public AffairCacheItem FindAltDutyAffairByDepotId(int depotId)
+        {
+            var wp = _workplaceCache.GetList().FirstOrDefault(x => x.DepotId == depotId && x.Name.Contains("金库"));
+            if (wp == null) return null;
+            var list = _affairCache.Get(DateTime.Now.Date, depotId);
+            foreach (var affair in list)
+            {
+                if (!ClcUtils.NowInTimeZone(affair.StartTime, affair.EndTime)) continue;
+                // 金库
+                if (affair.WorkplaceId == wp.Id) return affair;
+            }
+            return null;
         }
 
         public (AffairCacheItem, AffairWorkerCacheItem) GetCacheAffairWorker(DateTime carryoutDate, int depotId, int workerId)

@@ -25,7 +25,6 @@
             { field: "workplaceAskOpenStyle", title: "申请开门方式", width: 60 },
             { field: "startTime", title: "开始时间", width: 80, sortable: true },
             { field: "endTime", title: "结束时间", width: 80 },
-            { field: "isTomorrow", title: "明天结束", width: 60 },
             { field: "remark", title: "备注", width: 80 },
             { field: "createWorkerName", title: "任务创建人", width: 80 },
         ]];
@@ -57,7 +56,6 @@
             { field: "workplaceName", title: "场所", width: 80 },
             { field: "startTime", title: "开始时间", width: 80, sortable: true },
             { field: "endTime", title: "结束时间", width: 80, sortable: true },
-            { field: "isTomorrow", title: "明天结束", width: 60 },
             { field: "remark", title: "备注", width: 80 },
             { field: "createWorkerName", title: "创建人", width: 60 },
         ]];
@@ -194,10 +192,6 @@
                 <th><Label for="endTime">结束时间:</Label></th>
                 <td><input name="endTime" class="easyui-timespinner" data-options="required: true" style="width: 100%"></td>
             <tr>
-                <th><label for="isTomorrow">明天结束: </label></th>
-                <td><input name="isTomorrow" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
-            </tr>
-            <tr>
                 <th><Label for="remark">备注:</Label></th>
                 <td><input name="remark" class="easyui-textbox" style="width: 100%"></td>
             </tr>
@@ -248,10 +242,6 @@
             <tr>
                 <th><Label for="endTime">结束时间:</Label></th>
                 <td><input name="endTime" class="easyui-timespinner" data-options="required: true" style="width:100%"></td>
-            </tr>
-            <tr>
-                <th><label for="isTomorrow">明天结束: </label></th>
-                <td><input name="isTomorrow" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
             </tr>
             <tr>
                 <th><Label for="remark">备注:</Label></th>

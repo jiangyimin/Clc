@@ -36,13 +36,12 @@ namespace Clc.Web.Controllers
             _weixinAppService = weixinAppService;
         }
 
-        // 申请应急开门
-        public ActionResult EmergDoor()
+        // 申请开门
+        public ActionResult AskDoor()
         {
             var workerId = GetWeixinUserId();
 
-            if (workerId == 0 || WorkManager.WorkerHasDefaultWorkRoleName(workerId, "队长")) 
-                throw new System.Exception("无此人或不是队长职务");
+            if (workerId == 0) throw new System.Exception("无此人或不是队长职务");
 
             EmergDoorViewModel vm = new EmergDoorViewModel();
             var doors = WorkManager.GetDoors(workerId);
@@ -53,7 +52,7 @@ namespace Clc.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult EmergDoor(EmergDoorViewModel vm)
+        public ActionResult AskDoor(EmergDoorViewModel vm)
         {
             // _weixinAppService.ProcessEmergDoor(vm);
 

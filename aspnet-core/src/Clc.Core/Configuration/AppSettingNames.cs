@@ -27,6 +27,7 @@
             public const string MinWorkersOnDuty = "Rule.MinWorkersOnDuty";
 
             public const string EnableDynEmergPassword = "Rule.EnableDynEmergPassword";
+            public const string AltCheckinDepots = "Rule.AltCheckinDepots";
         }
 
         public static class TimeRule

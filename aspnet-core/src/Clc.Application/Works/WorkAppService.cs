@@ -92,21 +92,41 @@ namespace Clc.Works
             return (worker.LoginRoleNames, worker.Cn);
         }
         
+        public MyAffairWorkDto FindDutyAffair()
+        {
+            var dto = new MyAffairWorkDto();
+            int workerId = GetCurrentUserWorkerIdAsync().Result;
+            dto.DepotId = WorkManager.GetWorker(workerId).DepotId;
+            var affair = WorkManager.FindDutyAffairByWorkerId(workerId);
+            if (affair == null) return dto;
+
+            var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
+            return dto.SetAffair(affair, wp.Name, false);
+        }
+
+        public MyAffairWorkDto FindAltDutyAffair()
+        {
+            var dto = new MyAffairWorkDto();
+            int workerId = GetCurrentUserWorkerIdAsync().Result;
+            var depot = WorkManager.GetDepot(WorkManager.GetWorker(workerId).DepotId);
+            dto.DepotId = depot.Id;
+
+            var depots = SettingManager.GetSettingValueAsync(AppSettingNames.Rule.AltCheckinDepots).Result;
+            if (!depots.Contains(depot.Name)) return dto;
+            var affair = WorkManager.FindAltDutyAffairByDepotId(depot.Id);
+            if (affair == null) return dto;
+
+            var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
+            
+            return dto.SetAffair(affair, wp.Name, true);
+        }
+        
         public MyAffairWorkDto GetMyAffairWork()
         {
             var dto = new MyAffairWorkDto();
-            dto.Now = DateTime.Now;
             dto.Today = DateTime.Now.Date.ToString("yyyy-MM-dd");
             int workerId = GetCurrentUserWorkerIdAsync().Result; 
             dto.DepotId = WorkManager.GetWorkerDepotId(workerId);         
-
-            var aw = WorkManager.GetCacheAffairWorker(DateTime.Now.Date, dto.DepotId, workerId);
-            if (aw.Item2 != null)
-            {
-                dto.AffairId = aw.Item1.Id;
-                dto.StartTime = ClcUtils.GetDateTime(aw.Item1.StartTime);
-                dto.EndTime = ClcUtils.GetDateTime(aw.Item1.EndTime);
-            }
             return dto;
         }
 
@@ -163,7 +183,6 @@ namespace Clc.Works
             var lst = WorkManager.GetDoors(workerId);
             return ObjectMapper.Map<List<WorkplaceDto>>(lst);
         }
-
         #endregion
 
         #region signin

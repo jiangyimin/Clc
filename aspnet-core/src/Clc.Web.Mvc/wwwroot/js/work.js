@@ -2,13 +2,13 @@
 (function($) {
     work.me = {};
     
-    work.validate = function(now) {
+    work.validate = function() {
         if (work.me.affairId == 0) {
-            abp.notify.error("你未被安排或任务未激活", "", { positionClass : 'toast-top-center'} );
+            abp.notify.error("你目前无可用任务！", "", { positionClass : 'toast-top-center'} );
             return false;
         }
-        if (work.me.now < work.me.startTime && work.me.now > work.me.endTime) {
-            abp.notify.error("不在工作时段", "", { positionClass : 'toast-top-center'} );
+        if (alt.value) {
+            abp.notify.error("帮验金库任务，不用申请开门", "", { positionClass : 'toast-top-center'} );
             return false;
         }
         return true;

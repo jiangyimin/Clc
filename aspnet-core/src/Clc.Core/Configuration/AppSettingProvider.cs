@@ -115,6 +115,12 @@ namespace Clc.Configuration
                     scopes: SettingScopes.Tenant,
                     isVisibleToClients: true
                 ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.AltCheckinDepots, 
+                    "调度", 
+                    new FixedLocalizableString("代验入大队列表"),
+                    scopes: SettingScopes.Tenant
+                ),
             };
         }
         private IEnumerable<SettingDefinition> GetTimeRuleSettingDefinitions(SettingDefinitionProviderContext context)

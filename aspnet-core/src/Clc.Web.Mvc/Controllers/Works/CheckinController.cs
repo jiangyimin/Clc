@@ -7,25 +7,41 @@ using System.Threading.Tasks;
 using Clc.Affairs;
 using Clc.Runtime.Cache;
 using Clc.Fields;
+using Clc.Works;
+using Clc.Works.Dto;
 
 namespace Clc.Web.Controllers
 {
     [AbpMvcAuthorize(PermissionNames.Pages_Article, PermissionNames.Pages_Box, PermissionNames.Pages_Monitor, PermissionNames.Pages_Aux)]
     public class CheckinController : ClcControllerBase
     {
+        public WorkManager WorkManager { get; set; } 
         private readonly IAffairAppService _affairAppService;
-        private readonly IWorkerCache _workerCache;
+        private readonly IWorkAppService _workAppService;
 
         public CheckinController(IAffairAppService affairAppService,
-            IWorkerCache workerCache)
+            IWorkAppService workAppService)
         {
             _affairAppService = affairAppService;
-            _workerCache = workerCache;
+            _workAppService = workAppService;
         }
 
-        public ActionResult Index()
+        public ActionResult Index(MyAffairWorkDto affair)
         {
-            return View();
+            if (!affair.Alt && affair.AffairId == 0) {
+                var vm = _workAppService.FindDutyAffair();
+                return View(vm);
+            }
+            return View(affair);
+        }
+
+        public ActionResult GetPhoto(string id)
+        {
+            Worker w = WorkManager.GetWorkerByRfid(id);
+            if (w != null && w.Photo != null)
+                return File(w.Photo, "image/jpg");
+
+            return File(new byte[0], "image/jpg");
         }
 
         [DontWrapResult]

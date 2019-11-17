@@ -99,6 +99,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Article_Return", new FixedLocalizableString("归还"), url: "ArticleWork/Return"))
                     .AddItem(new MenuItemDefinition("Article_List", new FixedLocalizableString("物品清单"), url: "ArticleWork/List"))
                     .AddItem(new MenuItemDefinition("Article_Record", new FixedLocalizableString("物品记录查询"), url: "ArticleWork/RecordQuery"))
+                    .AddItem(new MenuItemDefinition("Article_AltCheckin", new FixedLocalizableString("验证金库人员"), url: "AltCheckin"))
                 
                 // Box
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Box, new FixedLocalizableString("金库尾箱操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Box)

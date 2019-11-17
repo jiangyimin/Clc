@@ -69,7 +69,7 @@ namespace Clc.Web.Controllers
         {
             using (CurrentUnitOfWork.SetTenantId(1))
             {
-                _doorAppService.ApproveEmergDoor(vm.Id);
+                // _doorAppService.ApproveEmergDoor(vm.Id);
             }
             
             var name = WorkManager.GetWorkerName(GetWeixinUserId());

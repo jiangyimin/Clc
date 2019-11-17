@@ -62,6 +62,13 @@ namespace Clc.Runtime
                 return new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, int.Parse(time.Substring(0, 2)), int.Parse(time.Substring(3, 2)), 0);
         }
 
+        public static bool NowInTimeZone(string start, string end)
+        {
+            if (DateTime.Now >= ClcUtils.GetDateTime(start) && DateTime.Now <= ClcUtils.GetDateTime(end))
+                return true;
+            else
+                return false;
+        }
         public static bool NowInTimeZone(DateTime start, DateTime end)
         {
             if (DateTime.Now >= start && DateTime.Now <= end) return true;

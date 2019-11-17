@@ -17,6 +17,9 @@ namespace Clc.Works
         (string, string) GetMe();
         MyAffairWorkDto GetMyAffairWork();
         
+        MyAffairWorkDto FindDutyAffair();
+        MyAffairWorkDto FindAltDutyAffair();
+        
         List<RouteCacheItem> GetActiveRoutes(DateTime carryouDate, int depotId, int affairId);
 
         string GetReportToManagers();

@@ -92,9 +92,9 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             {
                 _context.Affairs.AddRange(new Affair[] {
                     new Affair { TenantId = _tenantId, DepotId = 1, CarryoutDate = dd, Status = "安排", WorkplaceId = 1, StartTime = "08:01", EndTime="21:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
-                    new Affair { TenantId = _tenantId, DepotId = 2, CarryoutDate = dd, Status = "安排", WorkplaceId = 3, StartTime = "08:30", EndTime="21:00", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
-                    new Affair { TenantId = _tenantId, DepotId = 2, CarryoutDate = dd, Status = "安排", WorkplaceId = 2, StartTime = "06:30", EndTime="21:00", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
-                    new Affair { TenantId = _tenantId, DepotId = 4, CarryoutDate = dd, Status = "安排", WorkplaceId = 2, StartTime = "08:25", EndTime="23:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
+                    new Affair { TenantId = _tenantId, DepotId = 2, CarryoutDate = dd, Status = "安排", WorkplaceId = 2, StartTime = "08:30", EndTime="21:00", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
+                    new Affair { TenantId = _tenantId, DepotId = 2, CarryoutDate = dd, Status = "安排", WorkplaceId = 3, StartTime = "06:30", EndTime="21:00", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
+                    new Affair { TenantId = _tenantId, DepotId = 4, CarryoutDate = dd, Status = "安排", WorkplaceId = 5, StartTime = "08:25", EndTime="23:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
                 }); 
                 _context.SaveChanges();
             }
