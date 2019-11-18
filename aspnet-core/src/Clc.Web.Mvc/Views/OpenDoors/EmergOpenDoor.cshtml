@@ -1,0 +1,90 @@
+﻿@section Scripts
+{
+    <environment names="Development">
+        <script src="~/js/finput.js" asp-append-version="true"></script>
+        <script src="~/js/door.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/OpenDoors/EmergOpenDoor.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/js/finput.min.js" asp-append-version="true"></script>
+        <script src="~/js/door.min.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/OpenDoors/EmergOpenDoor.min.js" asp-append-version="true"></script>
+    </environment>
+
+    <script type="text/javascript">
+        var status = '';
+        var doorIp = '';
+    
+        finput.onWorker = function(rfid) {
+            // judge rfid in work.me.ask
+            if (!work.isInRfids(rfid)) return;
+
+            abp.services.app.work.getWorkerByRfid(rfid)).done(function(ret) {
+                for (var i = 0; i < work.askWorkers.length; i++) {
+                    if (work.askWorkers[i].name === ret.worker) {
+                        abp.notify.warn('此Rfid已刷过');
+                        return;
+                    }
+                }
+
+                work.askWorkers.push( ret.worker );
+                $('#dlCard').datalist('loadData', work.askWorkers);
+                
+                if (work.askWorkers.length == work.me.rfids.length) {
+                    ws && ws.send(doorIp);
+                    abp.notify.info('已发送开门命令到对应的门禁', '', { positionClass : 'toast-top-center' });
+
+                    // udpate doorRecord
+                    if (status == 'emerg') {
+                        // abp.services.app.monitor.insert(row.id, work.myWork.affairId);
+                    }
+                }
+            }
+        }
+    </script>
+}
+
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'east', title:'门禁列表', collasped:true, split:true, border:false" style="width:350px">
+        <div id="tbDoor">
+            <input id="password" class="easyui-numberbox" data-options="requried:true" style="width: 100px">
+            <a name="open" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">开门</a>
+        </div>
+        <table id="dgDoor" class="easyui-datagrid" toolbar="#tbDoor"
+                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">
+            <thead>
+                <tr>
+                    <th field="depotName" width="60">大队</th>
+                    <th field="name" width="60">场所名称</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div data-options="region:'center'">
+        <div id="tb">
+            任务日期: <input id="dd" class="easyui-datebox" readonly="true" style="width:120px">
+            &nbsp;昨天&nbsp;<input id="yestoday" class="easyui-checkbox">
+            <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+            <a name="open" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">应急开门</a>
+        </div>
+        <table id="dg" class="easyui-datagrid" toolbar="#tb"
+                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">
+            <thead>
+                <tr>
+                    <th field="approverTime" width="60">时间</th>
+                    <th field="depotName" width="60"></th>
+                    <th field="workplaceName" width="60"></th>
+                    <th field="approverName" width="60">场所名称</th>
+                    <th field="IssueContent" width="80"></th>
+                </tr>
+            </thead>
+        </div>
+    </div>
+</div>
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" title="刷卡开门" closed="true" modal="true" align="center" style="height: 250px; width: 400px;">
+    <div id="dlCard" class="easyui-datalist" fit="true" fitColumns="true" striped="true">
+    </div>
+</div>

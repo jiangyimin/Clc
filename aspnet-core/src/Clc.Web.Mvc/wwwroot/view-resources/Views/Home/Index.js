@@ -244,5 +244,8 @@ function parseMessage(msg) {
         if (cmd[1] == meCn) unlockScreen();
     }
     else if (cmd[0] == "openDoor") {
+        if (loginRole.indexOf("Monitor") != -1) {
+            abp.notify.info(cmd[1]);
+        }
     }
 }

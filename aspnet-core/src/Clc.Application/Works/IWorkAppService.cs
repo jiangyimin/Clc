@@ -15,10 +15,11 @@ namespace Clc.Works
         bool VerifyUnlockPassword(string password);
         bool AllowCardWhenCheckin();   
         (string, string) GetMe();
-        MyAffairWorkDto GetMyAffairWork();
         
-        MyAffairWorkDto FindDutyAffair();
-        MyAffairWorkDto FindAltDutyAffair();
+        AffairWorkDto GetMyCheckinAffair();
+        
+        AffairWorkDto FindDutyAffair();
+        AffairWorkDto FindAltDutyAffair();
         
         List<RouteCacheItem> GetActiveRoutes(DateTime carryouDate, int depotId, int affairId);
 
@@ -31,6 +32,8 @@ namespace Clc.Works
 
         List<ComboboxItemDto> GetLeaders();
         List<WorkplaceDto> GetDoors();
+
+        SimpleWorkerDto GetWorkerByRfid(string rfid);
 
         #endregion
 

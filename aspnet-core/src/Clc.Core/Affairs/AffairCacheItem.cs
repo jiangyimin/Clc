@@ -34,6 +34,7 @@ namespace Clc.Affairs
 
         public List<AffairWorkerCacheItem> Workers { get; set; }
         public List<AffairTaskCacheItem> Tasks { get; set; }
+
     }
 }
 

@@ -11,10 +11,26 @@
         return true;
     }
 
+    work.isInRfids = function (rfid) {
+        for (var i = 0; i < work.me.rfids.length; i++) {
+            if (work.me.rfids[i] === rfid)
+                return true;
+        }
+        abp.notify.error("此RFID不是工作人员的卡", "", { positionClass : 'toast-top-center'} );
+        return false;
+    }
+
     work.getTomorrow = function(today) {
         var now = today.split('-')
         now = new Date(Number(now['0']),(Number(now['1'])-1),Number(now['2']));
         now.setDate(now.getDate() + 1);
+        return work.formatTime(now);
+    }
+
+    work.getYestoday = function(today) {
+        var now = today.split('-')
+        now = new Date(Number(now['0']),(Number(now['1'])-1),Number(now['2']));
+        now.setDate(now.getDate() - 1);
         return work.formatTime(now);
     }
 

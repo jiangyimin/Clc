@@ -31,7 +31,7 @@ namespace Clc.Web.Controllers
             _workAppService = workAppService;
         }
 
-        public ActionResult Index(MyAffairWorkDto affair)
+        public ActionResult Index(AffairWorkDto affair)
         {
             if (!affair.Alt && affair.AffairId == 0) {
                 var vm = _workAppService.FindDutyAffair();

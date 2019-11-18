@@ -3,10 +3,10 @@ using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Clc.Runtime;
 
-namespace Clc.BoxRecords.Dto
+namespace Clc.DoorRecords.Dto
 {
     [AutoMapFrom(typeof(AskDoorRecord))]
-    public class AskDoorRecordDto : EntityDto
+    public class AskDoorDto : EntityDto
     {
         public DateTime AskTime { get; set; }
 
@@ -14,11 +14,7 @@ namespace Clc.BoxRecords.Dto
         /// 对应的门
         /// </summary>
         public string WorkplaceName { get; set; }
-        public int AskffairId { get; set; }
+        public int AskAffairId { get; set; }
         public string AskWorkers { get; set; }
-
-        public int? MonitorAffairId { get; set; }
-        public string MonitorWorkers { get; set; }
-        public DateTime? ProcessTime { get; set; }
     }
 }

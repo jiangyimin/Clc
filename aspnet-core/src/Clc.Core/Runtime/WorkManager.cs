@@ -298,6 +298,28 @@ namespace Clc.Works
 
         #region Affair，Article, Box,
 
+        public AffairCacheItem FindCheckinAffairByWorkerId(int workerId)
+        {
+            int depotId = GetWorkerDepotId(workerId);
+
+            AffairCacheItem found = null;
+            foreach (var affair in _affairCache.Get(DateTime.Now.Date, depotId))
+            {
+                if (!ClcUtils.NowInTimeZone(affair.StartTime, affair.EndTime)) continue;
+            
+                var allcheckin = true;
+                found = null;
+                foreach (var worker in affair.Workers) {
+                    if (worker.WorkerId == workerId) found = affair;
+
+                    if (!worker.CheckinTime.HasValue) allcheckin = false;
+                }
+
+                if (found != null && allcheckin) return found;
+            }
+            return null;
+        }
+
         public AffairCacheItem FindDutyAffairByWorkerId(int workerId)
         {
             int depotId = GetWorkerDepotId(workerId);
@@ -348,7 +370,7 @@ namespace Clc.Works
             var lst = new List<Workplace>();
             var aw = _affairCache.GetAffairWorker(carryoutDate, depotId, workerId);
             var affair = aw.Item1;
-            if (affair == null) return (0, lst);
+            if (affair == null || string.IsNullOrEmpty(_workplaceCache[affair.WorkplaceId].AskOpenStyle)) return (0, lst);
             
             if (ClcUtils.NowInTimeZone(affair.StartTime, affair.EndTime))
             {
@@ -403,6 +425,7 @@ namespace Clc.Works
                 return (false, "申请人的工作角色需要有金库职责");
             
             var wpOpen = _workplaceCache[workplaceId];
+            if (string.IsNullOrEmpty(wpOpen.AskOpenStyle)) return (false, "不需要申请开门");
             if (wpOpen.AskOpenStyle == "验证" && NeedCheckin(aw.Item2.CheckinTime)) return (false, "需要先验入");
             if (wpOpen.AskOpenStyle == "任务") return (false, "押运任务开门方式");
 

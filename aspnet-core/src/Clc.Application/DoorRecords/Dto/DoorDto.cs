@@ -3,7 +3,7 @@ using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Clc.Fields;
 
-namespace Clc.Monitors.Dto
+namespace Clc.DoorRecords.Dto
 {
     [AutoMap(typeof(Workplace))]
     public class DoorDto : EntityDto

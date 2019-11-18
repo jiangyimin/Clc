@@ -6,11 +6,10 @@ using Clc.Runtime;
 namespace Clc.DoorRecords.Dto
 {
     [AutoMapFrom(typeof(EmergDoorRecord))]
-    public class EmergDoorRecordDto : EntityDto
+    public class EmergDoorDto : EntityDto
     {
          public DateTime CreateTime { get; set; }
 
-        public string DepotName { get; set; }
         public string WorkplaceName { get; set; }
         public string WorkplaceDoorIp { get; set; }
         public string IssueContent { get; set; }
@@ -22,7 +21,5 @@ namespace Clc.DoorRecords.Dto
         public DateTime? ApproverTime { get; set; }
 
         public string EmergDoorPassword { get; set; }
-
-        public string MonitorWorkers { get; set; }
     }
 }

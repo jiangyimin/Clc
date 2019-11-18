@@ -92,9 +92,9 @@ namespace Clc.Works
             return (worker.LoginRoleNames, worker.Cn);
         }
         
-        public MyAffairWorkDto FindDutyAffair()
+        public AffairWorkDto FindDutyAffair()
         {
-            var dto = new MyAffairWorkDto();
+            var dto = new AffairWorkDto();
             int workerId = GetCurrentUserWorkerIdAsync().Result;
             dto.DepotId = WorkManager.GetWorker(workerId).DepotId;
             var affair = WorkManager.FindDutyAffairByWorkerId(workerId);
@@ -104,9 +104,9 @@ namespace Clc.Works
             return dto.SetAffair(affair, wp.Name, false);
         }
 
-        public MyAffairWorkDto FindAltDutyAffair()
+        public AffairWorkDto FindAltDutyAffair()
         {
-            var dto = new MyAffairWorkDto();
+            var dto = new AffairWorkDto();
             int workerId = GetCurrentUserWorkerIdAsync().Result;
             var depot = WorkManager.GetDepot(WorkManager.GetWorker(workerId).DepotId);
             dto.DepotId = depot.Id;
@@ -121,13 +121,25 @@ namespace Clc.Works
             return dto.SetAffair(affair, wp.Name, true);
         }
         
-        public MyAffairWorkDto GetMyAffairWork()
+        public AffairWorkDto GetMyCheckinAffair()
         {
-            var dto = new MyAffairWorkDto();
-            dto.Today = DateTime.Now.Date.ToString("yyyy-MM-dd");
+            var dto = new AffairWorkDto();
             int workerId = GetCurrentUserWorkerIdAsync().Result; 
-            dto.DepotId = WorkManager.GetWorkerDepotId(workerId);         
-            return dto;
+            dto.DepotId = WorkManager.GetWorkerDepotId(workerId); 
+
+            var affair = WorkManager.FindCheckinAffairByWorkerId(workerId);
+            if (affair == null) return dto;
+            var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
+            dto.Rfids = GetRfidsByAffair(affair);
+            return dto.SetAffair(affair, wp.Name, false);
+        }
+
+        private List<string> GetRfidsByAffair(AffairCacheItem affair)
+        {
+            var lst = new List<string>();
+            foreach (var w in affair.Workers)
+                lst.Add(WorkManager.GetWorker(w.WorkerId).Rfid);
+            return lst;
         }
 
         public List<RouteCacheItem> GetActiveRoutes(DateTime carryoutDate, int depotId, int affairId)
@@ -183,6 +195,15 @@ namespace Clc.Works
             var lst = WorkManager.GetDoors(workerId);
             return ObjectMapper.Map<List<WorkplaceDto>>(lst);
         }
+
+        public SimpleWorkerDto GetWorkerByRfid(string rfid)
+        {
+            var worker = WorkManager.GetWorkerByRfid(rfid);
+            if (worker != null) 
+                return new SimpleWorkerDto() { Name = string.Format("{0} {1}", worker.Cn, worker.Name) };
+            return null;
+        }
+
         #endregion
 
         #region signin

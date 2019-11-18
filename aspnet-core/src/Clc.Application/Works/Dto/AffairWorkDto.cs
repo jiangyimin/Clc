@@ -7,7 +7,7 @@ namespace Clc.Works.Dto
     /// <summary>
     /// MyAffairWork Model
     /// </summary>
-    public class MyAffairWorkDto
+    public class AffairWorkDto
     {
         public bool Alt { get; set; }
         public string Today { get; set; }
@@ -20,7 +20,9 @@ namespace Clc.Works.Dto
         public string StartTime { get; set; }
         public string EndTime { get; set; }
 
-        public MyAffairWorkDto SetAffair(AffairCacheItem affair, string wpName, bool alt)
+        public List<string> Rfids { get; set; }
+
+        public AffairWorkDto SetAffair(AffairCacheItem affair, string wpName, bool alt)
         {
             Alt = alt;
             Today = DateTime.Now.ToString("yyyy-MM-dd");
