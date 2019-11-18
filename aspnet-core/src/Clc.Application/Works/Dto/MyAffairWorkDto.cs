@@ -13,6 +13,8 @@ namespace Clc.Works.Dto
         public string Today { get; set; }
         public int DepotId { get; set; }
         public int AffairId { get; set; }
+
+        public int WorkplaceId { get; set; }
         public string WorkplaceName { get; set; }
 
         public string StartTime { get; set; }
@@ -25,6 +27,7 @@ namespace Clc.Works.Dto
             if (affair != null)
             {
                 AffairId = affair.Id;
+                WorkplaceId = affair.WorkplaceId;
                 WorkplaceName = wpName;
                 StartTime = affair.StartTime;
                 EndTime = affair.EndTime;

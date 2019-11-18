@@ -30,6 +30,7 @@ namespace Clc.Works
         private readonly IRepository<Affair> _affairRepository;
         private readonly IRepository<AffairWorker> _affairWorkerRepository;
         private readonly IRepository<AffairTask> _affairTaskRepository;
+        private readonly IRepository<AskDoorRecord> _askdoorRepository;
 
         public WorkManager(IWorkerCache workerCache,
             IWorkplaceCache workplaceCache,
@@ -43,7 +44,8 @@ namespace Clc.Works
             IAffairCache affairCache,
             IRepository<Affair> affairRepository,
             IRepository<AffairWorker> affairWorkerRepository,
-            IRepository<AffairTask> affairTaskRepository)
+            IRepository<AffairTask> affairTaskRepository,
+            IRepository<AskDoorRecord> askdoorRepository)
         {
             _workerCache = workerCache;
             _workplaceCache = workplaceCache;
@@ -60,6 +62,8 @@ namespace Clc.Works
             _affairRepository = affairRepository;
             _affairWorkerRepository = affairWorkerRepository;
             _affairTaskRepository = affairTaskRepository;
+
+            _askdoorRepository = askdoorRepository;
         }
 
         #region Worker
@@ -191,8 +195,9 @@ namespace Clc.Works
         public List<Workplace> GetDoors(int workerId)
         {
             var depotId = _workerCache[workerId].DepotId;
-            return _workplaceCache.GetList().FindAll(x => x.DepotId == depotId && !string.IsNullOrWhiteSpace(x.DoorIp));
+            return _workplaceCache.GetList().FindAll(x => x.DepotId == depotId && !string.IsNullOrWhiteSpace(x.DoorIp)).ToList();
         }
+
         public string GetUnlockPassword(int depotId)
         {
             return _depotCache[depotId].UnlockScreenPassword;
@@ -336,7 +341,25 @@ namespace Clc.Works
         }
         #endregion
 
-        #region Process Weixin Receive Command
+        #region Weixin Receive Command 
+
+        public (int, List<Workplace>) GetDoorsForAsk(DateTime carryoutDate, int depotId, int workerId) 
+        {
+            var lst = new List<Workplace>();
+            var aw = _affairCache.GetAffairWorker(carryoutDate, depotId, workerId);
+            var affair = aw.Item1;
+            if (affair == null) return (0, lst);
+            
+            if (ClcUtils.NowInTimeZone(affair.StartTime, affair.EndTime))
+            {
+                lst.Add(_workplaceCache[affair.WorkplaceId]);   
+            }
+
+            if (AffairTaskCanAsk(affair)) {
+                lst.Add(_workplaceCache[affair.Tasks[0].WorkplaceId]);
+            }
+            return (affair.Id, lst);
+        }
 
         public (bool, string) ClickEventMessageHandler(string workerCn, string cmd)
         {
@@ -354,12 +377,6 @@ namespace Clc.Works
                     else
                         ret = (true, "lockScreen " + workerCn);
                     break;
-                case "申请开金库":
-                    ret = WeixinAskOpenDoor(workerCn, true);
-                    break;
-                case "申请开库房":
-                    ret = WeixinAskOpenDoor(workerCn, false);
-                    break;
                 default:
                     ret = (false, "系统无此命令");
                     break;
@@ -368,70 +385,74 @@ namespace Clc.Works
             return ret;
         }
 
-        private (bool, string) WeixinAskOpenDoor(string cn, bool isVault)
+        // used in weixin
+        public  (bool, string) AskOpenDoor(int workerId, int affairId, int workplaceId, int tenantId)
         {
-            var worker = GetWorkerByCn(cn);
+            var worker = GetWorker(workerId);
             var aw = _affairCache.GetAffairWorker(DateTime.Now.Date, worker.DepotId, worker.Id);
-            // Item1= Affiar, Item2=AffairWorker
+
+            // valid again.
             if (aw.Item1 == null && aw.Item2 == null) return (false, "请管理员激活你的任务");
             if (aw.Item1 != null && aw.Item2 == null) return (false, "你还没安排在激活的任务中");
+            if (aw.Item1.Id != affairId) return (false, "不允许同时安排在多个任务中");
 
             // judge workplace is vault
-            var wp = _workplaceCache[aw.Item1.WorkplaceId];
-            if (isVault)
-            {
-                if (wp.Name.Contains("金库")) return AskOpenDoor(aw.Item1, aw.Item2);
-                // 操作金库子任务
-                var affairTasks = _affairTaskRepository.GetAll().Where(x => x.AffairId == aw.Item1.Id).ToList();
-            }
-            else
-            {
-                if (wp.Name.Contains("金库")) return (false, "你没安排库房任务");
-                return AskOpenDoor(aw.Item1, aw.Item2);
-            }
-            return (false, null);
-        }
+            var affairWp = _workplaceCache[aw.Item1.WorkplaceId];
+            var isVault = affairWp.Name.Contains("金库") || aw.Item1.WorkplaceId != workplaceId;
+            if (isVault && !_workRoleCache[aw.Item2.WorkRoleId].Duties.Contains("金库")) 
+                return (false, "申请人的工作角色需要有金库职责");
+            
+            var wpOpen = _workplaceCache[workplaceId];
+            if (wpOpen.AskOpenStyle == "验证" && NeedCheckin(aw.Item2.CheckinTime)) return (false, "需要先验入");
+            if (wpOpen.AskOpenStyle == "任务") return (false, "押运任务开门方式");
 
-        private (bool, string) AskOpenDoor(AffairCacheItem affair, AffairWorkerCacheItem worker)
-        {
-            int doorId = 0;
-            var msg = CheckAskOpenValid(affair, worker, true, out doorId);
-            if (msg == null) {
-                // Set Time
-                int interval = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.AskOpenInterval));
-                var diff = DateTime.Now - worker.LastAskDoor.Value;
-                if (worker.LastAskDoor.HasValue &&  diff.TotalSeconds < interval)
-                    return (false, $"两次申请间隔需要大于{interval}秒");
+            // check ask interval
+            int interval = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.AskOpenInterval));
+            if (aw.Item2.LastAskDoor.HasValue && (DateTime.Now - aw.Item2.LastAskDoor.Value).TotalSeconds < interval)
+                return (false, $"两次申请间隔需要大于{interval}秒");
 
-                worker.LastAskDoor = DateTime.Now;
-                using (CurrentUnitOfWork.SetTenantId(1)) {
-                    var affairWorker = _affairWorkerRepository.Get(worker.Id);
-                    affairWorker.LastAskDoor = DateTime.Now;
-                    CurrentUnitOfWork.SaveChanges();
+            SetLastAskDoorTime(aw.Item1, aw.Item2, tenantId);
+
+            // check if allWorker is Asked
+            DateTime min = DateTime.Now; 
+            DateTime max = DateTime.Now; 
+            int count = 0, vvCount = 0;
+            string askWorkers = null;
+            foreach (AffairWorkerCacheItem aworker in aw.Item1.Workers)
+            {
+                // if vaultDoor, skip if no duty
+                var duties = _workRoleCache[aworker.WorkRoleId].Duties;
+                if (isVault && (string.IsNullOrEmpty(duties) || !duties.Contains("金库")))
+                    continue;             
+
+                if (!aworker.LastAskDoor.HasValue) {
+                    count++; continue;                    
                 }
 
-                var checkOpen = CheckOpenDoor(affair, true, interval);
-                if (checkOpen.Item1) 
-                {
-                    using (CurrentUnitOfWork.SetTenantId(1)) {
-                        var ask = new AskDoorRecord();
-                        ask.WorkplaceId = doorId;
-                        ask.AskAffairId = affair.Id;
-                        ask.AskWorkers = checkOpen.Item3;
-                        CurrentUnitOfWork.SaveChanges();
-                    }
-                    return (true, checkOpen.Item2);
-                }
-                
-                return (false, checkOpen.Item2);
+                vvCount++;
+                worker = _workerCache[aworker.WorkerId];
+                askWorkers += string.Format("{0} {1}, ", worker.Cn, worker.Name);
+                if (DateTime.Compare(aworker.LastAskDoor.Value, min) < 0) min = aworker.LastAskDoor.Value;
+                if (DateTime.Compare(aworker.LastAskDoor.Value, max) > 0) max = aworker.LastAskDoor.Value;
             }
-            else 
+
+            int minNum = int.Parse(SettingManager.GetSettingValue(AppSettingNames.Rule.MinWorkersOnDuty));
+            int period = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.AskOpenPeriod));
+
+            if (isVault && count == vvCount && (max - min).TotalSeconds <= period)
             {
-                return (false, msg);
+                SetAskDoorRecord(wpOpen.Id, affairId, askWorkers, tenantId);
+                return (true, "已到金库开门要求");
             }
+            if (!isVault && vvCount >= minNum && (max - min).TotalSeconds <= period)
+            {
+                SetAskDoorRecord(wpOpen.Id, affairId, askWorkers, tenantId);
+                return (true, "你的申请已通知监控中心，请等待开门");
+            }
+
+            return (false, "已申请开门");
         }
 
-        
         #endregion
 
         #region private
@@ -482,42 +503,57 @@ namespace Clc.Works
             return (matchScore, score >= score2 ? "匹配指纹1" : "匹配指纹2");
         }
 
-        private (bool, string, string) CheckOpenDoor(AffairCacheItem affair, bool isVault, int len)
+        private bool AffairTaskCanAsk(AffairCacheItem affair)
         {
-            DateTime min = DateTime.Now; 
-            DateTime max = DateTime.Now; 
-            int count = 0;
-            string askWorkers = null;
-            foreach (AffairWorkerCacheItem aw in affair.Workers)
+            foreach (var task in affair.Tasks)
             {
-                // if vaultDoor, skip if no duty
-                var duties = _workRoleCache[aw.WorkRoleId].Duties;
-                if (isVault && (string.IsNullOrEmpty(duties) || !duties.Contains("金库")))
-                    continue;             
- 
-                if (!aw.LastAskDoor.HasValue) return (false, "已受理。等待其他同事申请", null);
+                if (ClcUtils.NowInTimeZone(task.StartTime, task.EndTime)) return true;
+            }   
+            return false;
+        }
 
-                count++;
-                var worker = _workerCache[aw.WorkerId];
-                askWorkers += string.Format("{0} {1}, ", worker.Cn, worker.Name);
-                if (DateTime.Compare(aw.LastAskDoor.Value, min) < 0)
-                    min = aw.LastAskDoor.Value;
+        private void SetLastAskDoorTime(AffairCacheItem affair, AffairWorkerCacheItem worker, int tenantId)
+        {
+            worker.LastAskDoor = DateTime.Now;
+            if (tenantId == 1) 
+            {
+                using (CurrentUnitOfWork.SetTenantId(tenantId)) {
+                    var affairWorker = _affairWorkerRepository.Get(worker.Id);
+                    affairWorker.LastAskDoor = DateTime.Now;
+                    CurrentUnitOfWork.SaveChanges();
+                }
             }
+            else
+            {
+                    var affairWorker = _affairWorkerRepository.Get(worker.Id);
+                    affairWorker.LastAskDoor = DateTime.Now;
+                    CurrentUnitOfWork.SaveChanges();
+            }
+        }
 
-            int num = int.Parse(SettingManager.GetSettingValue(AppSettingNames.Rule.MinWorkersOnDuty));
-            var diff = max - min;
-            if (count >= num && diff.TotalSeconds <= len)
+        private void SetAskDoorRecord(int doorId, int affairId, string askWorkers, int tenantId)
+        {
+            if (tenantId == 1) 
             {
-                var wp = _workplaceCache[affair.WorkplaceId];
-                var msg = string.Format("openDoor {0}", _depotCache[wp.DepotId].Name + wp.Name);
-                return (true, msg, askWorkers);
+                using (CurrentUnitOfWork.SetTenantId(tenantId)) {
+                    var askDoor = new AskDoorRecord();
+                    askDoor.AskTime = DateTime.Now;
+                    askDoor.WorkplaceId = doorId;
+                    askDoor.AskAffairId = affairId;
+                    askDoor.AskWorkers = askWorkers;
+                    _askdoorRepository.Insert(askDoor);
+                    CurrentUnitOfWork.SaveChanges();
+                }
             }
-            else 
+            else
             {
-                if (diff.TotalSeconds <= len)
-                    return (false, "已受理。但有其他让你的申请过时", null);
-                else
-                    return (false, "已受理。但未达最低在岗人数({num})", null);
+                    var askDoor = new AskDoorRecord();
+                    askDoor.AskTime = DateTime.Now;
+                    askDoor.WorkplaceId = doorId;
+                    askDoor.AskAffairId = affairId;
+                    askDoor.AskWorkers = askWorkers;
+                    _askdoorRepository.Insert(askDoor);
+                    CurrentUnitOfWork.SaveChanges();
             }
         }
 
@@ -531,48 +567,6 @@ namespace Clc.Works
             return diff.TotalMinutes > recheck;
         }
 
-        private string CheckAskOpenValid(AffairCacheItem affair, AffairWorkerCacheItem worker, bool isVault, out int doorId)
-        {
-            doorId = 0;
-            string msg = null;
-            // Check workRole Duty
-            var duties = _workRoleCache[worker.WorkRoleId].Duties;
-            if ( isVault && (string.IsNullOrEmpty(duties) || !duties.Contains("金库")) )
-                return "申请人的角色中需要有金库职责";
-
-            // Check Time
-            Workplace wp = _workplaceCache[affair.WorkplaceId];
-            DateTime start = ClcUtils.GetDateTime(affair.StartTime).AddMinutes(-wp.AskOpenLead);
-            DateTime end = wp.AskOpenDeadline == 0 ? ClcUtils.GetDateTime(affair.EndTime)
-                                                : ClcUtils.GetDateTime(affair.StartTime).AddMinutes(wp.AskOpenDeadline);
-
-            // Check Main Affair's valid, msg (first is last)
-            if (!ClcUtils.NowInTimeZone(start, end)) msg = "不在申请时段";
-            if (wp.AskOpenStyle == "验证" && NeedCheckin(worker.CheckinTime)) msg = "需要先验入";
-            if (wp.AskOpenStyle == "任务") msg = "任务开门方式，不能从微信端申请";
-            if (isVault && !wp.Name.Contains("金库")) msg = "无金库开门任务";
-           
-            // Check sub vault tasks
-            if (isVault && msg != null)
-            {
-                var tasks = _affairTaskRepository.GetAll().Where(x => x.AffairId == affair.Id).ToList();
-                foreach (var task in tasks)
-                {
-                    wp = _workplaceCache[task.WorkplaceId];
-                    start = ClcUtils.GetDateTime(task.StartTime).AddMinutes(-wp.AskOpenLead);
-                    end = wp.AskOpenDeadline == 0 ? ClcUtils.GetDateTime(task.EndTime)
-                                                : ClcUtils.GetDateTime(task.StartTime).AddMinutes(wp.AskOpenDeadline);
-
-                    if (ClcUtils.NowInTimeZone(start, end))
-                    {
-                        msg = null; break;
-                    }
-                }
-            }
-            
-            doorId = wp.Id;
-            return msg;     
-        }
         #endregion
     }
 }

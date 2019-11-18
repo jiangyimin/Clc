@@ -33,6 +33,7 @@ namespace Clc.Affairs
         // public bool IsTomorrow { get; set; }
 
         public List<AffairWorkerCacheItem> Workers { get; set; }
+        public List<AffairTaskCacheItem> Tasks { get; set; }
     }
 }
 

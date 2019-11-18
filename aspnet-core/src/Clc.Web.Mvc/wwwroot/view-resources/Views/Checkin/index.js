@@ -6,8 +6,10 @@
 
         // set work.me
         work.me.today = $('#dd').datebox('getValue');
-        work.me.depotId = depotId.value,
-        work.me.affairId = affairId.value;
+        work.me.altcheck = document.getElementById('altcheck').value;
+        work.me.depotId = document.getElementById('depotId').value;
+        work.me.affairId = document.getElementById('affairId').value;
+        work.me.workplaceId = document.getElementById('workplaceId').value;
 
         showAffair();
 
@@ -16,38 +18,64 @@
         });
     
         $('#tb').children('a[name="askOpen"]').click(function (e) {
-            if (!work.validate(affairId.value)) return; 
-
-            abp.message.confirm('确认要申请开门吗?', '确认', function (r) {
-                if (r) {
-                    abp.services.app.work.askOpenDoor(work.me.today, work.me.depotId, work.me.affairId).done(function (ret) {
-                       abp.notify.info("askOpen"); 
-                    });
-                }
-            });
+            if (!work.validate()) return; 
+            if (work.me.altcheck) {
+                abp.notify.error("帮验金库任务，不用申请开门", "", { positionClass : 'toast-top-center'} );
+                return false;
+            };
+       
+            status = 'ask';
+            $('#dlgAsk').dialog('open');
         });  
 
-        $('#tb').children('a[name="askOpenTask"]').click(function (e) {
-            if (!work.validate()) return; 
+        $('#tbTask').children('a[name="askOpenTask"]').click(function (e) {
+           if (!work.validate()) return; 
+            if (work.me.altcheck) {
+                abp.notify.error("帮验金库任务，不用申请开门", "", { positionClass : 'toast-top-center'} );
+                return false;
+            };
+                   
+            var rows = $('#dgTask').datagrid('getRows');
+            if (rows.length == 0) {
+                abp.notify.error("无金库子任务！", "", { positionClass : 'toast-top-center'} );
+                return false;
+            }
 
-            abp.message.confirm('确认要申请开门吗?', '确认', function (r) {
-                if (r) {
-                    abp.services.app.work.askOpenDoorTask(work.me.today, work.me.depotId, work.me.affairId).done(function (ret) {
-                       abp.notify.info("askOpenTask"); 
-                    });
-                }
-            });
-        });    
+            vdoorId = rows[0].workplaceId;
+            status = 'askTask';
+            $('#dlgAsk').dialog('open');
+        }); 
+
+        $('#dlCard').datalist({
+            data: work.askWorkers,
+            valueField: 'name',
+            textField: 'name',
+            lines: true,
+            textFormatter: function(value,row,index) {
+                return '<span style="font-size:24px">'+value+'</span>';
+            }
+        });
+
+
+        $('#dlgAsk').dialog({
+            onClose: function() {
+                status = '';
+                vdoorId = 0;
+                work.askWorkers = [];
+                $('#dlCard').datalist('loadData', []);
+            }
+        });
+
     });
 
     function showAffair() {
-        if (!work.validate(affairId.value)) return; 
-        
+        if (!work.validate()) return; 
+
         $('#dg').datagrid({
-            url: 'Checkin/GridDataWorker/' + affairId.value
+            url: 'Checkin/GridDataWorker/' + work.me.affairId
         });
         $('#dgTask').datagrid({
-            url: 'Checkin/GridDataTask/' + affairId.value
+            url: 'Checkin/GridDataTask/' + work.me.affairId
         });
     }
 })();

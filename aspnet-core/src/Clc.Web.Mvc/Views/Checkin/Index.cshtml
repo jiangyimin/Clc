@@ -8,15 +8,17 @@
     </environment>
     <environment names="Staging,Production">
         <script src="~/js/work.min.js" asp-append-version="true"></script>
-        <script src="~/view-resources/Views/Checkin/index.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Checkin/index.min.js" asp-append-version="true"></script>
     </environment>
 
     <script type="text/javascript">
         var allowCardWhenCheckin = true;
+        var status = '';
+        var vdoorId = 0;
 
         function operator (val, row, index) {
             return '<a href="javascript:void(0)" onclick="scanFinger(' + index + ')">指纹验证</a>';
-        }
+        };
 
         function scanFinger(index) {
             var row = $('#dg').datagrid('getRows')[index];
@@ -31,19 +33,35 @@
         };
 
         finput.onWorker = function(rfid) {
-            if (!allowCardWhenCheckin) {
+            if (status == '' && !allowCardWhenCheckin) {
                 abp.notify.error('系统设置为不允许刷卡验证');
                 return;
             }
 
-            window.parent.displayRfid1(rfid);
-            abp.services.app.work.checkinByRfid(rfid, work.me.today, work.me.depotId, work.me.affairId).done(function(ret) {
-                abp.notify.info(ret.item2);
-                photo.src = "Checkin/GetPhoto/" + rfid;
-                if (ret.item1) $('#dg').datagrid('reload');
-            });
+            if (status == '') {
+                abp.services.app.work.checkinByRfid(rfid, work.me.today, work.me.depotId, work.me.affairId).done(function(ret) {
+                    abp.notify.info(ret.item2);
+                    document.getElementById('photo').src = "Checkin/GetPhoto/" + rfid;
+                    if (ret.item1) $('#dg').datagrid('reload');
+                });
+            }
+            else {
+                var doorId = status == 'ask' ? work.me.workplaceId : vdoorId;
+                // alert(doorId);
+                abp.ajax({
+                    contentType: 'application/x-www-form-urlencoded',
+                    url: 'Checkin/AskOpenByRfid',
+                    data: {rfid: rfid, affairId: work.me.affairId, doorId: doorId }  
+                }).done(function (ret) {
+                    abp.notify.info(ret.message);
+                    if (ret.message == "已申请开门") {
+                         work.askWorkers.push( ret.worker );
+                        $('#dlCard').datalist('loadData', work.askWorkers);
+                    }
+                    if (ret.success) $('#dlgAsk').dialog('close');
+                });
+            }
         };
-
     </script>
 }
 
@@ -53,9 +71,10 @@
     		<div data-options="region:'east', title:'任务概要', split:true" style="width:320px">
     			<form id="fm" class="easyui-form" method="post" novalidate>
         			<table class="edit-tbl">
-                        <input id="alt" type="hidden" value="@Model.Alt">
+                        <input id="altcheck" type="hidden" value="@Model.Alt">
                         <input id="depotId" type="hidden" value="@Model.DepotId">
                         <input id="affairId" type="hidden" value="@Model.AffairId">
+                        <input id="workplaceId" type="hidden" value="@Model.WorkplaceId">
             			<tr>
                 			<th><label for="workplaceName">工作地点</label></th>
                 			<td><input name="workplaceName" class="easyui-textbox" readonly style="width: 100%"  value="@Model.WorkplaceName"></td>
@@ -88,10 +107,10 @@
                             <th field="workerCn" width="80">人员编号</th>
                             <th field="workerName" width="80">人员姓名</th>
                             <th field="workRoleName" width="80">工作角色</th>
-                            <th field="lastAskTime" width="80" formatter="$.timeFormatter">最近申请开门时间</th>
+                            <th field="lastAskDoor" width="80" formatter="$.timeFormatter">最近申请开门时间</th>
                             <th field="checkinTime" width="80" formatter="$.timeFormatter">验入时间</th>
                             <th field="checkoutTime" width="80" formatter="$.timeFormatter">检出时间</th>
-                            <th field="operator" width="60" align="center" formatter="operator">操作</th>
+                            <th field="operator" width="60" formatter="operator">操作</th>
                         </tr>
                     </thead>
                 </table>
@@ -109,10 +128,15 @@
                     <th field="workplaceName" width="80">工作地点</th>
                     <th field="startTime" width="80">开始时间</th>
                     <th field="endTime" width="80">结束时间</th>
-                    <th field="isTomorrow" width="80">明天结束</th>
                     <th field="workplaceAskDeadline" width="100">最晚申请开门延时(分钟)</th>
-                 </tr>
+                </tr>
             </thead>
         </table>
+    </div>
+</div>
+
+@*askOpenDoor弹窗*@
+<div id="dlgAsk" class="easyui-dialog" title="刷卡申请开门" closed="true" modal="true" align="center" style="height: 250px; width: 400px;">
+    <div id="dlCard" class="easyui-datalist" fit="true" fitColumns="true" striped="true">
     </div>
 </div>

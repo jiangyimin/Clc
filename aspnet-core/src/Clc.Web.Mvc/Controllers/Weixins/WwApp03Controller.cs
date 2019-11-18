@@ -4,13 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Clc.Configuration;
 using Clc.Controllers;
 using Clc.Weixin;
-using Clc.Weixin.Dto;
-using Clc.Extensions;
 using Clc.Web.Models.Weixin;
-using Clc.Runtime.Cache;
 using Clc.Works;
 using System.Linq;
-using System.Collections.Generic;
 using Clc.DoorRecords;
 using Microsoft.AspNetCore.SignalR;
 using Clc.RealTime;
@@ -27,11 +23,9 @@ namespace Clc.Web.Controllers
         private readonly string _secret;
         private readonly string _agentId;
 
-        private readonly IWeixinAppService _weixinAppService;
         private readonly IDoorRecordAppService _doorAppService;
 
-        public WwApp03Controller(IHostingEnvironment env, IHubContext<MyChatHub> context,
-                IWeixinAppService weixinAppService, IDoorRecordAppService doorAppService)
+        public WwApp03Controller(IHostingEnvironment env, IHubContext<MyChatHub> context, IDoorRecordAppService doorAppService)
         {
             var appConfiguration = env.GetAppConfiguration();
             _corpId = appConfiguration["SenparcWeixinSetting:CorpId"];
@@ -39,7 +33,6 @@ namespace Clc.Web.Controllers
             _agentId = appConfiguration[string.Format("SenparcWeixinSetting:{0}:AgentId", "App03")];
 
             _context = context;
-            _weixinAppService = weixinAppService;
             _doorAppService = doorAppService;
         }
 

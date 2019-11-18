@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Web.Models;
 using Clc.Authorization;
 using Clc.Controllers;
-using System.Threading.Tasks;
 using Clc.Affairs;
-using Clc.Runtime.Cache;
 using Clc.Fields;
 using Clc.Works;
 using Clc.Works.Dto;
+using Microsoft.AspNetCore.SignalR;
+using Clc.RealTime;
 
 namespace Clc.Web.Controllers
 {
@@ -16,12 +18,15 @@ namespace Clc.Web.Controllers
     public class CheckinController : ClcControllerBase
     {
         public WorkManager WorkManager { get; set; } 
+        private IHubContext<MyChatHub> _context;
         private readonly IAffairAppService _affairAppService;
         private readonly IWorkAppService _workAppService;
 
-        public CheckinController(IAffairAppService affairAppService,
+        public CheckinController(IHubContext<MyChatHub> context,
+            IAffairAppService affairAppService,
             IWorkAppService workAppService)
         {
+            _context = context;
             _affairAppService = affairAppService;
             _workAppService = workAppService;
         }
@@ -43,6 +48,25 @@ namespace Clc.Web.Controllers
 
             return File(new byte[0], "image/jpg");
         }
+
+        [HttpPost]
+        [DontWrapResult]
+        public JsonResult AskOpenByRfid(string rfid, int affairId, int doorId)
+        {
+            var worker = WorkManager.GetWorkerByRfid(rfid);
+            if (worker == null) 
+                return Json(new { success = false, message = "此RFID无对应的人员" });
+
+            var ret = WorkManager.AskOpenDoor(worker.Id, affairId, doorId, 0);
+            if (ret.Item1)
+            {
+                var name = WorkManager.GetDepot(worker.DepotId).Name;
+                _context.Clients.All.SendAsync("getMessage", "askDoor " + name);
+            }
+
+            return Json(new { success = ret.Item1, message = ret.Item2, worker = new { name = string.Format("{0} {1}", worker.Cn, worker.Name) }});
+        }
+
 
         [DontWrapResult]
         public async Task<JsonResult> GridDataWorker(int id)

@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Clc.Configuration;
 using Clc.Controllers;
 using Clc.Weixin;
-using Clc.Weixin.Dto;
-using Clc.Extensions;
 using Clc.Web.Models.Weixin;
-using Clc.Runtime.Cache;
 using Clc.Works;
 using System.Linq;
-using System.Collections.Generic;
+using System;
+using Microsoft.AspNetCore.SignalR;
+using Clc.RealTime;
 
 namespace Clc.Web.Controllers
 {
@@ -19,6 +18,7 @@ namespace Clc.Web.Controllers
     public class WwApp01Controller : ClcControllerBase
     {
         public WorkManager WorkManager { get; set; }
+        private IHubContext<MyChatHub> _context;
         private readonly string _corpId;
         private readonly string _secret;
         private readonly string _agentId;
@@ -26,13 +26,14 @@ namespace Clc.Web.Controllers
         private readonly IWeixinAppService _weixinAppService;
 
 
-        public WwApp01Controller(IHostingEnvironment env, IWeixinAppService weixinAppService)
+        public WwApp01Controller(IHostingEnvironment env, IHubContext<MyChatHub> context, IWeixinAppService weixinAppService)
         {
             var appConfiguration = env.GetAppConfiguration();
             _corpId = appConfiguration["SenparcWeixinSetting:CorpId"];
             _secret = appConfiguration[string.Format("SenparcWeixinSetting:{0}:Secret", "App01")];
             _agentId = appConfiguration[string.Format("SenparcWeixinSetting:{0}:AgentId", "App01")];
 
+            _context = context;
             _weixinAppService = weixinAppService;
         }
 
@@ -40,25 +41,28 @@ namespace Clc.Web.Controllers
         public ActionResult AskDoor()
         {
             var workerId = GetWeixinUserId();
+            var depotId = WorkManager.GetWorkerDepotId(workerId);
 
-            if (workerId == 0) throw new System.Exception("无此人或不是队长职务");
+            AskDoorViewModel vm = new AskDoorViewModel();
+            var ret = WorkManager.GetDoorsForAsk(DateTime.Now.Date, depotId, workerId);
+            if (ret.Item1 == 0) 
+                return RedirectToAction("WeixinNotify", "Error", new { Message = "你目前不能申请开门" });
 
-            EmergDoorViewModel vm = new EmergDoorViewModel();
-            var doors = WorkManager.GetDoors(workerId);
-            vm.Workplaces = new List<ComboItemModel>();
-            foreach (var door in doors)
+            foreach (var door in ret.Item2)
                 vm.Workplaces.Add(new ComboItemModel{ Id = door.Id, Name = door.Name });
-            return View("EmergDoor", vm);
+            return View("AskDoor", vm);
         }
 
         [HttpPost]
-        public ActionResult AskDoor(EmergDoorViewModel vm)
+        public ActionResult AskDoor(AskDoorViewModel vm)
         {
-            // _weixinAppService.ProcessEmergDoor(vm);
-
-            return RedirectToAction("WeixinNotify", "Error", new { Message = "object" });
+            var ret = WorkManager.AskOpenDoor(GetWeixinUserId(), vm.AffairId, vm.WorkplaceId, 1);
+            if (ret.Item1 == true) {
+                var name = WorkManager.GetWorkerName(GetWeixinUserId());
+                _context.Clients.All.SendAsync("getMessage", "emergDoor " + name);
+            }           
+            return RedirectToAction("WeixinNotify", "Error", new { Message = ret.Item2 });
         }
-
 
         private int GetWeixinUserId()
         {

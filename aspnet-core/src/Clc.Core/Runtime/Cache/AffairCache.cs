@@ -36,7 +36,7 @@ namespace Clc.Runtime.Cache
         {
             string cacheKey = carryoutDate.ToString() + depotId.ToString();
             return _cacheManager.GetCache(CacheName).Get(cacheKey, () => {
-                var query = _affairRepository.GetAllIncluding(x => x.Workplace, x => x.Workers).Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && x.Status != "安排");
+                var query = _affairRepository.GetAllIncluding(x => x.Workplace, x => x.Workers, x => x.Tasks).Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && x.Status != "安排");
                 return ObjectMapper.Map<List<AffairCacheItem>>(query.ToList());
             });
         }
