@@ -1,9 +1,15 @@
 
 (function() {        
     $(function() {
-        abp.services.app.work.getMyWork().done(function (wk) {
-            work.myWork = wk;
-            workersInfo.innerHTML = '库房管理人：' + work.getWorkersString();
+        abp.services.app.work.getMyCheckinAffair().done(function (wk) {
+            work.me = wk;
+
+            $('#dd').datebox('setValue', work.me.today);
+            $('#dg').datagrid({
+                url: 'GridData',
+                queryParams: {WpId: work.me.workplaceId, CarryoutDate: work.me.today, DepotId: work.me.depotId, AffairId: work.me.affairId }
+            });
+
         });
 
         $('#dg').datagrid({

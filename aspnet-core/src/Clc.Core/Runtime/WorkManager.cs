@@ -171,10 +171,10 @@ namespace Clc.Works
         {
             return _depotCache[depotId];
         }
-        public List<int> GetShareDepods(DateTime carryoutDate, int depotId, int affairId)
+
+        public List<int> GetShareDepots(int wpId)
         {
-            var affair = _affairCache.GetAffair(carryoutDate, depotId, affairId);
-            var wp = _workplaceCache[affair.WorkplaceId];
+            var wp = _workplaceCache[wpId];
             var depots = new List<int>() { wp.DepotId };
             if (!string.IsNullOrEmpty(wp.ShareDepotList))
             {

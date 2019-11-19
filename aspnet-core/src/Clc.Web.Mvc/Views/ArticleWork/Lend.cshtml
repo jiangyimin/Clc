@@ -1,37 +1,20 @@
-﻿@{
-    Layout = "~/Views/Shared/_WorkLayout.cshtml";
-}
-
-@section workScripts
+﻿@section Scripts
 {
     <environment names="Development">
+        <script src="~/js/work.js" asp-append-version="true"></script>
         <script src="~/js/finput.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/ArticleWork/Lend.js" asp-append-version="true"></script>
     </environment>
 
     <environment names="Staging,Production">
+        <script src="~/js/work.min.js" asp-append-version="true"></script>
         <script src="~/js/finput.min.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/ArticleWork/Lend.min.js" asp-append-version="true"></script>
     </environment>
-}
 
-@section funcScripts
-{
     <script type="text/javascript">
-        work.afterUnlock = function() {
-            // get today
-            abp.services.app.work.getTodayString().done(function (dd) {
-                $('#dd').datebox('setValue', dd);
-                work.dd = dd;
-                $('#dg').datagrid({
-                    url: 'GridData',
-                    queryParams: {CarryoutDate: work.dd, DepotId: work.myWork.depotId, AffairId: work.myWork.affairId }
-                });
-            });
-        }
-
         finput.matchWorker = function(rfid) {
-            abp.services.app.work.matchWorkerForLend(work.dd, work.myWork.affairId, rfid).done(function(ret) {
+            abp.services.app.work.matchWorkerForArticle(true, work.me.workplaceId, work.me.today, work.me.affairId, rfid).done(function(ret) {
                 if (ret.message != null) {
                     abp.notify.error(ret.message);
                     return;
@@ -83,10 +66,7 @@
         <audio id="sounds" src="~/sounds/dingdong.wav" type="audio/wav" preload="auto"></audio>
         <div id="tb">
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
-            &nbsp;全部&nbsp;<input id="all" class="easyui-checkbox">
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="workersInfo" style="font-weight:bold"></span>
-
         </div>
         <table id="dg" title="线路列表" class="easyui-datagrid" toolbar="#tb"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">

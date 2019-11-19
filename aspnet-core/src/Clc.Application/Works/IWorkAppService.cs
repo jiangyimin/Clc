@@ -21,7 +21,7 @@ namespace Clc.Works
         AffairWorkDto FindDutyAffair();
         AffairWorkDto FindAltDutyAffair();
         
-        List<RouteCacheItem> GetActiveRoutes(DateTime carryouDate, int depotId, int affairId);
+        List<RouteCacheItem> GetActiveRoutes(int wpId, DateTime carryouDate, int depotId, int affairId);
 
         string GetReportToManagers();
 
@@ -50,8 +50,7 @@ namespace Clc.Works
 
         #region article
 
-        // style = 0 为领物
-        RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, DateTime carryoutDate, int depotId, int affairId, string rfid);
+        RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, int wpId, DateTime carryoutDate, int depotId, int affairId, string rfid);
         
         (string, RouteArticleCDto) MatchArticleForLend(string workerCn, string vehicleCn, string routeName, string articleTypeList, string rfid);
         (string, RouteArticleCDto) MatchArticleForReturn(string rfid);
@@ -60,7 +59,7 @@ namespace Clc.Works
 
         #region box
 
-        RouteWorkerMatchResult MatchWorkerForBox(DateTime carryoutDate, int depotId, int affairId, string rfid);
+        RouteWorkerMatchResult MatchWorkerForBox(int wpId, DateTime carryoutDate, int depotId, int affairId, string rfid);
         
         (string, RouteBoxCDto) MatchInBox(DateTime carryoutDate, int affairId, int routeId, string rfid);
         (string, RouteBoxCDto) MatchOutBox(DateTime carryoutDate, int affairId, int routeId, string rfid);

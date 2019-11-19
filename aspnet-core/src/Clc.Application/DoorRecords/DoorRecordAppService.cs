@@ -26,7 +26,7 @@ namespace Clc.DoorRecords
 
 
         public DoorRecordAppService(IRepository<AskDoorRecord> askDoorRepository, 
-            IRepository<EmergDoorRecord> emergDoorRepository, 
+            IRepository<EmergDoorRecord> emergDoorRepository,
             IRepository<Workplace> workplaceRepository)
         {
             _askDoorRepository = askDoorRepository;
@@ -44,7 +44,7 @@ namespace Clc.DoorRecords
 
         public async Task<PagedResultDto<AskDoorRecordDto>> GetAskDoorRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input)
         {
-            var query = _askDoorRepository.GetAllIncluding(x => x.Workplace, x => x.MonitorAffair, x => x.MonitorAffair.Workers, x => x.MonitorAffair.Workers)
+            var query = _askDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot, x => x.MonitorAffair, x => x.MonitorAffair.Workers, x => x.MonitorAffair.Workers)
                 .Where(x => x.WorkplaceId == workplaceId);
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
@@ -62,7 +62,7 @@ namespace Clc.DoorRecords
 
         public async Task<PagedResultDto<EmergDoorRecordDto>> GetEmergDoorRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input)
         {
-            var query = _emergDoorRepository.GetAllIncluding(x => x.Workplace, x => x.MonitorAffair, x => x.MonitorAffair.Workers)
+            var query = _emergDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot, x => x.MonitorAffair, x => x.MonitorAffair.Workers)
                 .Where(x => x.WorkplaceId == workplaceId);
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
@@ -114,7 +114,7 @@ namespace Clc.DoorRecords
             entity.ProcessTime = DateTime.Now;
             entity.MonitorAffairId = monitorAffairId;
             await _emergDoorRepository.UpdateAsync(entity);
-         }
+        }
 
         public async Task ProcessIssueEmergDoor(int issueId, int doorId, string content, int leadId)
         {

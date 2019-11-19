@@ -10,6 +10,17 @@
             });
         });
 
+        $('#tb').children('a[name="event"]').click(function (e) {
+            if (mds.masterCurrentRow === null ) {   
+                abp.notify.error("先选择线路");
+                return;
+            };
+            $('#dlgEvent').dialog('open');
+            $('#dgEvent').datagrid({
+                url: "Routes/GridDataEvent/" + mds.masterCurrentRow.id
+            });
+        })            
+
         $('#tb').children('a[name="activate"]').click(function (e) {
             var checkedRows = $('#dg').datagrid("getChecked");
             if (checkedRows.length === 0) {
@@ -23,19 +34,21 @@
                 if (row.status == "安排") ids.push(row.id);
             };
 
-            abp.services.app.route.activate(ids).done(function (count) {
-                abp.notify.info('有' + count + '个线路被激活');
+            abp.services.app.route.activate(ids).done(function (ret) {
+                abp.notify.success('有' + ret.Item2 + '个线路被激活');
+                // Cache active routes
+                abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
+                    abp.notify.info("下达最新的激活线路");
+                });
+                if (ret.item1) abp.notify.error(ret.item1);
                 mds.reload('');
             })
+
         });
 
         $('#tb').children('a[name="back"]').click(function (e) {
             if (mds.masterCurrentRow === null ) {   
                 abp.notify.error("先选择线路");
-                return;
-            };
-            if (mds.masterCurrentRow.status !== "激活") {
-                abp.notify.error("激活状态才允许回退");
                 return;
             };
             abp.services.app.route.back(mds.masterCurrentRow.id).done(function () {
@@ -56,7 +69,11 @@
             };
 
             abp.services.app.route.close(ids).done(function (count) {
-                abp.notify.info('有' + count + '个线路被关闭');
+                abp.notify.success('有' + count + '个线路被关闭');
+                // Cache active routes
+                abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
+                    abp.notify.info("下达最新的激活线路");
+                });
                 mds.reload('');
             })
         })            
@@ -78,7 +95,7 @@
                     abp.ui.setBusy($('#tb'));
     
                     abp.services.app.route.createFrom($('#dd').datebox('getValue'), from).done(function (data) {
-                        abp.notify.info('已生成'+data+'个任务');
+                        abp.notify.success('已生成'+data+'个任务');
                         if (data > 0) mds.reload('');
                     }).always(function () {
                         abp.ui.clearBusy($('#tb'));

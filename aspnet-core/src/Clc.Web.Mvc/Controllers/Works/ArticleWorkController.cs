@@ -47,9 +47,9 @@ namespace Clc.Web.Controllers
         }
         
         [DontWrapResult]
-        public JsonResult GridData(DateTime carryoutDate, int depotId, int affairId)
+        public JsonResult GridData(int wpId, DateTime carryoutDate, int depotId, int affairId)
         {
-            var output = _workAppService.GetActiveRoutes(carryoutDate, depotId, affairId);
+            var output = _workAppService.GetActiveRoutes(wpId, carryoutDate, depotId, affairId);
             return Json( new { rows = output });
         }
 

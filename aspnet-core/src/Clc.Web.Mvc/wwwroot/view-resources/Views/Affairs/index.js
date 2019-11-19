@@ -37,7 +37,7 @@
             $('#dgEvent').datagrid({
                 url: "Affairs/GridDataEvent/" + mds.masterCurrentRow.id
             });
-        })            
+        })
 
         $('#tb').children('a[name="activate"]').click(function (e) {
             var checkedRows = $('#dg').datagrid("getChecked");

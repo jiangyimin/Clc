@@ -142,7 +142,6 @@ namespace Clc.Affairs
             int workerId = await GetCurrentUserWorkerIdAsync();
             workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
              
-            string msg = null;
             int count = 0;
             foreach (int id in ids)
             {
@@ -152,11 +151,11 @@ namespace Clc.Affairs
                 if (reason != null)
                 {
                     var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
-                    msg = $"{wp.Name}不能激活：" + reason;
-                    break;
+                    return ($"{wp.Name}因({reason})不能激活", count);
                 }
                 affair.Status = "激活";
                 await _affairRepository.UpdateAsync(affair);
+                
                 // for affairEvent
                 var worker = WorkManager.GetWorker(workerId);
                 string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
@@ -165,7 +164,7 @@ namespace Clc.Affairs
                 
                 count++;            
             }
-            return (msg, count);
+            return (null, count);
         }
         public async Task SetActiveAffairCache(DateTime carryoutDate)
         {

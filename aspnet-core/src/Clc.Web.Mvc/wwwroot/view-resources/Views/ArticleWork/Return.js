@@ -1,17 +1,12 @@
 
 (function() {        
     $(function() {
-        abp.services.app.work.getMyWork().done(function (wk) {
-            work.myWork = wk;
-            workers.innerHTML = '库房管理人：' + work.getWorkersString();
-            // get today
-            abp.services.app.work.getTodayString().done(function (dd) {
-                $('#dd').datebox('setValue', dd);
-                work.dd = dd;
-                $('#dg').datagrid({
-                    url: 'GridData',
-                    queryParams: {CarryoutDate: work.dd, AffairId: work.myWork.affairId }
-                });
+        abp.services.app.work.getMyCheckinAffair().done(function (wk) {
+            work.me = wk;
+            $('#dd').datebox('setValue', work.me.today);
+            $('#dg').datagrid({
+                url: 'GridData',
+                queryParams: { WpId: work.me.workplaceId, CarryoutDate: work.dd, AffairId: work.myWork.affairId }
             });
         });
 

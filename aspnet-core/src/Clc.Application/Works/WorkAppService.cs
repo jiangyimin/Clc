@@ -146,11 +146,17 @@ namespace Clc.Works
             return lst;
         }
 
-        public List<RouteCacheItem> GetActiveRoutes(DateTime carryoutDate, int depotId, int affairId)
+        public List<RouteCacheItem> GetActiveRoutes(int wpId, DateTime carryoutDate, int depotId, int affairId)
         {
-            var lst = _routeCache.Get(carryoutDate, depotId);
-            lst.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
-            return lst;
+            var depots = WorkManager.GetShareDepots(wpId);
+            var ret = new List<RouteCacheItem>();
+            foreach (var depot in depots)
+            {
+                var lst = _routeCache.Get(carryoutDate, depotId);
+                lst.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
+                ret.AddRange(lst);
+            }
+            return ret;
         }
 
         public string GetReportToManagers()
@@ -274,9 +280,9 @@ namespace Clc.Works
 
         #region Article
 
-        public RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, DateTime carryoutDate, int depotId, int affairId, string rfid)
+        public RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, int wpId, DateTime carryoutDate, int depotId, int affairId, string rfid)
         {
-            var depots = WorkManager.GetShareDepods(carryoutDate, depotId, affairId);
+            var depots = WorkManager.GetShareDepots(wpId);
             var result = new RouteWorkerMatchResult();
             (RouteCacheItem, RouteWorkerCacheItem, RouteWorkerCacheItem) found = (null, null, null);
             foreach (var dopotId in depots)
@@ -356,9 +362,9 @@ namespace Clc.Works
 
         #region Box
 
-        public RouteWorkerMatchResult MatchWorkerForBox(DateTime carryoutDate, int depotId, int affairId, string rfid)
+        public RouteWorkerMatchResult MatchWorkerForBox(int wpId, DateTime carryoutDate, int depotId, int affairId, string rfid)
         {
-            var depots = WorkManager.GetShareDepods(carryoutDate, depotId, affairId);
+            var depots = WorkManager.GetShareDepots(wpId);
             var result = new RouteWorkerMatchResult();
             (RouteCacheItem, RouteWorkerCacheItem, RouteWorkerCacheItem) found = (null, null, null);
             foreach (var dopotId in depots)

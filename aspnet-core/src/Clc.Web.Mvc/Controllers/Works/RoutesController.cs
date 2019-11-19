@@ -48,7 +48,7 @@ namespace Clc.Web.Controllers
         [DontWrapResult]
         public async Task<JsonResult> GridDataEvent(int id)
         {
-            var output = await _routeAppService.GetRouteEvents(id, GetSorting());
+            var output = await _routeAppService.GetRouteEvents(id);
             return Json( new { rows = output });
         }
         [DontWrapResult]

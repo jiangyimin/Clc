@@ -113,20 +113,31 @@ namespace Clc.Routes
         {
             await _routeRepository.DeleteAsync(id);
         }
+
         public async Task<(string, int)> Activate(List<int> ids)
         {
+            int workerId = await GetCurrentUserWorkerIdAsync();
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+
             int count = 0;
             foreach (int id in ids)
             {
                 var route = _routeRepository.Get(id);
                 if (route.Status != "安排") continue;          // Skip
-                var result = CanActivateRoute(route);
-                if (result != null)
+                var reason = CanActivateRoute(route);
+                if (reason != null)
                 {
-                    return ($"{route.RouteName}不能激活：" + result, count);
+                    return ($"{route.RouteName}因({reason})不能激活", count);
                 }
                 route.Status = "激活";
                 await _routeRepository.UpdateAsync(route);
+
+                // RouteEvent
+                var worker = WorkManager.GetWorker(workerId);
+                string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
+                var re = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "回退线路", Issurer = issuer};
+                await _eventRepository.InsertAsync(re);
+                
                 count++;            
             }
             return (null, count);
@@ -145,13 +156,22 @@ namespace Clc.Routes
 
         public async Task<int> Close(List<int> ids)
         {
+            int workerId = await GetCurrentUserWorkerIdAsync();
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+
             int count = 0;
             foreach (int id in ids)
             {
                 var route = _routeRepository.Get(id);
-                if (route.Status != "激活") continue;          // Skip
                 route.Status = "关闭";
                 await _routeRepository.UpdateAsync(route);
+
+                // RouteEvent
+                var worker = WorkManager.GetWorker(workerId);
+                string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
+                var re = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "关闭线路", Issurer = issuer};
+                await _eventRepository.InsertAsync(re);
+
                 count++;            
             }
             return count;
@@ -159,16 +179,16 @@ namespace Clc.Routes
 
         public async Task Back(int id)
         {
-            var entity = _routeRepository.Get(id);
-            entity.Status = "安排";
-            await _routeRepository.UpdateAsync(entity);
+            var route = _routeRepository.Get(id);
+            route.Status = "安排";
+            await _routeRepository.UpdateAsync(route);
 
-            // for affairEvent
+            // for RouteEvent
             int workerId = await GetCurrentUserWorkerIdAsync();
             workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
             var worker = WorkManager.GetWorker(workerId);
             string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
-            var ae = new RouteEvent() { RouteId = entity.Id, EventTime = DateTime.Now, Name = "回退线路", Issurer = issuer};
+            var ae = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "回退线路", Issurer = issuer};
             await _eventRepository.InsertAsync(ae);
         }
 
@@ -299,12 +319,12 @@ namespace Clc.Routes
             await _taskRepository.DeleteAsync(id);
         }
 
-        public async Task<List<RouteEventDto>> GetRouteEvents(int id, string sorting)
+        public async Task<List<RouteEventDto>> GetRouteEvents(int id)
         {
-            var query = _eventRepository.GetAll().Where(e => e.RouteId == id).OrderBy(sorting);
+            var query = _eventRepository.GetAll().Where(e => e.RouteId == id);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            return new List<RouteEventDto>(entities.Select(ObjectMapper.Map<RouteEventDto>).ToList());
+            return entities.Select(ObjectMapper.Map<RouteEventDto>).ToList();
         }
 
         public async Task<List<RouteArticleDto>> GetRouteArticles(int id, string sorting)

@@ -32,7 +32,7 @@ namespace Clc.Routes
         Task<RouteTaskDto> UpdateTask(RouteTaskDto input);
         Task DeleteTask(int id);
 
-        Task<List<RouteEventDto>> GetRouteEvents(int id, string sorting);
+        Task<List<RouteEventDto>> GetRouteEvents(int id);
         Task<List<RouteArticleDto>> GetRouteArticles(int id, string sorting);
         Task<List<RouteInBoxDto>> GetRouteInBoxes(int id, string sorting);
         Task<List<RouteOutBoxDto>> GetRouteOutBoxes(int id, string sorting);
