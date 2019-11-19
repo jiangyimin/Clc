@@ -8,7 +8,7 @@ namespace Clc.DoorRecords.Dto
     [AutoMapFrom(typeof(EmergDoorRecord))]
     public class EmergDoorDto : EntityDto
     {
-         public DateTime CreateTime { get; set; }
+        public DateTime CreateTime { get; set; }
 
         public string WorkplaceName { get; set; }
         public string WorkplaceDoorIp { get; set; }
@@ -18,8 +18,9 @@ namespace Clc.DoorRecords.Dto
         /// 审批信息：审批人
         /// </summary>
         public string ApproverName { get; set; }
-        public DateTime? ApproverTime { get; set; }
+        public DateTime? ApprovalTime { get; set; }
 
         public string EmergDoorPassword { get; set; }
+        public string WorkplaceEmergPassword { get; set; }
     }
 }

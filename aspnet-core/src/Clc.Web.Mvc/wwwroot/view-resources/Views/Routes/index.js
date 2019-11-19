@@ -1,7 +1,7 @@
 (function() {        
     $(function() {    
-        abp.services.app.work.getMyAffairWork().done(function (wk) {
-            mds.today = wk.today;
+        abp.services.app.work.getToday().done(function (today) {
+            mds.today = today;
             $('#dd').datebox('setValue', mds.today);
 
             $('#dg').datagrid({

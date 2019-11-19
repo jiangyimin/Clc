@@ -91,6 +91,10 @@ namespace Clc.Works
             var worker = WorkManager.GetWorker(workerId);
             return (worker.LoginRoleNames, worker.Cn);
         }
+
+        public string GetToday(){
+            return DateTime.Now.ToString("yyyy-MM-dd");
+        }
         
         public AffairWorkDto FindDutyAffair()
         {

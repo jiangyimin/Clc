@@ -60,13 +60,13 @@ namespace Clc.Web.Controllers
         [HttpPost]
         public ActionResult ApproveEmergDoor(ApproveEmergDoorRecordViewModel vm)
         {
+            var name = WorkManager.GetWorkerName(GetWeixinUserId());
             using (CurrentUnitOfWork.SetTenantId(1))
             {
-                // _doorAppService.ApproveEmergDoor(vm.Id);
+                _doorAppService.ApproveEmergDoor(GetWeixinUserId(), vm.Id);
             }
             
-            var name = WorkManager.GetWorkerName(GetWeixinUserId());
-            _context.Clients.All.SendAsync("getMessage", "emergDoor " + name);
+            _context.Clients.All.SendAsync("getMessage", "emergOpenDoor " + string.Format("{0}批准开门{1}", name, vm.WorkplaceName));
             return RedirectToAction("WeixinNotify", "Error", new { Message = "同意审批，并下达到监控室" });
         }
 

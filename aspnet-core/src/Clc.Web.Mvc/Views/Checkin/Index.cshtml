@@ -32,7 +32,7 @@
             }
         };
 
-        finput.onWorker = function(rfid) {
+        finput.matchWorker = function(rfid) {
             if (status == '' && !allowCardWhenCheckin) {
                 abp.notify.error('系统设置为不允许刷卡验证');
                 return;

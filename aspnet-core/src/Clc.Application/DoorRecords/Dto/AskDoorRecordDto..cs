@@ -10,10 +10,11 @@ namespace Clc.DoorRecords.Dto
     {
         public DateTime AskTime { get; set; }
 
-        /// <summary>
-        /// 对应的门
-        /// </summary>
+        public string WorkplaceDepotName { get; set; }
         public string WorkplaceName { get; set; }
+
+        public string AskStyle { get; set; }
+
         public int AskffairId { get; set; }
         public string AskWorkers { get; set; }
 

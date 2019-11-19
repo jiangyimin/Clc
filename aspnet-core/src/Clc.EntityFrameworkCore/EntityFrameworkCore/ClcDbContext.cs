@@ -30,6 +30,8 @@ namespace Clc.EntityFrameworkCore
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<ArticleTypeBind> ArticleTypeBinds { get; set; }
+        public DbSet<Asset> Assets { get; set; }
+
 
         // Clients
         public DbSet<Customer> Customers { get; set; }
@@ -44,6 +46,7 @@ namespace Clc.EntityFrameworkCore
 
         public DbSet<AskDoorRecord> AskDoorRecords { get; set; }
         public DbSet<EmergDoorRecord> EmergDoorRecords { get; set; }
+        public DbSet<VehicleRecord> VehicleRecords { get; set; }
 
         // Affairs
         public DbSet<Affair> Affairs { get; set; }
@@ -109,6 +112,11 @@ namespace Clc.EntityFrameworkCore
                 b.HasIndex(e => new { e.TenantId, e.ArticleTypeId}).IsUnique();
             });
             
+            modelBuilder.Entity<Asset>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
+            });
+            
             // Clients
             modelBuilder.Entity<Customer>(b =>
             {
@@ -171,6 +179,12 @@ namespace Clc.EntityFrameworkCore
                 b.HasIndex(e => new { e.TenantId, e.WorkplaceId, e.CreateTime });
             });
 
+            modelBuilder.Entity<VehicleRecord>(b =>
+            {
+                b.HasIndex(e => new { e.TenantId, e.VehicleId });
+                b.HasIndex(e => new { e.TenantId, e.CreateTime, e.VehicleId });
+            });
+
             //
             // DeleteBehavior
             //
@@ -210,6 +224,8 @@ namespace Clc.EntityFrameworkCore
                 .HasOne(b => b.Approver).WithMany().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmergDoorRecord>()
                 .HasOne(b => b.MonitorAffair).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<VehicleRecord>()
+                .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
 
             // Affairs
             modelBuilder.Entity<Affair>()

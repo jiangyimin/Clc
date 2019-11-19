@@ -115,8 +115,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new AffairWorker { TenantId = _tenantId, AffairId = 3, WorkRoleId = 7, WorkerId = 20 }, 
                     new AffairWorker { TenantId = _tenantId, AffairId = 3, WorkRoleId = 7, WorkerId = 21 },
 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 4, WorkRoleId = 9, WorkerId = 22 }, 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 4, WorkRoleId = 9, WorkerId = 23 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 4, WorkRoleId = 9, WorkerId = 24 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 4, WorkRoleId = 9, WorkerId = 25 }, 
                 }); 
                 _context.SaveChanges();
             }

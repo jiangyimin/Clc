@@ -51,10 +51,10 @@ namespace Clc.Web.Startup
                 // Hrm
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrm, new FixedLocalizableString("档案编辑"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrm)
                     .AddItem(new MenuItemDefinition("Hrm_WorkerFiles", new FixedLocalizableString("人员"), url: "WorkerFiles"))
-                    // .AddItem(new MenuItemDefinition("Hrm_Documents", new FixedLocalizableString("文件档案"), url: "Documents"))
+                    .AddItem(new MenuItemDefinition("Hrm_Documents", new FixedLocalizableString("固定资产"), url: "Assets"))
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrq, new FixedLocalizableString("档案查看"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrm)
-                    .AddItem(new MenuItemDefinition("Hrq_WorkerFiles", new FixedLocalizableString("查看人员"), url: "WorkerFiles/Hrq"))
-                    // .AddItem(new MenuItemDefinition("Hrm_Documents", new FixedLocalizableString("文件档案"), url: "Documents"))
+                    .AddItem(new MenuItemDefinition("Hrq_WorkerFiles", new FixedLocalizableString("查询人员档案"), url: "WorkerFiles/Query"))
+                    .AddItem(new MenuItemDefinition("Hrq_Documents", new FixedLocalizableString("查询固定资产"), url: "Assets/Query"))
                                
                 // Arrange
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("工作安排"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
@@ -82,7 +82,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Monitor_Checkin", new FixedLocalizableString("验入/申请"), url: "Checkin"))
                     .AddItem(new MenuItemDefinition("Monitor_AskOpenDoor", new FixedLocalizableString("申请开门"), url: "OpenDoors/AskOpenDoor"))
                     .AddItem(new MenuItemDefinition("Monitor_EmergOpenDoor", new FixedLocalizableString("应急开门"), url: "OpenDoors/EmergOpenDoor"))
-                    .AddItem(new MenuItemDefinition("Monitor_Records", new FixedLocalizableString("开门记录查询"), url: "OpenDoor/RecordQuery"))
+                    .AddItem(new MenuItemDefinition("Monitor_Records", new FixedLocalizableString("开门记录查询"), url: "OpenDoors/RecordQuery"))
                     .AddItem(new MenuItemDefinition("Monitor_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Monitor/KeyPoints"))
                     .AddItem(new MenuItemDefinition("Monitor_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Monitor/ArticleRecords"))
 

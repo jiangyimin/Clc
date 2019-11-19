@@ -65,8 +65,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Post { TenantId = _tenantId, Cn = "06", Name = "业务员", DefaultWorkRoleName = "业务员", AppName = "App02" },
                     new Post { TenantId = _tenantId, Cn = "07", Name = "物品库管员", DefaultWorkRoleName = "库房管理员", AppName = "App01" },                     
                     new Post { TenantId = _tenantId, Cn = "08", Name = "金库管理员", DefaultWorkRoleName = "金库管理员", AppName = "App01" },                     
-                    new Post { TenantId = _tenantId, Cn = "09", Name = "综合库管员", AppName = "App01" },                     
-                    new Post { TenantId = _tenantId, Cn = "10", Name = "监控员", AppName = "App01" },
+                    new Post { TenantId = _tenantId, Cn = "09", Name = "综合库管员", DefaultWorkRoleName = "综合管理员", AppName = "App01" },                     
+                    new Post { TenantId = _tenantId, Cn = "10", Name = "监控员", DefaultWorkRoleName = "监控员", AppName = "App01" },
                     new Post { TenantId = _tenantId, Cn = "11", Name = "领导", DefaultWorkRoleName = "公司领导", AppName = "App03" }, 
                     new Post { TenantId = _tenantId, Cn = "12", Name = "干部", AppName = "App03" }, 
                     new Post { TenantId = _tenantId, Cn = "13", Name = "职员", AppName = "App03" }
@@ -109,7 +109,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new WorkRole { TenantId = _tenantId, Cn = "05", Name = "业务员", Duties = "辅助交接", mustHave = true, MaxNum = 2 },
                     new WorkRole { TenantId = _tenantId, Cn = "06", Name = "库房管理员", mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "07", Name = "金库管理员", Duties = "金库", mustHave = true, MaxNum = 8 }, 
-                    new WorkRole { TenantId = _tenantId, Cn = "08", Name = "待命", mustHave = true, MaxNum = 5 }, 
+                    new WorkRole { TenantId = _tenantId, Cn = "08", Name = "综合管理员", Duties = "金库", mustHave = true, MaxNum = 5 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "09", Name = "监控员", mustHave = true, MaxNum = 3 },
                  }); 
                 _context.SaveChanges();
@@ -174,6 +174,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new Worker { TenantId = _tenantId, DepotId = 2, Cn = "20003", Name = "滕帅斌", PostId = 8, Password = "123456", LoginRoleNames = "Box", Rfid = "20003", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 2, Cn = "20004", Name = "申晓强", PostId = 8, Password = "123456", LoginRoleNames = "Box", Rfid = "20004", AdditiveInfo = "142701198001041239", IsActive = true }, 
                     new Worker { TenantId = _tenantId, DepotId = 5, Cn = "20009", Name = "辅助调度", PostId = 7, Password = "123456", LoginRoleNames = "Box|Aux", Rfid = "60001", AdditiveInfo = "142701198001041239", IsActive = true },
+                    new Worker { TenantId = _tenantId, DepotId = 4, Cn = "99998", Name = "监控队长", PostId = 1, Password = "123456", LoginRoleNames = "Captain", Rfid = "99998", IsActive = true },
                     new Worker { TenantId = _tenantId, DepotId = 4, Cn = "20015", Name = "王宽", PostId = 10, Password = "123456", LoginRoleNames = "Monitor", Rfid = "20015", AdditiveInfo = "142701198001041239", IsActive = true },
                     new Worker { TenantId = _tenantId, DepotId = 4, Cn = "20016", Name = "陈灼", PostId = 10, Password = "123456", LoginRoleNames = "Monitor", Rfid = "20016", AdditiveInfo = "142701198001041239", IsActive = true },
 

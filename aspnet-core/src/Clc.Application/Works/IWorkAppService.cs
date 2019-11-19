@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
-using Clc.Fields;
 using Clc.Fields.Dto;
 using Clc.Routes;
 using Clc.Works.Dto;
@@ -15,6 +14,7 @@ namespace Clc.Works
         bool VerifyUnlockPassword(string password);
         bool AllowCardWhenCheckin();   
         (string, string) GetMe();
+        string GetToday();
         
         AffairWorkDto GetMyCheckinAffair();
         

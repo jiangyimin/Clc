@@ -14,7 +14,7 @@ using Clc.Works;
 
 namespace Clc.DoorRecords
 {
-    [AbpAuthorize(PermissionNames.Pages_Arrange)]
+    [AbpAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Monitor)]
     public class DoorRecordAppService : ClcAppServiceBase, IDoorRecordAppService
     {
         public WorkManager WorkManager { get; set; }
@@ -36,14 +36,15 @@ namespace Clc.DoorRecords
 
         public async Task<List<DoorDto>> GetDoorsAsync()
         {
-            var query = _workplaceRepository.GetAllIncluding(x => x.Depot);
+            var query = _workplaceRepository.GetAllIncluding(x => x.Depot)
+                .Where(x => !string.IsNullOrEmpty(x.AskOpenStyle));
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return ObjectMapper.Map<List<DoorDto>>(entities);
         }
 
         public async Task<PagedResultDto<AskDoorRecordDto>> GetAskDoorRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input)
         {
-            var query = _askDoorRepository.GetAllIncluding(x => x.Workplace, x => x.MonitorAffair, x => x.MonitorAffair.Workers)
+            var query = _askDoorRepository.GetAllIncluding(x => x.Workplace, x => x.MonitorAffair, x => x.MonitorAffair.Workers, x => x.MonitorAffair.Workers)
                 .Where(x => x.WorkplaceId == workplaceId);
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
@@ -76,26 +77,44 @@ namespace Clc.DoorRecords
             );
         }
 
-        public async Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime day)
+        public async Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime date)
         {
             var query = _askDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot)
-                .Where(x => x.AskTime.Date == day && !x.ProcessTime.HasValue);
+                .Where(x => x.AskTime.Date == date && !x.ProcessTime.HasValue);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
 
-            return ObjectMapper.Map<List<AskDoorDto>>(entities);
+            return entities.Select(MapToAskDoorDto).ToList();
         }
 
-        public async Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime day)
+        public async Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime date)
         {
             var query = _emergDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot, x => x.Issue)
-                .Where(x => x.CreateTime.Date == day && x.ApproverTime.HasValue && !x.ProcessTime.HasValue);
+                .Where(x => x.CreateTime.Date == date && x.ApprovalTime.HasValue && !x.ProcessTime.HasValue);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
 
             return ObjectMapper.Map<List<EmergDoorDto>>(entities);
         }
 
+
+        public async Task CarryoutAskOpen(int id, int monitorAffairId)
+        {
+            // get AskDoorRecord
+            var entity = await _askDoorRepository.GetAsync(id);
+            entity.ProcessTime = DateTime.Now;
+            entity.MonitorAffairId = monitorAffairId;
+            await _askDoorRepository.UpdateAsync(entity);
+         }
+
+        public async Task CarryoutEmergOpen(int id, int monitorAffairId)
+        {
+            // get EmergDoorRecord
+            var entity = await _emergDoorRepository.GetAsync(id);
+            entity.ProcessTime = DateTime.Now;
+            entity.MonitorAffairId = monitorAffairId;
+            await _emergDoorRepository.UpdateAsync(entity);
+         }
 
         public async Task ProcessIssueEmergDoor(int issueId, int doorId, string content, int leadId)
         {
@@ -110,6 +129,15 @@ namespace Clc.DoorRecords
             await _emergDoorRepository.InsertAsync(entity);
        }
 
+        public async Task ApproveEmergDoor(int id, int approverId)
+        {
+            // get EmergDoorRecord
+            var entity = await _emergDoorRepository.GetAsync(id);
+            entity.ApprovalTime = DateTime.Now;
+            entity.ApproverId = approverId;
+            await _emergDoorRepository.UpdateAsync(entity);
+        }
+
 
         public async Task<EmergDoorRecordDto> GetLastUnApproveEmergDoor(int workerId)
         {
@@ -119,16 +147,24 @@ namespace Clc.DoorRecords
         }
 
         #region private
+        private AskDoorDto MapToAskDoorDto(AskDoorRecord record)
+        {
+            var dto = ObjectMapper.Map<AskDoorDto>(record);
+            dto.AskStyle = record.RouteId.HasValue ? "线路任务" : "常规";
+            return dto;
+        }
 
         private AskDoorRecordDto MapToAskDoorRecordDto(AskDoorRecord record)
         {
             var dto = ObjectMapper.Map<AskDoorRecordDto>(record);
 
+            dto.AskStyle = record.RouteId.HasValue ? "线路任务" : "常规";
             if (!record.MonitorAffairId.HasValue) return dto;
             
             foreach (var w in record.MonitorAffair.Workers)
             {
-                dto.MonitorWorkers += string.Format("{0} {1}, ", w.Worker.Cn, w.Worker.Name);
+                var worker = WorkManager.GetWorker(w.WorkerId);
+                dto.MonitorWorkers += string.Format("{0} {1}, ", worker.Cn, worker.Name);
             }
             return dto;
         }
@@ -141,7 +177,8 @@ namespace Clc.DoorRecords
             
             foreach (var w in record.MonitorAffair.Workers)
             {
-                dto.MonitorWorkers += string.Format("{0} {1}, ", w.Worker.Cn, w.Worker.Name);
+                var worker = WorkManager.GetWorker(w.WorkerId);
+                dto.MonitorWorkers += string.Format("{0} {1}, ", worker.Cn, worker.Name);
             }
             return dto;
         }

@@ -11,12 +11,12 @@ using System;
 namespace Clc.Web.Controllers
 {
     [AbpMvcAuthorize(PermissionNames.Pages_Monitor)]
-    public class OpenDoorController : ClcControllerBase
+    public class OpenDoorsController : ClcControllerBase
     {
         private readonly IWorkAppService _workAppService;
         private readonly IDoorRecordAppService _doorRecordAppService;
 
-        public OpenDoorController(IDoorRecordAppService doorRecordAppService, IWorkAppService workAppService)
+        public OpenDoorsController(IDoorRecordAppService doorRecordAppService, IWorkAppService workAppService)
         {
             _doorRecordAppService = doorRecordAppService;
             _workAppService = workAppService;
@@ -31,6 +31,11 @@ namespace Clc.Web.Controllers
             return View();
         }
 
+        public ActionResult RecordQuery()
+        {
+            return View();
+        }
+        
         [DontWrapResult]
         public async Task<JsonResult> GridDataDoor()
         {
@@ -39,16 +44,16 @@ namespace Clc.Web.Controllers
         }
 
         [DontWrapResult]
-        public async Task<JsonResult> GridDataAskDoor(DateTime day)
+        public async Task<JsonResult> GridDataAskDoor(DateTime date)
         {
-            var output = await _doorRecordAppService.GetAskDoorsAsync(day);
+            var output = await _doorRecordAppService.GetAskDoorsAsync(date);
             return Json( new { rows = output });
         }
 
         [DontWrapResult]
-        public async Task<JsonResult> GridDataEmergDoor(DateTime day)
+        public async Task<JsonResult> GridDataEmergDoor(DateTime date)
         {
-            var output = await _doorRecordAppService.GetEmergDoorsAsync(day);
+            var output = await _doorRecordAppService.GetEmergDoorsAsync(date);
             return Json( new { rows = output });
         }
 

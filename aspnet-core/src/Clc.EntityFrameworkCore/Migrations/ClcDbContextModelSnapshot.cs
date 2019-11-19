@@ -1334,6 +1334,52 @@ namespace Clc.Migrations
                     b.ToTable("ArticleTypeBinds");
                 });
 
+            modelBuilder.Entity("Clc.Fields.Asset", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(10);
+
+                    b.Property<string>("ChargePerson")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Cn")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<int>("DepotId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(200);
+
+                    b.Property<DateTime>("RetireDate");
+
+                    b.Property<int>("TenantId");
+
+                    b.Property<DateTime>("UseDate");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepotId");
+
+                    b.HasIndex("TenantId", "Cn")
+                        .IsUnique();
+
+                    b.ToTable("Assets");
+                });
+
             modelBuilder.Entity("Clc.Fields.Depot", b =>
                 {
                     b.Property<int>("Id")
@@ -2147,9 +2193,9 @@ namespace Clc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ApproverId");
+                    b.Property<DateTime?>("ApprovalTime");
 
-                    b.Property<DateTime?>("ApproverTime");
+                    b.Property<int>("ApproverId");
 
                     b.Property<DateTime>("CreateTime");
 
@@ -2205,7 +2251,7 @@ namespace Clc.Migrations
 
                     b.Property<string>("ProcessStyle");
 
-                    b.Property<DateTime>("ProcessTime");
+                    b.Property<DateTime?>("ProcessTime");
 
                     b.Property<int?>("ProcessWorkerId");
 
@@ -2251,6 +2297,40 @@ namespace Clc.Migrations
                     b.HasIndex("TenantId", "CarryoutDate", "DepotId", "WorkerId");
 
                     b.ToTable("Signins");
+                });
+
+            modelBuilder.Entity("Clc.Runtime.VehicleRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreateTime");
+
+                    b.Property<double>("CurrentMileage");
+
+                    b.Property<double>("Quantity");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(64);
+
+                    b.Property<int>("TenantId");
+
+                    b.Property<int>("VehicleId");
+
+                    b.Property<int>("WorkerId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.HasIndex("TenantId", "VehicleId");
+
+                    b.HasIndex("TenantId", "CreateTime", "VehicleId");
+
+                    b.ToTable("VehicleRecords");
                 });
 
             modelBuilder.Entity("Clc.Types.ArticleType", b =>
@@ -2655,6 +2735,14 @@ namespace Clc.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Clc.Fields.Asset", b =>
+                {
+                    b.HasOne("Clc.Fields.Depot", "Depot")
+                        .WithMany()
+                        .HasForeignKey("DepotId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Clc.Fields.Vehicle", b =>
                 {
                     b.HasOne("Clc.Fields.Depot", "Depot")
@@ -2988,6 +3076,19 @@ namespace Clc.Migrations
                     b.HasOne("Clc.Fields.Depot", "Depot")
                         .WithMany()
                         .HasForeignKey("DepotId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clc.Fields.Worker", "Worker")
+                        .WithMany()
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Clc.Runtime.VehicleRecord", b =>
+                {
+                    b.HasOne("Clc.Fields.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Clc.Fields.Worker", "Worker")

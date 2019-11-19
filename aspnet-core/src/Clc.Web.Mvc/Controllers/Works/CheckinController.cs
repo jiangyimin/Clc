@@ -60,8 +60,9 @@ namespace Clc.Web.Controllers
             var ret = WorkManager.AskOpenDoor(worker.Id, affairId, doorId, 0);
             if (ret.Item1)
             {
-                var name = WorkManager.GetDepot(worker.DepotId).Name;
-                _context.Clients.All.SendAsync("getMessage", "askDoor " + name);
+                var depotName = WorkManager.GetDepot(worker.DepotId).Name;
+                var wpName = WorkManager.GetWorkplace(doorId).Name;
+                _context.Clients.All.SendAsync("getMessage", "askOpenDoor " + string.Format("{0}({1})", wpName, depotName));
             }
 
             return Json(new { success = ret.Item1, message = ret.Item2, worker = new { name = string.Format("{0} {1}", worker.Cn, worker.Name) }});

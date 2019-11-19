@@ -14,11 +14,17 @@ namespace Clc.DoorRecords
         Task<PagedResultDto<AskDoorRecordDto>> GetAskDoorRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input);
         Task<PagedResultDto<EmergDoorRecordDto>> GetEmergDoorRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input);
 
-        Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime day);
-        Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime day);
+        Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime date);
+        Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime date);
+
+        
+        Task CarryoutAskOpen(int id, int monitorAffairId);
+        Task CarryoutEmergOpen(int id, int monitorAffairId);
 
 
         Task ProcessIssueEmergDoor(int issueId, int doorId, string content, int leadId);
+
+        Task ApproveEmergDoor(int id, int approverId);
 
         Task<EmergDoorRecordDto> GetLastUnApproveEmergDoor(int workerId);        
     }

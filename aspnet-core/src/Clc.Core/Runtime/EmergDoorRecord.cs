@@ -40,7 +40,7 @@ namespace Clc.Runtime
         /// </summary>
         public int ApproverId { get; set; }
         public Worker Approver { get; set; }
-        public DateTime? ApproverTime { get; set; }
+        public DateTime? ApprovalTime { get; set; }
 
         /// <summary>
         /// 审批信息：开门密码

@@ -3,65 +3,72 @@
     <environment names="Development">
         <script src="~/js/finput.js" asp-append-version="true"></script>
         <script src="~/js/door.js" asp-append-version="true"></script>
+        <script src="~/js/work.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/OpenDoors/AskOpenDoor.js" asp-append-version="true"></script>
     </environment>
 
     <environment names="Staging,Production">
         <script src="~/js/finput.min.js" asp-append-version="true"></script>
         <script src="~/js/door.min.js" asp-append-version="true"></script>
+        <script src="~/js/work.min.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/OpenDoors/AskOpenDoor.min.js" asp-append-version="true"></script>
     </environment>
 
     <script type="text/javascript">
+        var askDoorRecordId = 0;
         var doorIp = '';
+        var status = '';
     
-        finput.onWorker = function(rfid) {
+        finput.matchWorker = function(rfid) {
             // judge rfid in work.me.ask
             if (!work.isInRfids(rfid)) return;
 
-            abp.services.app.work.getWorkerByRfid(rfid)).done(function(ret) {
+            abp.services.app.work.getWorkerByRfid(rfid).done(function(ret) {
                 for (var i = 0; i < work.askWorkers.length; i++) {
-                    if (work.askWorkers[i].name === ret.worker) {
+                    if (work.askWorkers[i].name === ret.name) {
                         abp.notify.warn('此Rfid已刷过');
                         return;
                     }
                 }
 
-                work.askWorkers.push( ret.worker );
+                work.askWorkers.push( ret );
                 $('#dlCard').datalist('loadData', work.askWorkers);
                 
                 if (work.askWorkers.length == work.me.rfids.length) {
-                    ws && ws.send(doorIp);
-                    abp.notify.info('已发送开门命令到对应的门禁', '', { positionClass : 'toast-top-center' });
+                    // ws && ws.send(doorIp);
+                    abp.notify.success('已发送开门命令到对应的门禁', '', { positionClass : 'toast-top-center' });
+                    // udpate askDoorRecord
 
-                    // udpate doorRecord
-                    // abp.services.app.monitor.insert(row.id, work.myWork.affairId);
+                    abp.services.app.doorRecord.carryoutAskOpen(askDoorRecordId, work.me.affairId).done(function() {
+                        $('#dg').datagrid('reload');
+                        $('#dlg').dialog('close');
+                    });
                 }
-            }
+            });
         }
     </script>
 }
 
 <div class="easyui-layout" fit="true">
-    <div data-options="region:'center'">
+    <div data-options="region:'center', title:'申请列表'">
         <div id="tb">
             任务日期: <input id="dd" class="easyui-datebox" readonly="true" style="width:120px">
-            &nbsp;昨天&nbsp;<input id="yestoday" class="easyui-checkbox">
+            &nbsp;昨天&nbsp;<input id="yesterday" class="easyui-checkbox">
             <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
-            <a name="open" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">应急开门</a>
+            <a name="open" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">开门</a>
         </div>
         <table id="dg" class="easyui-datagrid" toolbar="#tb"
-                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">
+                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="askTime">
             <thead>
                 <tr>
-                    <th field="approverTime" width="60">时间</th>
-                    <th field="depotName" width="60"></th>
-                    <th field="workplaceName" width="60"></th>
-                    <th field="approverName" width="60">场所名称</th>
-                    <th field="IssueContent" width="80"></th>
+                    <th field="askTime" width="60" formatter="$.timeFormatter">申请时间</th>
+                    <th field="workplaceDepotName" width="60">大队</th>
+                    <th field="workplaceName" width="60">门禁名称</th>
+                    <th field="askStyle" width="60">申请方式</th>
+                    <th field="askWorkers" width="120">申请人</th>
                 </tr>
             </thead>
-        </div>
+        </table>
     </div>
 </div>
 

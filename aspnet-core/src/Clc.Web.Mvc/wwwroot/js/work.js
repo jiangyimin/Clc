@@ -27,7 +27,7 @@
         return work.formatTime(now);
     }
 
-    work.getYestoday = function(today) {
+    work.getYesterday = function(today) {
         var now = today.split('-')
         now = new Date(Number(now['0']),(Number(now['1'])-1),Number(now['2']));
         now.setDate(now.getDate() - 1);

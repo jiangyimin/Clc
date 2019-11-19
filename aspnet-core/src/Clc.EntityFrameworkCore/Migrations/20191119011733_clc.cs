@@ -549,6 +549,34 @@ namespace Clc.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Assets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    DepotId = table.Column<int>(nullable: false),
+                    Cn = table.Column<string>(maxLength: 20, nullable: false),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    Category = table.Column<string>(maxLength: 10, nullable: false),
+                    Address = table.Column<string>(maxLength: 50, nullable: false),
+                    ChargePerson = table.Column<string>(maxLength: 50, nullable: true),
+                    UseDate = table.Column<DateTime>(nullable: false),
+                    RetireDate = table.Column<DateTime>(nullable: false),
+                    Remark = table.Column<string>(maxLength: 200, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Assets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Assets_Depots_DepotId",
+                        column: x => x.DepotId,
+                        principalTable: "Depots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Vehicles",
                 columns: table => new
                 {
@@ -824,7 +852,7 @@ namespace Clc.Migrations
                     CreateWorkerId = table.Column<int>(nullable: false),
                     Content = table.Column<string>(maxLength: 512, nullable: false),
                     ProcessStyle = table.Column<string>(nullable: true),
-                    ProcessTime = table.Column<DateTime>(nullable: false),
+                    ProcessTime = table.Column<DateTime>(nullable: true),
                     ProcessWorkerId = table.Column<int>(nullable: true),
                     ProcessContent = table.Column<string>(maxLength: 512, nullable: true)
                 },
@@ -934,6 +962,37 @@ namespace Clc.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Signins_Workers_WorkerId",
+                        column: x => x.WorkerId,
+                        principalTable: "Workers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VehicleRecords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<int>(nullable: false),
+                    CreateTime = table.Column<DateTime>(nullable: false),
+                    VehicleId = table.Column<int>(nullable: false),
+                    WorkerId = table.Column<int>(nullable: false),
+                    CurrentMileage = table.Column<double>(nullable: false),
+                    Quantity = table.Column<double>(nullable: false),
+                    Remark = table.Column<string>(maxLength: 64, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VehicleRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VehicleRecords_Vehicles_VehicleId",
+                        column: x => x.VehicleId,
+                        principalTable: "Vehicles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VehicleRecords_Workers_WorkerId",
                         column: x => x.WorkerId,
                         principalTable: "Workers",
                         principalColumn: "Id",
@@ -1386,7 +1445,7 @@ namespace Clc.Migrations
                     WorkplaceId = table.Column<int>(nullable: false),
                     IssueId = table.Column<int>(nullable: false),
                     ApproverId = table.Column<int>(nullable: false),
-                    ApproverTime = table.Column<DateTime>(nullable: true),
+                    ApprovalTime = table.Column<DateTime>(nullable: true),
                     EmergDoorPassword = table.Column<string>(nullable: true),
                     MonitorAffairId = table.Column<int>(nullable: true),
                     ProcessTime = table.Column<DateTime>(nullable: true),
@@ -2292,6 +2351,17 @@ namespace Clc.Migrations
                 columns: new[] { "TenantId", "WorkplaceId", "AskTime" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Assets_DepotId",
+                table: "Assets",
+                column: "DepotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Assets_TenantId_Cn",
+                table: "Assets",
+                columns: new[] { "TenantId", "Cn" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Boxes_BoxRecordId",
                 table: "Boxes",
                 column: "BoxRecordId");
@@ -2578,6 +2648,26 @@ namespace Clc.Migrations
                 columns: new[] { "TenantId", "CarryoutDate", "DepotId", "WorkerId" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_VehicleRecords_VehicleId",
+                table: "VehicleRecords",
+                column: "VehicleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VehicleRecords_WorkerId",
+                table: "VehicleRecords",
+                column: "WorkerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VehicleRecords_TenantId_VehicleId",
+                table: "VehicleRecords",
+                columns: new[] { "TenantId", "VehicleId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VehicleRecords_TenantId_CreateTime_VehicleId",
+                table: "VehicleRecords",
+                columns: new[] { "TenantId", "CreateTime", "VehicleId" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_DepotId",
                 table: "Vehicles",
                 column: "DepotId");
@@ -2763,6 +2853,9 @@ namespace Clc.Migrations
                 name: "AskDoorRecords");
 
             migrationBuilder.DropTable(
+                name: "Assets");
+
+            migrationBuilder.DropTable(
                 name: "EmergDoorRecords");
 
             migrationBuilder.DropTable(
@@ -2785,6 +2878,9 @@ namespace Clc.Migrations
 
             migrationBuilder.DropTable(
                 name: "Signins");
+
+            migrationBuilder.DropTable(
+                name: "VehicleRecords");
 
             migrationBuilder.DropTable(
                 name: "WorkerFiles");

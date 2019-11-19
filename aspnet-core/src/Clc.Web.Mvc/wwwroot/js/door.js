@@ -1,8 +1,9 @@
-﻿(function() {
+﻿var ws = null;
+var jjjj = 'ddd';
+(function() {
     // web socket
-    var ws;
     function initWS() {
-        alert('initWs');
+        // alert('initWs');
         ws = new WebSocket("ws://127.0.0.1:4649/M500Net");
         ws.onopen = function () {
             console.log("Open connection to websocket");
@@ -22,6 +23,7 @@
     $(function () {
         initWS();
 
+        // alert('dataliost');
         $('#dlCard').datalist({
             data: work.askWorkers,
             valueField: 'name',
@@ -40,5 +42,4 @@
             }
         });
     });
-
-});
+})();

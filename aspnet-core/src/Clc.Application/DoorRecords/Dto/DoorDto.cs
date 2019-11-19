@@ -24,6 +24,8 @@ namespace Clc.DoorRecords.Dto
         public string DoorIp { get; set; }
         [StringLength(Workplace.IpAddressLength)]
         public string CameraIp { get; set; }
+
+        public string EmergPassword { get; set; }
     }
 }
 
