@@ -74,7 +74,7 @@
         }); 
 
         // register event
-        abp.event.on('emergOpenDoor', function () {
+        window.parent.abp.event.on('emergOpenDoor', function () {
             $('#dg').datagrid('reload');
         });
     });

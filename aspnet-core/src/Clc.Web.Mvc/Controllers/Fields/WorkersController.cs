@@ -1,5 +1,7 @@
-﻿using Abp.AspNetCore.Mvc.Authorization;
+﻿using System;
+using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Domain.Repositories;
+using Abp.Web.Models;
 using Clc.Authorization;
 using Clc.Fields;
 using Clc.Fields.Dto;
@@ -13,15 +15,6 @@ namespace Clc.Web.Controllers
         public WorkersController(IRepository<Worker> repository)
             :base(repository)
         {
-        }
-
-        public ActionResult GetPhoto(int id)
-        {
-            Worker w = _repository.Get(id);
-            if (w != null && w.Photo != null)
-                return File(w.Photo, "image/jpg");
-
-            return File(new byte[0], "image/jpg");
         }
 	}
 }

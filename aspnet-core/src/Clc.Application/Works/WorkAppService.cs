@@ -79,6 +79,17 @@ namespace Clc.Works
             return WorkManager.GetDepot(depotId).AllowCardWhenCheckin;
         }
 
+        public string GetMyPhoto(int id)
+        {
+            var worker = WorkManager.GetWorker(id);
+            return Convert.ToBase64String(worker.Photo);
+        }
+        public string GetVehiclePhoto(int id)
+        {
+            var v = WorkManager.GetVehicle(id);
+            return Convert.ToBase64String(v.Photo);
+        }
+        
         public (string, string) GetMe()
         {
             int workerId = GetCurrentUserWorkerIdAsync().Result; 
@@ -92,7 +103,8 @@ namespace Clc.Works
             return (worker.LoginRoleNames, worker.Cn);
         }
 
-        public string GetToday(){
+        public string GetToday()
+        {
             return DateTime.Now.ToString("yyyy-MM-dd");
         }
         
@@ -152,7 +164,7 @@ namespace Clc.Works
             var ret = new List<RouteCacheItem>();
             foreach (var depot in depots)
             {
-                var lst = _routeCache.Get(carryoutDate, depotId);
+                var lst = _routeCache.Get(carryoutDate, depot);
                 lst.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
                 ret.AddRange(lst);
             }

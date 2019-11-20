@@ -19,7 +19,7 @@ namespace Clc.Authorization
             // Hrm
             context.CreatePermission(PermissionNames.Pages_Hrm, L("Hrm"));
             // Hrq
-            // context.CreatePermission(PermissionNames.Pages_Hrq, L("Hrq"));
+            context.CreatePermission(PermissionNames.Pages_Hrq, L("Hrq"));
             // Qurey
             context.CreatePermission(PermissionNames.Pages_Query, L("Query"));
             // PlaceC

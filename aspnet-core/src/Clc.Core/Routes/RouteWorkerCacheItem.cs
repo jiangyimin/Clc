@@ -10,6 +10,7 @@ namespace Clc.Routes
     public class RouteWorkerCacheItem : EntityDto
     {
         public int WorkerId { get; set; }
+        
         public int? AltWorkerId { get; set; }
 
         public int WorkRoleId { get; set; }

@@ -16,6 +16,7 @@ namespace Clc.Works
     public class WorkManager : DomainService, IDomainService
     {
         private readonly IWorkerCache _workerCache;
+        private readonly IVehicleCache _vehicleCache;
         private readonly IWorkplaceCache _workplaceCache;
         private readonly IWorkRoleCache _workRoleCache;
         private readonly IDepotCache _depotCache;
@@ -33,6 +34,7 @@ namespace Clc.Works
         private readonly IRepository<AskDoorRecord> _askdoorRepository;
 
         public WorkManager(IWorkerCache workerCache,
+            IVehicleCache vehicleCache,
             IWorkplaceCache workplaceCache,
             IWorkRoleCache workRoleCache,
             IDepotCache depotCache,
@@ -48,6 +50,7 @@ namespace Clc.Works
             IRepository<AskDoorRecord> askdoorRepository)
         {
             _workerCache = workerCache;
+            _vehicleCache = vehicleCache;
             _workplaceCache = workplaceCache;
             _workRoleCache = workRoleCache;
             _depotCache = depotCache;
@@ -165,8 +168,13 @@ namespace Clc.Works
 
         #endregion
 
-        #region Depot, Workplace
+        #region Depot, Workplace, Vehicle
 
+        public Vehicle GetVehicle(int id)
+        {
+            return _vehicleCache[id];
+        }
+        
         public Depot GetDepot(int depotId)
         {
             return _depotCache[depotId];

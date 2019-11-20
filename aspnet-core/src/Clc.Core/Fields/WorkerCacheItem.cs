@@ -18,16 +18,16 @@ namespace Clc.Fields
 
         public string Rfid { get; set; }
         public int PostId { get; set; }
-        public string PostName { get; set; }
+        // public string PostName { get; set; }
 
         public string WorkRoles { get; set; }
 
         public string Finger { get; set; }
         public string Finger2 { get; set; }
 
-        public string CnNamePost { 
+        public string CnName { 
             get {
-                return string.Format("{0} {1}({2})", Cn, Name, PostName);
+                return string.Format("{0} {1}", Cn, Name);
             }
         }
     }

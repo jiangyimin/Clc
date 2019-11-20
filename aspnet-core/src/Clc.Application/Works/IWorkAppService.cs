@@ -14,6 +14,9 @@ namespace Clc.Works
         bool VerifyUnlockPassword(string password);
         bool AllowCardWhenCheckin();   
         (string, string) GetMe();
+        string GetMyPhoto(int id);
+        string GetVehiclePhoto(int id);
+
         string GetToday();
         
         AffairWorkDto GetMyCheckinAffair();

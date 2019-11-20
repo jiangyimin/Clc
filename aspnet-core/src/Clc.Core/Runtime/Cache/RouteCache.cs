@@ -36,8 +36,10 @@ namespace Clc.Runtime.Cache
         {
             string cacheKey = carryoutDate.ToString() + depotId.ToString();
             return _cacheManager.GetCache(CacheName).Get(cacheKey, () => {
-                var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Workers).Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && x.Status != "安排");
-                return ObjectMapper.Map<List<RouteCacheItem>>(query.ToList());
+                var query = _routeRepository.GetAllIncluding(x => x.Vehicle, x => x.AltVehicle, x => x.Workers)
+                    .Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && x.Status == "激活");
+                var list = query.ToList();
+                return ObjectMapper.Map<List<RouteCacheItem>>(list);
             });
         }
 
@@ -58,6 +60,5 @@ namespace Clc.Runtime.Cache
             }
             return (a, null);
         }
-
     }
 }

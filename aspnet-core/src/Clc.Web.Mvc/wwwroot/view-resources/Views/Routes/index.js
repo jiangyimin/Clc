@@ -19,7 +19,7 @@
             $('#dgEvent').datagrid({
                 url: "Routes/GridDataEvent/" + mds.masterCurrentRow.id
             });
-        })            
+        });
 
         $('#tb').children('a[name="activate"]').click(function (e) {
             var checkedRows = $('#dg').datagrid("getChecked");
@@ -35,15 +35,14 @@
             };
 
             abp.services.app.route.activate(ids).done(function (ret) {
-                abp.notify.success('有' + ret.Item2 + '个线路被激活');
+                abp.notify.success('有' + ret.item2 + '个线路被激活');
                 // Cache active routes
                 abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
-                    abp.notify.info("下达最新的激活线路");
+                    abp.notify.info("刚下达最新的激活线路");
                 });
                 if (ret.item1) abp.notify.error(ret.item1);
                 mds.reload('');
-            })
-
+            });
         });
 
         $('#tb').children('a[name="back"]').click(function (e) {
@@ -54,7 +53,7 @@
             abp.services.app.route.back(mds.masterCurrentRow.id).done(function () {
                 mds.reload('');
             });
-        })            
+        });
 
         $('#tb').children('a[name="close"]').click(function (e) {
             var checkedRows = $('#dg').datagrid("getChecked");
@@ -64,7 +63,8 @@
             }
 
             ids = [];
-            for (var row of checkedRows) {
+            for (var i = 0; i < checkedRows.length; i++) {
+                var row = checkedRows[i];
                 if (row.status == "激活") ids.push(row.id);
             };
 
@@ -72,11 +72,11 @@
                 abp.notify.success('有' + count + '个线路被关闭');
                 // Cache active routes
                 abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
-                    abp.notify.info("下达最新的激活线路");
+                    abp.notify.info("刚下达最新的激活线路");
                 });
                 mds.reload('');
             })
-        })            
+        });         
 
         $('#tb').children('a[name="createFrom"]').click(function (e) {
             e.preventDefault();
@@ -119,5 +119,6 @@
                 };
             });
         });
+
     });
 })();

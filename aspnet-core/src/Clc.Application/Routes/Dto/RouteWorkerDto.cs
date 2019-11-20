@@ -21,6 +21,10 @@ namespace Clc.Routes.Dto
         public string WorkerCn { get; set; }
         public string WorkerName { get; set; }
 
+        public int? AltWorkerId { get; set; }
+        public string AltWorkerCn { get; set; }
+        public string AltWorkerName { get; set; }
+
         [Required]
         public int WorkRoleId { get; set; }
         public string WorkRoleName { get; set; }

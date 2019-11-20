@@ -244,13 +244,13 @@ function parseMessage(msg) {
         if (cmd[1] == meCn) unlockScreen();
     }
     else if (cmd[0] == "askOpenDoor") {
-        if (loginRole.indexOf("Monitor") != -1) {
+        if (meRoleName.indexOf("Monitor") != -1) {
             abp.event.trigger('askOpenDoor');
             abp.notify.info(cmd[1]);
         }
     }
     else if (cmd[0] == "emergOpenDoor") {
-        if (loginRole.indexOf("Monitor") != -1) {
+        if (meRoleName.indexOf("Monitor") != -1) {
             abp.event.trigger('emergOpenDoor');
             abp.notify.info(cmd[1]);
         }

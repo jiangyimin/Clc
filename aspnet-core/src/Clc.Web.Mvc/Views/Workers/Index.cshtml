@@ -92,7 +92,10 @@
             $("#fm").form({
                 onLoadSuccess: function (row) {
                     if (row && row.id > 0) {
-                        $("#preview").attr("src", "Workers/GetPhoto/" + row.id);
+                        abp.services.app.work.getMyPhoto(row.id).done(function (ret) { 
+                            // alert(ret);
+                            $("#preview").attr("src", "data:image/jpg;base64, " + ret);
+                        });
                     }
                 },
             });
@@ -164,7 +167,7 @@
             <tr>
                 <th><Label for="PhotoImage">照片:</Label></th>
                 <td>
-                    <img id="preview" alt="" src="" style="width:100px; height:110px;" />
+                    <img id="preview" alt="照片" src="" style="width:100px; height:110px;" />
                     <input id="photoFile" name="photoFile" type="file" onchange="$.setImagePreview('#preview', this)" />
                 </td>
             </tr>

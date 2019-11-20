@@ -81,7 +81,7 @@ namespace Clc.Routes
         public async Task<List<RouteDto>> GetRoutesAsync(DateTime carryoutDate, string sorting)
         {
             int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
-            var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.CreateWorker);
+            var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.AltVehicle, x => x.CreateWorker);
             query = query.Where(x => x.DepotId == depotId && x.CarryoutDate == carryoutDate).OrderBy(sorting);
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return ObjectMapper.Map<List<RouteDto>>(entities);
@@ -472,8 +472,11 @@ namespace Clc.Routes
         private RouteWorkerDto MapToWorker(RouteWorker rw)
         {
             var dto = ObjectMapper.Map<RouteWorkerDto>(rw);
-            var worker = WorkManager.GetWorker(rw.WorkerId);
-            dto.Signin = WorkManager.GetSigninInfo(worker.DepotId, rw.WorkerId);
+
+            var workerId = rw.AltWorkerId.HasValue ? rw.AltWorkerId.Value : rw.WorkerId;
+            var worker = WorkManager.GetWorker(workerId);
+
+            dto.Signin = WorkManager.GetSigninInfo(worker.DepotId, workerId);
 
             if (rw.Articles == null) return dto;
 

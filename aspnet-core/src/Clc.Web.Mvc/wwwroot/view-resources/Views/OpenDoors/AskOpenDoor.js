@@ -43,9 +43,9 @@
         });
     
         // register event
-        abp.event.on('askOpenDoor', function () {
+        window.parent.abp.event.on('askOpenDoor', function () {
             $('#dg').datagrid('reload');
         });
-        // alert('event');
+        // alert('event set on');
     });
 })();

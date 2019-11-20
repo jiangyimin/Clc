@@ -50,7 +50,10 @@
             $("#fm").form({
                 onLoadSuccess: function (row) {
                     if (row && row.id > 0) {
-                        $("#preview").attr("src", "Vehicles/GetPhoto/" + row.id);
+                        abp.services.app.work.getVehiclePhoto(row.id).done(function (ret) { 
+                            // alert(ret);
+                            $("#preview").attr("src", "data:image/jpg;base64, " + ret);
+                        });
                     }
                 },
             });

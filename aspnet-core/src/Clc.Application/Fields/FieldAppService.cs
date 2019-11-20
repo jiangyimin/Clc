@@ -88,7 +88,7 @@ namespace Clc.Fields
                 var post = _postCache[w.PostId];
                 if ((!string.IsNullOrEmpty(post.DefaultWorkRoleName) && post.DefaultWorkRoleName == role.Name) 
                     || (!string.IsNullOrEmpty(w.WorkRoles) && w.WorkRoles.Contains(role.Name)) )
-                    list.Add(new ComboboxItemDto { Value = w.Id.ToString(), DisplayText = w.CnNamePost });
+                    list.Add(new ComboboxItemDto { Value = w.Id.ToString(), DisplayText = w.CnName });
             }
             return list;
         }
@@ -104,10 +104,7 @@ namespace Clc.Fields
                 int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
                 var lst = _workerCache.GetList().FindAll(x => x.DepotId == depotId);
                 lst.Sort( (a, b) => a.Cn.CompareTo(b.Cn) );
-
-                var list = ObjectMapper.Map<List<WorkerCacheItem>>(lst);
-                list.ForEach(x => x.PostName = _postCache[x.PostId].Name);
-                return list;
+                return lst;
             }
         }
 

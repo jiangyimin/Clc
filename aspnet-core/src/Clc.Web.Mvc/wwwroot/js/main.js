@@ -77,6 +77,26 @@
             if (val) return val.substr(0, 10) + ' ' + val.substr(11, 5);
         },
 
+        // formatter
+        vehicleFormatter: function (val, row, index) {
+            return row.vehicleCn + ' ' + row.vehicleLicense;
+        },
+
+        altVehicleFormatter: function (val, row, index) {
+            return row.altVehicleCn + ' ' + row.altVehicleLicense;
+        },
+
+        workerFormatter: function (val, row, index) {
+            return row.workerCn + ' ' + row.workerName;
+        },
+        altWorkerFormatter: function (val, row, index) {
+            return row.altWorkerCn + ' ' + row.altWorkerName;
+        },
+
+        outletFormatter: function (val, row, index) {
+            return row.outletCn + ' ' + row.outletName;
+        },
+
         toExcel: function (tbl, title) {
             try {
                 var rows = $(tbl).datagrid('getRows');

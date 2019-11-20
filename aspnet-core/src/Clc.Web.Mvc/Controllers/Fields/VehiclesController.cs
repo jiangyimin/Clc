@@ -15,13 +15,13 @@ namespace Clc.Web.Controllers
         {
         }
 
-        public ActionResult GetPhoto(int id)
-        {
-            Vehicle v = _repository.Get(id);
-            if (v != null && v.Photo != null)
-                return File(v.Photo, "image/jpg");
+        // public ActionResult GetPhoto(int id)
+        // {
+        //     Vehicle v = _repository.Get(id);
+        //     if (v != null && v.Photo != null)
+        //         return File(v.Photo, "image/jpg");
 
-            return File(new byte[0], "image/jpg");
-        }
+        //     return File(new byte[0], "image/jpg");
+        // }
 	}
 }

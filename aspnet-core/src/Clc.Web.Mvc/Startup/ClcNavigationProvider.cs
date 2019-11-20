@@ -52,7 +52,7 @@ namespace Clc.Web.Startup
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrm, new FixedLocalizableString("档案编辑"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrm)
                     .AddItem(new MenuItemDefinition("Hrm_WorkerFiles", new FixedLocalizableString("人员"), url: "WorkerFiles"))
                     .AddItem(new MenuItemDefinition("Hrm_Documents", new FixedLocalizableString("固定资产"), url: "Assets"))
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrq, new FixedLocalizableString("档案查看"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrm)
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrq, new FixedLocalizableString("档案查看"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrq)
                     .AddItem(new MenuItemDefinition("Hrq_WorkerFiles", new FixedLocalizableString("查询人员档案"), url: "WorkerFiles/Query"))
                     .AddItem(new MenuItemDefinition("Hrq_Documents", new FixedLocalizableString("查询固定资产"), url: "Assets/Query"))
                                

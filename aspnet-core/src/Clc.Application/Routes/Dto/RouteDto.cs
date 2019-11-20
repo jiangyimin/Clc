@@ -39,12 +39,14 @@ namespace Clc.Routes.Dto
         /// 车辆
         /// </summary>
         // [Required]
-        public int? VehicleId { get; set; }
-
+        public int VehicleId { get; set; }
         public string VehicleCn { get; set; }
         public string VehicleLicense { get; set; }
 
-
+        public int? AltVehicleId { get; set; }
+        public string AltVehicleCn { get; set; }
+        public string AltVehicleLicense { get; set; }
+        
         /// <summary>
         /// 预计出发时间
         /// </summary>

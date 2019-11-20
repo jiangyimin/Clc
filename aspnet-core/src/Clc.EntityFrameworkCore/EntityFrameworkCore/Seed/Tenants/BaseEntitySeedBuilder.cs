@@ -27,16 +27,16 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             CreateWorkRoles();
 
             // Fields
-            CreateDepots();
-            CreateWorkplaces();
-            CreateWorkers();
-            CreateVehicles();
-            CreateArticles();
+            //CreateDepots();
+            //CreateWorkplaces();
+            //CreateWorkers();
+            //CreateVehicles();
+            //CreateArticles();
 
             // Clients
-            CreateCustomers();
-            CreateOutlets();
-            CreateBoxes();
+            //CreateCustomers();
+            //CreateOutlets();
+            //CreateBoxes();
         }
 
         private void CreateArticleTypes()
@@ -57,19 +57,18 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Posts.Count() == 0)
             {
                 _context.Posts.AddRange(new Post[] {
-                    new Post { TenantId = _tenantId, Cn = "01", Name = "大队长", DefaultWorkRoleName = "队长", AppName = "App03" }, 
-                    new Post { TenantId = _tenantId, Cn = "02", Name = "司机", DefaultWorkRoleName = "司机", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "03", Name = "车长", DefaultWorkRoleName = "车长", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "04", Name = "持枪员", DefaultWorkRoleName = "车长", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "05", Name = "主业务员", DefaultWorkRoleName = "主业务员", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "06", Name = "业务员", DefaultWorkRoleName = "业务员", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "07", Name = "物品库管员", DefaultWorkRoleName = "库房管理员", AppName = "App01" },                     
-                    new Post { TenantId = _tenantId, Cn = "08", Name = "金库管理员", DefaultWorkRoleName = "金库管理员", AppName = "App01" },                     
-                    new Post { TenantId = _tenantId, Cn = "09", Name = "综合库管员", DefaultWorkRoleName = "综合管理员", AppName = "App01" },                     
-                    new Post { TenantId = _tenantId, Cn = "10", Name = "监控员", DefaultWorkRoleName = "监控员", AppName = "App01" },
-                    new Post { TenantId = _tenantId, Cn = "11", Name = "领导", DefaultWorkRoleName = "公司领导", AppName = "App03" }, 
-                    new Post { TenantId = _tenantId, Cn = "12", Name = "干部", AppName = "App03" }, 
-                    new Post { TenantId = _tenantId, Cn = "13", Name = "职员", AppName = "App03" }
+                    new Post { TenantId = _tenantId, Cn = "01", Name = "司机", DefaultWorkRoleName = "司机", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "02", Name = "车长", DefaultWorkRoleName = "车长", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "03", Name = "持枪员", DefaultWorkRoleName = "车长", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "04", Name = "主业务员", DefaultWorkRoleName = "主业务员", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "05", Name = "业务员", DefaultWorkRoleName = "业务员", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "06", Name = "库房管理员", DefaultWorkRoleName = "库房管理员", AppName = "App01" },                     
+                    new Post { TenantId = _tenantId, Cn = "07", Name = "金库管理员", DefaultWorkRoleName = "金库管理员", AppName = "App01" },                     
+                    new Post { TenantId = _tenantId, Cn = "08", Name = "监控员", DefaultWorkRoleName = "监控员", AppName = "App01" },
+                    new Post { TenantId = _tenantId, Cn = "09", Name = "大队长", DefaultWorkRoleName = "队长", AppName = "App03" }, 
+                    new Post { TenantId = _tenantId, Cn = "10", Name = "领导", DefaultWorkRoleName = "公司领导", AppName = "App03" }, 
+                    new Post { TenantId = _tenantId, Cn = "11", Name = "干部", AppName = "App03" }, 
+                    new Post { TenantId = _tenantId, Cn = "12", Name = "职员", AppName = "App03" }
                 }); 
                 _context.SaveChanges();
             }
@@ -92,7 +91,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new TaskType { TenantId = _tenantId, Cn = "01", Name = "早送" }, 
                     new TaskType { TenantId = _tenantId, Cn = "02", Name = "晚接" }, 
                     new TaskType { TenantId = _tenantId, Cn = "03", Name = "中调" }, 
-                    new TaskType { TenantId = _tenantId, Cn = "04", Name = "临时中调", isTemporary = true, BasicPrice = 180 }
+                    new TaskType { TenantId = _tenantId, Cn = "04", Name = "收费中调", isTemporary = true, BasicPrice = 180 }
                 }); 
                 _context.SaveChanges();
             }
@@ -109,8 +108,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                     new WorkRole { TenantId = _tenantId, Cn = "05", Name = "业务员", Duties = "辅助交接", mustHave = true, MaxNum = 2 },
                     new WorkRole { TenantId = _tenantId, Cn = "06", Name = "库房管理员", mustHave = true, MaxNum = 2 }, 
                     new WorkRole { TenantId = _tenantId, Cn = "07", Name = "金库管理员", Duties = "金库", mustHave = true, MaxNum = 8 }, 
-                    new WorkRole { TenantId = _tenantId, Cn = "08", Name = "综合管理员", Duties = "金库", mustHave = true, MaxNum = 5 }, 
-                    new WorkRole { TenantId = _tenantId, Cn = "09", Name = "监控员", mustHave = true, MaxNum = 3 },
+                    new WorkRole { TenantId = _tenantId, Cn = "08", Name = "监控员", mustHave = true, MaxNum = 3 },
                  }); 
                 _context.SaveChanges();
             }
@@ -135,8 +133,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Workplaces.Count() == 0)
             {
                 _context.Workplaces.AddRange(new Workplace[] {
-                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "库房", WorkRoles = "库房管理员", MinDuration = 4, MaxDuration = 12}, 
-                    new Workplace { TenantId = _tenantId, DepotId = 2, Name = "库房", WorkRoles = "库房管理员", ShareDepotList="01", ArticleTypeList = "A|B|C|D", MinDuration = 4, MaxDuration = 20, DoorIp = "192.168.1.100,1", CameraIp = "192.168.20.120", AskOpenStyle = "直接", EmergPassword = "654321" },
+                    new Workplace { TenantId = _tenantId, DepotId = 1, Name = "库房", WorkRoles = "金库管理员", MinDuration = 4, MaxDuration = 12}, 
+                    new Workplace { TenantId = _tenantId, DepotId = 2, Name = "库房", WorkRoles = "金库管理员", ShareDepotList="01", ArticleTypeList = "A|B|C|D", MinDuration = 4, MaxDuration = 20, DoorIp = "192.168.1.100,1", CameraIp = "192.168.20.120", AskOpenStyle = "直接", EmergPassword = "654321" },
                     new Workplace { TenantId = _tenantId, DepotId = 2, Name = "金库", WorkRoles = "金库管理员", ShareDepotList="01", MinDuration = 1, MaxDuration = 20, DoorIp = "192.168.2.100,2", AskOpenStyle = "验证", EmergPassword = "654321" }, 
                     new Workplace { TenantId = _tenantId, DepotId = 2, Name = "调度室", WorkRoles = "辅助调度", ShareDepotList="01", MinDuration = 4, MaxDuration = 20}, 
                     new Workplace { TenantId = _tenantId, DepotId = 4, Name = "监控室", WorkRoles = "监控员", MinDuration = 6, MaxDuration = 20 }, 

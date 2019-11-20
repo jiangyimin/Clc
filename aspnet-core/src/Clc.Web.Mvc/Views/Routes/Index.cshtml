@@ -19,15 +19,15 @@
         mds.main.singleSelect = false;
         mds.main.columns = [[
             { field: "ck", checkbox: true },
-            { field: "carryoutDate", title: "时间", width: 100, formatter: $.dateFormatter },
-            { field: "routeName", title: "线路名称", width: 100, sortable: true },
-            { field: "status", title: "状态", width: 80 },
+            { field: "carryoutDate", title: "时间", width: 80, formatter: $.dateFormatter },
+            { field: "routeName", title: "线路名称", width: 80, sortable: true },
+            { field: "status", title: "状态", width: 60 },
             { field: "routeTypeName", title: "押运类型", width: 80 },
-            { field: "vehicleCn", title: "车辆编号", width: 80 },
-            { field: "vehicleLicense", title: "车牌号", width: 80 },
             { field: "startTime", title: "出发时间", width: 100, sortable: true },
-            { field: "endTime", title: "返回时间", width: 80 },
-            { field: "mileage", title: "预计里程", width: 80 },
+            { field: "endTime", title: "返回时间", width: 70 },
+            { field: "mileage", title: "预计里程", width: 70 },
+            { field: "vehicle", title: "车辆", width: 100, formatter: $.vehicleFormatter },
+            { field: "altVehicle", title: "替用车辆", width: 80, formatter: $.altVehicleFormatter },
             // { field: "setoutTime", title: "实际出发", width: 80, formatter: $.timeFormatter },
             // { field: "returnTime", title: "实际返回", width: 80, formatter: $.timeFormatter },
             // { field: "actualMileage", title: "实际里程", width: 80 },
@@ -43,8 +43,9 @@
         detail.postfix = "Worker";
         detail.columns = [[
             { field: "workRoleName", title: "工作角色", width: 80 },
-            { field: "worker", title: "人员编号", width: 80, formatter: workerFormatter },
-            { field: "signin", title: "签到情况", width: 80 },
+            { field: "worker", title: "人员", width: 80, formatter: $.workerFormatter },
+            { field: "altWorker", title: "替班人员", width: 80 },
+            { field: "signin", title: "签到情况", width: 80, formatter: $.altWorkerFormatter },
             { field: "articleList", title: "物品清单", width: 280 },
         ]];
         detail.insert = abp.services.app.route.insertWorker;
@@ -57,7 +58,7 @@
         detail.sortName = "arriveTime";
         detail.columns = [[
             { field: "arriveTime", title: "到达时间", width: 80, sortable: true },
-            { field: "outlet", title: "网点编号", width: 120, formatter: outletFormatter },
+            { field: "outlet", title: "网点", width: 120, formatter: $.outletFormatter },
             { field: "taskTypeName", title: "任务类型", width: 80 },
             { field: "remark", title: "备注", width: 80 },
             { field: "identifyTime", title: "交接时间", width: 80, formatter: $.timeFormatter },
@@ -69,19 +70,6 @@
         detail.update = abp.services.app.route.updateTask;
         detail.delete = abp.services.app.route.deleteTask;
         mds.details.push(detail);
-
-        // formatter
-        function vehicleFormatter (val, row, index) {
-            return row.vehicleCn + ' ' + row.vehicleLicense;
-        }
-
-        function workerFormatter (val, row, index) {
-            return row.workerCn + ' ' + row.workerName;
-        }
-
-        function outletFormatter (val, row, index) {
-            return row.outletCn + ' ' + row.outletName;
-        }
     </script>
 
     <script type="text/javascript">
@@ -95,19 +83,10 @@
                 });  
             });
             abp.services.app.field.getVehicleListItems().done(function (data) {
-                $('#vehicle').combobox({
-                    data: data, 
-                    valueField: 'id', 
-                    textField: 'cnLicense'
-                });    
+                $('#vehicle').combobox({data: data, valueField: 'id', textField: 'cnLicense'});    
+                $('#altVehicle').combobox({data: data, valueField: 'id', textField: 'cnLicense'});    
             });
-            abp.services.app.field.getWorkerCacheItems().done(function (data) {
-                $('#worker').combobox({
-                    data: data,
-                    valueField: 'id',
-                    textField: 'cnNamePost'
-                })
-            });
+
             abp.services.app.client.getComboItems('OutletWithCn').done(function (data) {
                 $('#outlet').combobox({
                     data: data,
@@ -161,6 +140,7 @@
             if (postfix == 'Worker') {
                 abp.services.app.field.getWorkerItemsByWorkRole(row.workRoleId).done(function (data) {
                     $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
+                    $('#altWorker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
                     setTimeout(function() {fm.form('load', row)}, 300);
                 });
                 return true;
@@ -177,7 +157,7 @@
             任务日期: <input id="dd" class="easyui-datebox" readonly="true" style="width:120px">
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('')">刷新</a>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('')">添加</a>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
             <a name="event" href="javascript:void(0)" class="easyui-linkbutton">线路事件</a>
             <a name="activate" href="javascript:void(0)" class="easyui-linkbutton">激活</a>
             <a name="back" href="javascript:void(0)" class="easyui-linkbutton">退回</a>
@@ -234,6 +214,10 @@
                 <td><input id="vehicle" name="vehicleId" class="easyui-combobox" style="width: 100%"></td>
             </tr>
             <tr>
+                <th><Label for="altVehicleId">替用车辆:</Label></th>
+                <td><input id="altVehicle" name="altVehicleId" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+            <tr>
                 <th><Label for="startTime">开始时间:</Label></th>
                 <td><input name="startTime" class="easyui-timespinner" data-options="required: true" style="width:100%"></td>
             </tr>
@@ -270,6 +254,10 @@
             <tr>
                 <th><Label for="workerId">人员:</Label></th>
                 <td><input id="worker" name="workerId" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="altWorkerId">人员:</Label></th>
+                <td><input id="altWorker" name="altWorkerId" class="easyui-combobox" style="width: 100%"></td>
             </tr>
         </table>
     </form>

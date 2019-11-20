@@ -62,7 +62,7 @@ namespace Clc.Web.Controllers
             {
                 var depotName = WorkManager.GetDepot(worker.DepotId).Name;
                 var wpName = WorkManager.GetWorkplace(doorId).Name;
-                _context.Clients.All.SendAsync("getMessage", "askOpenDoor " + string.Format("{0}({1})", wpName, depotName));
+                _context.Clients.All.SendAsync("getMessage", "askOpenDoor " + string.Format("你有来自{0}({1})的常规申请", wpName, depotName));
             }
 
             return Json(new { success = ret.Item1, message = ret.Item2, worker = new { name = string.Format("{0} {1}", worker.Cn, worker.Name) }});

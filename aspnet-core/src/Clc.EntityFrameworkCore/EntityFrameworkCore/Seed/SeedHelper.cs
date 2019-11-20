@@ -30,7 +30,7 @@ namespace Clc.EntityFrameworkCore.Seed
 
             // EntityPreDataBuiler
             new BaseEntitySeedBuilder(context, 1).Create();
-            new WorkEntitySeedBuilder(context, 1).Create();
+            // new WorkEntitySeedBuilder(context, 1).Create();
         }
 
         private static void WithDbContext<TDbContext>(IIocResolver iocResolver, Action<TDbContext> contextAction)

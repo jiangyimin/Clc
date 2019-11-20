@@ -74,8 +74,8 @@ namespace Clc.Web.Startup
 
             if (env.IsDevelopment())
             {
-                // app.UseExceptionHandler("/Error");
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Error");
+                // app.UseDeveloperExceptionPage();
             }
             else
             {

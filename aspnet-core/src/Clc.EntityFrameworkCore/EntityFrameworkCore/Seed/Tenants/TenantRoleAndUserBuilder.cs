@@ -48,6 +48,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             // Aux
             permissions = new string[] { PermissionNames.Pages_Aux };
             CreateRole(StaticRoleNames.Tenants.Aux, permissions, true);
+            
             // Monitor 
             permissions = new string[] { PermissionNames.Pages_Monitor, PermissionNames.Pages_Query };
             CreateRole(StaticRoleNames.Tenants.Monitor, permissions, true);
