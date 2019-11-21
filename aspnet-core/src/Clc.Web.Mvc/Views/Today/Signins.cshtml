@@ -13,11 +13,11 @@
         var allowCardWhenCheckin = true;
         $(function() {
             // get today
-            abp.services.app.work.getMyAffairWork().done(function (wk) {
-                $('#dd').datebox('setValue', wk.today);
+            abp.services.app.work.getToday().done(function (today) {
+                $('#dd').datebox('setValue', today);
 
                 $('#dg').datagrid({
-                    url: 'GridData?CarryoutDate=' + wk.today
+                    url: 'GridData?CarryoutDate=' + today
                 });
             });
             abp.services.app.work.allowCardWhenCheckin().done(function (ret) {

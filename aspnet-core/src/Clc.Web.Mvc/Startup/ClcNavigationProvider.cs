@@ -80,7 +80,7 @@ namespace Clc.Web.Startup
                 // Monitor
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
                     .AddItem(new MenuItemDefinition("Monitor_Checkin", new FixedLocalizableString("验入/申请"), url: "Checkin"))
-                    .AddItem(new MenuItemDefinition("Monitor_AskOpenDoor", new FixedLocalizableString("申请开门"), url: "OpenDoors/AskOpenDoor"))
+                    .AddItem(new MenuItemDefinition("Monitor_AskOpenDoor", new FixedLocalizableString("任务开门"), url: "OpenDoors/AskOpenDoor"))
                     .AddItem(new MenuItemDefinition("Monitor_EmergOpenDoor", new FixedLocalizableString("应急开门"), url: "OpenDoors/EmergOpenDoor"))
                     .AddItem(new MenuItemDefinition("Monitor_Records", new FixedLocalizableString("开门记录查询"), url: "OpenDoors/RecordQuery"))
                     .AddItem(new MenuItemDefinition("Monitor_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Monitor/KeyPoints"))

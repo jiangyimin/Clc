@@ -23,7 +23,7 @@ namespace Clc.Web.Controllers
         {           
             var affair = _workAppService.FindAltDutyAffair();
             return RedirectToAction("Index", "Checkin", new {
-                Alt = affair.Alt,
+                AltCheck = affair.AltCheck,
                 Today = affair.Today,
                 DepotId = affair.DepotId,
                 AffairId = affair.AffairId,

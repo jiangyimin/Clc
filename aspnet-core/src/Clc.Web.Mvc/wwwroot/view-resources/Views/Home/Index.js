@@ -30,6 +30,7 @@
         abp.services.app.work.getMe().done(function(ret) {
             meRoleName = ret.item1;
             meCn = ret.item2;
+            // alert(meCn+meRoleName);
             if (meRoleName == "system") unlockScreen();
         });
 

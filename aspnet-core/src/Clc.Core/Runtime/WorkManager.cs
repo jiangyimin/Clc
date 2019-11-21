@@ -233,23 +233,28 @@ namespace Clc.Works
         public (bool, string) DoSignin(int depotId, int workerId, string style)
         {
             // Get Signin 
-            var signin = _signinRepository.FirstOrDefault(s => s.CarryoutDate == DateTime.Today && s.DepotId == depotId && s.WorkerId == workerId);
+            var signin = _signinRepository.GetAll()
+                .Where(s => s.CarryoutDate == DateTime.Today && s.DepotId == depotId && s.WorkerId == workerId)
+                .LastOrDefault();
+
             if (signin == null)
             {
                 signin = new Signin() { DepotId = depotId, CarryoutDate = DateTime.Today, WorkerId = workerId, SigninTime = DateTime.Now, SigninStyle = style }; 
                 _signinRepository.Insert(signin);
-                return (true, "签到成功");
+                if (ClcUtils.IsMorning(DateTime.Now))
+                    return (true, "上午时段签到成功");
+                else
+                    return (true, "下午时段签到成功");
             }
             else
             {
-                var min = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.MinSigninInterval));
-                var diff = (DateTime.Now - signin.SigninTime).TotalMinutes;
-                if (diff > min) 
+                var signedTz = ClcUtils.IsMorning(signin.SigninTime);
+
+                if (!ClcUtils.IsMorning(signin.SigninTime) && signedTz) 
                 {
-                    signin.SigninTime = DateTime.Now;
-                    _signinRepository.Update(signin);
-                    _signinCache.Get(depotId, workerId).SigninTime = DateTime.Now;
-                    return (true, "再次签到成功");
+                    signin = new Signin() { DepotId = depotId, CarryoutDate = DateTime.Today, WorkerId = workerId, SigninTime = DateTime.Now, SigninStyle = style }; 
+                    _signinRepository.Insert(signin);
+                    return (true, "下午时段签到成功");
                 }
                 else
                 {
@@ -269,9 +274,9 @@ namespace Clc.Works
             return ret;
         }
 
-        public string GetSigninInfo(int depotId, int workerId)
+        public string GetSigninInfo(int depotId, int workerId, DateTime dt)
         {
-            var s = _signinCache.Get(depotId, workerId);
+            var s = _signinCache.Get(depotId, workerId, ClcUtils.IsMorning(dt));
             if (s == null) return "未签到";
             return string.Format("{0} 签到", s.SigninTime.ToString("HH:mm:ss"));
         }

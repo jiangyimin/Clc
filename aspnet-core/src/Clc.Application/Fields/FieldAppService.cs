@@ -86,9 +86,18 @@ namespace Clc.Fields
             foreach (var w in lst)
             {
                 var post = _postCache[w.PostId];
-                if ((!string.IsNullOrEmpty(post.DefaultWorkRoleName) && post.DefaultWorkRoleName == role.Name) 
-                    || (!string.IsNullOrEmpty(w.WorkRoles) && w.WorkRoles.Contains(role.Name)) )
-                    list.Add(new ComboboxItemDto { Value = w.Id.ToString(), DisplayText = w.CnName });
+
+                if (string.IsNullOrEmpty(w.WorkRoleNames))
+                {
+                    if (!string.IsNullOrEmpty(post.DefaultWorkRoleName) && post.DefaultWorkRoleName == role.Name) 
+                        list.Add(new ComboboxItemDto { Value = w.Id.ToString(), DisplayText = w.CnNamePost });
+                }
+                else
+                {
+                    var roles = w.WorkRoleNames.Split(',', '|');
+                    if (roles.Contains(role.Name))
+                        list.Add(new ComboboxItemDto { Value = w.Id.ToString(), DisplayText = w.CnNamePost });
+                }
             }
             return list;
         }

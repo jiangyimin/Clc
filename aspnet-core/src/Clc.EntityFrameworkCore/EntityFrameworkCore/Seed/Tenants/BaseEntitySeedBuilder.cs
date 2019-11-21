@@ -59,7 +59,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                 _context.Posts.AddRange(new Post[] {
                     new Post { TenantId = _tenantId, Cn = "01", Name = "司机", DefaultWorkRoleName = "司机", AppName = "App02" },
                     new Post { TenantId = _tenantId, Cn = "02", Name = "车长", DefaultWorkRoleName = "车长", AppName = "App02" },
-                    new Post { TenantId = _tenantId, Cn = "03", Name = "持枪员", DefaultWorkRoleName = "车长", AppName = "App02" },
+                    new Post { TenantId = _tenantId, Cn = "03", Name = "持枪员", DefaultWorkRoleName = "持枪员", AppName = "App02" },
                     new Post { TenantId = _tenantId, Cn = "04", Name = "主业务员", DefaultWorkRoleName = "主业务员", AppName = "App02" },
                     new Post { TenantId = _tenantId, Cn = "05", Name = "业务员", DefaultWorkRoleName = "业务员", AppName = "App02" },
                     new Post { TenantId = _tenantId, Cn = "06", Name = "库房管理员", DefaultWorkRoleName = "库房管理员", AppName = "App01" },                     

@@ -6,7 +6,7 @@
             if (!work.validate()) return;
             $('#dd').datebox('setValue', work.me.today);
             $('#dg').datagrid({
-                url: 'GridDataAskDoor?Date=' + work.me.today 
+                url: 'GridDataAskDoor?Dt=' + work.me.today 
             });
         });
 
@@ -18,13 +18,13 @@
                     // alert(t);
                     $('#dd').datebox('setValue', t);
                     $('#dg').datagrid({
-                        url: 'GridDataAskDoor?Date=' + t
+                        url: 'GridDataAskDoor?Dt=' + t
                     });
                 }
                 else {
                     $('#dd').datebox('setValue', work.me.today);
                     $('#dg').datagrid({
-                        url: 'GridDataAskDoor?Date=' + work.me.today
+                        url: 'GridDataAskDoor?Dt=' + work.me.today
                     });
                 }
             }

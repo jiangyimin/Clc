@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Abp.Dependency;
 using Abp.Domain.Repositories;
 using Abp.ObjectMapping;
@@ -32,10 +33,24 @@ namespace Clc.Runtime.Cache
 
     public class WorkerCache : EntityListCache<Worker, Worker, WorkerCacheItem>, IWorkerCache, ITransientDependency
     {
-        public WorkerCache(ICacheManager cacheManager, IRepository<Worker> repository, IObjectMapper objectMapper)
+        private IPostCache _postCache;
+        public WorkerCache(ICacheManager cacheManager, IRepository<Worker> repository, IObjectMapper objectMapper,
+            IPostCache postCache)
             : base(cacheManager, repository, objectMapper)
         {
+            _postCache = postCache;
         }
+        public override List<WorkerCacheItem> GetList()
+        {
+            var list = base.GetList();
+            if (list != null && list.Count != 0 & string.IsNullOrEmpty(list[0].PostName))
+            {
+                foreach (var w in list) 
+                    w.PostName = _postCache[w.PostId].Name;
+            }
+            return list;
+        }
+
     }
 
     public class WorkplaceCache : EntityListCache<Workplace, Workplace, Workplace>, IWorkplaceCache, ITransientDependency

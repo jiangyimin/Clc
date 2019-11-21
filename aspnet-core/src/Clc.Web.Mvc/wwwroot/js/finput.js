@@ -2,6 +2,7 @@ var finput = finput || {};
 (function ($) {
     var currentRfid = '';
     var dialogClosed = true;
+
     finput.rfidLength = {
         workerRfidLength: 5,
         articleRfidLength: 3,
@@ -11,7 +12,7 @@ var finput = finput || {};
     finput.DetectWorker = true;
     finput.DetectArticle = false;
     finput.DetectBox = false;
-    
+
     finput.index = 0;
     finput.route = {};
     finput.worker = {};
@@ -27,7 +28,8 @@ var finput = finput || {};
     };
     finput.matchWorker = function () { alert("matchWorker") }
 
-    finput.showWorker = function (ret) {
+    // Article
+    finput.showWorkerForArticle = function (ret) {
         finput.route = ret.routeMatched;
         finput.worker = ret.workerMatched;
         finput.worker2 = ret.workerMatched2;
@@ -38,19 +40,27 @@ var finput = finput || {};
         if (finput.worker2 == null)
             finput.index = 0;
         else
-            finput.index = 1;
-            
-        // alert(finput.articles.length);
+            finput.index = 1;            
 
         $('#dlg').dialog('open');
         dialogClosed = false;
-        routeName.innerHTML = finput.route.routeName;
-        vehicle.innerHTML = finput.route.vehicleCn + ' ' + finput.route.vehicleLicense;
-        worker.innerHTML = finput.worker.cn + ' ' + finput.worker.name;
-        photo.src = "data:image/jpg;base64, " + finput.worker.photo;
+        // alert(dialogClosed);
+        $('#routeName').innerHTML = finput.route.routeName;
+        $('#vehicle').innerHTML = finput.route.vehicleCn + ' ' + finput.route.vehicleLicense;
+        $('#worker').innerHTML = finput.worker.cn + ' ' + finput.worker.name;
+        $('#photo').src = 'data:image/jpg;base64, ' + finput.worker.photo;
         
         finput.showWorkerDetails();
     };
+
+    finput.ShowWorerForBox = function (ret) {
+        finput.route = ret.routeMatched;
+        finput.worker = ret.workerMatched;
+        finput.outlets = ret.outlets;
+        finput.boxes = ret.boxes;  
+
+    }
+
     finput.ShowWorkerDetails = function () { }
 
     finput.onWorkerConfirm = function () { alert('onWorkerConfirm') };

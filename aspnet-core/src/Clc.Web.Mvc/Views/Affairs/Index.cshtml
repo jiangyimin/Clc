@@ -63,18 +63,27 @@
         detail.update = abp.services.app.affair.updateTask;
         detail.delete = abp.services.app.affair.deleteTask;
         mds.details.push(detail);
+
+        $('#workRole').combobox({
+            onChange: function (val) {
+                if (!val) return;
+                abp.services.app.field.getWorkerItemsByWorkRole(val).done(function (data) {
+                    $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
+                });
+            }
+        });
     </script>
 
     <script type="text/javascript">
         mds.initfunction = function () {
             // comboBoxs
-            abp.services.app.field.getWorkerCacheItems().done(function (data) {
-                $('#worker').combobox({
-                    data: data,
-                    valueField: 'id',
-                    textField: 'cnNamePost'
-                })
-            });
+            //abp.services.app.field.getWorkerCacheItems().done(function (data) {
+            //    $('#worker').combobox({
+            //        data: data,
+            //        valueField: 'id',
+            //        textField: 'cnNamePost'
+            //    })
+            //});
 
             abp.services.app.field.getWorkplaceItems().done(function (data) {
                 $('#workplace').combobox({data: data, valueField: 'id', textField: 'name' });
@@ -116,17 +125,6 @@
             return url;
         }
         
-        mds.beforeEdit = function (fm, postfix, row) {
-            if (postfix == 'Worker') {
-                abp.services.app.field.getWorkerItemsByWorkRole(row.workRoleId).done(function (data) {
-                    $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
-                    setTimeout(function() {fm.form('load', row)}, 300);
-                });
-                return true;
-            }
-            return false;
-        }
-
     </script>
 }
 

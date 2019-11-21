@@ -13,8 +13,14 @@
     </environment>
 
     <script type="text/javascript">
+        function getRouteId() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row == null) return 0;
+            return row.id;
+        }
+
         finput.matchWorker = function(rfid) {
-            abp.services.app.work.matchWorkerForArticle(false, work.me.workplaceId, work.me.today, work.me.affairId, rfid).done(function(ret) {
+            abp.services.app.work.matchWorkerForArticle(false, work.me.workplaceId, work.me.today, work.me.today, work.me.affairId, rfid, getRouteId()).done(function(ret) {
                 if (ret.message != null) {
                     abp.notify.error(ret.message);
                     return;
@@ -77,7 +83,7 @@
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
         </div>
-        <table id="dg" title="线路列表" class="easyui-datagrid" toolbar="#tb"
+        <table id="dg" class="easyui-datagrid" toolbar="#tb"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="endTime">
             <thead>
                 <tr>

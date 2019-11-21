@@ -44,16 +44,16 @@ namespace Clc.Web.Controllers
         }
 
         [DontWrapResult]
-        public async Task<JsonResult> GridDataAskDoor(DateTime date)
+        public async Task<JsonResult> GridDataAskDoor(DateTime dt)
         {
-            var output = await _doorRecordAppService.GetAskDoorsAsync(date);
+            var output = await _doorRecordAppService.GetAskDoorsAsync(dt);
             return Json( new { rows = output });
         }
 
         [DontWrapResult]
-        public async Task<JsonResult> GridDataEmergDoor(DateTime date)
+        public async Task<JsonResult> GridDataEmergDoor(DateTime dt)
         {
-            var output = await _doorRecordAppService.GetEmergDoorsAsync(date);
+            var output = await _doorRecordAppService.GetEmergDoorsAsync(dt);
             return Json( new { rows = output });
         }
 

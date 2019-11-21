@@ -54,7 +54,7 @@ namespace Clc.Runtime
                 .Get(cacheKey, () => _objectMapper.Map<TCacheItem>(_repository.Get(id)));
         }
 
-        public List<TListItem> GetList()
+        public virtual List<TListItem> GetList()
         {
             var cacheKey = "List";
             return _cacheManager.GetCache(_cacheName)

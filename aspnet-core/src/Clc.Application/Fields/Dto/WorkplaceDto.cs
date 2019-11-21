@@ -48,7 +48,7 @@ namespace Clc.Fields.Dto
         /// <summary>
         /// 申请开门提前时间（分钟）
         /// </summary>
-        public int AskOpenLead { get; set; }
+        // public int AskOpenLead { get; set; }
 
         /// <summary>
         /// 申请开门截止时间（分钟）

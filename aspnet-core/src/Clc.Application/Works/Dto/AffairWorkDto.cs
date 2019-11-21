@@ -9,7 +9,7 @@ namespace Clc.Works.Dto
     /// </summary>
     public class AffairWorkDto
     {
-        public bool Alt { get; set; }
+        public bool AltCheck { get; set; }
         public string Today { get; set; }
         public int DepotId { get; set; }
         public int AffairId { get; set; }
@@ -22,9 +22,9 @@ namespace Clc.Works.Dto
 
         public List<string> Rfids { get; set; }
 
-        public AffairWorkDto SetAffair(AffairCacheItem affair, string wpName, bool alt)
+        public AffairWorkDto SetAffair(AffairCacheItem affair, string wpName, bool altCheck)
         {
-            Alt = alt;
+            AltCheck = altCheck;
             Today = DateTime.Now.ToString("yyyy-MM-dd");
             if (affair != null)
             {

@@ -61,6 +61,7 @@
 
         $('#workRole').combobox({
             onChange: function (val) {
+                if (!val) return;
                 abp.services.app.field.getWorkerItemsByWorkRole(val).done(function (data) {
                     $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
                 });
@@ -131,17 +132,6 @@
             return url;
         }
 
-        mds.beforeEdit = function (fm, postfix, row) {
-            if (postfix == 'Worker') {
-                abp.services.app.field.getWorkerItemsByWorkRole(row.workRoleId).done(function (data) {
-                    $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
-                    setTimeout(function() {fm.form('load', row)}, 300);
-                });
-                return true;
-            }
-            return false;
-        }
-
         function setCurrentAgent()
         {
             abp.services.app.work.getAgentString().done(function (data) {
@@ -171,8 +161,8 @@
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="mds.add('')">添加</a>
             <span class="datagrid-btn-separator" style="vertical-align: middle;display:inline-block;float:none"></span>
             当前代理人：<input id='currentAgent' class="easyui-textbox" readonly style="width: 120px">
-            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="setAgent()">设置代理人</a>
             <input id="agent" class="easyui-combobox" style="width: 200px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="setAgent()">设置代理人</a>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="resetAgent()">取消代理人</a>
         </div>
         <table id="dg" class="easyui-datagrid" toolbar="#tb">

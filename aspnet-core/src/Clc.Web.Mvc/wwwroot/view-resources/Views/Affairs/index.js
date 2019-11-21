@@ -1,4 +1,4 @@
-(function() {        
+(function() {       
     $(function() {    
         abp.services.app.work.getToday().done(function (today) {
             mds.today = today;

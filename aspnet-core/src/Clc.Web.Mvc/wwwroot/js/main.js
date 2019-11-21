@@ -83,14 +83,16 @@
         },
 
         altVehicleFormatter: function (val, row, index) {
-            return row.altVehicleCn + ' ' + row.altVehicleLicense;
+            if (row.altVehicleCn)
+                return row.altVehicleCn + ' ' + row.altVehicleLicense;
         },
 
         workerFormatter: function (val, row, index) {
             return row.workerCn + ' ' + row.workerName;
         },
         altWorkerFormatter: function (val, row, index) {
-            return row.altWorkerCn + ' ' + row.altWorkerName;
+            if (row.altWorkerCn)
+                return row.altWorkerCn + ' ' + row.altWorkerName;
         },
 
         outletFormatter: function (val, row, index) {

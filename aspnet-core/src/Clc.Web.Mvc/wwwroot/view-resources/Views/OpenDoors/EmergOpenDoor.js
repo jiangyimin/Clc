@@ -8,7 +8,7 @@
                 url: 'GridDataDoor'
             });
             $('#dg').datagrid({
-                url: 'GridDataEmergDoor?Date=' + work.me.today
+                url: 'GridDataEmergDoor?Dt=' + work.me.today
             });
         });
 
@@ -20,13 +20,13 @@
                     // alert(t);
                     $('#dd').datebox('setValue', t);
                     $('#dg').datagrid({
-                        url: 'GridDataEmergDoor?Date=' + t
+                        url: 'GridDataEmergDoor?Dt=' + t
                     });
                 }
                 else {
                     $('#dd').datebox('setValue', work.me.today);
                     $('#dg').datagrid({
-                        url: 'GridDataEmergDoor?Date=' + work.me.today
+                        url: 'GridDataEmergDoor?Dt=' + work.me.today
                     });
                 }
             }

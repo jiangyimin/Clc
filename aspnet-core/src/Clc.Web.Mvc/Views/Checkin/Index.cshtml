@@ -17,10 +17,11 @@
         var vdoorId = 0;
 
         function operator (val, row, index) {
-            return '<a href="javascript:void(0)" onclick="scanFinger(' + index + ')">指纹验证</a>';
+            return '<a href="javascript:void(0)" onclick="scanFinger(' + index + ')">指纹验入</a>';
         };
 
         function scanFinger(index) {
+            abp.notify.info('请将指纹放到指纹仪上');
             var row = $('#dg').datagrid('getRows')[index];
             var finger = window.parent.getFingerCode();
             if (finger != '') {
@@ -71,7 +72,7 @@
     		<div data-options="region:'east', title:'任务概要', split:true" style="width:320px">
     			<form id="fm" class="easyui-form" method="post" novalidate>
         			<table class="edit-tbl">
-                        <input id="altcheck" type="hidden" value="@Model.Alt">
+                        <input id="altcheck" type="hidden" value="@Model.AltCheck">
                         <input id="depotId" type="hidden" value="@Model.DepotId">
                         <input id="affairId" type="hidden" value="@Model.AffairId">
                         <input id="workplaceId" type="hidden" value="@Model.WorkplaceId">

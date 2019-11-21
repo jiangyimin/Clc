@@ -77,20 +77,20 @@ namespace Clc.DoorRecords
             );
         }
 
-        public async Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime date)
+        public async Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime dt)
         {
             var query = _askDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot)
-                .Where(x => x.AskTime.Date == date && !x.ProcessTime.HasValue);
+                .Where(x => x.AskTime.Date == dt && !x.ProcessTime.HasValue);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
 
             return entities.Select(MapToAskDoorDto).ToList();
         }
 
-        public async Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime date)
+        public async Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime dt)
         {
             var query = _emergDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot, x => x.Issue)
-                .Where(x => x.CreateTime.Date == date && x.ApprovalTime.HasValue && !x.ProcessTime.HasValue);
+                .Where(x => x.CreateTime.Date == dt && x.ApprovalTime.HasValue && !x.ProcessTime.HasValue);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
 

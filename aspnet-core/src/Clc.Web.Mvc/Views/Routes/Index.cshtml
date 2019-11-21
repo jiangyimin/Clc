@@ -44,8 +44,8 @@
         detail.columns = [[
             { field: "workRoleName", title: "工作角色", width: 80 },
             { field: "worker", title: "人员", width: 80, formatter: $.workerFormatter },
-            { field: "altWorker", title: "替班人员", width: 80 },
-            { field: "signin", title: "签到情况", width: 80, formatter: $.altWorkerFormatter },
+            { field: "altWorker", title: "替班人员", width: 80, formatter: $.altWorkerFormatter },
+            { field: "signin", title: "签到情况", width: 80 },
             { field: "articleList", title: "物品清单", width: 280 },
         ]];
         detail.insert = abp.services.app.route.insertWorker;
@@ -70,6 +70,17 @@
         detail.update = abp.services.app.route.updateTask;
         detail.delete = abp.services.app.route.deleteTask;
         mds.details.push(detail);
+        
+        $('#workRole').combobox({
+            onChange: function (val) {
+                if (!val) return;
+                abp.services.app.field.getWorkerItemsByWorkRole(val).done(function (data) {
+                    $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
+                    $('#altWorker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
+                });
+            }
+        });
+
     </script>
 
     <script type="text/javascript">
@@ -136,17 +147,6 @@
             return url;
         }
 
-        mds.beforeEdit = function (fm, postfix, row) {
-            if (postfix == 'Worker') {
-                abp.services.app.field.getWorkerItemsByWorkRole(row.workRoleId).done(function (data) {
-                    $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
-                    $('#altWorker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
-                    setTimeout(function() {fm.form('load', row)}, 300);
-                });
-                return true;
-            }
-            return false;
-        }
     </script>
 }
 

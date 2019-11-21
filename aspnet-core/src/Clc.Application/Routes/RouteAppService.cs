@@ -147,7 +147,7 @@ namespace Clc.Routes
         {
             int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
             // 为激活任务设置缓存
-            var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Workers).Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && x.Status != "安排");
+            var query = _routeRepository.GetAllIncluding(x => x.Vehicle, x => x.AltVehicle, x => x.Workers).Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && x.Status != "安排");
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             var lst = ObjectMapper.Map<List<RouteCacheItem>>(entities);
             if (lst.Count > 0)
@@ -476,7 +476,7 @@ namespace Clc.Routes
             var workerId = rw.AltWorkerId.HasValue ? rw.AltWorkerId.Value : rw.WorkerId;
             var worker = WorkManager.GetWorker(workerId);
 
-            dto.Signin = WorkManager.GetSigninInfo(worker.DepotId, workerId);
+            dto.Signin = WorkManager.GetSigninInfo(worker.DepotId, workerId, DateTime.Now);
 
             if (rw.Articles == null) return dto;
 
@@ -545,7 +545,7 @@ namespace Clc.Routes
             foreach (RouteWorker worker in workers)
             {
                 var w = WorkManager.GetWorker(worker.Id);
-                unSigninNames += WorkManager.GetSigninInfo(w.DepotId, w.Id) == "未签到"  ? w.Name + " " : string.Empty;
+                unSigninNames += WorkManager.GetSigninInfo(w.DepotId, w.Id, ClcUtils.GetDateTime(route.StartTime)) == "未签到"  ? w.Name + " " : string.Empty;
                 if (routeType.MustAllSignin && unSigninNames != string.Empty) 
                 {
                     return  $"未签到的人员有{unSigninNames}";

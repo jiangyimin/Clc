@@ -67,8 +67,6 @@ namespace Clc.Routes.Dto
         [StringLength(Route.MaxRemarkLength)]
         public string Remark { get; set; }
 
-        [Required]
-        public int CreateWorkerId { get; set; }
         public string CreateWorkerName { get; set; }
 
         // 实际选填的开始结束时间

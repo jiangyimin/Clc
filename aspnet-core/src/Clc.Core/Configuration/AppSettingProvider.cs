@@ -130,21 +130,21 @@ namespace Clc.Configuration
                 new SettingDefinition(
                     AppSettingNames.TimeRule.DaysChangeReadonly, 
                     "2", 
-                    new FixedLocalizableString("再次申请开门间隔(秒)"),
+                    new FixedLocalizableString("变动保留天数"),
                     scopes: SettingScopes.Tenant
                 ),
-                new SettingDefinition(
-                    AppSettingNames.TimeRule.RecheckInterval, 
-                    "0",            // 0: 不需要重新验证
-                    new FixedLocalizableString("重新验证间隔(分钟)"),
-                    scopes: SettingScopes.Tenant
-                ),
-                new SettingDefinition(
-                    AppSettingNames.TimeRule.MinSigninInterval, 
-                    "60", 
-                    new FixedLocalizableString("最小签到间隔(分钟)"),
-                    scopes: SettingScopes.Tenant
-                ),
+                //new SettingDefinition(
+                //    AppSettingNames.TimeRule.RecheckInterval, 
+                //    "0",            // 0: 不需要重新验证
+                //    new FixedLocalizableString("重新验证间隔(分钟)"),
+                //    scopes: SettingScopes.Tenant
+                //),
+                // new SettingDefinition(
+                //     AppSettingNames.TimeRule.MinSigninInterval, 
+                //     "60", 
+                //     new FixedLocalizableString("激活签到间隔(分钟)"),
+                //     scopes: SettingScopes.Tenant
+                // ),
                 new SettingDefinition(
                     AppSettingNames.TimeRule.AskOpenInterval, 
                     "120", 

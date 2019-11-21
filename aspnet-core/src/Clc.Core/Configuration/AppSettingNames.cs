@@ -34,9 +34,9 @@
         {
             public const string DaysChangeReadonly = "TimeRule.DaysChangeReadonly";
             public const string RecheckInterval = "TimeRule.RecheckInterval";
-            public const string MinSigninInterval = "TimeRule.MinSigninInterval";
-            public const string AskOpenInterval = "Rule.AskOpenInterval";
-            public const string AskOpenPeriod = "Rule.AskOpenPeriod";  
+            // public const string MinSigninInterval = "TimeRule.MinSigninInterval";
+            public const string AskOpenInterval = "TimeRule.AskOpenInterval";
+            public const string AskOpenPeriod = "TimeRule.AskOpenPeriod";  
         }
 
     }

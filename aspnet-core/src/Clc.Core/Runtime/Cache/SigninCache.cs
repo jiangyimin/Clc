@@ -21,14 +21,15 @@ namespace Clc.Runtime.Cache
             _cacheManager.GetCache(CacheName).DefaultSlidingExpireTime = TimeSpan.FromHours(12);
         }
 
-        public Signin Get(int depotId, int workerId)
+        public Signin Get(int depotId, int workerId, bool isMorning)
         {
             string cacheKey = depotId.ToString() + DateTime.Now.Date.ToString();
             var list = _cacheManager.GetCache(CacheName).Get(cacheKey, () => {
-                return _signinRepository.GetAll().Where(x => x.CarryoutDate == DateTime.Now.Date && x.DepotId == depotId).ToList();
+                return _signinRepository.GetAll()
+                    .Where(x => x.CarryoutDate == DateTime.Now.Date).ToList();
             });
             
-            return list.LastOrDefault(x => x.WorkerId == workerId);
+            return list.LastOrDefault(x => x.WorkerId == workerId && ClcUtils.IsMorning(x.SigninTime) == isMorning);
         }
     }
 }

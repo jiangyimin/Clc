@@ -62,6 +62,13 @@ namespace Clc.Runtime
                 return new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, int.Parse(time.Substring(0, 2)), int.Parse(time.Substring(3, 2)), 0);
         }
 
+        public static bool IsMorning(DateTime time)
+        {
+            DateTime today = DateTime.Now;
+            DateTime norn = new DateTime(today.Year, today.Month, today.Day, 12, 0, 0);
+            return time <= norn;
+        }
+        
         public static bool NowInTimeZone(string start, string end)
         {
             if (DateTime.Now >= ClcUtils.GetDateTime(start) && DateTime.Now <= ClcUtils.GetDateTime(end))

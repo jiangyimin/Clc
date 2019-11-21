@@ -33,7 +33,7 @@ namespace Clc.Web.Controllers
 
         public ActionResult Index(AffairWorkDto affair)
         {
-            if (!affair.Alt && affair.AffairId == 0) {
+            if (!affair.AltCheck && affair.AffairId == 0) {
                 var vm = _workAppService.FindDutyAffair();
                 return View(vm);
             }

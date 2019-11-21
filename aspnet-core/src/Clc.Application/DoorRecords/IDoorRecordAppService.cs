@@ -14,8 +14,8 @@ namespace Clc.DoorRecords
         Task<PagedResultDto<AskDoorRecordDto>> GetAskDoorRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input);
         Task<PagedResultDto<EmergDoorRecordDto>> GetEmergDoorRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input);
 
-        Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime date);
-        Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime date);
+        Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime dt);
+        Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime dt);
 
         
         Task CarryoutAskOpen(int id, int monitorAffairId);

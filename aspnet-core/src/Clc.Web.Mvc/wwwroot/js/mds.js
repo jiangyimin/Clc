@@ -24,7 +24,6 @@ var mds = mds || {};
     mds.initfunction = function () {};
     mds.onselectfunction = function() {};
     mds.customerSetAddValue = function() {};
-    mds.beforeEdit = function() { return false };
     mds.getUrl = function() {};
 
     mds.reload = function (postfix) {
@@ -87,7 +86,7 @@ var mds = mds || {};
         var $fm = $('#fm' + postfix);
         var row = $('#dg' + postfix).datagrid('getRows')[index]; 
         
-        if (!mds.beforeEdit($fm, postfix, row)) $fm.form('load', row);
+        $fm.form('load', row);
 
         if (postfix !== '') {           // 处理子表的父id
             var masterDom = 'input[name="' + mds.masterInputName + '"]';
