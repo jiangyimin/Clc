@@ -45,7 +45,6 @@ namespace Clc.Affairs
         [Required]
         [StringLength(ClcConsts.TimeLength)]
         public string EndTime { get; set; }
-        // public string IsTomorrow { get; set; }
 
         [StringLength(AffairTask.MaxRemarkLength)]
         public string Remark { get; set; }

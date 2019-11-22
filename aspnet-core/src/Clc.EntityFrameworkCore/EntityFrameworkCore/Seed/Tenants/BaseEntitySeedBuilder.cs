@@ -27,16 +27,16 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             CreateWorkRoles();
 
             // Fields
-            CreateDepots();
-            CreateWorkplaces();
-            CreateWorkers();
-            CreateVehicles();
-            CreateArticles();
+            //CreateDepots();
+            //CreateWorkplaces();
+            //CreateWorkers();
+            //CreateVehicles();
+            //CreateArticles();
 
             // Clients
             CreateCustomers();
-            CreateOutlets();
-            CreateBoxes();
+            //CreateOutlets();
+            //CreateBoxes();
         }
 
         private void CreateArticleTypes()
@@ -240,8 +240,8 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
                 _context.Customers.AddRange(new Customer[] {
                     new Customer { TenantId = _tenantId, Cn = "01", Name = "工商银行" },
                     new Customer { TenantId = _tenantId, Cn = "02", Name = "农业银行" },
-                    new Customer { TenantId = _tenantId, Cn = "03", Name = "中国银行" },
-                    new Customer { TenantId = _tenantId, Cn = "11", Name = "运城商业银行" },
+                    //new Customer { TenantId = _tenantId, Cn = "03", Name = "中国银行" },
+                    //new Customer { TenantId = _tenantId, Cn = "11", Name = "运城商业银行" },
                 });
                 _context.SaveChanges();
             }

@@ -1650,8 +1650,6 @@ namespace Clc.Migrations
 
                     b.Property<int>("AskOpenDeadline");
 
-                    b.Property<int>("AskOpenLead");
-
                     b.Property<string>("AskOpenStyle")
                         .HasMaxLength(20);
 
@@ -1662,6 +1660,8 @@ namespace Clc.Migrations
 
                     b.Property<string>("DoorIp")
                         .HasMaxLength(20);
+
+                    b.Property<int>("DutyLead");
 
                     b.Property<string>("EmergPassword")
                         .HasMaxLength(8);

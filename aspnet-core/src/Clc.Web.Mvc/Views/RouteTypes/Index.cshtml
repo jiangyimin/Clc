@@ -14,7 +14,6 @@
             { field: "lendArticleLead", title: "领物提前时间(分钟)", width: 80 },
             { field: "lendArticleDeadline", title: "领物截止时间(分钟)", width: 80 },
             { field: "activateLead", title: "激活提前时间(分钟)", width: 80 },
-            { field: "mustAllSignin", title: "激活必须签到", width: 80 },
         ]];
     </script>
 }
@@ -43,10 +42,6 @@
             <tr>
                 <th><label for="activateLead">激活提前时间：</label></th>
                 <td><input name="activateLead" class="easyui-numberbox" style="width: 100%"></td>
-            </tr>
-            <tr>
-                <th><label for="mustAllSignin">激活必须签到：</label></th>
-                <td><input name="mustAllSignin" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
             </tr>
         </table>
     </form>

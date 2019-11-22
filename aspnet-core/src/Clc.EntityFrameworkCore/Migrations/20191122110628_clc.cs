@@ -615,7 +615,7 @@ namespace Clc.Migrations
                     CameraIp = table.Column<string>(maxLength: 20, nullable: true),
                     MinDuration = table.Column<int>(nullable: false),
                     MaxDuration = table.Column<int>(nullable: false),
-                    AskOpenLead = table.Column<int>(nullable: false),
+                    DutyLead = table.Column<int>(nullable: false),
                     AskOpenDeadline = table.Column<int>(nullable: false),
                     AskOpenStyle = table.Column<string>(maxLength: 20, nullable: true),
                     EmergPassword = table.Column<string>(maxLength: 8, nullable: true)

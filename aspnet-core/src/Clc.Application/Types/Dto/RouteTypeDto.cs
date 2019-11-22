@@ -35,10 +35,5 @@ namespace Clc.Types.Dto
         /// 激活提前时间（分钟）
         /// </summary>
         public int ActivateLead { get; set; }
-        
-        /// <summary>
-        /// 激活必须全部签到
-        /// </summary>
-        public string MustAllSignin { get; set; }
     }
 }

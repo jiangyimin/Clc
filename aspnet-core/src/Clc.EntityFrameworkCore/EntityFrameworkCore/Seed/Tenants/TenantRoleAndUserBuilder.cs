@@ -29,11 +29,11 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
 
             // Hrm RoleAndUser
             permissions = new string[] { PermissionNames.Pages_Hrm };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Hrm, permissions, false, StaticRoleNames.Tenants.Hrm, User.UserDefaultPassword);
+            CreateRole(StaticRoleNames.Tenants.Hrm, permissions, true);
 
             // Hrq RoleAndUser
             permissions = new string[] { PermissionNames.Pages_Hrq };
-            CreateRoleAndUser(StaticRoleNames.Tenants.Hrq, permissions, false, StaticRoleNames.Tenants.Hrq, User.UserDefaultPassword);
+            CreateRole(StaticRoleNames.Tenants.Hrq, permissions, true);
 
             //
             // Worker Roles

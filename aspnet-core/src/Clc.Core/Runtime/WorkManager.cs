@@ -340,7 +340,7 @@ namespace Clc.Works
             foreach (var affair in _affairCache.Get(DateTime.Now.Date, depotId))
             {
                 var wp = _workplaceCache[affair.WorkplaceId];
-                if (!ClcUtils.NowInTimeZone(affair.StartTime, wp.AskOpenLead, affair.EndTime)) continue;
+                if (!ClcUtils.NowInTimeZone(affair.StartTime, wp.DutyLead, affair.EndTime)) continue;
                 // me in worker
                 foreach (var worker in affair.Workers)
                     if (worker.WorkerId == workerId) return affair;
@@ -355,7 +355,7 @@ namespace Clc.Works
             var list = _affairCache.Get(DateTime.Now.Date, depotId);
             foreach (var affair in list)
             {
-                if (!ClcUtils.NowInTimeZone(affair.StartTime, wp.AskOpenLead, affair.EndTime)) continue;
+                if (!ClcUtils.NowInTimeZone(affair.StartTime, wp.DutyLead, affair.EndTime)) continue;
                 // 金库
                 if (affair.WorkplaceId == wp.Id) return affair;
             }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clc.Migrations
 {
     [DbContext(typeof(ClcDbContext))]
-    [Migration("20191122025054_clc")]
+    [Migration("20191122110628_clc")]
     partial class clc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1652,8 +1652,6 @@ namespace Clc.Migrations
 
                     b.Property<int>("AskOpenDeadline");
 
-                    b.Property<int>("AskOpenLead");
-
                     b.Property<string>("AskOpenStyle")
                         .HasMaxLength(20);
 
@@ -1664,6 +1662,8 @@ namespace Clc.Migrations
 
                     b.Property<string>("DoorIp")
                         .HasMaxLength(20);
+
+                    b.Property<int>("DutyLead");
 
                     b.Property<string>("EmergPassword")
                         .HasMaxLength(8);
