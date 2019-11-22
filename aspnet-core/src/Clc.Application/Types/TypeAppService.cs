@@ -17,7 +17,7 @@ namespace Clc.Types
         private readonly IWorkRoleCache _workRoleCache;
         private readonly IWorkplaceCache _workplaceCache;
 
-        private readonly List<string>　_askOpenStyleItems = new List<string>() {"直接", "验证", "任务"};
+        private readonly List<string>　_askOpenStyleItems = new List<string>() {"直接", "验证", "线路"};
         private readonly List<string> _bindStyleItems = new List<string>() {"人", "车", "线路" };
         private readonly List<string> _sexItems = new List<string>() {"男", "女" };
         private readonly List<string> _politicalStatusItems = new List<string>() {"党员", "团员", "群众" };

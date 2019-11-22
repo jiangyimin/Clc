@@ -25,6 +25,13 @@ namespace Clc.Affairs.Dto
         public string WorkplaceAskOpenStyle { get; set; }
 
         /// <summary>
+        /// 任务说明
+        /// </summary>
+        [Required]
+        [StringLength(Affair.MaxContentLength)]
+        public string Content { get; set; }
+        
+        /// <summary>
         /// 状态（生成，活动，结束, 日结）
         /// </summary>
         [StringLength(2)]

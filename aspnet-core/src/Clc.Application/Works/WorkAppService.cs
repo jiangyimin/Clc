@@ -273,6 +273,14 @@ namespace Clc.Works
             else
                 return ret;
         }
+
+        public (bool, string) VerifyFinger(string finger, string workerCn) 
+        {
+            Worker worker = WorkManager.GetWorkerByCn(workerCn);
+            var mR = WorkManager.MatchFinger(finger, worker.Id);
+            return mR;
+        }
+
         public (bool, string) CheckinByRfid(string rfid, DateTime carryoutDate, int depotId, int affairId) 
         {
             Worker worker =  WorkManager.GetWorkerByRfid(rfid);
@@ -280,6 +288,7 @@ namespace Clc.Works
             var aw = WorkManager.GetCacheAffairWorker(carryoutDate, depotId, worker.Id);
             if (aw.Item1.Id != affairId) return (false, "一个人不能同时安排在同时段任务中");
             if (aw.Item2 == null) return (false, "此人没被安排在此任务中");
+            if (!ClcUtils.NowInTimeZone(aw.Item1.StartTime, aw.Item1.EndTime)) return (false, "没在任务时段");
             WorkManager.DoCheckin(aw.Item1, aw.Item2, worker.Id);
             return (true, "刷卡验入成功");
         }
@@ -291,6 +300,7 @@ namespace Clc.Works
 
             var aw = WorkManager.GetCacheAffairWorker(carryoutDate, depotId, workerId);
             if (aw.Item1.Id != affairId) return (false, "一个人不能同时安排在同时段任务中");
+            if (!ClcUtils.NowInTimeZone(aw.Item1.StartTime, aw.Item1.EndTime)) return (false, "没在任务时段");
             WorkManager.DoCheckin(aw.Item1, aw.Item2, workerId);
             return (true, "验入成功!" + mR.Item2);
         }

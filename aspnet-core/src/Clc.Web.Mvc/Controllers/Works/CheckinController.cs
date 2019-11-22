@@ -40,15 +40,6 @@ namespace Clc.Web.Controllers
             return View(affair);
         }
 
-        public ActionResult GetPhoto(string id)
-        {
-            Worker w = WorkManager.GetWorkerByRfid(id);
-            if (w != null && w.Photo != null)
-                return File(w.Photo, "image/jpg");
-
-            return File(new byte[0], "image/jpg");
-        }
-
         [HttpPost]
         [DontWrapResult]
         public JsonResult AskOpenByRfid(string rfid, int affairId, int doorId)
@@ -62,7 +53,7 @@ namespace Clc.Web.Controllers
             {
                 var depotName = WorkManager.GetDepot(worker.DepotId).Name;
                 var wpName = WorkManager.GetWorkplace(doorId).Name;
-                _context.Clients.All.SendAsync("getMessage", "askOpenDoor " + string.Format("你有来自{0}({1})的常规申请", wpName, depotName));
+                _context.Clients.All.SendAsync("getMessage", "askOpenDoor " + string.Format("你有来自{0}({1})的任务开门申请", wpName, depotName));
             }
 
             return Json(new { success = ret.Item1, message = ret.Item2, worker = new { name = string.Format("{0} {1}", worker.Cn, worker.Name) }});
@@ -73,6 +64,13 @@ namespace Clc.Web.Controllers
         public async Task<JsonResult> GridDataWorker(int id)
         {
             var output = await _affairAppService.GetAffairWorkersAsync(id);
+            if (output != null)
+            {
+                foreach (var w in output) {
+                    var photo = WorkManager.GetWorker(w.WorkerId).Photo;
+                    if (photo != null) w.PhotoString = Convert.ToBase64String(photo);
+                }
+            }
             return Json(new { rows = output });
         }
 

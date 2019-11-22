@@ -20,6 +20,7 @@ namespace Clc.Affairs
         public int WorkplaceId { get; set; }
         // public Workplace Workplace { get; set; }
 
+        public string Content { get; set; }
 
         /// <summary>
         /// 开始时间

@@ -858,6 +858,10 @@ namespace Clc.Migrations
 
                     b.Property<DateTime>("CarryoutDate");
 
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(30);
+
                     b.Property<DateTime>("CreateTime");
 
                     b.Property<int>("CreateWorkerId");
@@ -932,6 +936,10 @@ namespace Clc.Migrations
 
                     b.Property<int>("AffairId");
 
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(30);
+
                     b.Property<DateTime>("CreateTime");
 
                     b.Property<int>("CreateWorkerId");
@@ -940,12 +948,16 @@ namespace Clc.Migrations
                         .IsRequired()
                         .HasMaxLength(5);
 
+                    b.Property<DateTime?>("EndTimeActual");
+
                     b.Property<string>("Remark")
                         .HasMaxLength(50);
 
                     b.Property<string>("StartTime")
                         .IsRequired()
                         .HasMaxLength(5);
+
+                    b.Property<DateTime?>("StartTimeActual");
 
                     b.Property<int>("TenantId");
 
@@ -2395,8 +2407,6 @@ namespace Clc.Migrations
                     b.Property<int>("LendArticleDeadline");
 
                     b.Property<int>("LendArticleLead");
-
-                    b.Property<bool>("MustAllSignin");
 
                     b.Property<string>("Name")
                         .IsRequired()

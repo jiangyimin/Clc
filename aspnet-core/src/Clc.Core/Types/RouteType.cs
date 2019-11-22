@@ -48,7 +48,7 @@ namespace Clc.Types
         /// <summary>
         /// 激活必须全部签到
         /// </summary>
-        public bool MustAllSignin { get; set; }
+        // public bool MustAllSignin { get; set; }
 
     }
 }

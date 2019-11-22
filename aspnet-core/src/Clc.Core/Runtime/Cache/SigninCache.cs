@@ -29,7 +29,8 @@ namespace Clc.Runtime.Cache
                     .Where(x => x.CarryoutDate == DateTime.Now.Date).ToList();
             });
             
-            return list.LastOrDefault(x => x.WorkerId == workerId && ClcUtils.IsMorning(x.SigninTime) == isMorning);
+            var ret = list.LastOrDefault(x => x.WorkerId == workerId && ClcUtils.IsMorning(x.SigninTime) == isMorning);
+            return ret;
         }
     }
 }

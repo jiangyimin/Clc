@@ -27,6 +27,7 @@ namespace Clc.Web.Controllers
                 Today = affair.Today,
                 DepotId = affair.DepotId,
                 AffairId = affair.AffairId,
+                Content = affair.Content,
                 WorkplaceName = affair.WorkplaceName,
                 StartTime = affair.StartTime,
                 EndTIme = affair.EndTime

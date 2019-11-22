@@ -54,6 +54,14 @@
              chatHub.invoke('sendMessage', "Hi everybody, I'm connected to the chat!"); // Send a message to the server
              abp.notify.info("与实时推送服务连接成功");
          });
+
+        // for dlgActivate
+        $("#dlgActivate").dialog({
+            onClose: function (item) {
+                verifyAction = '';
+            }
+        });
+         
     });
 
     function addTab(title, url, icon) {
@@ -205,15 +213,16 @@ function EscKeyUp() {
     if (meRoleName == 'system') return;
     if( event && event.keyCode === 27) {
         $('#dlgUnlock').dialog('open');
-        $('#password').next('span').find('input').focus();  //.textbox-txt
+        $('#fmUnlock').find('input[name="password"]').next('span').find('input').focus();
     }
 }
 
 function verifyUnlockPassword() {
-    var pwd = $('#password').textbox('getValue');
+    var pwd = $('#fmUnlock').find('input[name="password"]').val();
+    // alert(pwd);
     abp.services.app.work.verifyUnlockPassword(pwd).done(function(result) {
         if (result == true) {
-            abp.notify.info("密码正确，解锁屏幕");
+            abp.notify.success("密码正确，解锁屏幕");
             $('#dlgUnlock').dialog('close');
             unlockScreen();
         }
@@ -245,15 +254,58 @@ function parseMessage(msg) {
         if (cmd[1] == meCn) unlockScreen();
     }
     else if (cmd[0] == "askOpenDoor") {
+        // alert(meRoleName);
         if (meRoleName.indexOf("Monitor") != -1) {
-            abp.event.trigger('askOpenDoor');
+            //abp.event.trigger('askOpenDoor');
             abp.notify.info(cmd[1]);
         }
     }
     else if (cmd[0] == "emergOpenDoor") {
         if (meRoleName.indexOf("Monitor") != -1) {
-            abp.event.trigger('emergOpenDoor');
+            // abp.event.trigger('emergOpenDoor');
             abp.notify.info(cmd[1]);
         }
+    }
+}
+
+// for Captain Verify
+var verifyAction = '';
+
+function openActivateDialog(action) {
+    verifyAction = action;
+    $('#dlgActivate').dialog('open');
+    $('#fmActivate').find('input[name="password"]').next('span').find('input').focus();
+}
+
+function closeActivateDialog() {
+    $('#dlgActivate').dialog('close');
+}
+
+function verifyPasswordAndTrigger()
+{
+    var pwd = $('#fmActivate').find('input[name="password"]').val();
+    abp.services.app.work.verifyUnlockPassword(pwd).done(function(result) {
+        if (result == true) {
+            abp.notify.success("密码验证正确");
+            abp.event.trigger('verifyDone', verifyAction);
+            closeActivateDialog();
+        }
+        else
+            abp.notify.error("密码错误");
+    });    
+}
+
+function verifyFingerAndTrigger()
+{
+    abp.notify.info("请把指纹放到指纹仪上");
+    var finger = getFingerCode();
+    if (finger != '') {
+        abp.services.app.work.verifyFinger(finger, meCn).done(function(ret) {
+            abp.notify.info(ret.item2);
+            if (ret.item1) {
+                abp.event.trigger('verifyDone', verifyAction);
+                closeActivateDialog();
+            };
+        });
     }
 }

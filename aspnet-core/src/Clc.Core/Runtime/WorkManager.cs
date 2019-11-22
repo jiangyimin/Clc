@@ -339,7 +339,8 @@ namespace Clc.Works
 
             foreach (var affair in _affairCache.Get(DateTime.Now.Date, depotId))
             {
-                if (!ClcUtils.NowInTimeZone(affair.StartTime, affair.EndTime)) continue;
+                var wp = _workplaceCache[affair.WorkplaceId];
+                if (!ClcUtils.NowInTimeZone(affair.StartTime, wp.AskOpenLead, affair.EndTime)) continue;
                 // me in worker
                 foreach (var worker in affair.Workers)
                     if (worker.WorkerId == workerId) return affair;
@@ -354,7 +355,7 @@ namespace Clc.Works
             var list = _affairCache.Get(DateTime.Now.Date, depotId);
             foreach (var affair in list)
             {
-                if (!ClcUtils.NowInTimeZone(affair.StartTime, affair.EndTime)) continue;
+                if (!ClcUtils.NowInTimeZone(affair.StartTime, wp.AskOpenLead, affair.EndTime)) continue;
                 // 金库
                 if (affair.WorkplaceId == wp.Id) return affair;
             }
@@ -431,17 +432,28 @@ namespace Clc.Works
             if (aw.Item1 != null && aw.Item2 == null) return (false, "你还没安排在激活的任务中");
             if (aw.Item1.Id != affairId) return (false, "不允许同时安排在多个任务中");
 
+
             // judge workplace is vault
             var affairWp = _workplaceCache[aw.Item1.WorkplaceId];
             var isVault = affairWp.Name.Contains("金库") || aw.Item1.WorkplaceId != workplaceId;
-            if (isVault && !_workRoleCache[aw.Item2.WorkRoleId].Duties.Contains("金库")) 
+
+            var dts = _workRoleCache[aw.Item2.WorkRoleId].Duties;
+            if ( isVault && (string.IsNullOrEmpty(dts) || !dts.Contains("金库")) ) 
                 return (false, "申请人的工作角色需要有金库职责");
-            
+                       
             var wpOpen = _workplaceCache[workplaceId];
             if (string.IsNullOrEmpty(wpOpen.AskOpenStyle)) return (false, "不需要申请开门");
             if (wpOpen.AskOpenStyle == "验证" && NeedCheckin(aw.Item2.CheckinTime)) return (false, "需要先验入");
-            if (wpOpen.AskOpenStyle == "任务") return (false, "押运任务开门方式");
+            if (wpOpen.AskOpenStyle == "线路") return (false, "线路领物开门方式");
 
+            // judge timezone
+            if (wpOpen.AskOpenDeadline == 0) {
+                if (!ClcUtils.NowInTimeZone(aw.Item1.StartTime, aw.Item1.EndTime)) return (false, "不在申请开门时段");
+            }
+            else {
+                if (!ClcUtils.NowInTimeZone(aw.Item1.StartTime, 0, wpOpen.AskOpenDeadline)) return (false, "不在申请开门时段");
+            }
+                
             // check ask interval
             int interval = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.AskOpenInterval));
             if (aw.Item2.LastAskDoor.HasValue && (DateTime.Now - aw.Item2.LastAskDoor.Value).TotalSeconds < interval)
@@ -452,7 +464,7 @@ namespace Clc.Works
             // check if allWorker is Asked
             DateTime min = DateTime.Now; 
             DateTime max = DateTime.Now; 
-            int count = 0, vvCount = 0;
+            int nvcount = 0, vvCount = 0;
             string askWorkers = null;
             foreach (AffairWorkerCacheItem aworker in aw.Item1.Workers)
             {
@@ -462,7 +474,7 @@ namespace Clc.Works
                     continue;             
 
                 if (!aworker.LastAskDoor.HasValue) {
-                    count++; continue;                    
+                    nvcount++; continue;                    
                 }
 
                 vvCount++;
@@ -475,10 +487,10 @@ namespace Clc.Works
             int minNum = int.Parse(SettingManager.GetSettingValue(AppSettingNames.Rule.MinWorkersOnDuty));
             int period = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.AskOpenPeriod));
 
-            if (isVault && count == vvCount && (max - min).TotalSeconds <= period)
+            if (isVault && nvcount == 0 && (max - min).TotalSeconds <= period)
             {
                 SetAskDoorRecord(wpOpen.Id, affairId, askWorkers, tenantId);
-                return (true, "已到金库开门要求");
+                return (true, "你的金库开门申请已通知监控中心，请等待开门");
             }
             if (!isVault && vvCount >= minNum && (max - min).TotalSeconds <= period)
             {
@@ -511,10 +523,17 @@ namespace Clc.Works
         {
             int score1 = 0, score2 = 0;
             var dst = StringToByte(dbFinger, 0);
-            int ret = FingerDll.UserMatch(src, dst, 3, ref score1);
-            dst = StringToByte(dbFinger, 1);
-            ret = FingerDll.UserMatch(src, dst, 3, ref score2);
-            score = Math.Max(score1, score2);
+            int ret = 0;
+            try {
+                ret = FingerDll.UserMatch(src, dst, 3, ref score1);
+                dst = StringToByte(dbFinger, 1);
+                ret = FingerDll.UserMatch(src, dst, 3, ref score2);
+                score = Math.Max(score1, score2);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+            }
             return ret;
         }
 

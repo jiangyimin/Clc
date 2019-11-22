@@ -91,10 +91,10 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.Affairs.Count() == 0)
             {
                 _context.Affairs.AddRange(new Affair[] {
-                    new Affair { TenantId = _tenantId, DepotId = 1, CarryoutDate = dd, Status = "安排", WorkplaceId = 1, StartTime = "08:01", EndTime="21:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
-                    new Affair { TenantId = _tenantId, DepotId = 2, CarryoutDate = dd, Status = "安排", WorkplaceId = 2, StartTime = "08:30", EndTime="21:00", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
-                    new Affair { TenantId = _tenantId, DepotId = 2, CarryoutDate = dd, Status = "安排", WorkplaceId = 3, StartTime = "06:30", EndTime="21:00", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
-                    new Affair { TenantId = _tenantId, DepotId = 4, CarryoutDate = dd, Status = "安排", WorkplaceId = 5, StartTime = "08:25", EndTime="23:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
+                    new Affair { TenantId = _tenantId, DepotId = 1, CarryoutDate = dd, Status = "安排", Content = "早班", WorkplaceId = 1, StartTime = "08:01", EndTime="21:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
+                    new Affair { TenantId = _tenantId, DepotId = 2, CarryoutDate = dd, Status = "安排", Content = "早班一", WorkplaceId = 2, StartTime = "08:30", EndTime="21:00", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
+                    new Affair { TenantId = _tenantId, DepotId = 2, CarryoutDate = dd, Status = "安排", Content = "早班二", WorkplaceId = 3, StartTime = "06:30", EndTime="21:00", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
+                    new Affair { TenantId = _tenantId, DepotId = 4, CarryoutDate = dd, Status = "安排", Content = "班", WorkplaceId = 5, StartTime = "08:25", EndTime="23:30", CreateWorkerId = 1, CreateTime = DateTime.Now }, 
                 }); 
                 _context.SaveChanges();
             }
@@ -105,18 +105,18 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             if (_context.AffairWorkers.Count() == 0)
             {
                 _context.AffairWorkers.AddRange(new AffairWorker[] {
-                    new AffairWorker { TenantId = _tenantId, AffairId = 1, WorkRoleId = 8, WorkerId = 3 }, 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 1, WorkRoleId = 8, WorkerId = 5 }, 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 1, WorkRoleId = 8, WorkerId = 7 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 1, WorkRoleId = 7, WorkerId = 3 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 1, WorkRoleId = 7, WorkerId = 5 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 1, WorkRoleId = 7, WorkerId = 7 }, 
 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 2, WorkRoleId = 6, WorkerId = 18 }, 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 2, WorkRoleId = 6, WorkerId = 19 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 2, WorkRoleId = 5, WorkerId = 18 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 2, WorkRoleId = 5, WorkerId = 19 }, 
 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 3, WorkRoleId = 7, WorkerId = 20 }, 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 3, WorkRoleId = 7, WorkerId = 21 },
+                    new AffairWorker { TenantId = _tenantId, AffairId = 3, WorkRoleId = 6, WorkerId = 20 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 3, WorkRoleId = 6, WorkerId = 21 },
 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 4, WorkRoleId = 9, WorkerId = 24 }, 
-                    new AffairWorker { TenantId = _tenantId, AffairId = 4, WorkRoleId = 9, WorkerId = 25 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 4, WorkRoleId = 8, WorkerId = 24 }, 
+                    new AffairWorker { TenantId = _tenantId, AffairId = 4, WorkRoleId = 8, WorkerId = 25 }, 
                 }); 
                 _context.SaveChanges();
             }

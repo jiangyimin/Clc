@@ -23,10 +23,13 @@ namespace Clc.Affairs
         public string WorkerCn { get; set; }
         public string WorkerName { get; set; }
 
+
         [Required]
         public int WorkRoleId { get; set; }
         public string WorkRoleName { get; set; }
         public string WorkRoleDuties { get; set; }
+        
+        public string PhotoString { get; set; }
         
         public bool OnDuty { get; set; }
 

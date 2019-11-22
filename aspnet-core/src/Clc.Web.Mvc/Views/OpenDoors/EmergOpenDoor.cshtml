@@ -35,10 +35,9 @@
                 $('#dlCard').datalist('loadData', work.askWorkers);
                 
                 if (work.askWorkers.length == work.me.rfids.length) {
-                    // ws && ws.send(doorIp);
                     abp.notify.info('已发送开门命令到对应的门禁', '', { positionClass : 'toast-top-center' });
+                    ws && ws.send(doorIp);
 
-                    // udpate doorRecord
                     if (status == 'emerg') {
                         // udpate emergDoorRecord
                         abp.services.app.doorRecord.carryoutEmergOpen(emergDoorRecordId, work.me.affairId).done(function() {

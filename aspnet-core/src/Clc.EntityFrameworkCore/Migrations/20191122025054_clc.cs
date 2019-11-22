@@ -399,8 +399,7 @@ namespace Clc.Migrations
                     WorkRoles = table.Column<string>(maxLength: 50, nullable: false),
                     LendArticleLead = table.Column<int>(nullable: false),
                     LendArticleDeadline = table.Column<int>(nullable: false),
-                    ActivateLead = table.Column<int>(nullable: false),
-                    MustAllSignin = table.Column<bool>(nullable: false)
+                    ActivateLead = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -810,6 +809,7 @@ namespace Clc.Migrations
                     DepotId = table.Column<int>(nullable: false),
                     CarryoutDate = table.Column<DateTime>(nullable: false),
                     WorkplaceId = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(maxLength: 30, nullable: false),
                     Status = table.Column<string>(maxLength: 2, nullable: false),
                     StartTime = table.Column<string>(maxLength: 5, nullable: false),
                     EndTime = table.Column<string>(maxLength: 5, nullable: false),
@@ -1367,11 +1367,14 @@ namespace Clc.Migrations
                     TenantId = table.Column<int>(nullable: false),
                     AffairId = table.Column<int>(nullable: false),
                     WorkplaceId = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(maxLength: 30, nullable: false),
                     StartTime = table.Column<string>(maxLength: 5, nullable: false),
                     EndTime = table.Column<string>(maxLength: 5, nullable: false),
                     Remark = table.Column<string>(maxLength: 50, nullable: true),
                     CreateWorkerId = table.Column<int>(nullable: false),
-                    CreateTime = table.Column<DateTime>(nullable: false)
+                    CreateTime = table.Column<DateTime>(nullable: false),
+                    StartTimeActual = table.Column<DateTime>(nullable: true),
+                    EndTimeActual = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {

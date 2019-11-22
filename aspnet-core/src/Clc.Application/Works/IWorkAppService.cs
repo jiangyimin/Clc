@@ -45,6 +45,7 @@ namespace Clc.Works
         (bool, string) SigninByRfid(string rfid);
         (bool, string) SigninByFinger(string finger);
         
+        (bool, string) VerifyFinger(string finger, string workerCn);
         
         (bool, string) CheckinByFinger(string finger, int workerId, DateTime carryoutDate, int depotId, int affairId);
         (bool, string) CheckinByRfid(string rfid, DateTime carryoutDate, int depotId, int affairId);

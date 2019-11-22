@@ -541,12 +541,13 @@ namespace Clc.Routes
             }
 
             // check signin
+            bool mustAllSignin = WorkManager.GetDepot(route.DepotId).ActiveRouteNeedCheckin;
             string unSigninNames = string.Empty;
-            foreach (RouteWorker worker in workers)
+            foreach (RouteWorker rw in workers)
             {
-                var w = WorkManager.GetWorker(worker.Id);
+                var w = WorkManager.GetWorker(rw.WorkerId);
                 unSigninNames += WorkManager.GetSigninInfo(w.DepotId, w.Id, ClcUtils.GetDateTime(route.StartTime)) == "未签到"  ? w.Name + " " : string.Empty;
-                if (routeType.MustAllSignin && unSigninNames != string.Empty) 
+                if (mustAllSignin && unSigninNames != string.Empty) 
                 {
                     return  $"未签到的人员有{unSigninNames}";
                 }

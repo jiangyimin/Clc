@@ -26,6 +26,7 @@
         });
 
         function scanFinger() {
+            abp.notify.info('请将指纹放到指纹仪上');
             var finger = window.parent.getFingerCode();
             if (finger != '') {
                 abp.services.app.work.signinByFinger(finger).done(function(ret) {

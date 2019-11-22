@@ -26,6 +26,13 @@ namespace Clc.Affairs
         public string WorkplaceName { get; set; }
 
         /// <summary>
+        /// 任务说明
+        /// </summary>
+        [Required]
+        [StringLength(AffairTask.MaxContentLength)]
+        public string Content { get; set; }
+        
+        /// <summary>
         /// 开始时间
         /// </summary>
         [Required]
@@ -48,6 +55,10 @@ namespace Clc.Affairs
         public string CreateWorkerName { get; set; }
         public DateTime CreateTime { get; set; }
 
+        // 实际选填的开始结束时间
+        public DateTime? StartTimeActual { get; set; }
+        public DateTime? EndTimeActual { get; set; }
+        
         // only for mds.js 
         public string Postfix { get; } = "Task";
 

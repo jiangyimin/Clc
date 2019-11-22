@@ -32,6 +32,7 @@ namespace Clc.Affairs
         Task<List<AffairTaskDto>> GetAffairTasksAsync(int id, string sorting);
         Task<AffairTaskDto> InsertTask(AffairTaskDto input);
         Task<AffairTaskDto> UpdateTask(AffairTaskDto input);
+        Task SetTaskTime(int id, bool isStart);
         Task DeleteTask(int id);
 
         Task<List<AffairEventDto>> GetAffairEventsAsync(int id);

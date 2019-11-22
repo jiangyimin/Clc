@@ -1,3 +1,4 @@
+@using Clc.Routes
 @section Scripts
 {
     <environment names="Development">
@@ -203,7 +204,7 @@
             <input name="createTime" type="hidden">
             <tr>
                 <th><Label for="routeName">线路名:</Label></th>
-                <td><input name="routeName" class="easyui-textbox" style="width: 100%"></td>
+                <td><input name="routeName" class="easyui-textbox" data-options="required: true, validType:'length[1, @Route.MaxNameLength]'"style="width: 100%"></td>
             </tr>
             <tr>
                 <th><Label for="routeTypeId">押运类型:</Label></th>

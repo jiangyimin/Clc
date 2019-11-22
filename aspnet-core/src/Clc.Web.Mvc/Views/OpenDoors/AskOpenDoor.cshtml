@@ -35,10 +35,10 @@
                 $('#dlCard').datalist('loadData', work.askWorkers);
                 
                 if (work.askWorkers.length == work.me.rfids.length) {
-                    // ws && ws.send(doorIp);
                     abp.notify.success('已发送开门命令到对应的门禁', '', { positionClass : 'toast-top-center' });
+                    ws && ws.send(doorIp);
+                    
                     // udpate askDoorRecord
-
                     abp.services.app.doorRecord.carryoutAskOpen(askDoorRecordId, work.me.affairId).done(function() {
                         $('#dg').datagrid('reload');
                         $('#dlg').dialog('close');

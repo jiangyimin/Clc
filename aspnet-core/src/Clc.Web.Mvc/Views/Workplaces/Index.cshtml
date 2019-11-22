@@ -17,7 +17,7 @@
             { field: "maxDuration", title: "最长班次小时", width: 80 },
             { field: "doorIp", title: "门禁IP地址", width: 80 },
             { field: "cameraIp", title: "视频IP地址", width: 80 },
-            // { field: "askOpenLead", title: "申请开门提前(分钟)", width: 80 },
+            { field: "askOpenLead", title: "当班查询提前时间(分钟)", width: 80 },
             { field: "askOpenDeadline", title: "申请开门截止(分钟)", width: 80 },
             { field: "askOpenStyle", title: "申请开门方式", width: 80 },
         ]];
@@ -115,10 +115,10 @@
                 <th><label for="cameraIp">视频IP地址: </label></th>
                 <td><input name="cameraIp" class="easyui-textbox" data-options="validType:'length[8, @Workplace.IpAddressLength]'" style="width: 100%"></td>
             </tr>
-            <!-- <tr>
-                <th><label for="askOpenLead">申请开门提前时间: </label></th>
+            <tr>
+                <th><label for="askOpenLead">当班查询提前时间: </label></th>
                 <td><input name="askOpenLead" class="easyui-numberbox" data-options="required: true" style="width: 100%"></td>
-            </tr> -->
+            </tr>
             <tr>
                 <th><label for="askOpenDeadline">申请开门截止时间: </label></th>
                 <td><input name="askOpenDeadline" class="easyui-numberbox" data-options="required: true" style="width: 100%"></td>

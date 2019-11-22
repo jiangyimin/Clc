@@ -110,7 +110,7 @@
         <table class="edit-tbl">
             <tr>
                 <th><label for="password">解屏密码：</label></th>
-                <td><input id="password" name="password" class="easyui-textbox" data-options="required:true" style="width: 100%"></td>
+                <td><input name="password" class="easyui-textbox" data-options="required:true" style="width: 100%"></td>
             </tr>
         </table>
     </form>
@@ -119,4 +119,20 @@
 	<a href="#" class="easyui-linkbutton" plain="true" onclick="verifyUnlockPassword()">确定</a>
 </div>
 
+@*激活Dialog*@
+<div id="dlgActivate" class="easyui-dialog" buttons="#dlgActivate-buttons" title="激活" closed="true" modal="true" style="width:360px;">
+    <form id="fmActivate" method="post" novalidate>
+        <table class="edit-tbl">
+           <tr>
+                <th><label for="password">密码：</label></th>
+                <td><input name="password" class="easyui-textbox" data-options="required:true, validType:'length[5,8]'" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dlgActivate-buttons">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-man" onclick="verifyFingerAndTrigger()">指纹验证</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-lock" onclick="verifyPasswordAndTrigger()">密码验证</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlgActivate').dialog('close')">取消</a>
+</div>
 

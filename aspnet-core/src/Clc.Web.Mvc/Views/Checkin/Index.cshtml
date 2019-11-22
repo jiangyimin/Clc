@@ -13,12 +13,9 @@
 
     <script type="text/javascript">
         var allowCardWhenCheckin = true;
-        var status = '';
+        var status = '';        // '' 为 checkin
         var vdoorId = 0;
 
-        function operator (val, row, index) {
-            return '<a href="javascript:void(0)" onclick="scanFinger(' + index + ')">指纹验入</a>';
-        };
 
         function scanFinger(index) {
             abp.notify.info('请将指纹放到指纹仪上');
@@ -33,6 +30,28 @@
             }
         };
 
+        function askOpenTask(index) {
+            var row = $('#dgTask').datagrid('getRows')[index];
+
+            vdoorId = row.workplaceId;
+            status = 'askTask';
+            $('#dlgAsk').dialog('open');
+            abp.services.app.affair.setTaskTime(row.id, true).done(function () {
+                $('#dg').datagrid('reload')
+            });
+        }
+
+        function endTask(index) {
+            var row = $('#dgTask').datagrid('getRows')[index];
+            abp.message.confirm('确认要结束金库任务吗?', '确认', function (r) {
+                if (r) {
+                    abp.services.app.affair.setTaskTime(row.id, false).done(function () {
+                        $('#dg').datagrid('reload')
+                    });
+                }
+            });
+        }
+
         finput.matchWorker = function(rfid) {
             if (status == '' && !allowCardWhenCheckin) {
                 abp.notify.error('系统设置为不允许刷卡验证');
@@ -42,7 +61,7 @@
             if (status == '') {
                 abp.services.app.work.checkinByRfid(rfid, work.me.today, work.me.depotId, work.me.affairId).done(function(ret) {
                     abp.notify.info(ret.item2);
-                    document.getElementById('photo').src = "Checkin/GetPhoto/" + rfid;
+                    // document.getElementById('photo').src = "Checkin/GetPhoto/" + rfid;
                     if (ret.item1) $('#dg').datagrid('reload');
                 });
             }
@@ -63,6 +82,26 @@
                 });
             }
         };
+
+        // formatter
+
+        function operator (val, row, index) {
+            return '<a href="javascript:void(0)" onclick="scanFinger(' + index + ')">指纹验入</a>';
+        };
+
+        function operatorTask (val, row, index) {
+            var htmlTag = '<a href="javascript:void(0)" onclick="askOpenTask(' + index + ')">申请</a>';
+            htmlTag = htmlTag + '<span>&nbsp;&nbsp;&nbsp;</span>';
+            htmlTag = htmlTag + '<a href="javascript:void(0)" onclick="endTask(' + index + ')">结束</a>';
+            return htmlTag;
+        };
+
+        function showPhoto(val, row, index) {
+            if (row.checkinTime && val) {
+                return '<img src="data:image/jpg;base64, ' + val + '" style="width:100px;height:100px">'
+            }
+        }
+
     </script>
 }
 
@@ -76,6 +115,10 @@
                         <input id="depotId" type="hidden" value="@Model.DepotId">
                         <input id="affairId" type="hidden" value="@Model.AffairId">
                         <input id="workplaceId" type="hidden" value="@Model.WorkplaceId">
+            			<tr>
+                			<th><label for="content">工作内容</label></th>
+                			<td><input name="content" class="easyui-textbox" readonly style="width: 100%"  value="@Model.Content"></td>
+            			</tr>
             			<tr>
                 			<th><label for="workplaceName">工作地点</label></th>
                 			<td><input name="workplaceName" class="easyui-textbox" readonly style="width: 100%"  value="@Model.WorkplaceName"></td>
@@ -108,8 +151,9 @@
                             <th field="workerCn" width="80">人员编号</th>
                             <th field="workerName" width="80">人员姓名</th>
                             <th field="workRoleName" width="80">工作角色</th>
-                            <th field="lastAskDoor" width="80" formatter="$.timeFormatter">最近申请开门时间</th>
+                            <th field="photoString" width="100" formatter="showPhoto">照片</th>
                             <th field="checkinTime" width="80" formatter="$.timeFormatter">验入时间</th>
+                            <th field="lastAskDoor" width="80" formatter="$.timeFormatter">最近申请开门时间</th>
                             <th field="checkoutTime" width="80" formatter="$.timeFormatter">检出时间</th>
                             <th field="operator" width="60" formatter="operator">操作</th>
                         </tr>
@@ -119,17 +163,18 @@
         </div>
     </div>
     <div data-options="region:'center'">
-        <div id="tbTask">
-            <a name="askOpenTask" href="javascript:void(0)" class="easyui-linkbutton" plain="true">金库任务申请开门</a>
-        </div>
-        <table id="dgTask" class="easyui-datagrid" toolbar="#tbTask"
+        <table id="dgTask" title="金库子任务" class="easyui-datagrid"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">
             <thead>
                 <tr>
+                    <th field="content" width="80">工作内容</th>
                     <th field="workplaceName" width="80">工作地点</th>
                     <th field="startTime" width="80">开始时间</th>
                     <th field="endTime" width="80">结束时间</th>
-                    <th field="workplaceAskDeadline" width="100">最晚申请开门延时(分钟)</th>
+                    <th field="startTimeActual" width="80" formatter="$.timeFormatter">工作开始时间</th>
+                    <th field="endTimeActual" width="80" formatter="$.timeFormatter">工作结束时间</th>
+                    <!-- <th field="workplaceAskDeadline" width="100">最晚申请开门延时(分钟)</th> -->
+                    <th field="operator" width="80" formatter="operatorTask">操作</th>
                 </tr>
             </thead>
         </table>

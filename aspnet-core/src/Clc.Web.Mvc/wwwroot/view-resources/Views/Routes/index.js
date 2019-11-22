@@ -22,28 +22,9 @@
         });
 
         $('#tb').children('a[name="activate"]').click(function (e) {
-            var checkedRows = $('#dg').datagrid("getChecked");
-            if (checkedRows.length === 0) {
-                abp.notify.error("请先选中要激活的线路。");
-                return;
-            }
+            window.parent.openActivateDialog('activate');
+        })
 
-            ids = [];
-            for (var i = 0; i < checkedRows.length; i++) {
-                var row = checkedRows[i];
-                if (row.status == "安排") ids.push(row.id);
-            };
-
-            abp.services.app.route.activate(ids).done(function (ret) {
-                abp.notify.success('有' + ret.item2 + '个线路被激活');
-                // Cache active routes
-                abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
-                    abp.notify.info("刚下达最新的激活线路");
-                });
-                if (ret.item1) abp.notify.error(ret.item1);
-                mds.reload('');
-            });
-        });
 
         $('#tb').children('a[name="back"]').click(function (e) {
             if (mds.masterCurrentRow === null ) {   
@@ -120,5 +101,34 @@
             });
         });
 
+        window.parent.abp.event.on('verifyDone', function(action) {
+            if (action == 'activate')
+                activate();
+        });
     });
+
+    function activate() {
+        var checkedRows = $('#dg').datagrid("getChecked");
+        if (checkedRows.length === 0) {
+            abp.notify.error("请先选中要激活的线路。");
+            return;
+        }
+
+        ids = [];
+        for (var i = 0; i < checkedRows.length; i++) {
+            var row = checkedRows[i];
+            if (row.status == "安排") ids.push(row.id);
+        };
+
+        abp.services.app.route.activate(ids).done(function (ret) {
+            abp.notify.success('有' + ret.item2 + '个线路被激活');
+            // Cache active routes
+            abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
+                abp.notify.info("刚下达最新的激活线路");
+            });
+            if (ret.item1) abp.notify.error(ret.item1);
+            mds.reload('');
+        });
+    }
+
 })();

@@ -14,6 +14,7 @@ namespace Clc.Affairs
     [Description("内务")]
     public class Affair : Entity, IMustHaveTenant
     {
+        public const int MaxContentLength = 30;
         public const int MaxRemarkLength = ClcConsts.NormalStringLength;
         
         // Impement of IMustHaveTenant
@@ -35,7 +36,14 @@ namespace Clc.Affairs
         public Workplace Workplace { get; set; }
 
         /// <summary>
-        /// 状态（生成，活动，结束）
+        /// 任务说明
+        /// </summary>
+        [Required]
+        [StringLength(MaxContentLength)]
+        public string Content { get; set; }
+        
+        /// <summary>
+        /// 状态（生成，活动，关闭）
         /// </summary>
         [Required]
         [StringLength(2)]

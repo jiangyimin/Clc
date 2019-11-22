@@ -100,10 +100,10 @@ namespace Clc.Affairs
                 affair.DepotId = depotId;
                 affair.CarryoutDate = carryoutDate;
                 affair.Status = "安排";
+                affair.Content = a.Content;
                 affair.WorkplaceId = a.WorkplaceId;
                 affair.StartTime = a.StartTime;
                 affair.EndTime = a.EndTime;
-                // affair.IsTomorrow = a.IsTomorrow;
                 affair.Remark = a.Remark;
                 affair.CreateWorkerId = workerId;
                 affair.CreateTime = DateTime.Now;
@@ -126,9 +126,9 @@ namespace Clc.Affairs
                     AffairTask task = new AffairTask();
                     task.AffairId = affairId;
                     task.WorkplaceId = t.WorkplaceId;
+                    task.Content = t.Content;
                     task.StartTime = t.StartTime;
                     task.EndTime = t.EndTime;
-                    // task.IsTomorrow = t.IsTomorrow;
                     task.CreateWorkerId = workerId;
                     task.CreateTime = DateTime.Now;
                     await _taskRepository.InsertAsync(task);
@@ -245,6 +245,21 @@ namespace Clc.Affairs
             await _taskRepository.UpdateAsync(entity);
             CurrentUnitOfWork.SaveChanges();
             return ObjectMapper.Map<AffairTaskDto>(entity);
+        }
+
+        public async Task SetTaskTime(int id, bool isStart)
+        {
+            var entity = await _taskRepository.GetAsync(id);
+            if (isStart)
+            {
+                if (!entity.StartTimeActual.HasValue) entity.StartTimeActual = DateTime.Now;
+            }
+            else
+            {
+                entity.EndTimeActual = DateTime.Now;
+            }
+            
+            await _taskRepository.UpdateAsync(entity);
         }
 
         public async Task<AffairTaskDto> InsertTask(AffairTaskDto input)

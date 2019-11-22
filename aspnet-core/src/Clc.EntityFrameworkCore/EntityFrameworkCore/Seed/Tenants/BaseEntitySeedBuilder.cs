@@ -27,16 +27,16 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             CreateWorkRoles();
 
             // Fields
-            //CreateDepots();
-            //CreateWorkplaces();
-            //CreateWorkers();
-            //CreateVehicles();
-            //CreateArticles();
+            CreateDepots();
+            CreateWorkplaces();
+            CreateWorkers();
+            CreateVehicles();
+            CreateArticles();
 
             // Clients
-            //CreateCustomers();
-            //CreateOutlets();
-            //CreateBoxes();
+            CreateCustomers();
+            CreateOutlets();
+            CreateBoxes();
         }
 
         private void CreateArticleTypes()

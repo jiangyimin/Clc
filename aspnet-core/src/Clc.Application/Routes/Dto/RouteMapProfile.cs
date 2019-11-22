@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Clc.Authorization.Users;
-using Clc.Routes;
 
 namespace Clc.Routes.Dto
 {
@@ -8,8 +6,8 @@ namespace Clc.Routes.Dto
     {
         public RouteMapProfile()
         {
-           CreateMap<RouteWorker, RouteWorkerDto>()
-                .ForMember(x => x.ArticleList, opt => opt.Ignore());
+            CreateMap<RouteTaskDto, RouteTask>()
+                .ForMember(s => s.IdentifyTime, opt => opt.Ignore());
         }
     }
 }
