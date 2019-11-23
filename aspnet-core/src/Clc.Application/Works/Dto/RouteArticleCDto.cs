@@ -1,9 +1,4 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using Abp.Application.Services.Dto;
-using Abp.AutoMapper;
 using Clc.Fields;
-using Clc.Routes;
 
 namespace Clc.Works.Dto
 {
@@ -18,6 +13,8 @@ namespace Clc.Works.Dto
         public int RecordId { get; set; }
         public bool IsReturn { get; set; }
         
+        public RouteArticleCDto()
+        {}
         public RouteArticleCDto(Article a, int recordId = 0, bool isReturn=false)
         {
             ArticleId = a.Id;

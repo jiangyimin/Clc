@@ -21,6 +21,8 @@ namespace Clc.Works.Dto
         public string StartTime { get; set; }
         public string EndTime { get; set; }
 
+        public string Workers { get; set; }
+
         public List<string> Rfids { get; set; }
 
         public AffairWorkDto SetAffair(AffairCacheItem affair, string wpName, bool altCheck)

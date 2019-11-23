@@ -1,11 +1,11 @@
 ﻿@section Scripts
 {
     <environment names="Development">
-        <script src="~/js/finput.js" asp-append-version="true"></script>
+        <script src="~/js/winput.js" asp-append-version="true"></script>
     </environment>
 
     <environment names="Staging,Production">
-        <script src="~/js/finput.min.js" asp-append-version="true"></script>
+        <script src="~/js/winput.min.js" asp-append-version="true"></script>
     </environment>
 
     <script type="text/javascript">
@@ -37,7 +37,7 @@
             }
         };
         
-        finput.onWorker = function(rfid) {
+        winput.onWorker = function(rfid) {
             if (!allowCardWhenCheckin) {
                 abp.notify.error('系统设置为不允许刷卡签到');
                 return;

@@ -56,8 +56,12 @@
                 abp.notify.error("激活状态才允许回退");
                 return;
             };
-            abp.services.app.affair.back(mds.masterCurrentRow.id).done(function () {
-                mds.reload('');
+            abp.message.confirm('确认要退回吗?', '确认', function (r) {
+                if (r) {
+                    abp.services.app.affair.back(mds.masterCurrentRow.id).done(function () {
+                        mds.reload('');
+                    });
+                };
             });
         })            
 
@@ -104,7 +108,7 @@
             return;
         }
 
-        ids = [];
+        var ids = [];
         for (var i = 0; i < checkedRows.length; i++) {
             var row = checkedRows[i];
             if (row.status == "安排") ids.push(row.id);

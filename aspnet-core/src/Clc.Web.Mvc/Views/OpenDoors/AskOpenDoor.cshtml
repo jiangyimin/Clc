@@ -1,14 +1,14 @@
 ﻿@section Scripts
 {
     <environment names="Development">
-        <script src="~/js/finput.js" asp-append-version="true"></script>
+        <script src="~/js/winput.js" asp-append-version="true"></script>
         <script src="~/js/door.js" asp-append-version="true"></script>
         <script src="~/js/work.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/OpenDoors/AskOpenDoor.js" asp-append-version="true"></script>
     </environment>
 
     <environment names="Staging,Production">
-        <script src="~/js/finput.min.js" asp-append-version="true"></script>
+        <script src="~/js/winput.min.js" asp-append-version="true"></script>
         <script src="~/js/door.min.js" asp-append-version="true"></script>
         <script src="~/js/work.min.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/OpenDoors/AskOpenDoor.min.js" asp-append-version="true"></script>
@@ -19,7 +19,7 @@
         var doorIp = '';
         var status = '';
     
-        finput.matchWorker = function(rfid) {
+        winput.matchWorker = function(rfid) {
             // judge rfid in work.me.ask
             if (!work.isInRfids(rfid)) return;
 

@@ -31,8 +31,12 @@
                 abp.notify.error("先选择线路");
                 return;
             };
-            abp.services.app.route.back(mds.masterCurrentRow.id).done(function () {
-                mds.reload('');
+            abp.message.confirm('确认要退回吗?', '确认', function (r) {
+                if (r) {
+                    abp.services.app.route.back(mds.masterCurrentRow.id).done(function () {
+                        mds.reload('');
+                    });
+                };
             });
         });
 
@@ -41,22 +45,30 @@
             if (checkedRows.length === 0) {
                 abp.notify.error("请先选中要关闭的线路。");
                 return;
-            }
-
-            ids = [];
-            for (var i = 0; i < checkedRows.length; i++) {
-                var row = checkedRows[i];
-                if (row.status == "激活") ids.push(row.id);
             };
+            if (mds.masterCurrentRow.status !== "激活") {
+                abp.notify.error("激活状态才允许关闭");
+                return;
+            };
+            abp.message.confirm('确认要关闭吗?', '确认', function (r) {
+                if (r) {
 
-            abp.services.app.route.close(ids).done(function (count) {
-                abp.notify.success('有' + count + '个线路被关闭');
-                // Cache active routes
-                abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
-                    abp.notify.info("刚下达最新的激活线路");
-                });
-                mds.reload('');
-            })
+                    var ids = [];
+                    for (var i = 0; i < checkedRows.length; i++) {
+                        var row = checkedRows[i];
+                        if (row.status == "激活") ids.push(row.id);
+                    };
+
+                    abp.services.app.route.close(ids).done(function (count) {
+                        abp.notify.success('有' + count + '个线路被关闭');
+                        // Cache active routes
+                        abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
+                            abp.notify.info("刚下达最新的激活线路");
+                        });
+                        mds.reload('');                        
+                    })
+                };
+            });
         });         
 
         $('#tb').children('a[name="createFrom"]').click(function (e) {
@@ -114,7 +126,7 @@
             return;
         }
 
-        ids = [];
+        var ids = [];
         for (var i = 0; i < checkedRows.length; i++) {
             var row = checkedRows[i];
             if (row.status == "安排") ids.push(row.id);

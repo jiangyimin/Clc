@@ -154,16 +154,10 @@ namespace Clc.Works
             if (affair == null) return dto;
             var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
             dto.Rfids = GetRfidsByAffair(affair);
+            dto.Workers = GetWorkersInfo(affair);
             return dto.SetAffair(affair, wp.Name, false);
         }
 
-        private List<string> GetRfidsByAffair(AffairCacheItem affair)
-        {
-            var lst = new List<string>();
-            foreach (var w in affair.Workers)
-                lst.Add(WorkManager.GetWorker(w.WorkerId).Rfid);
-            return lst;
-        }
 
         public List<RouteCacheItem> GetActiveRoutes(int wpId, DateTime carryoutDate, int depotId, int affairId)
         {
@@ -311,7 +305,7 @@ namespace Clc.Works
 
         public RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, int wpId, DateTime carryoutDate, int depotId, int affairId, string rfid, int routeId)
         {
-           var result = new RouteWorkerMatchResult();
+            var result = new RouteWorkerMatchResult();
             (RouteCacheItem, RouteWorkerCacheItem, RouteWorkerCacheItem) found = (null, null, null);
             var routes = _routeCache.Get(carryoutDate, depotId);
 
@@ -382,13 +376,11 @@ namespace Clc.Works
             return ("", new RouteArticleCDto(article));
         }
 
-        public (string, RouteArticleCDto) MatchArticleForReturn(string rfid)
+        public (string, int) MatchArticleForReturn(string rfid)
         {
             var article = _articleCache.GetList().FirstOrDefault(x => x.Rfid == rfid);
-            if (article == null) return ("此Rfid没有对应的物品", null);
-            if (!article.ArticleRecordId.HasValue) return ("此物品需要先领用", null);
-            
-            return ("", new RouteArticleCDto(article));
+            if (article == null) return ("此Rfid没有对应的物品", 0);            
+            return ("", article.Id);
         }
 
         #endregion
@@ -517,6 +509,14 @@ namespace Clc.Works
             return ret;
         }
 
+        private List<string> GetRfidsByAffair(AffairCacheItem affair)
+        {
+            var lst = new List<string>();
+            foreach (var w in affair.Workers)
+                lst.Add(WorkManager.GetWorker(w.WorkerId).Rfid);
+            return lst;
+        }
+     
         private string GetWorkersInfo(AffairCacheItem affair)
         {
             string info = null;

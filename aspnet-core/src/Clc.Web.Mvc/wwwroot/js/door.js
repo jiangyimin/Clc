@@ -1,5 +1,4 @@
 ﻿var ws = null;
-var jjjj = 'ddd';
 (function() {
     // web socket
     function initWS() {

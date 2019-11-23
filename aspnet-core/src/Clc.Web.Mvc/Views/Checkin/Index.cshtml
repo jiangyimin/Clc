@@ -2,7 +2,7 @@
 @section Scripts
 {
     <environment names="Development">
-        <script src="~/js/finput.js" asp-append-version="true"></script>
+        <script src="~/js/winput.js" asp-append-version="true"></script>
         <script src="~/js/work.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/Checkin/index.js" asp-append-version="true"></script>
     </environment>
@@ -52,7 +52,7 @@
             });
         }
 
-        finput.matchWorker = function(rfid) {
+        winput.matchWorker = function(rfid) {
             if (status == '' && !allowCardWhenCheckin) {
                 abp.notify.error('系统设置为不允许刷卡验证');
                 return;

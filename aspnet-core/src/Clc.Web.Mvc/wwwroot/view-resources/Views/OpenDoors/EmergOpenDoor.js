@@ -40,8 +40,8 @@
             };
 
             // judge emergPassword.
-            alert(row.emergDoorPassword);
-            alert(row.workplaceEmergPassword);
+            //alert(row.emergDoorPassword);
+            //alert(row.workplaceEmergPassword);
             if (row.emergDoorPassword != row.workplaceEmergPassword) {
                 abp.notify.error("应急密码不符！", "", { positionClass : 'toast-top-center'} );
                 return;

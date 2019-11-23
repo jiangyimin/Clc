@@ -55,13 +55,6 @@
              abp.notify.info("与实时推送服务连接成功");
          });
 
-        // for dlgActivate
-        $("#dlgActivate").dialog({
-            onClose: function (item) {
-                verifyAction = '';
-            }
-        });
-         
     });
 
     function addTab(title, url, icon) {
@@ -274,19 +267,23 @@ var verifyAction = '';
 function openActivateDialog(action) {
     verifyAction = action;
     $('#dlgActivate').dialog('open');
-    $('#fmActivate').find('input[name="password"]').next('span').find('input').focus();
+    $('#passwordActivate').next('span').find('input').focus();
 }
 
 function closeActivateDialog() {
+    verifyAction = '';
+    // alert(verifyAction);
+    $('#fmActivate').form('clear');
     $('#dlgActivate').dialog('close');
 }
 
 function verifyPasswordAndTrigger()
 {
-    var pwd = $('#fmActivate').find('input[name="password"]').val();
+    var pwd = $('#passwordActivate').val();
     abp.services.app.work.verifyUnlockPassword(pwd).done(function(result) {
         if (result == true) {
             abp.notify.success("密码验证正确");
+            // alert(verifyAction);
             abp.event.trigger('verifyDone', verifyAction);
             closeActivateDialog();
         }

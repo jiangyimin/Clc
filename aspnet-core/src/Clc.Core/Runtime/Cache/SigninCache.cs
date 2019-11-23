@@ -2,11 +2,13 @@ using System;
 using System.Linq;
 using Abp.Dependency;
 using Abp.Domain.Repositories;
+using Abp.Events.Bus.Entities;
+using Abp.Events.Bus.Handlers;
 using Abp.Runtime.Caching;
 
 namespace Clc.Runtime.Cache
 {
-    public class SigninCache : ISigninCache, ITransientDependency
+    public class SigninCache : ISigninCache, ITransientDependency, IEventHandler<EntityCreatedEventData<Signin>> 
     {
         private readonly string CacheName = "CachedSignin";
         private readonly ICacheManager _cacheManager;
@@ -18,19 +20,26 @@ namespace Clc.Runtime.Cache
         {
             _cacheManager = cacheManager;
             _signinRepository = signinRepository;
-            _cacheManager.GetCache(CacheName).DefaultSlidingExpireTime = TimeSpan.FromHours(12);
+            _cacheManager.GetCache(CacheName).DefaultSlidingExpireTime = TimeSpan.FromHours(6);
         }
 
         public Signin Get(int depotId, int workerId, bool isMorning)
         {
-            string cacheKey = depotId.ToString() + DateTime.Now.Date.ToString();
-            var list = _cacheManager.GetCache(CacheName).Get(cacheKey, () => {
+            string cacheKey = DateTime.Now.Date.ToString() + depotId.ToString() + workerId.ToString();
+            var signin = _cacheManager.GetCache(CacheName).Get(cacheKey, () => {
                 return _signinRepository.GetAll()
-                    .Where(x => x.CarryoutDate == DateTime.Now.Date).ToList();
+                    .Where(x => x.CarryoutDate == DateTime.Now.Date && x.DepotId == depotId && x.WorkerId == workerId
+                        && ClcUtils.IsMorning(x.SigninTime) == isMorning).FirstOrDefault();
             });
             
-            var ret = list.LastOrDefault(x => x.WorkerId == workerId && ClcUtils.IsMorning(x.SigninTime) == isMorning);
-            return ret;
+            return signin;
         }
+
+        public void HandleEvent(EntityCreatedEventData<Signin> eventData)
+        {
+            var cacheKey = DateTime.Now.Date.ToString() + eventData.Entity.DepotId.ToString() + eventData.Entity.Id.ToString();
+            _cacheManager.GetCache(CacheName).Remove(cacheKey);
+        }
+
     }
 }

@@ -13,6 +13,7 @@ using Clc.Fields;
 using Clc.Routes;
 using Clc.Runtime;
 using Clc.Works;
+using Clc.Works.Dto;
 
 namespace Clc.ArticleRecords
 {
@@ -53,19 +54,22 @@ namespace Clc.ArticleRecords
             );
         }
 
-        public int Lend(int routeId, int routeWorkerId, List<int> ids, string workers)
+        public int Lend(int routeId, int routeWorkerId, List<RouteArticleCDto> articles, string workers)
         {
-            foreach (int id in ids)
-            {               
+            int count = 0;
+            foreach (var a in articles)
+            {  
+                if (a.RecordId > 0) continue;           // 已领用的
+
                 ArticleRecord record = new ArticleRecord() {
                     RouteWorkerId = routeWorkerId,
-                    ArticleId = id,
+                    ArticleId = a.ArticleId,
                     LendTime = DateTime.Now,
                     LendWorkers = workers
                 };
 
                 int recordId = _recordRepository.InsertAndGetId(record);
-                Article article = _articleRepository.Get(id);
+                Article article = _articleRepository.Get(a.ArticleId);
                 article.ArticleRecordId = recordId;
 
                 RouteArticle ra = new RouteArticle() {
@@ -74,39 +78,26 @@ namespace Clc.ArticleRecords
                     ArticleRecordId = recordId
                 };
                 _routeArticleRepository.Insert(ra);
+
+                count++;
             }
-            return ids.Count();
+            return count;
         }
 
-        public string GetArticleStatus(int articleId) 
+        public int Return(List<RouteArticleCDto> articles, string workers)
         {
-            var article = _articleRepository.Get(articleId);
-
-            if (article.ArticleRecordId.HasValue)
-            {
-                var record = _recordRepository.Get(article.ArticleRecordId.Value);
-                if (!record.ReturnTime.HasValue)
-                {
-                    return "此物品还在库中";
-                }
-            }
-            return null;
-        }
-
-        public int Return(List<int> recordIds, string workers)
-        {
-            int i = 0;
-            foreach (var id in recordIds)
+            int count = 0;
+            foreach (var a in articles)
             {  
-                var record = _recordRepository.Get(id);   
+                var record = _recordRepository.Get(a.RecordId);   
                 if (!record.ReturnTime.HasValue) {
                     record.ReturnTime = DateTime.Now;
                     record.ReturnWorkers = workers;
                     _recordRepository.Update(record);
-                    i++;
+                    count++;
                 }    
             }  
-            return i; 
+            return count; 
         }
 
         public async Task<List<ArticleRecordSearchDto>> SearchByDay(DateTime theDay)

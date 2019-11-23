@@ -40,16 +40,4 @@
         var day = date.getDate(), day =day < 10 ? '0' + day : day;
         return year + '-' + month + '-' + day;
     }
-
-    work.vehicleFormatter = function(val, row, index) {
-        return row.vehicleCn + ' ' + row.vehicleLicense;
-    }
-
-    work.workerFormatter = function(val, row, index) {
-        return row.workerCn + ' ' + row.workerName;
-    }
-
-    work.outletFormatter = function(val, row, index) {
-        return row.outletCn + ' ' + row.outletName;
-    }
 })(jQuery);

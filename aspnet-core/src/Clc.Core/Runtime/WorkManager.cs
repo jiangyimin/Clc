@@ -250,7 +250,7 @@ namespace Clc.Works
             {
                 var signedTz = ClcUtils.IsMorning(signin.SigninTime);
 
-                if (!ClcUtils.IsMorning(signin.SigninTime) && signedTz) 
+                if (!ClcUtils.IsMorning(DateTime.Now) && signedTz) 
                 {
                     signin = new Signin() { DepotId = depotId, CarryoutDate = DateTime.Today, WorkerId = workerId, SigninTime = DateTime.Now, SigninStyle = style }; 
                     _signinRepository.Insert(signin);
@@ -501,6 +501,12 @@ namespace Clc.Works
             return (false, "已申请开门");
         }
 
+
+        public void RouteAskOpenDoor(int routeId, int affairId, int workplaceId, string askWorkers)
+        {
+            SetRouteAskDoorRecord(routeId, workplaceId, affairId, askWorkers);
+        }
+
         #endregion
 
         #region private
@@ -584,6 +590,18 @@ namespace Clc.Works
                     affairWorker.LastAskDoor = DateTime.Now;
                     CurrentUnitOfWork.SaveChanges();
             }
+        }
+
+        private void SetRouteAskDoorRecord(int routeId, int doorId, int affairId, string askWorkers)
+        {
+            var askDoor = new AskDoorRecord();
+            askDoor.AskTime = DateTime.Now;
+            askDoor.WorkplaceId = doorId;
+            askDoor.AskAffairId = affairId;
+            askDoor.RouteId = routeId;
+            askDoor.AskWorkers = askWorkers;
+            _askdoorRepository.Insert(askDoor);
+            CurrentUnitOfWork.SaveChanges();
         }
 
         private void SetAskDoorRecord(int doorId, int affairId, string askWorkers, int tenantId)
