@@ -286,8 +286,19 @@ namespace Clc.Works
             // Get AffairWorker Entity
             var entity = _affairWorkerRepository.Get(aworker.Id);
             entity.CheckinTime = DateTime.Now;
+            entity.CheckoutTime = null;
             _affairWorkerRepository.Update(entity);
             aworker.CheckinTime = DateTime.Now;
+            aworker.CheckoutTime = null;
+        }
+
+        public void DoCheckout(AffairCacheItem affair, AffairWorkerCacheItem aworker, int workerId)
+        {
+            // Get AffairWorker Entity
+            var entity = _affairWorkerRepository.Get(aworker.Id);
+            entity.CheckoutTime = DateTime.Now;
+            _affairWorkerRepository.Update(entity);
+            aworker.CheckoutTime = DateTime.Now;
         }
 
         public (bool, string) MatchFinger(string finger, int workerId)
@@ -323,6 +334,7 @@ namespace Clc.Works
                 var allcheckin = true;
                 found = null;
                 foreach (var worker in affair.Workers) {
+                    if (worker.CheckoutTime.HasValue) continue;
                     if (worker.WorkerId == workerId) found = affair;
 
                     if (!worker.CheckinTime.HasValue) allcheckin = false;
@@ -342,8 +354,10 @@ namespace Clc.Works
                 var wp = _workplaceCache[affair.WorkplaceId];
                 if (!ClcUtils.NowInTimeZone(affair.StartTime, wp.DutyLead, affair.EndTime)) continue;
                 // me in worker
-                foreach (var worker in affair.Workers)
+                foreach (var worker in affair.Workers) {
+                    if (worker.CheckoutTime.HasValue) continue;
                     if (worker.WorkerId == workerId) return affair;
+                }
             }
             return null;
         }
@@ -361,6 +375,12 @@ namespace Clc.Works
             }
             return null;
         }
+
+        public (AffairCacheItem, AffairWorkerCacheItem) GetCacheAffairWorker(DateTime carryoutDate, int depotId, int affairId, int workerId)
+        {
+            return _affairCache.GetAffairWorker(carryoutDate, depotId, affairId, workerId);
+        }
+
 
         public (AffairCacheItem, AffairWorkerCacheItem) GetCacheAffairWorker(DateTime carryoutDate, int depotId, int workerId)
         {

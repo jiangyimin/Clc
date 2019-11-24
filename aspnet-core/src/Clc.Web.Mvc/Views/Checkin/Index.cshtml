@@ -16,6 +16,13 @@
         var status = '';        // '' 为 checkin
         var vdoorId = 0;
 
+        function checkout(index) {
+            var row = $('#dg').datagrid('getRows')[index];
+            abp.services.app.work.checkout(row.workerId, work.me.today, work.me.depotId, work.me.affairId).done(function(ret) {
+                abp.notify.info("你已作任务签出");
+                $('#dg').datagrid('reload');
+            });
+        }
 
         function scanFinger(index) {
             abp.notify.info('请将指纹放到指纹仪上');
@@ -86,7 +93,10 @@
         // formatter
 
         function operator (val, row, index) {
-            return '<a href="javascript:void(0)" onclick="scanFinger(' + index + ')">指纹验入</a>';
+            var htmlTag = '<a href="javascript:void(0)" onclick="scanFinger(' + index + ')">指纹验入</a>';
+            htmlTag = htmlTag + '<span>&nbsp;&nbsp;&nbsp;</span>';
+            htmlTag = htmlTag + '<a href="javascript:void(0)" onclick="checkout(' + index + ')">任务签出</a>';
+            return htmlTag;
         };
 
         function operatorTask (val, row, index) {

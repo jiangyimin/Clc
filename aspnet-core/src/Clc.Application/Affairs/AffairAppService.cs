@@ -53,8 +53,13 @@ namespace Clc.Affairs
         public async Task<List<AffairDto>> GetAffairsAsync(DateTime carryoutDate, string sorting)
         {
             int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
-            string dateString = carryoutDate.ToString("yyyy-MM-dd");
-            // string filter = $"DepotId={depotId} AND CarryoutDate=\"{dateString}\"";
+            var query = _affairRepository.GetAllIncluding(x => x.Workplace, x => x.CreateWorker).Where(x => x.DepotId == depotId && x.CarryoutDate == carryoutDate).OrderBy(sorting);
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return ObjectMapper.Map<List<AffairDto>>(entities);
+        }
+
+        public async Task<List<AffairDto>> GetQueryAffairsAsync(DateTime carryoutDate, int depotId, string sorting)
+        {
             var query = _affairRepository.GetAllIncluding(x => x.Workplace, x => x.CreateWorker).Where(x => x.DepotId == depotId && x.CarryoutDate == carryoutDate).OrderBy(sorting);
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return ObjectMapper.Map<List<AffairDto>>(entities);

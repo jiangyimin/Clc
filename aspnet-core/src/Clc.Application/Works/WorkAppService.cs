@@ -97,17 +97,17 @@ namespace Clc.Works
                 return null;
         }
         
-        public (string, string) GetMe()
+        public MeDto GetMe()
         {
             int workerId = GetCurrentUserWorkerIdAsync().Result; 
             if (workerId == 0) 
-                return ("system", "");
+                return new MeDto("system", "", 0);
             
             if (WorkManager.WorkerHasDefaultWorkRoleName(workerId, "队长"))
                 workerId = WorkManager.GetCaptainOrAgentId(workerId);
 
             var worker = WorkManager.GetWorker(workerId);
-            return (worker.LoginRoleNames, worker.Cn);
+            return new MeDto(worker.LoginRoleNames, worker.Cn, worker.DepotId);
         }
 
         public string GetToday()
@@ -279,8 +279,7 @@ namespace Clc.Works
         {
             Worker worker =  WorkManager.GetWorkerByRfid(rfid);
             if (worker == null) return (false, "找不到此人");
-            var aw = WorkManager.GetCacheAffairWorker(carryoutDate, depotId, worker.Id);
-            if (aw.Item1.Id != affairId) return (false, "一个人不能同时安排在同时段任务中");
+            var aw = WorkManager.GetCacheAffairWorker(carryoutDate, depotId, affairId, worker.Id);
             if (aw.Item2 == null) return (false, "此人没被安排在此任务中");
             if (!ClcUtils.NowInTimeZone(aw.Item1.StartTime, aw.Item1.EndTime)) return (false, "没在任务时段");
             WorkManager.DoCheckin(aw.Item1, aw.Item2, worker.Id);
@@ -292,13 +291,20 @@ namespace Clc.Works
             var mR = WorkManager.MatchFinger(finger, workerId);
             if (!mR.Item1) return mR;
 
-            var aw = WorkManager.GetCacheAffairWorker(carryoutDate, depotId, workerId);
-            if (aw.Item1.Id != affairId) return (false, "一个人不能同时安排在同时段任务中");
+            var aw = WorkManager.GetCacheAffairWorker(carryoutDate, depotId, affairId, workerId);
+            if (aw.Item2 == null) return (false, "此人没被安排在此任务中");
             if (!ClcUtils.NowInTimeZone(aw.Item1.StartTime, aw.Item1.EndTime)) return (false, "没在任务时段");
             WorkManager.DoCheckin(aw.Item1, aw.Item2, workerId);
             return (true, "验入成功!" + mR.Item2);
         }
  
+        public void checkout(int workerId, DateTime carryoutDate, int depotId, int affairId) 
+        {
+            var aw = WorkManager.GetCacheAffairWorker(carryoutDate, depotId, affairId, workerId);
+            if (aw.Item2 == null) return;
+            WorkManager.DoCheckout(aw.Item1, aw.Item2, workerId);
+        }
+        
         #endregion
 
         #region Article

@@ -1,0 +1,150 @@
+﻿@model int
+@section Scripts
+{
+    <environment names="Development">
+        <script src="~/js/mds.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Affairs/Query.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/js/mds.min.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Affairs/Query.min.js" asp-append-version="true"></script>
+    </environment>
+
+    <script type="text/javascript">
+        mds.style = "Query";
+        mds.controllerName = 'Affairs';
+        mds.masterInputName = 'affairId';
+        // main
+        mds.main = Object.assign({}, mds.dgDefault);
+        mds.main.sortName = "startTime";
+        mds.main.singleSelect = false;
+        mds.main.columns = [[
+            { field: "ck", checkbox: true },
+            { field: "carryoutDate", title: "日期", width: 80, align: "center", formatter: $.dateFormatter },
+            { field: "status", title: "状态", width: 50, align: "center" },
+            { field: "content", title: "任务说明", width: 80 },
+            { field: "workplaceName", title: "地点", width: 80 },
+            { field: "workplaceAskOpenStyle", title: "申请开门方式", width: 60 },
+            { field: "startTime", title: "开始时间", width: 80, sortable: true },
+            { field: "endTime", title: "结束时间", width: 80 },
+            { field: "remark", title: "备注", width: 80 },
+            { field: "createWorkerName", title: "任务创建人", width: 80 },
+        ]];
+        mds.main.insert = abp.services.app.affair.insert;
+        mds.main.update = abp.services.app.affair.update;
+        mds.main.delete = abp.services.app.affair.delete;
+
+        // details
+        var detail = Object.assign({}, mds.dgDefault);
+        detail.postfix = "Worker";
+        detail.columns = [[
+            { field: "workerCn", title: "人员编号", width: 80 },
+            { field: "workerName", title: "人员姓名", width: 80 },
+            { field: "workRoleName", title: "工作角色", width: 80 },
+            { field: "workRoleDuties", title: "职责", width: 80 },
+            { field: "checkinTime", title: "验入时间", width: 80, formatter: $.timeFormatter },
+            { field: "checkoutTime", title: "验出时间", width: 80, formatter: $.timeFormatter },
+            { field: "lastAskDoor", title: "最后申请开门时间", width: 80, formatter: $.timeFormatter },
+        ]];
+        detail.insert = abp.services.app.affair.insertWorker;
+        detail.update = abp.services.app.affair.updateWorker;
+        detail.delete = abp.services.app.affair.deleteWorker;
+        mds.details.push(detail);
+
+        detail = Object.assign({}, mds.dgDefault);
+        detail.postfix = "Task";
+        detail.sortName = "startTime";
+        detail.columns = [[
+            { field: "content", title: "任务说明", width: 80 },
+            { field: "workplaceName", title: "场所", width: 80 },
+            { field: "startTime", title: "开始时间", width: 80, sortable: true },
+            { field: "endTime", title: "结束时间", width: 80, sortable: true },
+            { field: "remark", title: "备注", width: 80 },
+            { field: "startTimeActual", title: "作业开始时间", width: 80, sortable: true, formatter: $.timeFormatter },
+            { field: "endTimeActual", title: "作业结束时间", width: 80, sortable: true, formatter: $.timeFormatter },
+            { field: "createWorkerName", title: "创建人", width: 60 },
+        ]];
+        detail.insert = abp.services.app.affair.insertTask;
+        detail.update = abp.services.app.affair.updateTask;
+        detail.delete = abp.services.app.affair.deleteTask;
+        mds.details.push(detail);
+    </script>
+
+    <script type="text/javascript">
+        mds.initfunction = function () {
+            // comboBoxs
+            abp.services.app.field.getComboItems('Depot').done(function (data) {
+                $('#depot').combobox({
+                    data: data,
+                    valueField: 'value',
+                    textField: 'displayText'
+                })
+            });
+        }
+
+        mds.getUrl = function(postfix, masterRow) {
+            if (postfix == mds.main.postfix) return '';       // impossible
+
+            var url = 'GridData' + postfix;
+            if (masterRow == null)
+                url += '/' + 0;          // clear datagrid!
+            else
+                url += '/' + masterRow.id;
+
+            // alert(url);
+            return url;
+        }
+        
+    </script>
+}
+
+<div class="easyui-layout" fit="true">
+    <!-- BEGIN of Affair panel -->
+    <div data-options="region:'north', split:true, border:false" style="min-height:120px; height:40%">
+        <div id="tb">
+            <input id="seld" type="hidden" value='@Model'> 
+            任务日期: <input id="dd" class="easyui-datebox" style="width:120px">
+            大队: <input id="depot" class="easyui-combobox" style="width:120px">
+            <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('')">刷新</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a name="event" href="javascript:void(0)" class="easyui-linkbutton">任务事件</a>
+        </div>
+        <table id="dg" class="easyui-datagrid" toolbar="#tb">
+        </table>
+    </div>
+    <!-- END of affair panel -->
+    <div data-options="region:'center'">
+       <div id="tt" class="easyui-tabs" data-options="fit:true, border:false">
+            <div title="人员列表" style="display:none;">
+                <div id="tbWorker">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Worker')">刷新</a>
+                </div>
+                <table id="dgWorker" class="easyui-datagrid" toolbar="#tbWorker">
+                </table>
+            </div>
+            <div title="金库子任务" style="display:none;">
+                <div id="tbTask">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="mds.reload('Task')">刷新</a>
+                </div>
+                <table id="dgTask" class="easyui-datagrid" toolbar="#tbTask">
+                </table>
+            </div>
+       </div>
+    </div>
+</div>
+
+@*Event弹窗*@
+<div id="dlgEvent" class="easyui-dialog" closed="true" modal="true" title="事件列表" align="center" style="width:900px; height:600px; padding: 10px;">
+    <table id="dgEvent" class="easyui-datagrid"
+            fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true">
+        <thead>
+            <tr>
+                <th field="eventTime" width="80" formatter="$.datetimeFormatter">发生时间</th>
+                <th field="name" width="80">名称</th>
+                <th field="description" width="150">具体描述</th>
+                <th field="issurer" width="120">创建者</th>
+            </tr>
+        </thead>
+    </table>
+</div>

@@ -13,6 +13,7 @@ namespace Clc.Runtime.Cache
         AffairCacheItem GetAffair(DateTime carryoutDate, int depotId, int id);
         
         (AffairCacheItem, AffairWorkerCacheItem) GetAffairWorker(DateTime carryoutDate, int depotId, int workerId);
+        (AffairCacheItem, AffairWorkerCacheItem) GetAffairWorker(DateTime carryoutDate, int depotId, int affairId, int workerId);
     }
 
     

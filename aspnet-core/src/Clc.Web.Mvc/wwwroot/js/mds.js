@@ -13,6 +13,8 @@ var mds = mds || {};
         update: function() {},
         delete: function() {},
     };
+
+    mds.style = '';
     mds.controllerName = '';
     mds.masterInputName = '';
     mds.masterCurrentRow = null;
@@ -63,11 +65,27 @@ var mds = mds || {};
     };
 
     mds.operatorIsEnable = function(row) {
-        if (!row.status) return true;
-        if (row.status != "安排")
-            return false;
+        if (mds.style == 'Query') return false;
+        
+        if (row.postfix == '') return mds.operatorIsEnableM(row);
+        if (row.postfix == 'Worker') return mds.operatorIsEnableW(row);
+        if (row.postfix == 'Task') return mds.operatorIsEnableT(row);
         return true;
     };
+
+    mds.operatorIsEnableM = function(row) {
+        if (row.status != "安排") return false;
+        return true;
+    }
+
+    mds.operatorIsEnableW = function(row) {
+        if (mds.Style == 'Aux') return false;
+        return true;
+    }
+
+    mds.operatorIsEnableT = function(row) {
+        return true;
+    }
 
     mds.operator = function(val, row, index) {
         if (mds.operatorIsEnable(row)) {            
@@ -94,7 +112,9 @@ var mds = mds || {};
         };
     };
 
+    mds.validateDelete = function(postfix, index) { return true; }
     mds.delete = function(postfix, index) {
+        if (!mds.validateDelete(postfix, index)) return;
         var row = $('#dg' + postfix).datagrid('getRows')[index];
         abp.message.confirm('确认要删除此记录吗?', '请确认', function (r) {
             if (r) {

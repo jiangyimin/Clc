@@ -10,6 +10,7 @@ namespace Clc.Affairs
     {
         AffairDto GetAffair(int id);
         Task<List<AffairDto>> GetAffairsAsync(DateTime carryoutDate, string sorting);
+        Task<List<AffairDto>> GetQueryAffairsAsync(DateTime carryoutDate, int depotId, string sorting);
 
         Task<(string, int)> Activate(List<int> ids);
         Task SetActiveAffairCache(DateTime carryoutDate);

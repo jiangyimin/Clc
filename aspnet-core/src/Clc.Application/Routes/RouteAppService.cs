@@ -87,6 +87,23 @@ namespace Clc.Routes
             return ObjectMapper.Map<List<RouteDto>>(entities);
         }
 
+        public async Task<List<RouteDto>> GetAuxRoutesAsync(DateTime carryoutDate, int workplaceId, string sorting) 
+        {
+            var depots = WorkManager.GetShareDepots(workplaceId);
+            var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.AltVehicle, x => x.CreateWorker);
+            query = query.Where(x => x.CarryoutDate == carryoutDate && depots.Contains(x.DepotId) && x.Status == "激活").OrderBy(sorting);
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return ObjectMapper.Map<List<RouteDto>>(entities);
+        }
+
+        public async Task<List<RouteDto>> GetQueryRoutesAsync(DateTime carryoutDate, int depotId, string sorting)
+        {
+            var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.AltVehicle, x => x.CreateWorker);
+            query = query.Where(x => x.DepotId == depotId && x.CarryoutDate == carryoutDate).OrderBy(sorting);
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return ObjectMapper.Map<List<RouteDto>>(entities);
+        }
+
         public async Task<RouteDto> Insert(RouteDto input)
         {
             int workerId = GetCurrentUserWorkerIdAsync().Result;
@@ -135,7 +152,7 @@ namespace Clc.Routes
                 // RouteEvent
                 var worker = WorkManager.GetWorker(workerId);
                 string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
-                var re = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "回退线路", Issurer = issuer};
+                var re = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "激活线路", Issurer = issuer};
                 await _eventRepository.InsertAsync(re);
                 
                 count++;            

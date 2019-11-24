@@ -64,5 +64,25 @@ namespace Clc.Runtime.Cache
             return (a, null);
         }
 
+        public (AffairCacheItem, AffairWorkerCacheItem) GetAffairWorker(DateTime carryoutDate, int depotId, int affairId, int workerId)
+        {
+            var list = Get(carryoutDate, depotId);
+            if (list.Count == 0) return (null, null);
+            
+            AffairCacheItem a = null;
+            foreach (var affair in (List<AffairCacheItem>)list)
+            {
+                if (affair.Id != affairId) continue;
+
+                a = affair;
+                foreach (var worker in affair.Workers)
+                {
+                    if (worker.WorkerId == workerId)
+                        return (affair, worker);
+                }
+            }
+            return (a, null);
+        }
+
     }
 }

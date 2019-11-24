@@ -9,7 +9,10 @@ namespace Clc.Routes
 {
     public interface IRouteAppService : IApplicationService
     {
-        Task<List<RouteDto>> GetRoutesAsync(DateTime carryouDate, string sorting);
+        Task<List<RouteDto>> GetRoutesAsync(DateTime carryoutDate, string sorting);
+        Task<List<RouteDto>> GetAuxRoutesAsync(DateTime carryoutDate, int workplaceId, string sorting);
+        Task<List<RouteDto>> GetQueryRoutesAsync(DateTime carryoutDate, int depotId, string sorting);
+
         Task<RouteDto> Insert(RouteDto input);
         Task<RouteDto> Update(RouteDto input);
         Task Delete(int id);

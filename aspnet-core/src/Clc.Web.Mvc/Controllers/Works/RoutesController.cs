@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Clc.Web.Controllers
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_Arrange)]
+    [AbpMvcAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Aux)]
     public class RoutesController : ClcControllerBase
     {
         private readonly IRouteAppService _routeAppService;
@@ -24,10 +24,33 @@ namespace Clc.Web.Controllers
             return View();
         }
         
+        public ActionResult AuxArrange()
+        {
+            return View();
+        }
+        public ActionResult Query()
+        {
+            return View(0);
+        }
+
         [DontWrapResult]
         public async Task<JsonResult> GridData(DateTime carryoutDate)
         {
             var output = await _routeAppService.GetRoutesAsync(carryoutDate, GetSorting());
+            return Json( new { rows = output });
+        }
+
+        [DontWrapResult]
+        public async Task<JsonResult> AuxGridData(DateTime carryoutDate, int workplaceId)
+        {
+            var output = await _routeAppService.GetAuxRoutesAsync(carryoutDate, workplaceId, GetSorting());
+            return Json( new { rows = output });
+        }
+
+        [DontWrapResult]
+        public async Task<JsonResult> QueryGridData(DateTime carryoutDate, int depotId)
+        {
+            var output = await _routeAppService.GetQueryRoutesAsync(carryoutDate, depotId, GetSorting());
             return Json( new { rows = output });
         }
 

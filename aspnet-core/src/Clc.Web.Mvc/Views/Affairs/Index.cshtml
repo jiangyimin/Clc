@@ -60,6 +60,8 @@
             { field: "startTime", title: "开始时间", width: 80, sortable: true },
             { field: "endTime", title: "结束时间", width: 80, sortable: true },
             { field: "remark", title: "备注", width: 80 },
+            { field: "startTimeActual", title: "作业开始时间", width: 80, sortable: true, formatter: $.timeFormatter },
+            { field: "endTimeActual", title: "作业结束时间", width: 80, sortable: true, formatter: $.timeFormatter },
             { field: "createWorkerName", title: "创建人", width: 60 },
         ]];
         detail.insert = abp.services.app.affair.insertTask;
@@ -79,15 +81,6 @@
 
     <script type="text/javascript">
         mds.initfunction = function () {
-            // comboBoxs
-            //abp.services.app.field.getWorkerCacheItems().done(function (data) {
-            //    $('#worker').combobox({
-            //        data: data,
-            //        valueField: 'id',
-            //        textField: 'cnNamePost'
-            //    })
-            //});
-
             abp.services.app.field.getWorkplaceItems().done(function (data) {
                 $('#workplace').combobox({data: data, valueField: 'id', textField: 'name' });
             });    

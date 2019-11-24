@@ -24,15 +24,23 @@ namespace Clc.Web.Controllers
             return View();
         }
 
-        public ActionResult WhAffairWorkersStat()
+        public ActionResult Query()
         {
-            return View();
+            return View(0);
         }
+
         
         [DontWrapResult]
         public async Task<JsonResult> GridData(DateTime carryoutDate)
         {
             var output = await _affairAppService.GetAffairsAsync(carryoutDate, GetSorting());
+            return Json( new { rows = output });
+        }
+
+        [DontWrapResult]
+        public async Task<JsonResult> QueryGridData(DateTime carryoutDate, int depotId)
+        {
+            var output = await _affairAppService.GetQueryAffairsAsync(carryoutDate, depotId, GetSorting());
             return Json( new { rows = output });
         }
 

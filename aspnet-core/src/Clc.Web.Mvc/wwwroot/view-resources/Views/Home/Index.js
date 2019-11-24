@@ -28,10 +28,9 @@
         initFingerActivex();
         // abp.notify.info('指纹仪已准备好');
         abp.services.app.work.getMe().done(function(ret) {
-            meRoleName = ret.item1;
-            meCn = ret.item2;
+            me = ret;
             // alert(meCn+meRoleName);
-            if (meRoleName == "system") unlockScreen();
+            if (me.loginRoleNames == "system") unlockScreen();
         });
 
          // 侦听ESC for unlockscreen, 
@@ -199,11 +198,10 @@ function matchFinger(src, dst)
     return ZAZFingerActivex.ZAZMatch(src, dst);
 }
 
-var meRoleName = '';
-var meCn = '';
+var me = {};
 
 function EscKeyUp() {
-    if (meRoleName == 'system') return;
+    if (me.loginRoleNames == 'system') return;
     if( event && event.keyCode === 27) {
         $('#dlgUnlock').dialog('open');
         $('#fmUnlock').find('input[name="password"]').next('span').find('input').focus();
@@ -241,20 +239,20 @@ function unlockScreen() {
 function parseMessage(msg) {
     var cmd = msg.split(' ', 2);
     if (cmd[0] == "lockScreen") {
-        if (cmd[1] == meCn) lockScreen();
+        if (cmd[1] == me.workerCn) lockScreen();
     }
     else if (cmd[0] == "unlockScreen") {
-        if (cmd[1] == meCn) unlockScreen();
+        if (cmd[1] == me.workerCn) unlockScreen();
     }
     else if (cmd[0] == "askOpenDoor") {
         // alert(meRoleName);
-        if (meRoleName.indexOf("Monitor") != -1) {
+        if (me.loginRoleNames.indexOf("Monitor") != -1) {
             //abp.event.trigger('askOpenDoor');
             abp.notify.info(cmd[1]);
         }
     }
     else if (cmd[0] == "emergOpenDoor") {
-        if (meRoleName.indexOf("Monitor") != -1) {
+        if (me.loginRoleNames.indexOf("Monitor") != -1) {
             // abp.event.trigger('emergOpenDoor');
             abp.notify.info(cmd[1]);
         }

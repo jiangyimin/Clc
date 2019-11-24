@@ -71,11 +71,13 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Arrange_Vehicle", new FixedLocalizableString("车辆"), url: "Today/VehicleList"))
                     .AddItem(new MenuItemDefinition("Arrange_Issue", new FixedLocalizableString("大事记录"), url: "Issue"))
                 
-                // Statistic
+                // Statistic and QUery
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
                     .AddItem(new MenuItemDefinition("Statistic_Worker", new FixedLocalizableString("人"), url: "Checkin/Home"))
                     .AddItem(new MenuItemDefinition("Statistic_Vehicle", new FixedLocalizableString("车"), url: "Monitor/AskOpenDoor"))
-                    .AddItem(new MenuItemDefinition("Statistic_RouteTask", new FixedLocalizableString("押运任务"), url: "Monitor/EmergOpenDoor"))
+                    .AddItem(new MenuItemDefinition("Statistic_RouteTask", new FixedLocalizableString("押运任务费用"), url: "Monitor/EmergOpenDoor"))
+                    .AddItem(new MenuItemDefinition("Query_Routes", new FixedLocalizableString("线路查询"), url: "Routes/Query"))
+                    .AddItem(new MenuItemDefinition("Query_Affairs", new FixedLocalizableString("任务查询"), url: "Affairs/Query"))
 
                 // Monitor
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
@@ -90,7 +92,7 @@ namespace Clc.Web.Startup
                 // Aux
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Aux, new FixedLocalizableString("辅助调度"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Aux)
                     .AddItem(new MenuItemDefinition("Aux_Checkin", new FixedLocalizableString("验入/申请"), url: "Checkin"))
-                    .AddItem(new MenuItemDefinition("Aux_TaskArrange", new FixedLocalizableString("押运任务安排"), url: "Aux/Tasks"))
+                    .AddItem(new MenuItemDefinition("Aux_TaskArrange", new FixedLocalizableString("押运任务安排"), url: "Routes/AuxArrange"))
 
                 // Article
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Article, new FixedLocalizableString("库房操作"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Article)
