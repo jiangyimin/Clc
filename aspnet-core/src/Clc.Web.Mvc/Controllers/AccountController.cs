@@ -122,6 +122,8 @@ namespace Clc.Web.Controllers
         [UnitOfWork]
         public virtual async Task<JsonResult> Login(LoginViewModel loginModel, string returnUrl = "", string returnUrlHash = "")
         {
+            ValidIpAddress(loginModel.UsernameOrEmailAddress);
+            
             returnUrl = NormalizeReturnUrl(returnUrl);
             if (!string.IsNullOrWhiteSpace(returnUrlHash))
             {
@@ -146,6 +148,24 @@ namespace Clc.Web.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+
+        private void ValidIpAddress(string userName)
+        {
+            if (userName == "admin") return;
+
+            var iplist = SettingManager.GetSettingValueForTenant(AppSettingNames.Rule.LoginIpList, AbpSession.TenantId.Value);
+            if (string.IsNullOrEmpty(iplist)) return;
+
+            var ip = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (string.IsNullOrEmpty(ip))
+            {
+                ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            }
+
+            if (!iplist.Contains(ip)) {
+                throw new Abp.UI.UserFriendlyException("登录位置出错");
+            }
         }
 
 

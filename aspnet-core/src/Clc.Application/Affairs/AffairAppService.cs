@@ -142,7 +142,7 @@ namespace Clc.Affairs
             return list.Count;
         }
 
-        public async Task<(string, int)> Activate(List<int> ids)
+        public async Task<(string, int)> Activate(List<int> ids, bool finger)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
             workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
@@ -164,7 +164,7 @@ namespace Clc.Affairs
                 // for affairEvent
                 var worker = WorkManager.GetWorker(workerId);
                 string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
-                var ae = new AffairEvent() { AffairId = affair.Id, EventTime = DateTime.Now, Name = "激活任务", Issurer = issuer};
+                var ae = new AffairEvent() { AffairId = affair.Id, EventTime = DateTime.Now, Name = "激活任务", Description = finger?"指纹":"密码", Issurer = issuer};
                 await _eventRepository.InsertAsync(ae);
                 
                 count++;            
@@ -182,7 +182,7 @@ namespace Clc.Affairs
                 _affairCache.Set(carryoutDate, depotId, lst);
         }
 
-        public async Task Back(int id)
+        public async Task Back(int id, bool finger)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
             workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
@@ -194,7 +194,7 @@ namespace Clc.Affairs
             // for affairEvent
             var worker = WorkManager.GetWorker(workerId);
             string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
-            var ae = new AffairEvent() { AffairId = affair.Id, EventTime = DateTime.Now, Name = "回退任务", Issurer = issuer};
+            var ae = new AffairEvent() { AffairId = affair.Id, EventTime = DateTime.Now, Name = "回退任务", Description = finger?"指纹":"密码", Issurer = issuer};
             await _eventRepository.InsertAsync(ae);
 
         }
@@ -206,6 +206,14 @@ namespace Clc.Affairs
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             var list = ObjectMapper.Map<List<AffairWorkerDto>>(entities);
+            return list;
+        }
+
+        public List<AffairWorkerDto> GetAffairWorkers(int id)
+        {
+            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole).Where(e => e.AffairId == id).OrderBy(x => x.WorkRole.Cn);
+            
+            var list = ObjectMapper.Map<List<AffairWorkerDto>>(query.ToList());
             return list;
         }
 
@@ -252,9 +260,9 @@ namespace Clc.Affairs
             return ObjectMapper.Map<AffairTaskDto>(entity);
         }
 
-        public async Task SetTaskTime(int id, bool isStart)
+        public void SetTaskTime(int id, bool isStart)
         {
-            var entity = await _taskRepository.GetAsync(id);
+            var entity = _taskRepository.Get(id);
             if (isStart)
             {
                 if (!entity.StartTimeActual.HasValue) entity.StartTimeActual = DateTime.Now;
@@ -264,7 +272,7 @@ namespace Clc.Affairs
                 entity.EndTimeActual = DateTime.Now;
             }
             
-            await _taskRepository.UpdateAsync(entity);
+            _taskRepository.Update(entity);
         }
 
         public async Task<AffairTaskDto> InsertTask(AffairTaskDto input)
@@ -281,7 +289,7 @@ namespace Clc.Affairs
 
         public async Task DeleteTask(int id)
         {
-            await _workerRepository.DeleteAsync(id);
+            await _taskRepository.DeleteAsync(id);
         }
 
         public async Task<List<AffairEventDto>> GetAffairEventsAsync(int id)

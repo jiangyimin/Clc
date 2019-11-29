@@ -20,6 +20,7 @@
         }
         public static class Rule
         {
+            public const string LoginIpList = "Rule.LoginIpList";
             public const string VerifyLogin = "Rule.VerifyLogin";
             public const string Radius = "Rule.Radius";
             public const string DoubleArticleRoles = "Rule.DoubleArticleRoles";
@@ -34,8 +35,9 @@
         {
             public const string DaysChangeReadonly = "TimeRule.DaysChangeReadonly";
             public const string RecheckInterval = "TimeRule.RecheckInterval";
-            public const string AskOpenInterval = "TimeRule.AskOpenInterval";
-            public const string AskOpenPeriod = "TimeRule.AskOpenPeriod";  
+            public const string ReturnDeadline = "TimeRule.ReturnDeadline";
+            // public const string AskOpenInterval = "TimeRule.AskOpenInterval";
+            // public const string AskOpenPeriod = "TimeRule.AskOpenPeriod";  
         }
 
     }

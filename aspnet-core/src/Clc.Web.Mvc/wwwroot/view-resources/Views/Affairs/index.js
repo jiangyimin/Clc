@@ -40,7 +40,7 @@
         })
 
         $('#tb').children('a[name="activate"]').click(function (e) {
-            window.parent.openActivateDialog('activate');
+            window.parent.openActivateDialog('activateAffair');
         })
 
         $('#tbTask').children('a[name="add"]').click(function (e) {
@@ -56,14 +56,8 @@
                 abp.notify.error("激活状态才允许回退");
                 return;
             };
-            abp.message.confirm('确认要退回吗?', '确认', function (r) {
-                if (r) {
-                    abp.services.app.affair.back(mds.masterCurrentRow.id).done(function () {
-                        mds.reload('');
-                    });
-                };
-            });
-        })            
+            window.parent.openActivateDialog('backAffair');
+        })
 
         $('#tb').children('a[name="createFrom"]').click(function (e) {
             e.preventDefault();
@@ -91,22 +85,31 @@
             })
         });
 
-        window.parent.abp.event.on('verifyDone', function(action) {
-            if (action == 'activate')
-                activate();
+        window.parent.abp.event.on('verifyDone', function(p) {
+            if (p.name == 'activateAffair')
+                activate(p.style);
             
-            if (action == 'addTask') {
+            if (p.name == 'backAffair')
+                back(p.style);
+            
+            if (p.name == 'addTask') {
                 mds.add('Task');
             }
         });
     });
 
-    function activate() {
+    function back(style) {
+        abp.services.app.affair.back(mds.masterCurrentRow.id, style).done(function () {
+            mds.reload('');
+        });
+    };
+
+    function activate(style) {
         var checkedRows = $('#dg').datagrid("getChecked");
-        if (checkedRows.length === 0) {
-            abp.notify.error("请先选中要激活的任务。");
-            return;
-        }
+        // if (checkedRows.length === 0) {
+        //     abp.notify.error("请先选中要激活的任务。");
+        //     return;
+        // }
 
         var ids = [];
         for (var i = 0; i < checkedRows.length; i++) {
@@ -114,7 +117,7 @@
             if (row.status == "安排") ids.push(row.id);
         };
         // alert(ids);
-        abp.services.app.affair.activate(ids).done(function (ret) {
+        abp.services.app.affair.activate(ids, style).done(function (ret) {
             abp.notify.info('有' + ret.item2 + '个任务被激活');
             // Cache active affairs
             abp.services.app.affair.setActiveAffairCache(mds.today).done(function() {

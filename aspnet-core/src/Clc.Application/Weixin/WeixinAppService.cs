@@ -8,27 +8,58 @@ using Clc.Weixin.Dto;
 using Clc.Fields;
 using Clc.Runtime.Cache;
 using Clc.Runtime;
+using Clc.DoorRecords.Dto;
 
 namespace Clc.Weixin
 {
     public class WeixinAppService : ClcAppServiceBase, IWeixinAppService
     {
         public WorkManager WorkManager { get; set; }
+
+        // App01 and App02
+        private readonly IRepository<Issue> _issueRepository;
+        private readonly IRepository<AskDoorRecord> _askDoorRepository;
+        private readonly IRepository<EmergDoorRecord> _emergDoorRepository;
+
+        // App03
         private readonly IRouteAppService _routeAppService;
         private readonly IOutletCache _outletCache;
         private readonly ITaskTypeCache _taskTypeCache;
         private readonly IVehicleCache _vehicleCache;
 
-        public WeixinAppService(IRouteAppService routeAppService,
-            IOutletCache outletCache, ITaskTypeCache taskTypeCache, IVehicleCache vehicleCache)
+        public WeixinAppService(IRepository<Issue> issueRepository, IRepository<AskDoorRecord> askDoorRepository, IRepository<EmergDoorRecord> emergDoorRepository,
+            IRouteAppService routeAppService,IOutletCache outletCache, ITaskTypeCache taskTypeCache, IVehicleCache vehicleCache)
         {
+            _issueRepository = issueRepository;
+            _askDoorRepository = askDoorRepository;
+            _emergDoorRepository = emergDoorRepository;
+
             _routeAppService = routeAppService;
             _outletCache = outletCache;
             _taskTypeCache = taskTypeCache;
             _vehicleCache = vehicleCache;
         }
 
-            public WxIdentifyDto Login(string workerCn, string password, string deviceId)
+        #region App01
+
+        public AskDoorDto GetAskDoorForApproval(int doorId) 
+        {
+            
+
+            return null;
+        }
+
+        public void InsertDoorEmerg(int depotId, int workerId, int doorId, string content)
+        {
+            using(CurrentUnitOfWork.SetTenantId(1))
+            {
+            }
+
+        }
+        #endregion
+
+        #region App02
+        public WxIdentifyDto Login(string workerCn, string password, string deviceId)
         {
             WxIdentifyDto dto = new WxIdentifyDto();
 
@@ -87,5 +118,7 @@ namespace Clc.Weixin
             }
             return (ret.Item1, sub);
         }
+
+        #endregion
     }
 }

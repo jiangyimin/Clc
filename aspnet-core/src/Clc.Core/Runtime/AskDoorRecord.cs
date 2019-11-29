@@ -45,7 +45,7 @@ namespace Clc.Runtime
         public string AskWorkers { get; set; }
 
         /// <summary>
-        /// 申请信息五：对于任务方式的申请，填入RouteId
+        /// 申请信息五：对于线路方式的申请，填入RouteId
         /// </summary>
         public int? RouteId { get; set; }
         public virtual Route Route { get; set; }

@@ -112,15 +112,18 @@ var finput = finput || {};
             finput.index = 0;
             $('#dlg').dialog('open');
             routeInfo.innerHTML = finput.route.routeName + '(' + finput.route.vehicleCn + ' ' + finput.route.vehicleLicense + ')';
-            workerInfo.innerHTML = finput.worker.cn + ' ' + finput.worker.name;
+            workerInfo.innerHTML = finput.worker.name + ' ' + finput.worker.workRoleName;
             photo.src = 'data:image/jpg;base64, ' + finput.worker.photo;
         }
         else {
             finput.index = 1;
             $('#dlg2').dialog('open');
             routeInfo1.innerHTML = finput.route.routeName + '(' + finput.route.vehicleCn + ' ' + finput.route.vehicleLicense + ')';
-            workerInfo1.innerHTML = finput.worker.cn + ' ' + finput.worker.name;
+            workerInfo1.innerHTML = finput.worker.name + ' ' + finput.worker.workRoleName;
             photo1.src = 'data:image/jpg;base64, ' + finput.worker.photo;
+            workerInfo2.innerHTML = finput.worker2.name + ' ' + finput.worker2.workRoleName;
+            photo2.src = 'data:image/jpg;base64, ' + finput.worker2.photo;
+            // finput.showArticles();
         }
 
         // show Article Also
@@ -130,8 +133,6 @@ var finput = finput || {};
     finput.submitArticlesDone = function() {
         if (finput.index == 1 && finput.worker2 != null) {
             finput.index = 2;
-            workerInfo2.innerHTML = finput.worker2.cn + ' ' + finput.worker2.name;
-            photo2.src = 'data:image/jpg;base64, ' + finput.worker2.photo;
             finput.showArticles();
         }
         else {
@@ -150,11 +151,24 @@ var finput = finput || {};
         return finput.index == 2 ? finput.worker2.rfid : finput.worker.rfid;
     }
 
-    finput.IsInArticles = function(articleId) {
+    // lead control recoredId, return control isReturn
+    finput.IsInLendArticles = function(articleId) {
         var as = finput.getArticles();
         for (var i = 0; i < as.length; i++) {
             if (as[i].articleId === articleId) {
-                as[i].isReturn = true;
+                if (as[i].recordId > 0) return 2;
+                as.splice(i, 1);
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    finput.IsInReturnArticles = function(articleId) {
+        var as = finput.getArticles();
+        for (var i = 0; i < as.length; i++) {
+            if (as[i].articleId === articleId) {
+                as[i].isReturn = true;;
                 return true;
             }
         }

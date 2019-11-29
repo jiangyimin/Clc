@@ -26,6 +26,7 @@ namespace Clc.DoorRecords
 
         Task ApproveEmergDoor(int id, int approverId);
 
-        Task<EmergDoorRecordDto> GetLastUnApproveEmergDoor(int workerId);        
+        Task<EmergDoorRecordDto> GetLastUnApproveEmergDoor(int workerId);     
+         
     }
 }

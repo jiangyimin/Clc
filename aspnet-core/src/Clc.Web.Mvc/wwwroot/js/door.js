@@ -21,24 +21,5 @@
 
     $(function () {
         initWS();
-
-        // alert('dataliost');
-        $('#dlCard').datalist({
-            data: work.askWorkers,
-            valueField: 'name',
-            textField: 'name',
-            lines: true,
-            textFormatter: function(value,row,index) {
-                return '<span style="font-size:24px">'+value+'</span>';
-            }
-        });
-
-        $('#dlg').dialog({
-            onClose: function() {
-                status = '';
-                work.askWorkers = [];
-                $('#dlCard').datalist('loadData', []);
-            }
-        });
     });
 })();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Linq;
 using Clc.Affairs;
@@ -134,8 +135,8 @@ namespace Clc.Works
             var depot = WorkManager.GetDepot(WorkManager.GetWorker(workerId).DepotId);
             dto.DepotId = depot.Id;
 
-            var depots = SettingManager.GetSettingValueAsync(AppSettingNames.Rule.AltCheckinDepots).Result;
-            if (!depots.Contains(depot.Name)) return dto;
+            var depots = SettingManager.GetSettingValue(AppSettingNames.Rule.AltCheckinDepots);
+            if (!depots.Split('|', ',').Contains(depot.Name)) return dto;
             var affair = WorkManager.FindAltDutyAffairByDepotId(depot.Id);
             if (affair == null) return dto;
 
@@ -153,13 +154,12 @@ namespace Clc.Works
             var affair = WorkManager.FindCheckinAffairByWorkerId(workerId);
             if (affair == null) return dto;
             var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
-            dto.Rfids = GetRfidsByAffair(affair);
             dto.Workers = GetWorkersInfo(affair);
             return dto.SetAffair(affair, wp.Name, false);
         }
 
 
-        public List<RouteCacheItem> GetActiveRoutes(int wpId, DateTime carryoutDate, int depotId, int affairId)
+        public List<RouteCacheItem> GetCachedRoutes(int wpId, DateTime carryoutDate, int depotId, int affairId)
         {
             var depots = WorkManager.GetShareDepots(wpId);
             var ret = new List<RouteCacheItem>();
@@ -305,6 +305,12 @@ namespace Clc.Works
             WorkManager.DoCheckout(aw.Item1, aw.Item2, workerId);
         }
         
+        public (bool, string) ConfirmByFinger(string finger, int workerId)
+        {
+            var ret = WorkManager.MatchFinger(finger, workerId);
+            return ret;
+        }
+
         #endregion
 
         #region Article
@@ -312,41 +318,28 @@ namespace Clc.Works
         public RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, int wpId, DateTime carryoutDate, int depotId, int affairId, string rfid, int routeId)
         {
             var result = new RouteWorkerMatchResult();
-            (RouteCacheItem, RouteWorkerCacheItem, RouteWorkerCacheItem) found = (null, null, null);
-            var routes = _routeCache.Get(carryoutDate, depotId);
-
-            if (routeId == 0) 
-                found = FindEqualRfidWorker(routes, rfid, routeId);
+            (string, RouteCacheItem, RouteWorkerCacheItem, RouteWorkerCacheItem) found = (null, null, null, null);
+            if (routeId > 0) 
+                found = FindEqualRfidWorkerForArticle(isLend, _routeCache.Get(carryoutDate, depotId), rfid, routeId);
             else
-                foreach (var dopotId in WorkManager.GetShareDepots(wpId))
+                foreach (var id in WorkManager.GetShareDepots(wpId))
                 {
-                    found = FindEqualRfidWorker(routes, rfid);
-                    if (found.Item1 != null) break;
+                    var routes = _routeCache.Get(carryoutDate, id);
+                    found = FindEqualRfidWorkerForArticle(isLend, routes, rfid);
+                    if (found.Item1 == null) break;
                 }
 
-            if (found.Item1 == null) 
-            {
-                result.Message = "任务中或全部激活任务中找不到此人";
+            // Error, Return
+            if (found.Item1 != null) {
+                result.Message = found.Item1;
                 return result;
             }
-                
-            // RULE JUDGE
-            var rt = _routeTypeCache[found.Item1.RouteTypeId];
-            if (string.IsNullOrEmpty(_workRoleCache[found.Item2.WorkRoleId].ArticleTypeList)) {
-               result.Message = "此人不需要领物";
-               return result;
-            }
 
-            if (isLend && !ClcUtils.NowInTimeZone(found.Item1.StartTime, rt.LendArticleLead, rt.LendArticleDeadline)) {
-               result.Message = "不在领物时间段";
-               return result;
-            }
-
-            result.RouteMatched = new MatchedRouteDto(found.Item1);
-            var w = found.Item2;
+            result.RouteMatched = new MatchedRouteDto(found.Item2);
+            var w = found.Item3;
             result.WorkerMatched = new MatchedWorkerDto(w.Id, WorkManager.GetWorker(w.WorkerId), _workRoleCache[w.WorkRoleId]);
             result.Articles = GetArticles(w.Id);
-            w = found.Item3;
+            w = found.Item4;
             if (w != null)
             {
                 result.WorkerMatched2 = new MatchedWorkerDto(w.Id, WorkManager.GetWorker(w.WorkerId), _workRoleCache[w.WorkRoleId]);
@@ -460,12 +453,40 @@ namespace Clc.Works
         #endregion
 
         #region private
+        private (string, RouteCacheItem, RouteWorkerCacheItem, RouteWorkerCacheItem) FindEqualRfidWorkerForArticle(bool isLend, List<RouteCacheItem> routes, string rfid, int routeId = 0)
+        {           
+            foreach (var route in routes)
+            {
+                if (routeId != 0 && route.Id != routeId) continue;
+               
+                // 时间段 JUDGE
+                var rt = _routeTypeCache[route.RouteTypeId];
+                if (isLend && !ClcUtils.NowInTimeZone(route.StartTime, rt.LendArticleLead, rt.LendArticleDeadline)) continue;
+                var span = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.ReturnDeadline));
+                if (!isLend && DateTime.Now > ClcUtils.GetDateTime(route.EndTime).AddMinutes(span)) continue;
+
+                foreach (var rw in route.Workers) 
+                {
+                    var worker = WorkManager.GetWorker(rw.WorkerId);
+                    if (worker.Rfid == rfid) {
+                        if (string.IsNullOrEmpty(_workRoleCache[rw.WorkRoleId].ArticleTypeList))
+                            return ("此人不需要领还物", null, null, null);
+
+                        RouteWorkerCacheItem rw2 = FindAnotherRouteWorker(route.Workers, _workRoleCache[rw.WorkRoleId]);
+                        return (null, route, rw, rw2);
+                    }
+                }
+
+            }
+            return ("无任务或不在时间段", null, null, null);
+        }
 
         private (RouteCacheItem, RouteWorkerCacheItem, RouteWorkerCacheItem) FindEqualRfidWorker(List<RouteCacheItem> routes, string rfid, int routeId = 0)
         {           
             foreach (var route in routes)
             {
                 if (routeId != 0 && route.Id != routeId) continue;
+
 
                 foreach (var w in route.Workers) 
                 {
@@ -513,14 +534,6 @@ namespace Clc.Works
                 ret.Add(new RouteArticleCDto(article, a.ArticleRecordId, a.ArticleRecord.ReturnTime.HasValue));
             }
             return ret;
-        }
-
-        private List<string> GetRfidsByAffair(AffairCacheItem affair)
-        {
-            var lst = new List<string>();
-            foreach (var w in affair.Workers)
-                lst.Add(WorkManager.GetWorker(w.WorkerId).Rfid);
-            return lst;
         }
      
         private string GetWorkersInfo(AffairCacheItem affair)

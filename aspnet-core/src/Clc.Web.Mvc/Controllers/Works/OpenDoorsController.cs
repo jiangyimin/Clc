@@ -36,6 +36,26 @@ namespace Clc.Web.Controllers
             return View();
         }
         
+        public ActionResult AffairQuery()
+        {
+            return RedirectToAction("Query", "Affairs", new { Seld = 1});
+        } 
+
+        [HttpPost]
+        [DontWrapResult]
+        public JsonResult NotifyWorkers(string workers, string doorName)
+        {
+            var toUsers = parseToUsers(workers);
+
+           //var output = await _doorRecordAppService.GetDoorsAsync();
+            return Json( new { });
+        }
+
+        private string parseToUsers(string workers)
+        {
+            return workers.Substring(0, 5);
+        }
+
         [DontWrapResult]
         public async Task<JsonResult> GridDataDoor()
         {

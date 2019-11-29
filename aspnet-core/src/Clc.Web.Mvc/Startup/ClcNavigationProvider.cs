@@ -76,16 +76,19 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Statistic_Worker", new FixedLocalizableString("人"), url: "Checkin/Home"))
                     .AddItem(new MenuItemDefinition("Statistic_Vehicle", new FixedLocalizableString("车"), url: "Monitor/AskOpenDoor"))
                     .AddItem(new MenuItemDefinition("Statistic_RouteTask", new FixedLocalizableString("押运任务费用"), url: "Monitor/EmergOpenDoor"))
-                    .AddItem(new MenuItemDefinition("Query_Routes", new FixedLocalizableString("线路查询"), url: "Routes/Query"))
-                    .AddItem(new MenuItemDefinition("Query_Affairs", new FixedLocalizableString("任务查询"), url: "Affairs/Query"))
+                    .AddItem(new MenuItemDefinition("Query_Routes", new FixedLocalizableString("线路查询"), url: "Routes/Query/0"))
+                    .AddItem(new MenuItemDefinition("Query_Affairs", new FixedLocalizableString("任务查询"), url: "Affairs/Query/0"))
 
                 // Monitor
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("开门"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
                     .AddItem(new MenuItemDefinition("Monitor_Checkin", new FixedLocalizableString("验入/申请"), url: "Checkin"))
-                    .AddItem(new MenuItemDefinition("Monitor_AskOpenDoor", new FixedLocalizableString("任务开门"), url: "OpenDoors/AskOpenDoor"))
-                    .AddItem(new MenuItemDefinition("Monitor_EmergOpenDoor", new FixedLocalizableString("应急开门"), url: "OpenDoors/EmergOpenDoor"))
-                    .AddItem(new MenuItemDefinition("Monitor_Records", new FixedLocalizableString("开门记录查询"), url: "OpenDoors/RecordQuery"))
+                    .AddItem(new MenuItemDefinition("Door_AskOpenDoor", new FixedLocalizableString("任务开门"), url: "OpenDoors/AskOpenDoor"))
+                    .AddItem(new MenuItemDefinition("Door_EmergOpenDoor", new FixedLocalizableString("应急开门"), url: "OpenDoors/EmergOpenDoor"))
+                    .AddItem(new MenuItemDefinition("Door_Records", new FixedLocalizableString("开门记录查询"), url: "OpenDoors/RecordQuery"))
+                // Monitor
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
                     .AddItem(new MenuItemDefinition("Monitor_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Monitor/KeyPoints"))
+                    .AddItem(new MenuItemDefinition("Monitor_Affairs", new FixedLocalizableString("任务查询"), url: "OpenDoors/AffairQuery"))
                     .AddItem(new MenuItemDefinition("Monitor_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Monitor/ArticleRecords"))
 
 

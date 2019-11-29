@@ -1,7 +1,7 @@
 ﻿var work = work || {};
 (function($) {
     work.me = {};
-    work.askWorkers = [];
+    work.aws = [];
     
     work.validate = function() {
         if (work.me.affairId == 0) {
@@ -9,15 +9,6 @@
             return false;
         };
         return true;
-    }
-
-    work.isInRfids = function (rfid) {
-        for (var i = 0; i < work.me.rfids.length; i++) {
-            if (work.me.rfids[i] === rfid)
-                return true;
-        }
-        abp.notify.error("此RFID不是工作人员的卡", "", { positionClass : 'toast-top-center'} );
-        return false;
     }
 
     work.getTomorrow = function(today) {

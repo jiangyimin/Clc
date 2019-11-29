@@ -43,12 +43,6 @@
 .bar-right {
     float: right;
 }
-.topbar .bar-right object {
-    margin-left: 10px;
-    height: 46px;
-    width: 90px;
-    vertical-align: middle;
-}
 .topbar .bar-right a {
     color: white; 
     margin: 10px;

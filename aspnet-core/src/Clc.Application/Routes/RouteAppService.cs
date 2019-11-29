@@ -23,6 +23,7 @@ namespace Clc.Routes
     public class RouteAppService : ClcAppServiceBase, IRouteAppService
     {
         public WorkManager WorkManager { get; set; }
+        private readonly List<string> _activeStatus = new List<string>() { "激活", "领物", "还物" };
 
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
 
@@ -91,7 +92,7 @@ namespace Clc.Routes
         {
             var depots = WorkManager.GetShareDepots(workplaceId);
             var query = _routeRepository.GetAllIncluding(x => x.RouteType, x => x.Vehicle, x => x.AltVehicle, x => x.CreateWorker);
-            query = query.Where(x => x.CarryoutDate == carryoutDate && depots.Contains(x.DepotId) && x.Status == "激活").OrderBy(sorting);
+            query = query.Where(x => x.CarryoutDate == carryoutDate && depots.Contains(x.DepotId) && _activeStatus.Contains(x.Status)).OrderBy(sorting);
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return ObjectMapper.Map<List<RouteDto>>(entities);
         }
@@ -131,7 +132,7 @@ namespace Clc.Routes
             await _routeRepository.DeleteAsync(id);
         }
 
-        public async Task<(string, int)> Activate(List<int> ids)
+        public async Task<(string, int)> Activate(List<int> ids, bool finger)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
             workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
@@ -152,7 +153,7 @@ namespace Clc.Routes
                 // RouteEvent
                 var worker = WorkManager.GetWorker(workerId);
                 string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
-                var re = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "激活线路", Issurer = issuer};
+                var re = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "激活线路", Description = finger?"指纹":"密码", Issurer = issuer};
                 await _eventRepository.InsertAsync(re);
                 
                 count++;            
@@ -164,7 +165,8 @@ namespace Clc.Routes
         {
             int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
             // 为激活任务设置缓存
-            var query = _routeRepository.GetAllIncluding(x => x.Vehicle, x => x.AltVehicle, x => x.Workers).Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && x.Status != "安排");
+            var query = _routeRepository.GetAllIncluding(x => x.Vehicle, x => x.AltVehicle, x => x.Workers)
+                .Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && _activeStatus.Contains(x.Status));
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             var lst = ObjectMapper.Map<List<RouteCacheItem>>(entities);
             if (lst.Count > 0)
@@ -194,7 +196,7 @@ namespace Clc.Routes
             return count;
         }
 
-        public async Task Back(int id)
+        public async Task Back(int id, bool finger)
         {
             var route = _routeRepository.Get(id);
             route.Status = "安排";
@@ -205,7 +207,7 @@ namespace Clc.Routes
             workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
             var worker = WorkManager.GetWorker(workerId);
             string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
-            var ae = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "回退线路", Issurer = issuer};
+            var ae = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "回退线路", Description = finger?"指纹":"密码", Issurer = issuer};
             await _eventRepository.InsertAsync(ae);
         }
 
@@ -381,13 +383,17 @@ namespace Clc.Routes
 
             foreach (Route route in routes)
             {
+                if (!ClcUtils.NowInTimeZone(route.StartTime, route.EndTime, 100)) continue;
                 bool found = false;
                 int subId = 0;
                 foreach (RouteWorker rw in route.Workers)
                 {
                     var workRole = _workRoleCache[rw.WorkRoleId];
-                    if (rw.WorkerId == workerId && workRole.Duties.Contains("交接")) found = true;
-                    if (!string.IsNullOrEmpty(workRole.Duties) && workRole.Duties.Contains("辅助交接")) subId = rw.WorkerId;                    
+                    if (string.IsNullOrEmpty(workRole.Duties)) continue;
+
+                    var names =  workRole.Duties.Split('|', ' ', ',');
+                    if (rw.WorkerId == workerId &&  names.Contains("交接")) found = true;
+                    if (names.Contains("辅助交接")) subId = rw.WorkerId;                    
                 }
 
                 if (found && subId != 0) {

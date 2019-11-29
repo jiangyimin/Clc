@@ -105,6 +105,29 @@ namespace Clc.Web.Controllers
         }
 
 
+        [HttpPost]
+        public ActionResult SelectOutlet(string outletCn)
+        {
+            WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
+            if (string.IsNullOrWhiteSpace(outletCn))
+            {
+                ModelState.AddModelError("", "需要输入网点编号");
+                return View("Identify", dto);
+            }
+
+            var outlet = _outletCache.GetList().FindLast(x => x.Cn == outletCn);
+            if (outlet != null)
+            {
+                SelectOutlet(outlet.Id, dto);
+                return View("Identify", dto);
+            }
+            else
+            {
+                ModelState.AddModelError("", "此编号没有对应的网点");
+                return View("Identify", dto);
+            }
+        }
+
         private void SelectOutlet(int outletId, WxIdentifyDto dto)
         {
             var outlet = _outletCache[outletId];

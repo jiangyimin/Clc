@@ -76,6 +76,16 @@ namespace Clc.Runtime
             else
                 return false;
         }
+        public static bool NowInTimeZone(string start, string end, int deadline)
+        {
+            DateTime s = GetDateTime(start);
+            DateTime e = GetDateTime(end);
+            if ( DateTime.Now >= ClcUtils.GetDateTime(start) && DateTime.Now <= e.Add(TimeSpan.FromMinutes(deadline)) )
+                return true;
+            else
+                return false;
+        }
+
         public static bool NowInTimeZone(DateTime start, DateTime end)
         {
             if (DateTime.Now >= start && DateTime.Now <= end) return true;

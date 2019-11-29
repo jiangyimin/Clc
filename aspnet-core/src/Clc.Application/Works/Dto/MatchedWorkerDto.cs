@@ -18,6 +18,8 @@ namespace Clc.Works.Dto
         public string ArticleTypeList { get; set; }
         public string Duties { get; set; }
 
+        public string WorkRoleName { get; set; }
+
         public MatchedWorkerDto(int id, Worker w, WorkRole role)
         {
             RouteWorkerId = id;
@@ -28,6 +30,7 @@ namespace Clc.Works.Dto
             Photo = w.Photo != null ? Convert.ToBase64String(w.Photo) : null;
             ArticleTypeList = role.ArticleTypeList;
             Duties = role.Duties;
+            WorkRoleName = role.Name;
         }
     }
 }

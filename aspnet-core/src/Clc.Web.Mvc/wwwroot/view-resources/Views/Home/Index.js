@@ -25,8 +25,6 @@
         }
 
         // common: finger and  signalR
-        initFingerActivex();
-        // abp.notify.info('指纹仪已准备好');
         abp.services.app.work.getMe().done(function(ret) {
             me = ret;
             // alert(meCn+meRoleName);
@@ -54,6 +52,15 @@
              abp.notify.info("与实时推送服务连接成功");
          });
 
+         // abp.notify.info('指纹仪已准备好');
+        $('dlgActivate').dialog({
+            onClose: function () { 
+                verifyAction = ''; 
+                abp.event.trigger('activateDialogClosed');
+            }
+        });
+
+        initFingerActivex();
     });
 
     function addTab(title, url, icon) {
@@ -76,9 +83,9 @@
     }
 
     // utils for sub
-    function closeTab(title) {
-        $("#main-tab").tabs('close', title);
-    }
+    //function closeTab(title) {
+    //    $("#main-tab").tabs('close', title);
+    //}
 
     function tabHandle(menu, type) {
         var title = $(menu).data("tabTitle");
@@ -185,6 +192,7 @@ function regFingerCode() {
 
 function getFingerCode() {
     var mesg = ZAZFingerActivex.ZAZGetImgCode();
+    // alert('mesg'+ mesg);
     if (mesg == "0") {
         return ZAZFingerActivex.FingerCode;
     }
@@ -204,12 +212,12 @@ function EscKeyUp() {
     if (me.loginRoleNames == 'system') return;
     if( event && event.keyCode === 27) {
         $('#dlgUnlock').dialog('open');
-        $('#fmUnlock').find('input[name="password"]').next('span').find('input').focus();
+        $('#passwordUnlock').next('span').find('input').focus();
     }
 }
 
 function verifyUnlockPassword() {
-    var pwd = $('#fmUnlock').find('input[name="password"]').val();
+    var pwd = $('#passwordUnlock').val();
     // alert(pwd);
     abp.services.app.work.verifyUnlockPassword(pwd).done(function(result) {
         if (result == true) {
@@ -237,25 +245,37 @@ function unlockScreen() {
 }
 
 function parseMessage(msg) {
+    // alert(me.loginRoleNames);
     var cmd = msg.split(' ', 2);
+    // alert(cmd[0] + cmd[1]);
     if (cmd[0] == "lockScreen") {
         if (cmd[1] == me.workerCn) lockScreen();
+        return;
     }
-    else if (cmd[0] == "unlockScreen") {
+    if (cmd[0] == "unlockScreen") {
         if (cmd[1] == me.workerCn) unlockScreen();
+        return;
     }
-    else if (cmd[0] == "askOpenDoor") {
-        // alert(meRoleName);
+    if (cmd[0] == "askOpenDoor") {
         if (me.loginRoleNames.indexOf("Monitor") != -1) {
-            //abp.event.trigger('askOpenDoor');
+            abp.event.trigger('askOpenDoor');
             abp.notify.info(cmd[1]);
         }
+        return;
     }
-    else if (cmd[0] == "emergOpenDoor") {
+    if (cmd[0] == "askVaultGuard") {
         if (me.loginRoleNames.indexOf("Monitor") != -1) {
-            // abp.event.trigger('emergOpenDoor');
+            // alert(cmd[1]);
+            abp.message.info(cmd[1], "设防处理");
+        }
+        return;
+    }
+    if (cmd[0] == "emergOpenDoor") {
+        if (me.loginRoleNames.indexOf("Monitor") != -1) {
+            abp.event.trigger('emergOpenDoor');
             abp.notify.info(cmd[1]);
         }
+        return;
     }
 }
 
@@ -269,7 +289,6 @@ function openActivateDialog(action) {
 }
 
 function closeActivateDialog() {
-    verifyAction = '';
     // alert(verifyAction);
     $('#fmActivate').form('clear');
     $('#dlgActivate').dialog('close');
@@ -282,7 +301,7 @@ function verifyPasswordAndTrigger()
         if (result == true) {
             abp.notify.success("密码验证正确");
             // alert(verifyAction);
-            abp.event.trigger('verifyDone', verifyAction);
+            abp.event.trigger('verifyDone', { name: verifyAction, style: false });
             closeActivateDialog();
         }
         else
@@ -295,10 +314,11 @@ function verifyFingerAndTrigger()
     abp.notify.info("请把指纹放到指纹仪上");
     var finger = getFingerCode();
     if (finger != '') {
-        abp.services.app.work.verifyFinger(finger, meCn).done(function(ret) {
+        // alert(finger);
+        abp.services.app.work.verifyFinger(finger, me.workerCn).done(function(ret) {
             abp.notify.info(ret.item2);
             if (ret.item1) {
-                abp.event.trigger('verifyDone', verifyAction);
+                abp.event.trigger('verifyDone', { name: verifyAction, style: true });
                 closeActivateDialog();
             };
         });

@@ -17,13 +17,15 @@ namespace Clc.Runtime.Cache
         private readonly ICacheManager _cacheManager;
         private readonly IRepository<Route> _routeRepository;
 
+        private readonly List<string> _activeStatus = new List<string>() { "激活", "领物", "还物" };
+
         public RouteCache(
             ICacheManager cacheManager,
             IRepository<Route> routeRepository)
         {
             _cacheManager = cacheManager;
             _routeRepository = routeRepository;
-            _cacheManager.GetCache(CacheName).DefaultSlidingExpireTime = TimeSpan.FromHours(2);
+            _cacheManager.GetCache(CacheName).DefaultSlidingExpireTime = TimeSpan.FromHours(6);
         }
 
         public void Set(DateTime carryoutDate, int depotId, object value)
@@ -37,7 +39,7 @@ namespace Clc.Runtime.Cache
             string cacheKey = carryoutDate.ToString() + depotId.ToString();
             return _cacheManager.GetCache(CacheName).Get(cacheKey, () => {
                 var query = _routeRepository.GetAllIncluding(x => x.Vehicle, x => x.AltVehicle, x => x.Workers)
-                    .Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && x.Status == "激活");
+                    .Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && _activeStatus.Contains(x.Status));
                 var list = query.ToList();
                 return ObjectMapper.Map<List<RouteCacheItem>>(list);
             });

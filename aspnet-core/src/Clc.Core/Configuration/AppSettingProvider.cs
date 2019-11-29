@@ -85,6 +85,12 @@ namespace Clc.Configuration
             return new List<SettingDefinition>
             {
                 new SettingDefinition(
+                    AppSettingNames.Rule.LoginIpList, 
+                    "", 
+                    new FixedLocalizableString("登录IP绑定"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
                     AppSettingNames.Rule.VerifyLogin, 
                     "false", 
                     new FixedLocalizableString("校验码登录"),
@@ -140,15 +146,9 @@ namespace Clc.Configuration
                    scopes: SettingScopes.Tenant
                 ),
                 new SettingDefinition(
-                    AppSettingNames.TimeRule.AskOpenInterval, 
+                    AppSettingNames.TimeRule.ReturnDeadline, 
                     "120", 
-                    new FixedLocalizableString("再次申请开门间隔(秒)"),
-                    scopes: SettingScopes.Tenant
-                ),
-                new SettingDefinition(
-                    AppSettingNames.TimeRule.AskOpenPeriod, 
-                    "60", 
-                    new FixedLocalizableString("申请开门周期(秒)"),
+                    new FixedLocalizableString("还物截止时间(分)"),
                     scopes: SettingScopes.Tenant
                 ),
             };

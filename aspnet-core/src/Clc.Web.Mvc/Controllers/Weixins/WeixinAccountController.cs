@@ -28,6 +28,7 @@ namespace Clc.Web.Controllers
         private string _agentId;
         
         static public readonly Dictionary<string, string> _appDict = new Dictionary<string, string>() {
+            {"AskDoor", "App01"},
             {"EmergDoor", "App01"},
             {"TTT", "App02"}
         };

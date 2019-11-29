@@ -17,6 +17,7 @@ namespace Clc.DoorRecords.Dto
         /// </summary>
         public string WorkplaceName { get; set; }
 
+        public string AskAffairContent { get; set; }
         public string AskStyle { get; set; }
 
         public string AskWorkers { get; set; }

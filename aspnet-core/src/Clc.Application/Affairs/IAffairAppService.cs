@@ -12,10 +12,10 @@ namespace Clc.Affairs
         Task<List<AffairDto>> GetAffairsAsync(DateTime carryoutDate, string sorting);
         Task<List<AffairDto>> GetQueryAffairsAsync(DateTime carryoutDate, int depotId, string sorting);
 
-        Task<(string, int)> Activate(List<int> ids);
+        Task<(string, int)> Activate(List<int> ids, bool finger);
         Task SetActiveAffairCache(DateTime carryoutDate);
 
-        Task Back(int id);
+        Task Back(int id, bool finger);
 
         Task<int> CreateFrom(DateTime carryoutDate, DateTime fromDate);
 
@@ -26,6 +26,7 @@ namespace Clc.Affairs
 
         #region Son Tables
         Task<List<AffairWorkerDto>> GetAffairWorkersAsync(int id);
+        List<AffairWorkerDto> GetAffairWorkers(int id);
         Task<AffairWorkerDto> InsertWorker(AffairWorkerDto input);
         Task<AffairWorkerDto> UpdateWorker(AffairWorkerDto input);
         Task DeleteWorker(int id);
@@ -33,7 +34,7 @@ namespace Clc.Affairs
         Task<List<AffairTaskDto>> GetAffairTasksAsync(int id, string sorting);
         Task<AffairTaskDto> InsertTask(AffairTaskDto input);
         Task<AffairTaskDto> UpdateTask(AffairTaskDto input);
-        Task SetTaskTime(int id, bool isStart);
+        void SetTaskTime(int id, bool isStart);
         Task DeleteTask(int id);
 
         Task<List<AffairEventDto>> GetAffairEventsAsync(int id);

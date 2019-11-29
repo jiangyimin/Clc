@@ -1,4 +1,6 @@
-﻿<table id="dg" class="easyui-datagrid" toolbar="#tb"
+﻿<div id="summary" class="easyui-panel" style="background:#f3eeaf;height:70px">
+</div>
+<table id="dg" class="easyui-datagrid" toolbar="#tb"
         fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true"
         url="GridDataArticle" pagination="true" pageSize="20" sortName="cn">
     <thead>
@@ -11,13 +13,34 @@
     </thead>
 </table>
 <div id="tb">
-    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="reload()">刷新</a>
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="reportTo()">报送</a>
 </div>
 
 @section scripts
 {
-    <script type="text/javascript">      
+    <script type="text/javascript"> 
+        $(function() {
+            sum();
+        });
+
+        function reload() {
+            sum();
+            $('#dg').datagrid('reload');
+        }
+
+        function sum() {
+            abp.services.app.articleRecord.getReportData().done(function (as) {
+                //alert(as.length);
+                var h = '';
+                for (var i = 0; i < as.length; i++) {
+                    var t = as[i].name + "(总数：" + as[i].count + "&nbsp;&nbsp;已领：" + as[i].lendCount + "&nbsp;&nbsp;未还：" + as[i].unReturnCount + ")";
+                    h += "<p class='summary'>" + t + "</p>";
+                }
+                summary.innerHTML = h;
+            });
+        }
+        
         function reportTo() {
             abp.ajax({
                 url: 'ReportArticleTo',

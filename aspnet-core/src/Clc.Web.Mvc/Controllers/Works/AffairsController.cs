@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Clc.Web.Controllers
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_Arrange)]
+    [AbpMvcAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Monitor)]
     public class AffairsController : ClcControllerBase
     {
         private readonly IAffairAppService _affairAppService;
@@ -24,9 +24,9 @@ namespace Clc.Web.Controllers
             return View();
         }
 
-        public ActionResult Query()
+        public ActionResult Query(int seld)
         {
-            return View(0);
+            return View(seld);
         }
 
         

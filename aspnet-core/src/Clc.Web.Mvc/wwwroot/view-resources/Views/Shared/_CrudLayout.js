@@ -107,17 +107,19 @@ var crud = crud || {};
     crud.save = function () {
         if (!_$fm.form('validate'))
             return;
-
+        
         var fd = new FormData(document.getElementById('fm'));         
         crud.sendFdAjax(fd);
     };
 
     crud.sendAjax = function (data) {
+        abp.ui.setBusy(_$fm);
         abp.ajax({
             contentType: 'application/x-www-form-urlencoded',
             url: crud.dgDefault.name + _action,
             data: data   
         }).done(function (data) {
+            abp.ui.clearBusy(_$fm);
             abp.notify.info(data.content);
             _$dg.datagrid('reload');
             _$dlg.dialog('close');          // must after reload

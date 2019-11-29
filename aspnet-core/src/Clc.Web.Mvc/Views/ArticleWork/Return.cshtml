@@ -38,7 +38,7 @@
                     return;
                 }
                 var id = ret.item2;
-                if (!finput.IsInArticles(id)) {
+                if (!finput.IsInReturnArticles(id)) {
                     abp.notify.error('此物品不在归还列表中');
                     return;
                 };
@@ -53,7 +53,7 @@
                 return;
             }
 
-            abp.services.app.articleRecord.return(finput.getArticles(), work.me.workers).done(function(count) {
+            abp.services.app.articleRecord.return(finput.route.id, finput.getArticles(), work.me.workers).done(function(count) {
                 finput.success(finput.worker.name + '归还了' + count + '件物品');
                 finput.submitArticlesDone();
             });
@@ -78,8 +78,6 @@
 
 <div class="easyui-layout" fit="true">
     <div data-options="region:'north', split:true, border:false" style="min-height:120px; height:70%">
-        <audio id="sounde" src="~/sounds/sound7.wav" type="audio/wav" preload="auto" style="wdith:0;height:0"></audio>
-        <audio id="sounds" src="~/sounds/dingdong.wav" type="audio/wav" preload="auto"></audio>
         <div id="tb" style="background:yellow">
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
@@ -93,13 +91,14 @@
                     <th field="vehicle" width="80" formatter="$.vehicleFormatter">车辆</th>
                     <th field="altVehicle" width="80" formatter="$.altVehicleFormatter">替用车辆</th>
                     <th field="routeName" width="60" sortable="true">线路名称</th>
-                    <th field="status" width="60" align="center">状态</th>
                     <th field="remark" width="100" align="center">备注</th>
                 </tr>
             </thead>
         </table>
     </div>
     <div data-options="region:'center'">
+        <embed id="sounde" src="~/sounds/sound7.wav" type="audio/wav" controller="false" hidden="true" loop="false" autostart="false">
+        <embed id="sounds" src="~/sounds/dingdong.wav" type="audio/wav" controller="false" hidden="true" loop="false" autostart="false">
         <table id="dgWorker" class="easyui-datagrid"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="workRoleName">
             <thead>
@@ -148,11 +147,11 @@
             <div class="easyui-layout" fit="true">
                 <div data-options="region:'north', border:true" style="height:350px">
                     <div id="tb">
-                        <a id="askOpen" href="javascript:void(0)" class="easyui-linkbutton" plain="true" onclick="askOpen()">申请开门</a>
+                        <a id="askOpen" href="javascript:void(0)" class="easyui-linkbutton" onclick="askOpen()" style="background:yellow">申请开门</a>
                     </div>
                     <div class="easyui-panel" fit="true" tools="#tb" style="padding: 10px">
-                        <img id="photo2" class="photo" alt="照片" src="" />
-                        <p id="workerInfo2" class="workerInfo"></p>
+                        <img id="photo2" class="photo" alt="照片" src="" style="margin-top: 38px" />
+                        <p id="workerInfo2" class="workerInfo" style="margin-top: 50px" ></p>
                     </div>
                 </div>
                 <div data-options="region:'center'" style="border:3px solid #ccc; padding:10px">

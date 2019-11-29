@@ -6,9 +6,9 @@ using System;
 namespace Clc.Fields
 {
     /// <summary>
-    /// WorkerFile Entity
+    /// Asset Entity
     /// </summary>
-    [Description("人员档案")]
+    [Description("固定资产")]
     public class Asset : Entity, IMustHaveTenant
     {
         public const int MaxCnLength = 20;

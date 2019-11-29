@@ -112,8 +112,8 @@ body {
 }
 .workerInfo {
     float: left;
-    font-size: 20px;
-    margin-left: 15px;
+    font-size: 26px;
+    margin-left: 10px;
     vertical-align: middle;
 }
 
@@ -121,6 +121,13 @@ body {
     list-style-type: none; 
     font-size: 24px;
     margin: 0px;
+}
+
+.summary {
+    float: left;
+    font-size: 20px;
+    margin-left: 30px;
+    vertical-align: middle;
 }
 
   

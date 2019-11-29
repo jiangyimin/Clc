@@ -24,14 +24,17 @@ namespace Clc.ArticleRecords
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
         private readonly IRepository<ArticleRecord> _recordRepository;
         private readonly IRepository<Article> _articleRepository;
+        private readonly IRepository<Route> _routeRepository;
         private readonly IRepository<RouteArticle> _routeArticleRepository;
 
         public ArticleRecordAppService(IRepository<ArticleRecord> recordRepository, 
             IRepository<Article> articleRepository,
+            IRepository<Route> routeRepository,
             IRepository<RouteArticle> routeArticleRepository)    
         {
             _recordRepository = recordRepository;
             _articleRepository = articleRepository;
+            _routeRepository = routeRepository;
             _routeArticleRepository = routeArticleRepository;
         }
 
@@ -67,10 +70,13 @@ namespace Clc.ArticleRecords
                     LendTime = DateTime.Now,
                     LendWorkers = workers
                 };
-
                 int recordId = _recordRepository.InsertAndGetId(record);
+
                 Article article = _articleRepository.Get(a.ArticleId);
                 article.ArticleRecordId = recordId;
+
+                Route route = _routeRepository.Get(routeId);
+                route.Status = "领物";
 
                 RouteArticle ra = new RouteArticle() {
                     RouteId = routeId,
@@ -84,7 +90,7 @@ namespace Clc.ArticleRecords
             return count;
         }
 
-        public int Return(List<RouteArticleCDto> articles, string workers)
+        public int Return(int routeId, List<RouteArticleCDto> articles, string workers)
         {
             int count = 0;
             foreach (var a in articles)
@@ -95,7 +101,12 @@ namespace Clc.ArticleRecords
                     record.ReturnWorkers = workers;
                     _recordRepository.Update(record);
                     count++;
-                }    
+                }
+
+                Route route = _routeRepository.Get(routeId);
+                route.Status = "还物";
+                
+  
             }  
             return count; 
         }
@@ -122,15 +133,21 @@ namespace Clc.ArticleRecords
 
         public async Task<List<ArticleReportDto>> GetReportData()
         {
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
             var query = _articleRepository.GetAllIncluding(x => x.ArticleType, x => x.ArticleRecord)
-                .Where(x => x.ArticleRecord != null && x.ArticleRecord.LendTime.Date == DateTime.Now.Date)
-                .GroupBy(x => new { x.ArticleType.Name } )
+                .Where(x => x.DepotId == depotId)   // && x.ArticleRecord != null && x.ArticleRecord.LendTime.Date == DateTime.Now.Date)
+                .GroupBy(x => new { x.ArticleType.Cn, x.ArticleType.Name } )
                 .Select( p => new ArticleReportDto {
+                    Cn = p.Key.Cn,
                     Name = p.Key.Name,
-                    LendCount = p.Count(),
-                    UnReturnCount = p.Count( x => !x.ArticleRecord.ReturnTime.HasValue)
-                });
-            return await AsyncQueryableExecuter.ToListAsync(query);            
+                    Count = p.Count(),
+                    LendCount = p.Count(x => x.ArticleRecord != null && !x.ArticleRecord.ReturnTime.HasValue),
+                    UnReturnCount = p.Count(x => x.ArticleRecord != null && x.ArticleRecord.ReturnTime.HasValue)
+                })
+                .OrderBy(x => x.Cn);
+                
+            var list = await AsyncQueryableExecuter.ToListAsync(query); 
+            return list;       
         }
 
         #region util

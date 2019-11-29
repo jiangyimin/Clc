@@ -15,44 +15,62 @@
     </environment>
 
     <script type="text/javascript">
+        var allowCardWhenCheckin = true;
         var status = '';
         var doorIp = '';
-        var emergDoorRecordId = 0;
+        var doorRecordId = 0;
     
-        winput.onWorker = function(rfid) {
-            // judge rfid in work.me.ask
-            if (!work.isInRfids(rfid)) return;
+        winput.matchWorker = function(rfid) {
+            if (!allowCardWhenCheckin) {
+                abp.notify.error('系统设置为不允许刷卡验证');
+                return;
+            }
+            if (status == '') {
+                abp.notify.warn('现在不需刷卡');
+                return;
+            }
 
-            abp.services.app.work.getWorkerByRfid(rfid).done(function(ret) {
-                for (var i = 0; i < work.askWorkers.length; i++) {
-                    if (work.askWorkers[i].name === ret.name) {
-                        abp.notify.warn('此Rfid已刷过');
-                        return;
-                    }
-                }
-
-                work.askWorkers.push( ret );
-                $('#dlCard').datalist('loadData', work.askWorkers);
+            // var rows = $('#dg').datagrid('getRows');
+            for (var i = 0; i < work.aws.length; i++) {
+                if (work.aws[i].workerRfid == rfid) {
+                    work.aws[i].confirmed = "是";
+                    $('#dgConfirm').datagrid('loadData', { rows:work.aws });
                 
-                if (work.askWorkers.length == work.me.rfids.length) {
-                    abp.notify.info('已发送开门命令到对应的门禁', '', { positionClass : 'toast-top-center' });
-                    ws && ws.send(doorIp);
-
-                    if (status == 'emerg') {
-                        // udpate emergDoorRecord
-                        abp.services.app.doorRecord.carryoutEmergOpen(emergDoorRecordId, work.me.affairId).done(function() {
-                            $('#dg').datagrid('reload');
-                        });
-                    }
-                    $('#dlg').dialog('close');
+                    if (allConfirmed()) doOpenDoor();
+                    break;
                 }
-            });
+            }
+        }
+    
+        function fingerConfirm (index) {
+            abp.notify.info('请将指纹放到指纹仪上');
+            var row = $('#dgConfirm').datagrid('getRows')[index];
+            var finger = window.parent.getFingerCode();
+            if (finger != '') {
+                abp.services.app.work.confirmByFinger(finger, row.workerId).done(function(ret) {
+                    if (ret.item1) {
+                        abp.notify.info(ret.item2);
+                        row.confirmed = "是";
+                        $('#dgConfirm').datagrid('loadData', { rows: work.aws });
+
+                        if (allConfirmed()) doOpenDoor();
+                    }
+                    else
+                        abp.notify.error(ret.item2);
+                });
+            }
+        }
+
+        function operatorConfirm (val, row, index) {
+            var htmlTag = '<a href="javascript:void(0)" onclick="fingerConfirm(' + index + ')">指纹确认</a>';
+            return htmlTag;
         }
     </script>
 }
 
 <div class="easyui-layout" fit="true">
     <div data-options="region:'east', title:'门禁列表', collasped:true, split:true, border:false" style="width:350px">
+        <embed id="sounds" src="~/sounds/dingdong.wav" type="audio/wav" controller="false" preload="auto"  hidden="true">
         <div id="tbDoor">
             门禁密码：<input id="password" class="easyui-numberbox" data-options="requried:true" style="width: 100px">
             <a name="open" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">开门</a>
@@ -91,8 +109,16 @@
     </div>
 </div>
 
-@*弹窗*@
-<div id="dlg" class="easyui-dialog" title="刷卡开门" closed="true" modal="true" align="center" style="height: 250px; width: 400px;">
-    <div id="dlCard" class="easyui-datalist" fit="true" fitColumns="true" striped="true">
-    </div>
+@*多人确认弹窗*@
+<div id="dlgConfirm" class="easyui-dialog" title="卡或指纹确认" closed="true" modal="true" align="center" style="height: 250px; width: 500px;">
+    <table id="dgConfirm" class="easyui-datagrid" fit="true" fitColumns="true" striped="true" singleSelect="true" checkOnSelect="false">
+        <thead>
+            <tr>
+                <th field="confirmed" width="80" align="center">已确认</th>
+                <th field="workerCn" width="80">人员编号</th>
+                <th field="workerName" width="80">人员姓名</th>
+                <th field="op" width="80" formatter="operatorConfirm">操作</th>
+            </tr>
+        </thead>
+    </table>
 </div>

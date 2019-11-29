@@ -17,9 +17,9 @@ namespace Clc.Routes
         Task<RouteDto> Update(RouteDto input);
         Task Delete(int id);
 
-        Task<(string, int)> Activate(List<int> ids);
+        Task<(string, int)> Activate(List<int> ids, bool finger);
         Task<int> Close(List<int> ids);
-        Task Back(int id);
+        Task Back(int id, bool finger);
 
         Task<int> CreateFrom(DateTime carryoutDate, DateTime fromDate);
         Task<int> CreateFromPre(DateTime carryoutDate);

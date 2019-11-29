@@ -12,7 +12,7 @@
             { field: "name", title: "名称", width: 80 },
             { field: "workRoles", title: "工作角色列表", width: 80 },
             { field: "articleTypeList", title: "领用物品列表", width: 100 },
-            { field: "shareDepotList", title: "共享中心列表", width: 100 },
+            { field: "shareDepotList", title: "托管中心列表", width: 100 },
             { field: "minDuration", title: "最短班次小时", width: 80 },
             { field: "maxDuration", title: "最长班次小时", width: 80 },
             { field: "doorIp", title: "门禁IP地址", width: 80 },
@@ -95,7 +95,7 @@
                 <td><input name="articleTypeList" class="easyui-textbox", data-options="validType:'length[1, @Workplace.ArticleTypeListLength]'" style="width: 100%"></td>
             </tr>
             <tr>
-                <th><Label for="shareDepotList">共享中心列表表: </Label></th>
+                <th><Label for="shareDepotList">托管中心列表: </Label></th>
                 <td><input name="shareDepotList" class="easyui-textbox", data-options="validType:'length[1, @Workplace.ShareDepotListLength]'" style="width: 100%"></td>
             </tr>
             </tr>
@@ -117,7 +117,7 @@
             </tr>
             <tr>
                 <th><label for="dutyLead">当班查询提前时间: </label></th>
-                <td><input name="dutyLead" class="easyui-numberbox" data-options="required: true" style="width: 100%"></td>
+                <td><input name="dutyLead" class="easyui-numberbox" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="askOpenDeadline">申请开门截止时间: </label></th>

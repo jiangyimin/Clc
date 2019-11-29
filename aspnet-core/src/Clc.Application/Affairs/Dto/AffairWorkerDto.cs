@@ -22,7 +22,7 @@ namespace Clc.Affairs
         public int WorkerId { get; set; }
         public string WorkerCn { get; set; }
         public string WorkerName { get; set; }
-
+        public string WorkerRfid { get; set; }
 
         [Required]
         public int WorkRoleId { get; set; }

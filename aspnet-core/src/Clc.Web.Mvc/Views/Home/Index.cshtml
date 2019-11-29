@@ -14,9 +14,11 @@
 @section Scripts
 {
     <environment names="Development">
+        <script src="~/js/winput.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
+        <script src="~/js/winput.min.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/Home/Index.min.js" asp-append-version="true"></script>
     </environment>
 }
@@ -35,18 +37,24 @@
                 @await Component.InvokeAsync(typeof(TopBarTitleViewComponent))
             </div>
             <div class="bar-right">
-                <object classid="clsid:87772C8D-3C8C-4E55-A886-5BA5DA384424" id="ZAZFingerActivex"></object>
                 <!-- <a href="#" class="easyui-linkbutton" style="color: white; margin-right: 5px; " plain="true">修改密码</a> -->
                 <a href="/Account/Logout" class="easyui-linkbutton" plain="true" iconCls="icon-cancel">退出</a>
             </div>
         </div>
     </div>
     <div data-options="region:'west',split:true,title:'导航菜单'" style="width: 165px; min-width: 100px; height:100%; ">
-        <div id="menu-accordion" class="easyui-accordion" data-options="fit:true, border:false, selected:true">
-            @await Component.InvokeAsync(typeof(SideBarNavViewComponent))
+        <div class="easyui-layout" fit="true">
+            <div data-options="region:'south'" style="width:100%; height: 160px;">
+                <object classid="clsid:87772C8D-3C8C-4E55-A886-5BA5DA384424" id="ZAZFingerActivex" width="100%"  height="155"></object>
+            </div> 
+            <div data-options="region:'center', border:false">
+                <div id="menu-accordion" class="easyui-accordion" data-options="fit:true, border:false, selected:true">
+                    @await Component.InvokeAsync(typeof(SideBarNavViewComponent))
+                </div>
+            </div>
         </div>
     </div>
-    <div data-options="region:'center',border:false">
+    <div data-options="region:'center', border:false">
         <div id="main-tab" class="easyui-tabs" data-options="fit:true, border:false">
             <!--<div title="我的主页" iconcls="pic_209" data-options="fit:true" style="padding: 5px; overflow: hidden; ">
                 <iframe scrolling="auto" frameborder="0" src="" style="width: 100%; height: 100%;"></iframe>
@@ -105,12 +113,12 @@
 </div>
 
 @*unLock弹窗*@
-<div id="dlgUnlock" class="easyui-dialog" closed="true" modal="true" title="验证解屏密码" buttons="#dlgUnlock-buttons" style="z-index::8889; width: 400px; padding: 10px;">
+<div id="dlgUnlock" class="easyui-dialog" closed="true" modal="true" title="验证解屏密码" buttons="#dlgUnlock-buttons" style="z-index:8889; width: 400px; padding: 10px;">
     <form id="fmUnlock" class="easyui-form" method="post" novalidate>
         <table class="edit-tbl">
             <tr>
                 <th><label for="password">解屏密码：</label></th>
-                <td><input name="password" class="easyui-textbox" data-options="required:true" style="width: 100%"></td>
+                <td><input id="passwordUnlock" class="easyui-textbox" data-options="required:true" style="width: 100%"></td>
             </tr>
         </table>
     </form>
@@ -135,4 +143,3 @@
     <a href="#" class="easyui-linkbutton" iconCls="icon-lock" onclick="verifyPasswordAndTrigger()">密码验证</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlgActivate').dialog('close')">取消</a>
 </div>
-

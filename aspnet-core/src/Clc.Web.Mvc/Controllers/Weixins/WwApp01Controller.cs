@@ -10,6 +10,7 @@ using System.Linq;
 using System;
 using Microsoft.AspNetCore.SignalR;
 using Clc.RealTime;
+using Clc.DoorRecords;
 
 namespace Clc.Web.Controllers
 {
@@ -23,10 +24,11 @@ namespace Clc.Web.Controllers
         private readonly string _secret;
         private readonly string _agentId;
 
-        private readonly IWeixinAppService _weixinAppService;
+        // private readonly IDoorRecordAppService _doorRecordAppService;
 
 
-        public WwApp01Controller(IHostingEnvironment env, IHubContext<MyChatHub> context, IWeixinAppService weixinAppService)
+        public WwApp01Controller(IHostingEnvironment env, IHubContext<MyChatHub> context, 
+            IDoorRecordAppService doorRecordAppService)
         {
             var appConfiguration = env.GetAppConfiguration();
             _corpId = appConfiguration["SenparcWeixinSetting:CorpId"];
@@ -34,35 +36,26 @@ namespace Clc.Web.Controllers
             _agentId = appConfiguration[string.Format("SenparcWeixinSetting:{0}:AgentId", "App01")];
 
             _context = context;
-            _weixinAppService = weixinAppService;
+            // _doorRecordAppService = doorRecordAppService;
         }
 
-        // 申请开门
-        public ActionResult AskDoor()
-        {
-            var workerId = GetWeixinUserId();
-            var depotId = WorkManager.GetWorkerDepotId(workerId);
+        // // 申请开门
+        // public ActionResult AskDoor()
+        // {
+        //     var workerId = GetWeixinUserId();
+        //     var depotId = WorkManager.GetWorkerDepotId(workerId);
 
-            AskDoorViewModel vm = new AskDoorViewModel();
-            var ret = WorkManager.GetDoorsForAsk(DateTime.Now.Date, depotId, workerId);
-            if (ret.Item1 == 0) 
-                return RedirectToAction("WeixinNotify", "Error", new { Message = "你目前不能申请开门" });
+        //     AskDoorViewModel vm = new AskDoorViewModel();
+        //     var ret = _doorRecordAppService.GetLastUnApproveAskDoor(DateTime.Now.Date, depotId).Result;
+        //     if (ret == null) 
+        //         return RedirectToAction("WeixinNotify", "Error", new { Message = "你目前没有申请开门" });
 
-            foreach (var door in ret.Item2)
-                vm.Workplaces.Add(new ComboItemModel{ Id = door.Id, Name = door.Name });
-            return View("AskDoor", vm);
-        }
+        //     vm.RecordId = ret.Id;
+        //     vm.WorkplaceName = ret.WorkplaceName;
+        //     vm.WorkerId = workerId;
 
-        [HttpPost]
-        public ActionResult AskDoor(AskDoorViewModel vm)
-        {
-            var ret = WorkManager.AskOpenDoor(GetWeixinUserId(), vm.AffairId, vm.WorkplaceId, 1);
-            if (ret.Item1 == true) {
-                var name = WorkManager.GetWorkerName(GetWeixinUserId());
-                _context.Clients.All.SendAsync("getMessage", "emergDoor " + name);
-            }           
-            return RedirectToAction("WeixinNotify", "Error", new { Message = ret.Item2 });
-        }
+        //     return View("AskDoor", vm);
+        // }
 
         private int GetWeixinUserId()
         {

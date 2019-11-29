@@ -22,23 +22,16 @@
         });
 
         $('#tb').children('a[name="activate"]').click(function (e) {
-            window.parent.openActivateDialog('activate');
+            window.parent.openActivateDialog('activateRoute');
         })
-
 
         $('#tb').children('a[name="back"]').click(function (e) {
             if (mds.masterCurrentRow === null ) {   
                 abp.notify.error("先选择线路");
                 return;
             };
-            abp.message.confirm('确认要退回吗?', '确认', function (r) {
-                if (r) {
-                    abp.services.app.route.back(mds.masterCurrentRow.id).done(function () {
-                        mds.reload('');
-                    });
-                };
-            });
-        });
+            window.parent.openActivateDialog('backRoute');
+        })
 
         $('#tb').children('a[name="close"]').click(function (e) {
             var checkedRows = $('#dg').datagrid("getChecked");
@@ -113,18 +106,26 @@
             });
         });
 
-        window.parent.abp.event.on('verifyDone', function(action) {
-            if (action == 'activate')
-                activate();
+        window.parent.abp.event.on('verifyDone', function(p) {
+            if (p.name == 'activateRoute')
+                activate(p.style);
+            if (p.name == 'backRoute')
+                back(p.style);
         });
     });
 
-    function activate() {
+    function back(style) {
+        abp.services.app.route.back(mds.masterCurrentRow.id, style).done(function () {
+            mds.reload('');
+        });
+    };
+
+    function activate(style) {
         var checkedRows = $('#dg').datagrid("getChecked");
-        if (checkedRows.length === 0) {
-            abp.notify.error("请先选中要激活的线路。");
-            return;
-        }
+        // if (checkedRows.length === 0) {
+        //     abp.notify.error("请先选中要激活的线路。");
+        //     return;
+        // }
 
         var ids = [];
         for (var i = 0; i < checkedRows.length; i++) {
@@ -132,11 +133,11 @@
             if (row.status == "安排") ids.push(row.id);
         };
 
-        abp.services.app.route.activate(ids).done(function (ret) {
+        abp.services.app.route.activate(ids, style).done(function (ret) {
             abp.notify.success('有' + ret.item2 + '个线路被激活');
             // Cache active routes
             abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
-                abp.notify.info("刚下达最新的激活线路");
+                abp.notify.info("下达最新的激活线路");
             });
             if (ret.item1) abp.notify.error(ret.item1);
             mds.reload('');

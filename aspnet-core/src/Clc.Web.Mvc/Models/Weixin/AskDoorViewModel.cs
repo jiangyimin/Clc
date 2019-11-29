@@ -4,10 +4,14 @@ namespace Clc.Web.Models.Weixin
 {
     public class AskDoorViewModel
     {
-        public int AffairId { get; set; }
-        public int WorkplaceId { get; set; }
+        public int RecordId { get; set; }
+        public string WorkplaceName { get; set; }
 
-        public List<ComboItemModel> Workplaces {get; set; }
-
+        public int WorkerId { get; set; }
+        
+        public AskDoorViewModel()
+        {
+        }
     }
+
 }

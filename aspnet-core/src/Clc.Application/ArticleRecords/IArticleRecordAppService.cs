@@ -12,7 +12,7 @@ namespace Clc.ArticleRecords
     {
         Task<PagedResultDto<ArticleRecordDto>> GetArticlesAsync(PagedAndSortedResultRequestDto requestDto);
         int Lend(int routeId, int routeWorkerId, List<RouteArticleCDto> articles, string workers);
-        int Return(List<RouteArticleCDto> articles, string workers);       
+        int Return(int routeId, List<RouteArticleCDto> articles, string workers);       
 
 
         // string GetArticleStatus(int articleId);

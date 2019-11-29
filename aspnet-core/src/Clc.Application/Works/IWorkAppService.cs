@@ -24,7 +24,7 @@ namespace Clc.Works
         AffairWorkDto FindDutyAffair();
         AffairWorkDto FindAltDutyAffair();
         
-        List<RouteCacheItem> GetActiveRoutes(int wpId, DateTime carryouDate, int depotId, int affairId);
+        List<RouteCacheItem> GetCachedRoutes(int wpId, DateTime carryouDate, int depotId, int affairId);
 
         string GetReportToManagers();
 
@@ -40,7 +40,7 @@ namespace Clc.Works
 
         #endregion
 
-        #region Signin and Checkin
+        #region Signin，Checkin，Confirm
         Task<List<SigninDto>> GetSigninsAsync(DateTime carryoutDate);
         (bool, string) SigninByRfid(string rfid);
         (bool, string) SigninByFinger(string finger);
@@ -49,6 +49,8 @@ namespace Clc.Works
         
         (bool, string) CheckinByFinger(string finger, int workerId, DateTime carryoutDate, int depotId, int affairId);
         (bool, string) CheckinByRfid(string rfid, DateTime carryoutDate, int depotId, int affairId);
+
+        (bool, string) ConfirmByFinger(string finger, int workerId);
 
         #endregion Signin
 

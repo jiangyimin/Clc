@@ -11,6 +11,9 @@ using Clc.Works;
 using Clc.Works.Dto;
 using Microsoft.AspNetCore.SignalR;
 using Clc.RealTime;
+using Clc.Runtime;
+using Clc.Configuration;
+using Abp.Configuration;
 
 namespace Clc.Web.Controllers
 {
@@ -42,23 +45,51 @@ namespace Clc.Web.Controllers
 
         [HttpPost]
         [DontWrapResult]
-        public JsonResult AskOpenByRfid(string rfid, int affairId, int doorId)
+        public JsonResult AskOpen(int[] workers, int affairId, int doorId, string start, string end, int taskId, bool wait)
         {
-            var worker = WorkManager.GetWorkerByRfid(rfid);
-            if (worker == null) 
-                return Json(new { success = false, message = "此RFID无对应的人员" });
+            int minNum = int.Parse(SettingManager.GetSettingValue(AppSettingNames.Rule.MinWorkersOnDuty));
+             if (workers.Length < minNum)
+                return Json(new {success = false, message = "确认人数不够最低要求"});
 
-            var ret = WorkManager.AskOpenDoor(worker.Id, affairId, doorId, 0);
-            if (ret.Item1)
-            {
-                var depotName = WorkManager.GetDepot(worker.DepotId).Name;
-                var wpName = WorkManager.GetWorkplace(doorId).Name;
-                _context.Clients.All.SendAsync("getMessage", "askOpenDoor " + string.Format("你有来自{0}({1})的任务开门申请", wpName, depotName));
+            var wp = WorkManager.GetWorkplace(doorId);
+            if (wp.AskOpenDeadline == 0) {
+                if (!ClcUtils.NowInTimeZone(start, end)) return Json(new {success = false, message = "不在申请开门时段"});
+            }
+            else {
+                if (!ClcUtils.NowInTimeZone(start, 0, wp.AskOpenDeadline)) return Json(new {success = false, message = "不在申请开门时段"});
             }
 
-            return Json(new { success = ret.Item1, message = ret.Item2, worker = new { name = string.Format("{0} {1}", worker.Cn, worker.Name) }});
+            var ret = WorkManager.AskOpenDoor(wp.DepotId, affairId, doorId, workers, wait);
+
+            if (ret.Item1)
+            {
+                // set start Time for VaultTask
+                if (taskId > 0) _affairAppService.SetTaskTime(taskId, true);
+                
+                var depotName = WorkManager.GetDepot(wp.DepotId).Name;
+                _context.Clients.All.SendAsync("getMessage", "askOpenDoor " + string.Format("你有来自{0}{1}的任务开门申请", depotName, wp.Name));
+            }
+
+            return Json(new { success = true, message = ret.Item2 });
         }
 
+        [HttpPost]
+        [DontWrapResult]
+        public JsonResult AskVaultGuard(int depotId)
+        {
+            var name = WorkManager.GetVaultName(depotId);
+            
+            if (string.IsNullOrEmpty(name)) 
+            {
+                return Json(new { success = false, message = "没有金库需要设防" });
+            }
+            else
+            {
+                _context.Clients.All.SendAsync("getMessage", "askVaultGuard " + string.Format("你有来自({0})的金库设防申请", name));
+                return Json(new { success = true, message = "你的设防申请已发往监控中心" });
+            }
+
+        }
 
         [DontWrapResult]
         public async Task<JsonResult> GridDataWorker(int id)

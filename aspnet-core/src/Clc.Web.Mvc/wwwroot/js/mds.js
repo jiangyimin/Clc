@@ -74,7 +74,7 @@ var mds = mds || {};
     };
 
     mds.operatorIsEnableM = function(row) {
-        if (row.status != "安排") return false;
+        if (row.status && row.status != "安排") return false;
         return true;
     }
 
@@ -136,9 +136,12 @@ var mds = mds || {};
             return;
         }
     
+        abp.ui.setBusy($fm);
+
         var dto = $fm.serializeFormToObject(); //serializeFormToObject is defined in main.js
         //alert(_dfd);
         _dfd(dto).done(function () {
+            abp.ui.clearBusy($fm);
             abp.notify.info($dlg.panel('options').title+'操作成功')
             mds.reload(postfix);
             $dlg.dialog('close');

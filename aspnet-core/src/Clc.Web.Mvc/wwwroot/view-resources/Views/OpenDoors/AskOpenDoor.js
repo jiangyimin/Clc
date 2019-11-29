@@ -1,5 +1,9 @@
 (function() {        
     $(function() {
+        abp.services.app.work.allowCardWhenCheckin().done(function (ret) {
+            allowCardWhenCheckin = ret;
+        });
+
         abp.services.app.work.getMyCheckinAffair().done(function (wk) {
             work.me = wk;
             // alert(work.me.affairId);
@@ -8,7 +12,15 @@
             $('#dg').datagrid({
                 url: 'GridDataAskDoor?Dt=' + work.me.today 
             });
+
+            // alert(work.me.affairId);
+            abp.services.app.affair.getAffairWorkers(work.me.affairId).done(function (aws) {
+                work.aws = aws;
+                // alert(aws.length);
+            });
+    
         });
+
 
         // #tb Buttons
         $('#yesterday').checkbox({
@@ -37,15 +49,61 @@
                 return;
             };
             
-            askDoorRecordId = row.id;
+            status = 'ask';
+            doorRecordId = row.id;
             doorIp = row.workplaceDoorIp;
-            $('#dlg').dialog('open');
+            openConfirmDialog(work.aws);
         });
     
         // register event
         window.parent.abp.event.on('askOpenDoor', function () {
+            $("#sounds")[0].play();
             $('#dg').datagrid('reload');
         });
-        // alert('event set on');
+
+        $('#dlgConform').dialog({
+            onClose: function() {
+                status = '';
+                doorIp = 0;
+                doorRecordId = 0;
+            }
+        });
     });
 })();
+
+function openConfirmDialog(data) {
+    for (var i = 0; i < data.length; i++) data[i].confirmed = '';
+
+    $('#dlgConfirm').dialog('open');
+    $('#dgConfirm').datagrid('loadData', { rows: data });
+}
+
+function allConfirmed() {
+    for (var i = 0; i < work.aws.length; i++) {
+        if (work.aws[i].confirmed == '') return false;
+    }
+    return true;
+}
+
+function doOpenDoor() {
+    // udpate askDoorRecord
+    abp.services.app.doorRecord.carryoutAskOpen(doorRecordId, work.me.affairId).done(function() {
+        $('#dg').datagrid('reload');
+        $('#dlgConfirm').dialog('close');
+    });
+
+    abp.notify.success('已发送开门命令到对应的门禁', '', { positionClass : 'toast-top-center' });
+    ws && ws.send(doorIp);
+}
+
+function notifyAskWorkers(workers, doorId) {
+    abp.ajax({
+        contentType: 'application/x-www-form-urlencoded',
+        url: 'NotifyAskWorkers',
+        data: {workers: workers, doorId: doorName }  
+}).done(function (ret) {
+    abp.notify.info(ret.message);
+    if (ret.success) 
+        closeConfirmDialog();
+});
+}
