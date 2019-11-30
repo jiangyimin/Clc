@@ -18,12 +18,31 @@
         });
     
         $('#tb').children('a[name="askOpen"]').click(function (e) {
+            if (status != '') return;   // important
+ 
             if (!work.validate()) return; 
        
+            // alert('enter askOpen button');
             status = 'ask';
             doorId = work.me.workplaceId;
             openConfirmDialog($('#dg').datagrid('getRows'));
         });  
+
+        $('#tb').children('a[name="askGuard"]').click(function (e) {
+            e.preventDefault();
+            if (!work.validate()) return; 
+            abp.message.confirm('确认要申请枪库设防吗?', '请确认', function (r) {
+                if (r) {
+                    abp.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        url: 'Checkin/AskGuard',
+                        data: {wpId: work.me.workplaceId, affairId: work.me.affairId, workerCn: window.parent.me.workerCn }  
+                    }).done(function (ret) {
+                        abp.notify.info(ret.message);
+                    });
+                }
+            });            
+        });
 
         $('#tb').children('a[name="askVaultGuard"]').click(function (e) {
             if (!work.validate()) return; 
@@ -32,7 +51,7 @@
                     abp.ajax({
                         contentType: 'application/x-www-form-urlencoded',
                         url: 'Checkin/AskVaultGuard',
-                        data: {depotId: work.me.depotId }  
+                        data: {depotId: work.me.depotId, affairId: work.me.affairId, workerCn: window.parent.me.workerCn }  
                     }).done(function (ret) {
                         abp.notify.info(ret.message);
                     });
@@ -40,64 +59,79 @@
             });            
         });
 
-        $('dlgConfirm').dialog({
-            onClose: function () { 
+        $('#dlgConfirm').dialog({
+            onClose: function () {
+                cds = [];
+                confirms.innerHTML = '';
                 status = '';
                 doorIp = 0;
             }
         });
 
-     });
-
-    function showAffair() {
-        if (!work.validate()) return; 
-
-        $('#dg').datagrid({
-            url: 'Checkin/GridDataWorker/' + work.me.affairId
-        });
-
-        $('#dgTask').datagrid({
-            url: 'Checkin/GridDataTask/' + work.me.affairId
-        });
-    }
-
+    });
 
 })();
 
-// var confirmData;
-function openConfirmDialog(data) {
-    for (var i = 0; i < data.length; i++) data[i].confirmed = '';
+function showAffair() {
+    if (!work.validate()) return; 
 
+    $('#dg').datagrid({
+        url: 'Checkin/GridDataWorker/' + work.me.affairId
+    });
+
+    $('#dgTask').datagrid({
+        url: 'Checkin/GridDataTask/' + work.me.affairId
+    });
+}
+
+var cds = [];
+function openConfirmDialog(d) {
+    for (var i = 0; i < d.length; i++) {
+        cds.push({ confirmed: false, displayText: d[i].workerCn + ' ' + d[i].workerName, workerId: d[i].workerId, rfid: d[i].workerRfid });
+    };
     $('#dlgConfirm').dialog('open');
-    $('#dgConfirm').datagrid('loadData', { rows: data });
+    confirms.innerHTML = createHTML();
+}
+
+function createHTML() {
+    var h = '';  
+  
+    for (var i = 0; i < cds.length; i++) {
+        // alert(as[i].recordId);
+        if (cds[i].confirmed)
+            h += "<li><input type='checkbox' checked='true' onclick='return false'>&nbsp;" + cds[i].displayText + "&nbsp;&nbsp;";
+        else
+            h += "<li><input type='checkbox' onclick='return false'>&nbsp;" + cds[i].displayText + "&nbsp;&nbsp;";
+
+        h += "<a href='javascript:void(0)' onclick='fingerConfirm(" + i + ")'>指纹确认</a>" + "</li>";
+    }
+    return h;
 }
 
 function closeConfirmDialog() {
     // alert('closeDlg')
     $('#dlgConfirm').dialog('close');
+    showAffair();
 }
 
 function getConfirmedWorkers()
 {
     var ids = [];
-    var rows = $('#dg').datagrid('getRows');
-    for (var i = 0; i < rows.length; i++) {
-        if (rows[i].confirmed == "是")
-            ids.push(rows[i].workerId);
+    for (var i = 0; i < cds.length; i++) {
+        if (cds[i].confirmed)
+            ids.push(cds[i].workerId);
     }
     return ids;
 }
 
 function rfidConfirm(rfid) {
-    var rows = $('#dg').datagrid('getRows');
-    // alert(rows.length);
-    for (var i = 0; i < rows.length; i++) {
-        if (rows[i].workerRfid == rfid) {
-            rows[i].confirmed = "是";
-            $('#dgConfirm').datagrid('loadData', { rows: rows });
+    for (var i = 0; i < cds.length; i++) {
+        if (cds[i].rfid == rfid) {
+            cds[i].confirmed = true;
             break;
         }
     }
+    confirms.innerHTML = createHTML();
 }
 
 function send(wait) {

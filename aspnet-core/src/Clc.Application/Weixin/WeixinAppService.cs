@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Abp.Domain.Repositories;
 using Clc.Routes;
 using Clc.Works;
@@ -9,6 +7,7 @@ using Clc.Fields;
 using Clc.Runtime.Cache;
 using Clc.Runtime;
 using Clc.DoorRecords.Dto;
+using Clc.Extensions;
 
 namespace Clc.Weixin
 {
@@ -102,7 +101,7 @@ namespace Clc.Weixin
                     Cn = sub.Cn, Name = sub.Name, AdditiveInfo = sub.AdditiveInfo, Photo = sub.Photo == null ? null : Convert.ToBase64String(sub.Photo)   
                 });
 
-            var v = ret.Item1.AltVehicleId.HasValue ? _vehicleCache[ret.Item1.AltVehicleId.Value] : _vehicleCache[ret.Item1.VehicleId];
+            var v = _vehicleCache[ret.Item1.GetFactVehicleId()];
             dto.Vehicle = new WeixinVehicleDto() {Cn = v.Cn, License = v.License, Photo = v.Photo == null ? null : Convert.ToBase64String(v.Photo) };
 
             dto.RouteId = ret.Item1.Id;

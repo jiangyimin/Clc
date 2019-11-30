@@ -43,7 +43,10 @@ var finput = finput || {};
         
         finput.articles = [];
         finput.articles2 = [];
-
+        
+        articles.innerHTML = '';
+        articles1.innerHTML = '';
+        articles2.innerHTML = '';
         // alert(finput.articles.length); alert(finput.articles2.length);
     }
 
@@ -104,6 +107,9 @@ var finput = finput || {};
 
     finput.onWorkerConfirm = function () {
         var rwId = finput.index == 2 ? finput.worker2.routeWorkerId : finput.worker.routeWorkerId;
+
+        if (finput.index == 1) 
+            abp.notify.info('现在请扫描第二人的物品', '', { positionClass : 'toast-top-center'} );
         finput.submitArticles(rwId);
     }
 
@@ -209,9 +215,9 @@ var finput = finput || {};
         for (var i = 0; i < as.length; i++) {
             // alert(as[i].recordId);
             if (as[i].recordId == 0)
-                h += "<li><input readonly='true' type='checkbox' checked='true'>&nbsp;" + as[i].displayText + "</li>";
+                h += "<li><input type='checkbox' checked='true' onclick='return false'>&nbsp;" + as[i].displayText + "</li>";
             else
-                h += "<li><input readonly='true' type='checkbox'>&nbsp;" + as[i].displayText + "</li>";
+                h += "<li><input type='checkbox' onclick='return false'>&nbsp;" + as[i].displayText + "</li>";
         }
         return h;
     }
@@ -220,9 +226,9 @@ var finput = finput || {};
         for (var i = 0; i < as.length; i++) {
             // alert(as[i].isReturn);
             if (as[i].isReturn)
-                h += "<li><input readonly='true' type='checkbox' checked='true'>&nbsp;" + as[i].displayText + "</li>";
+                h += "<li><input type='checkbox' checked='true' onclick='return false'>&nbsp;" + as[i].displayText + "</li>";
             else
-                h += "<li><input readonly='true' type='checkbox'>&nbsp;" + as[i].displayText + "</li>";
+                h += "<li><input type='checkbox' onclick='return false'>&nbsp;" + as[i].displayText + "</li>";
         }
         return h;
     }

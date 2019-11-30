@@ -53,6 +53,7 @@
             }
             abp.services.app.articleRecord.lend(finput.route.id, rwId, finput.getArticles(), work.me.workers).done(function(count) {
                 finput.success(finput.worker.name + '领用了' + count + '件物品');
+                abp.services.app.route.setStatus(work.me.today, work.me.depotId, finput.route.id, '领物');
                 finput.submitArticlesDone();
             });
         }
@@ -89,20 +90,22 @@
                     <th field="vehicle" width="80" formatter="$.vehicleFormatter">车辆</th>
                     <th field="altVehicle" width="80" formatter="$.altVehicleFormatter">替用车辆</th>
                     <th field="routeName" width="60" sortable="true">线路名称</th>
-                    <th field="remark" width="100" align="center">备注</th>
+                    <th field="status" width="60" align="center">状态</th>
+                    <th field="remark" width="100">备注</th>
                 </tr>
             </thead>
         </table>
     </div>
     <div data-options="region:'center'">
-        <embed id="sounde" src="~/sounds/sound7.wav" type="audio/wav" controller="false" hidden="true" loop="false" autostart="false">
-        <embed id="sounds" src="~/sounds/dingdong.wav" type="audio/wav" controller="false"  hidden="true" loop="false" autostart="false">
+        <audio id="sounde" src="~/sounds/error.mp3" type="audio/mpeg" controller="false" style="width:0;height:0">ERROR</audio>
+        <audio id="sounds" src="~/sounds/success.mp3" type="audio/mpeg" controller="false" style="width:0;height:0">ERROR</audio>
         <table id="dgWorker" class="easyui-datagrid"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="workRoleName">
             <thead>
                 <tr>
                     <th field="workRoleName" width="80">工作角色</th>
                     <th field="worker" width="80" formatter="$.workerFormatter">人员</th>
+                    <th field="altWorker" width="80" formatter="$.altWorkerFormatter">替班人员</th>
                     <th field="articleList" width="200">物品清单</th>
                  </tr>
             </thead>

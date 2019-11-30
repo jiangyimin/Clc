@@ -18,10 +18,14 @@
         var rowTask = {};
 
         function checkout(index) {
-            var row = $('#dg').datagrid('getRows')[index];
-            abp.services.app.work.checkout(row.workerId, work.me.today, work.me.depotId, work.me.affairId).done(function(ret) {
-                abp.notify.info("你已作任务签出");
-                $('#dg').datagrid('reload');
+            abp.message.confirm('确认要签出吗?', '确认', function (r) {
+                if (r) {
+                    var row = $('#dg').datagrid('getRows')[index];
+                    abp.services.app.work.checkout(row.workerId, work.me.today, work.me.depotId, work.me.affairId).done(function(ret) {
+                        abp.notify.info("你已作任务签出");
+                        $('#dg').datagrid('reload');
+                    });
+                }
             });
         }
 
@@ -39,6 +43,8 @@
         };
 
         function askOpenTask(index) {
+            if (status != '') return;   // important
+
             if (!work.validate()) return; 
             //if (work.me.altcheck) {
             //    abp.notify.error("帮验金库任务，不用申请开门", "", { positionClass : 'toast-top-center'} );
@@ -58,7 +64,8 @@
             abp.message.confirm('确认要结束金库任务吗?', '确认', function (r) {
                 if (r) {
                     abp.services.app.affair.setTaskTime(row.id, false).done(function () {
-                        $('#dg').datagrid('reload')
+                        abp.notify.info("你已结束金库子任务");
+                        showAffair();
                     });
                 }
             });
@@ -66,14 +73,13 @@
 
         function fingerConfirm (index) {
             abp.notify.info('请将指纹放到指纹仪上');
-            var row = $('#dgConfirm').datagrid('getRows')[index];
             var finger = window.parent.getFingerCode();
             if (finger != '') {
-                abp.services.app.work.confirmByFinger(finger, row.workerId).done(function(ret) {
+                abp.services.app.work.confirmByFinger(finger, cds[index].workerId).done(function(ret) {
                     if (ret.item1) {
                         abp.notify.info(ret.item2);
-                        row.confirmed = "是";
-                        $('#dgConfirm').datagrid('loadData', { rows: confirmData });
+                        cds[index].confirmed = true;
+                        confirms.innerHTML = createHTML();
                     }
                     else
                         abp.notify.error(ret.item2);
@@ -82,12 +88,12 @@
         }
         
         winput.matchWorker = function(rfid) {
-            // alert(rfid);
             if (status == '' && !allowCardWhenCheckin) {
                 abp.notify.error('系统设置为不允许刷卡验证');
                 return;
             }
 
+            // alert(rfid);
             if (status == '') {
                 abp.services.app.work.checkinByRfid(rfid, work.me.today, work.me.depotId, work.me.affairId).done(function(ret) {
                     abp.notify.info(ret.item2);
@@ -114,11 +120,6 @@
             htmlTag = htmlTag + '<a href="javascript:void(0)" onclick="endTask(' + index + ')">结束</a>';
             return htmlTag;
         };
-
-        function operatorConfirm (val, row, index) {
-            var htmlTag = '<a href="javascript:void(0)" onclick="fingerConfirm(' + index + ')">指纹确认</a>';
-            return htmlTag;
-        }
 
         function showPhoto(val, row, index) {
             if (row.checkinTime && val) {
@@ -163,6 +164,7 @@
                     任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly value="@Model.Today">
                     <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a>
                     <a name="askOpen" href="javascript:void(0)" class="easyui-linkbutton" plain="true">申请开门</a>
+                    <a name="askGuard" href="javascript:void(0)" class="easyui-linkbutton" plain="true">申请枪库门设防</a>
                     <a name="askVaultGuard" href="javascript:void(0)" class="easyui-linkbutton" plain="true">申请金库门设防</a>
                 </div>
                 <table id="dg" class="easyui-datagrid" toolbar="#tb"
@@ -203,20 +205,14 @@
 </div>
 
 @*多人确认弹窗*@
-<div id="dlgConfirm" class="easyui-dialog" title="卡或指纹确认" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="height: 250px; width: 500px;">
-    <table id="dgConfirm" class="easyui-datagrid" fit="true" fitColumns="true" striped="true" singleSelect="true" checkOnSelect="false">
-        <thead>
-            <tr>
-                <th field="confirmed" width="80" align="center">已确认</th>
-                <th field="workerCn" width="80">人员编号</th>
-                <th field="workerName" width="80">人员姓名</th>
-                <th field="op" width="80" formatter="operatorConfirm">操作</th>
-            </tr>
-        </thead>
-    </table>
+<div id="dlgConfirm" class="easyui-dialog" title="卡或指纹确认" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="height: 300px; width: 450px;">
+    <div class="easyui-panel" fit="true">
+        <ul id="confirms" class="article">
+        </ul>
+    </div>
 </div>
 <div id="dlg-buttons">
-    <a name="wait" class="easyui-linkbutton" iconCls="icon-save" onclick="waitSend()">等待用手机发送</a>
-    <a name="send" class="easyui-linkbutton" onclick="send()">立即发送申请</a>
+    <a name="wait" class="easyui-linkbutton" iconCls="icon-save" onclick="send(true)">等待用手机发送</a>
+    <a name="send" class="easyui-linkbutton" onclick="send(false)">立即发送申请</a>
 </div>
 

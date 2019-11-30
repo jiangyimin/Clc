@@ -58,6 +58,13 @@ namespace Clc.Configuration
                     isVisibleToClients: true
                 ),
                 new SettingDefinition(
+                    AppSettingNames.Const.CameraPassword, 
+                    User.UserDefaultPassword, 
+                    new FixedLocalizableString("摄像头密码"),
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
+                ),
+                new SettingDefinition(
                     AppSettingNames.Const.WorkerRfidLength, 
                     "5", 
                     new FixedLocalizableString("员工RFID卡编码长度"),

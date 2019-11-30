@@ -39,7 +39,7 @@
                 abp.notify.error("请先选中要关闭的线路。");
                 return;
             };
-            if (mds.masterCurrentRow.status !== "激活") {
+            if (mds.masterCurrentRow.status == "安排") {
                 abp.notify.error("激活状态才允许关闭");
                 return;
             };
@@ -115,6 +115,12 @@
     });
 
     function back(style) {
+        var status = mds.masterCurrentRow.status;
+        if (status == "领物" || status == "还物") {
+            abp.notify.error('在领用状态不能回退');
+            return;
+        }
+
         abp.services.app.route.back(mds.masterCurrentRow.id, style).done(function () {
             mds.reload('');
         });

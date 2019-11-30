@@ -130,4 +130,16 @@ body {
     vertical-align: middle;
 }
 
+.comp {
+    float: left;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.compPhoto {
+    width: 120px;
+    height: 130px;
+}
   

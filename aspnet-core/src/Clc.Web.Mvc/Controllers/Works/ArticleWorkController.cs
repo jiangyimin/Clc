@@ -68,9 +68,9 @@ namespace Clc.Web.Controllers
         }
 
         [DontWrapResult]
-        public async Task<JsonResult> GridDataArticle(bool isReturn)
+        public async Task<JsonResult> GridDataArticle(int wpId)
         {
-            var output = await _recordAppService.GetArticlesAsync(GetPagedInput());
+            var output = await _recordAppService.GetWorkplaceArticlesAsync(wpId, GetPagedInput());
             return Json(new { total = output.TotalCount, rows = output.Items });
         }
 

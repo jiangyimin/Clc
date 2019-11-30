@@ -24,17 +24,14 @@ namespace Clc.ArticleRecords
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
         private readonly IRepository<ArticleRecord> _recordRepository;
         private readonly IRepository<Article> _articleRepository;
-        private readonly IRepository<Route> _routeRepository;
         private readonly IRepository<RouteArticle> _routeArticleRepository;
 
         public ArticleRecordAppService(IRepository<ArticleRecord> recordRepository, 
             IRepository<Article> articleRepository,
-            IRepository<Route> routeRepository,
             IRepository<RouteArticle> routeArticleRepository)    
         {
             _recordRepository = recordRepository;
             _articleRepository = articleRepository;
-            _routeRepository = routeRepository;
             _routeArticleRepository = routeArticleRepository;
         }
 
@@ -44,6 +41,25 @@ namespace Clc.ArticleRecords
             
             var query = _articleRepository.GetAllIncluding(x => x.ArticleType, x => x.ArticleRecord, x=>x.ArticleRecord.RouteWorker)
                 .Where(a => a.DepotId == depotId);
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+            if (!string.IsNullOrWhiteSpace(input.Sorting))
+                query = query.OrderBy(input.Sorting);                               // Applying Sorting
+            query = query.Skip(input.SkipCount).Take(input.MaxResultCount);         // Applying Paging
+
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+
+            return new PagedResultDto<ArticleRecordDto>(
+                totalCount,
+                entities.Select(MapToArticleRecordDto).ToList()
+            );
+        }
+
+        public async Task<PagedResultDto<ArticleRecordDto>> GetWorkplaceArticlesAsync(int wpId, PagedAndSortedResultRequestDto input)
+        {
+            var depots = WorkManager.GetShareDepots(wpId);
+            
+            var query = _articleRepository.GetAllIncluding(x => x.ArticleType, x => x.ArticleRecord, x=>x.ArticleRecord.RouteWorker)
+                .Where(a => depots.Contains(a.DepotId));
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
             if (!string.IsNullOrWhiteSpace(input.Sorting))
                 query = query.OrderBy(input.Sorting);                               // Applying Sorting
@@ -75,9 +91,6 @@ namespace Clc.ArticleRecords
                 Article article = _articleRepository.Get(a.ArticleId);
                 article.ArticleRecordId = recordId;
 
-                Route route = _routeRepository.Get(routeId);
-                route.Status = "领物";
-
                 RouteArticle ra = new RouteArticle() {
                     RouteId = routeId,
                     RouteWorkerId = routeWorkerId,
@@ -102,11 +115,6 @@ namespace Clc.ArticleRecords
                     _recordRepository.Update(record);
                     count++;
                 }
-
-                Route route = _routeRepository.Get(routeId);
-                route.Status = "还物";
-                
-  
             }  
             return count; 
         }

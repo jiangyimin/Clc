@@ -17,6 +17,7 @@ namespace Clc.DoorRecords
         Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime dt);
         Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime dt);
 
+        (string, string) GetNotifyInfo(int id);
         
         Task CarryoutAskOpen(int id, int monitorAffairId);
         Task CarryoutEmergOpen(int id, int monitorAffairId);

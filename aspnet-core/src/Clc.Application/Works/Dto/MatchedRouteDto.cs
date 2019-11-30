@@ -15,8 +15,16 @@ namespace Clc.Works.Dto
         {
             Id = r.Id;
             RouteName = r.RouteName;
-            VehicleCn = r.VehicleCn; 
-            VehicleLicense = r.VehicleLicense;
+            if (!r.AltVehicleId.HasValue) 
+            {
+                VehicleCn = r.VehicleCn; 
+                VehicleLicense = r.VehicleLicense;
+            }
+            else
+            {
+                VehicleCn = r.AltVehicleCn; 
+                VehicleLicense = r.AltVehicleLicense;
+            }
         }
     }
 }

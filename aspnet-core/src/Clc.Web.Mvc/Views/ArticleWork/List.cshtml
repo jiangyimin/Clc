@@ -1,6 +1,29 @@
-﻿<table id="dg" class="easyui-datagrid" toolbar="#tb"
+﻿@section Scripts
+{
+    <environment names="Development">
+        <script src="~/js/work.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/js/work.min.js" asp-append-version="true"></script>
+    </environment>
+
+    <script type="text/javascript">
+        abp.services.app.work.getMyCheckinAffair().done(function (wk) {
+            work.me = wk;
+            if (!work.validate()) return;
+            $('#dg').datagrid({
+                url: 'GridDataArticle',
+                queryParams: {WpId: work.me.workplaceId }
+            });
+
+        });
+    </script>
+}
+
+<table id="dg" class="easyui-datagrid" toolbar="#tb"
         fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true"
-        url="GridDataArticle" pagination="true" pageSize="20" sortName="cn">
+        pagination="true" pageSize="20" sortName="cn">
     <thead>
         <tr>
             <th field="cn" width="60" align="center">编号</th>

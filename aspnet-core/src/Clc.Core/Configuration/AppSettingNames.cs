@@ -14,6 +14,7 @@
         public static class Const
         {
            public const string IdentifyEmergencyPassword = "Const.IdentifyEmergencyPassword";
+           public const string CameraPassword = "Const.CameraPassword";
             public const string WorkerRfidLength = "Const.WorkerRfidLength";
             public const string ArticleRfidLength = "Const.ArticleRfidLength";
             public const string BoxRfidLength = "Const.BoxRfidLength";

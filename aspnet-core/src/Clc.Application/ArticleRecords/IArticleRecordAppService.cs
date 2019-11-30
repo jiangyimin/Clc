@@ -11,6 +11,7 @@ namespace Clc.ArticleRecords
     public interface IArticleRecordAppService : IApplicationService
     {
         Task<PagedResultDto<ArticleRecordDto>> GetArticlesAsync(PagedAndSortedResultRequestDto requestDto);
+        Task<PagedResultDto<ArticleRecordDto>> GetWorkplaceArticlesAsync(int wpId, PagedAndSortedResultRequestDto requestDto);
         int Lend(int routeId, int routeWorkerId, List<RouteArticleCDto> articles, string workers);
         int Return(int routeId, List<RouteArticleCDto> articles, string workers);       
 

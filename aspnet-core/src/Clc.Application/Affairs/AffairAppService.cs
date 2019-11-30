@@ -209,12 +209,13 @@ namespace Clc.Affairs
             return list;
         }
 
-        public List<AffairWorkerDto> GetAffairWorkers(int id)
+        public List<AffairWorkerDto> GetAffairWorkersSync(int id)
         {
-            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole).Where(e => e.AffairId == id).OrderBy(x => x.WorkRole.Cn);
+            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole)
+                .Where(e => e.AffairId == id).OrderBy(x => x.WorkRole.Cn);
             
-            var list = ObjectMapper.Map<List<AffairWorkerDto>>(query.ToList());
-            return list;
+            var entities = query.ToList();
+            return  entities.Select(MapToAffairWorkerDto).ToList();
         }
 
         public async Task<AffairWorkerDto> UpdateWorker(AffairWorkerDto input)
@@ -300,9 +301,34 @@ namespace Clc.Affairs
             return new List<AffairEventDto>(entities.Select(ObjectMapper.Map<AffairEventDto>).ToList());
         }
 
+        public async Task<AffairEventDto> InsertEvent(int affairId, string name, string desc, string issurer)
+        {
+            var entity = new AffairEvent();
+            entity.AffairId = affairId;
+            entity.EventTime = DateTime.Now;
+            entity.Name = "监控";
+            entity.Description = desc;
+            entity.Issurer = issurer;
+
+            await _eventRepository.InsertAsync(entity);
+            CurrentUnitOfWork.SaveChanges();
+            return ObjectMapper.Map<AffairEventDto>(entity);
+        }
+
+
         #endregion
 
         #region priavte
+
+        private AffairWorkerDto MapToAffairWorkerDto(AffairWorker aw)
+        {
+            var dto = ObjectMapper.Map<AffairWorkerDto>(aw);
+
+            if (aw.Worker.Photo != null) 
+                dto.PhotoString = Convert.ToBase64String(aw.Worker.Photo);
+            return dto;
+        }
+
         private string CanActivateAffair(Affair affair)
         {
             // check workplace

@@ -15,6 +15,7 @@ using Clc.Works;
 using Clc.Runtime;
 using Clc.Types;
 using Clc.Configuration;
+using Clc.Extensions;
 
 namespace Clc.Routes
 {
@@ -130,6 +131,17 @@ namespace Clc.Routes
         public async Task Delete(int id)
         {
             await _routeRepository.DeleteAsync(id);
+        }
+
+        public void SetStatus(DateTime carryoutDate, int depotId, int routeId, string status) {
+            // Repoistory
+            var e = _routeRepository.Get(routeId);
+            if (e.Status != status)
+                e.Status = status;
+
+            // Set Cache
+            var route = _routeCache.GetRoute(carryoutDate, depotId, routeId);
+            route.Status = status;
         }
 
         public async Task<(string, int)> Activate(List<int> ids, bool finger)
@@ -271,7 +283,7 @@ namespace Clc.Routes
         #region Son Tables
         public async Task<List<RouteWorkerDto>> GetRouteWorkers(int id, string sorting)
         {
-            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole, x => x.Articles).Where(e => e.RouteId == id);
+            var query =_workerRepository.GetAllIncluding(x => x.Worker, x => x.AltWorker, x => x.WorkRole, x => x.Articles).Where(e => e.RouteId == id);
             query = query.OrderBy(x => x.WorkRole.Cn);            
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             var lst = entities.Select(MapToWorker).ToList();
@@ -378,12 +390,13 @@ namespace Clc.Routes
         public (Route, int) FindRouteForIdentify(int depotId, int workerId)
         {
             var query = _routeRepository.GetAllIncluding(x => x.Workers)
-                    .Where(x => x.DepotId == depotId && x.CarryoutDate == DateTime.Today && x.Status == "激活");
+                    .Where(x => x.DepotId == depotId && x.CarryoutDate == DateTime.Today && (x.Status == "激活" || x.Status == "还物"))
+                    .OrderByDescending(x => x.StartTime);
             var routes = query.ToList();
 
             foreach (Route route in routes)
             {
-                if (!ClcUtils.NowInTimeZone(route.StartTime, route.EndTime, 100)) continue;
+                if (route.Status != "领物" && DateTime.Now < ClcUtils.GetDateTime(route.StartTime)) continue;
                 bool found = false;
                 int subId = 0;
                 foreach (RouteWorker rw in route.Workers)
@@ -392,8 +405,8 @@ namespace Clc.Routes
                     if (string.IsNullOrEmpty(workRole.Duties)) continue;
 
                     var names =  workRole.Duties.Split('|', ' ', ',');
-                    if (rw.WorkerId == workerId &&  names.Contains("交接")) found = true;
-                    if (names.Contains("辅助交接")) subId = rw.WorkerId;                    
+                    if (rw.GetFactWorkerId() == workerId &&  names.Contains("交接")) found = true;
+                    if (names.Contains("辅助交接")) subId = rw.GetFactWorkerId();                    
                 }
 
                 if (found && subId != 0) {
@@ -415,6 +428,7 @@ namespace Clc.Routes
         #endregion
         
         #region private
+
         private async Task<int> CopyInsertRouteAndGetId(Route src, int depotId, DateTime carroutDate,int workerId)
         {
             Route route = new Route();
@@ -496,7 +510,7 @@ namespace Clc.Routes
         {
             var dto = ObjectMapper.Map<RouteWorkerDto>(rw);
 
-            var workerId = rw.AltWorkerId.HasValue ? rw.AltWorkerId.Value : rw.WorkerId;
+            var workerId = rw.GetFactWorkerId();
             var worker = WorkManager.GetWorker(workerId);
 
             dto.Signin = WorkManager.GetSigninInfo(worker.DepotId, workerId, DateTime.Now);

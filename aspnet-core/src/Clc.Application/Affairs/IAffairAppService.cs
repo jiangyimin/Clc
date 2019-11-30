@@ -26,7 +26,7 @@ namespace Clc.Affairs
 
         #region Son Tables
         Task<List<AffairWorkerDto>> GetAffairWorkersAsync(int id);
-        List<AffairWorkerDto> GetAffairWorkers(int id);
+        List<AffairWorkerDto> GetAffairWorkersSync(int id);
         Task<AffairWorkerDto> InsertWorker(AffairWorkerDto input);
         Task<AffairWorkerDto> UpdateWorker(AffairWorkerDto input);
         Task DeleteWorker(int id);
@@ -39,6 +39,7 @@ namespace Clc.Affairs
 
         Task<List<AffairEventDto>> GetAffairEventsAsync(int id);
 
+        Task<AffairEventDto> InsertEvent(int affairId, string name, string desc, string issurer);
         #endregion
     }
 }

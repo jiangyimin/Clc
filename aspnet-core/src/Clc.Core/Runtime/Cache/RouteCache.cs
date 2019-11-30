@@ -45,6 +45,11 @@ namespace Clc.Runtime.Cache
             });
         }
 
+        public RouteCacheItem GetRoute(DateTime carryoutDate, int depotId, int id)
+        {
+            return Get(carryoutDate, depotId).FirstOrDefault(x => x.Id == id);
+        }
+
         public (RouteCacheItem, RouteWorkerCacheItem) GetRouteWorker(DateTime carryoutDate, int depotId, int workerId)
         {
             var list = Get(carryoutDate, depotId);

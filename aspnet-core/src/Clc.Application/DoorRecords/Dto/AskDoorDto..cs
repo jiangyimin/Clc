@@ -16,7 +16,9 @@ namespace Clc.DoorRecords.Dto
         /// 对应的门
         /// </summary>
         public string WorkplaceName { get; set; }
+        public string WorkplaceCameraIp { get; set; }
 
+        public int AskAffairId { get; set; }
         public string AskAffairContent { get; set; }
         public string AskStyle { get; set; }
 

@@ -8,6 +8,7 @@ namespace Clc.Runtime.Cache
     {
         void Set(DateTime carryoutDate, int depotId, object value);
         List<RouteCacheItem> Get(DateTime carryoutDate, int depotId);
+        RouteCacheItem GetRoute(DateTime carryoutDate, int depotId, int routeId);
 
         (RouteCacheItem, RouteWorkerCacheItem) GetRouteWorker(DateTime carryoutDate, int depotId, int workerId);
     }

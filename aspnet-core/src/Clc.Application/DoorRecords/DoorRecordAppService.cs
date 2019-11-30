@@ -97,6 +97,14 @@ namespace Clc.DoorRecords
             return ObjectMapper.Map<List<EmergDoorDto>>(entities);
         }
 
+        public (string, string) GetNotifyInfo(int id) 
+        {
+            var record = _askDoorRepository.Get(id);
+
+            var doorName = WorkManager.GetWorkplace(record.WorkplaceId).Name;
+            return (record.AskWorkers.Substring(0, 5), doorName);
+        }
+
 
         public async Task CarryoutAskOpen(int id, int monitorAffairId)
         {

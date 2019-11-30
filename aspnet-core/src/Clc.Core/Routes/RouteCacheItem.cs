@@ -18,6 +18,8 @@ namespace Clc.Routes
 
         public string VehicleCn { get; set; }
         public string VehicleLicense { get; set; }
+
+        public int? AltVehicleId { get; set; }
         public string AltVehicleCn { get; set; }
         public string AltVehicleLicense { get; set; }
         public string StartTime { get; set; }

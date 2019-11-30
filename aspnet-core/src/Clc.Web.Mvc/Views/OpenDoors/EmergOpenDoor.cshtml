@@ -70,7 +70,7 @@
 
 <div class="easyui-layout" fit="true">
     <div data-options="region:'east', title:'门禁列表', collasped:true, split:true, border:false" style="width:350px">
-        <embed id="sounds" src="~/sounds/dingdong.wav" type="audio/wav" controller="false" preload="auto"  hidden="true">
+        <audio id="sounds" src="~/sounds/success.mp3" type="audio/mpeg" controller="false" style="width:0;height:0">ERROR</audio>
         <div id="tbDoor">
             门禁密码：<input id="password" class="easyui-numberbox" data-options="requried:true" style="width: 100px">
             <a name="open" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">开门</a>

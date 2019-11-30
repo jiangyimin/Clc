@@ -7,6 +7,7 @@ using Clc.Works;
 using System.Threading.Tasks;
 using Clc.DoorRecords;
 using System;
+using Clc.Web.MessageHandlers;
 
 namespace Clc.Web.Controllers
 {
@@ -43,17 +44,12 @@ namespace Clc.Web.Controllers
 
         [HttpPost]
         [DontWrapResult]
-        public JsonResult NotifyWorkers(string workers, string doorName)
+        public JsonResult NotifyAskWorkers(int doorRecordId)
         {
-            var toUsers = parseToUsers(workers);
+            var ret = _doorRecordAppService.GetNotifyInfo(doorRecordId);
 
-           //var output = await _doorRecordAppService.GetDoorsAsync();
-            return Json( new { });
-        }
-
-        private string parseToUsers(string workers)
-        {
-            return workers.Substring(0, 5);
+            WeixinUtils.SendMessage("app01", ret.Item1, $"你申请的{ret.Item2}已打开");
+            return Json( new { Message = "已通知" });
         }
 
         [DontWrapResult]

@@ -9,6 +9,7 @@ using Abp.Domain.Repositories;
 using Abp.Linq;
 using Clc.Affairs;
 using Clc.Configuration;
+using Clc.Extensions;
 using Clc.Fields;
 using Clc.Fields.Dto;
 using Clc.Routes;
@@ -131,9 +132,9 @@ namespace Clc.Works
         public AffairWorkDto FindAltDutyAffair()
         {
             var dto = new AffairWorkDto();
+            dto.AltCheck = true;
             int workerId = GetCurrentUserWorkerIdAsync().Result;
             var depot = WorkManager.GetDepot(WorkManager.GetWorker(workerId).DepotId);
-            dto.DepotId = depot.Id;
 
             var depots = SettingManager.GetSettingValue(AppSettingNames.Rule.AltCheckinDepots);
             if (!depots.Split('|', ',').Contains(depot.Name)) return dto;
@@ -141,6 +142,7 @@ namespace Clc.Works
             if (affair == null) return dto;
 
             var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
+            dto.DepotId = depot.Id;
             
             return dto.SetAffair(affair, wp.Name, true);
         }
@@ -337,12 +339,12 @@ namespace Clc.Works
 
             result.RouteMatched = new MatchedRouteDto(found.Item2);
             var w = found.Item3;
-            result.WorkerMatched = new MatchedWorkerDto(w.Id, WorkManager.GetWorker(w.WorkerId), _workRoleCache[w.WorkRoleId]);
+            result.WorkerMatched = new MatchedWorkerDto(w.Id, WorkManager.GetWorker(w.GetFactWorkerId()), _workRoleCache[w.WorkRoleId]);
             result.Articles = GetArticles(w.Id);
             w = found.Item4;
             if (w != null)
             {
-                result.WorkerMatched2 = new MatchedWorkerDto(w.Id, WorkManager.GetWorker(w.WorkerId), _workRoleCache[w.WorkRoleId]);
+                result.WorkerMatched2 = new MatchedWorkerDto(w.Id, WorkManager.GetWorker(w.GetFactWorkerId()), _workRoleCache[w.WorkRoleId]);
                 result.Articles2 = GetArticles(w.Id);
             }
             return result;
@@ -467,7 +469,7 @@ namespace Clc.Works
 
                 foreach (var rw in route.Workers) 
                 {
-                    var worker = WorkManager.GetWorker(rw.WorkerId);
+                    var worker = WorkManager.GetWorker(rw.GetFactWorkerId());
                     if (worker.Rfid == rfid) {
                         if (string.IsNullOrEmpty(_workRoleCache[rw.WorkRoleId].ArticleTypeList))
                             return ("此人不需要领还物", null, null, null);

@@ -75,33 +75,47 @@ namespace Clc.Web.Controllers
 
         [HttpPost]
         [DontWrapResult]
-        public JsonResult AskVaultGuard(int depotId)
+        public JsonResult AskGuard(int wpId, int affairId, string workerCn)
         {
-            var name = WorkManager.GetVaultName(depotId);
+            var name = WorkManager.GetWorkplace(wpId).Name;
+            var w = WorkManager.GetWorkerByCn(workerCn);
             
+            var depotName = WorkManager.GetDepot(w.DepotId).Name;
+            _affairAppService.InsertEvent(affairId, "监控", "申请枪库设防", w.Cn + " " + w.Name);
+            _context.Clients.All.SendAsync("getMessage", "askVaultGuard " + string.Format("你有来自({0})的枪库设防申请", depotName));
+             return Json(new { success = true, message = "你的设防申请已发往监控中心" });
+        }
+
+        [HttpPost]
+        [DontWrapResult]
+        public JsonResult AskVaultGuard(int depotId, int affairId, string workerCn)
+        {
+            var name = WorkManager.GetVaultName(depotId);           
             if (string.IsNullOrEmpty(name)) 
             {
                 return Json(new { success = false, message = "没有金库需要设防" });
             }
             else
             {
-                _context.Clients.All.SendAsync("getMessage", "askVaultGuard " + string.Format("你有来自({0})的金库设防申请", name));
+                var w = WorkManager.GetWorkerByCn(workerCn);
+                var depotName = WorkManager.GetDepot(w.DepotId).Name;
+                _affairAppService.InsertEvent(affairId, "监控", "申请金库设防", w.Cn + " " + w.Name);
+                _context.Clients.All.SendAsync("getMessage", "askVaultGuard " + string.Format("你有来自({0})的金库设防申请", depotName));
                 return Json(new { success = true, message = "你的设防申请已发往监控中心" });
             }
-
         }
 
         [DontWrapResult]
-        public async Task<JsonResult> GridDataWorker(int id)
+        public JsonResult GridDataWorker(int id)
         {
-            var output = await _affairAppService.GetAffairWorkersAsync(id);
-            if (output != null)
-            {
-                foreach (var w in output) {
-                    var photo = WorkManager.GetWorker(w.WorkerId).Photo;
-                    if (photo != null) w.PhotoString = Convert.ToBase64String(photo);
-                }
-            }
+            var output = _affairAppService.GetAffairWorkersSync(id);
+            // if (output != null)
+            // {
+            //     foreach (var w in output) {
+            //         var photo = WorkManager.GetWorker(w.WorkerId).Photo;
+            //         if (photo != null) w.PhotoString = Convert.ToBase64String(photo);
+            //     }
+            // }
             return Json(new { rows = output });
         }
 
