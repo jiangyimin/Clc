@@ -3,7 +3,7 @@
     $(function() {
         abp.services.app.work.getMyCheckinAffair().done(function (wk) {
             work.me = wk;
-            if (!work.validate()) return;
+            if (!work.validate2()) return;
             $('#dd').datebox('setValue', work.me.today);
             $('#dg').datagrid({
                 url: 'GridData',

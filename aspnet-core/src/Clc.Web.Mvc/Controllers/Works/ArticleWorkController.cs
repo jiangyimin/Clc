@@ -48,6 +48,11 @@ namespace Clc.Web.Controllers
             return View();
         }
 
+        public ActionResult TempArticle()
+        {
+            return View();
+        }
+        
         public ActionResult RecordQuery()
         {
             return View();

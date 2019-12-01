@@ -131,6 +131,34 @@ namespace Clc.Fields
                 return ObjectMapper.Map<List<VehicleListItem>>(lst);
             }
         }
+        public async Task<PagedResultDto<WorkerFingerDto>> GetWorkerFingersAsync(PagedAndSortedResultRequestDto input)
+        {
+            int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
+            var query = _workerRepository.GetAll().Where(x => x.DepotId == depotId);
+
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+
+            if (!string.IsNullOrWhiteSpace(input.Sorting))
+                query = query.OrderBy(input.Sorting);                               // Applying Sorting
+            query = query.Skip(input.SkipCount).Take(input.MaxResultCount);     // Applying Paging
+
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+
+            return new PagedResultDto<WorkerFingerDto>(
+                totalCount,
+                ObjectMapper.Map<List<WorkerFingerDto>>(entities)
+            );
+        }
+
+        public async Task<WorkerFingerDto> UpdateWorkerFingerAsync(WorkerFingerDto input)
+        {
+            var entity = await _workerRepository.GetAsync(input.Id);
+            ObjectMapper.Map<WorkerFingerDto, Worker>(input, entity);
+
+            await _workerRepository.UpdateAsync(entity);
+            CurrentUnitOfWork.SaveChanges();
+            return ObjectMapper.Map<WorkerFingerDto>(entity);
+        }
 
         public async Task<PagedResultDto<WorkerFileDto>> GetPagedResult(int depotId, PagedAndSortedResultRequestDto input)
         {

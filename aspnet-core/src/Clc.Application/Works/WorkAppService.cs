@@ -317,7 +317,7 @@ namespace Clc.Works
 
         #region Article
 
-        public RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, int wpId, DateTime carryoutDate, int depotId, int affairId, string rfid, int routeId)
+        public RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, int wpId, DateTime carryoutDate, int depotId, string rfid, int routeId)
         {
             var result = new RouteWorkerMatchResult();
             (string, RouteCacheItem, RouteWorkerCacheItem, RouteWorkerCacheItem) found = (null, null, null, null);

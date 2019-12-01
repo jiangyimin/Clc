@@ -16,6 +16,9 @@ namespace Clc.Fields
         List<ComboboxItemDto> GetWorkerItemsByWorkRole(int workRoleId);
         List<VehicleListItem> GetVehicleListItems(bool all = false);
 
+        Task<PagedResultDto<WorkerFingerDto>> GetWorkerFingersAsync(PagedAndSortedResultRequestDto input);
+        Task<WorkerFingerDto> UpdateWorkerFingerAsync(WorkerFingerDto input);
+
         // WorkerFile
         Task<PagedResultDto<WorkerFileDto>> GetPagedResult(int depotId, PagedAndSortedResultRequestDto input);
         List<ComboboxItemDto> GetWorkerComboItems(int depotId);

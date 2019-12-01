@@ -80,7 +80,8 @@ namespace Clc.Web.Controllers
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
             if (dto != null && !string.IsNullOrEmpty(password) && dto.OutletPassword == password)
             {
-                _weixinAppService.SetIdentifyTime(taskId);
+                if (taskId != 0)
+                    _weixinAppService.SetIdentifyTime(taskId);
                 return View("Information2", dto);
             }
             else

@@ -1,0 +1,106 @@
+﻿@using Clc.Fields
+@section scripts
+{
+    <script type="text/javascript">
+
+        // finger
+        function fingerFormatter(val) {
+            if (val && val.length == 1024)
+                return '(有)'
+        }
+
+        function getFinger(el) {
+            alert("请把手指放指纹仪上");
+            var code = window.parent.regFingerCode();
+            $('#'+el).textbox('setValue', code);
+        }
+
+        function validFinger(el) {
+            var dst = window.parent.getFingerCode();
+            var result = window.parent.matchFinger($('#'+el).textbox('getValue'), dst);
+            abp.notify.info("验证结果为:" + result);
+        }
+
+        function edit() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row == null) {
+                abp.notify.error('请先选择人员');
+                return;
+            }
+
+            $('#dlg').dialog('open');
+            $('#fm').form('load', row);
+        }
+
+        function save() {
+            var d = $('#fm').serializeFormToObject();
+
+            abp.services.app.field.updateWorkerFinger(d).done(function () {
+                abp.notify.info('保存成功');
+                $('#dg').datagrid('reload');
+                $('#dlg').dialog('close');          // must after reload
+            });
+        }
+    </script>
+}
+
+<table id="dg" class="easyui-datagrid" toolbar="#tb" url="WorkerFingers/GridData"
+        fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="cn"
+        pagination="true" pageSize="20">
+    <thead>
+        <tr>
+            <th field="cn" width="80">编号</th>
+            <th field="name" width="80">姓名</th>
+            <th field="workRoleNames" width="160">姓名</th>
+            <th field="finger" width="80" formatter="fingerFormatter">指纹</th>
+            <th field="finger2" width="80" formatter="fingerFormatter">指纹二</th>
+        </tr>
+    </thead>
+</table>
+<div id="tb">
+    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+    <a name="remove" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="edit()">编辑</a>
+</div>
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" title="人员编辑" buttons="#dlg-buttons" align="center" style="width: 400px; padding: 10px;">
+    <form id="fm" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl">
+            <input id="id" name="id" type="hidden">
+            <tr>
+                <th><label for="cn">编号：</label></th>
+                <td><input name="cn" class="easyui-textbox" readonly style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="name">姓名:</Label></th>
+                <td><input name="name" class="easyui-textbox" readonly style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><Label for="workRoleNames">可担任角色列表: </Label></th>
+                <td><input name="workRoleNames" class="easyui-textbox" data-options="validType:'length[1, @Worker.MaxRoleNamesLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="finger">指纹一：</label></th>
+                <td>
+                    <input id="finger" name="finger" class="easyui-textbox" style="width: 100%" >
+                    <a onclick="getFinger('finger')" class="easyui-linkbutton">获取指纹</a>
+                    <a onclick="validFinger('finger')" class="easyui-linkbutton">验证指纹</a>
+                </td>
+            </tr>
+            <tr>            
+                <th><label for="finger2">指纹二：</label></th>
+                <td>
+                    <input id="finger2" name="finger2" class="easyui-textbox" style="width: 100%" >
+                    <a onclick="getFinger('finger2')" class="easyui-linkbutton">获取指纹</a>
+                    <a onclick="validFinger('finger2')" class="easyui-linkbutton">验证指纹</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dlg-buttons">
+    <a name="save" class="easyui-linkbutton" iconCls="icon-save" onclick="save()">保存</a>
+    <a name="exit" class="easyui-linkbutton" onclick="$('#dlg').dialog('close')">退出</a>
+</div>
+
+

@@ -13,15 +13,8 @@
     </environment>
 
     <script type="text/javascript">
-        function getRouteId() {
-            var row = $('#dg').datagrid('getSelected');
-            if (row == null) return 0;
-            return row.id;
-        }
-
         finput.matchWorker = function(rfid) {
-            if (!work.validate()) return;
-            abp.services.app.work.matchWorkerForArticle(true, work.me.workplaceId, work.me.today, work.me.depotId, rfid, getRouteId()).done(function(ret) {
+            abp.services.app.work.matchWorkerForTemp(true, work.me.workplaceId, work.me.today, rfid).done(function(ret) {
                 if (ret.message != null) {
                     finput.error(ret.message);
                     return;
@@ -31,7 +24,7 @@
         };
 
         finput.articleScanned = function(rfid) {
-            abp.services.app.work.matchArticleForLend(finput.worker.cn, finput.route.vehicleCn, finput.route.routeName, finput.worker.articleTypeList, rfid).done(function(ret) {
+            abp.services.app.work.matchArticleForTemp(finput.worker.cn, finput.route.vehicleCn, finput.route.routeName, finput.worker.articleTypeList, rfid).done(function(ret) {
                 if (ret.item1 != '') {
                     abp.notify.error(ret.item1);
                     return;
@@ -76,30 +69,14 @@
 }
 
 <div class="easyui-layout" fit="true">
-    <div data-options="region:'north', split:true, border:false" style="min-height:120px; height:70%">
+    <div data-options="region:'center'">
+        <audio id="sounde" src="~/sounds/error.mp3" type="audio/mpeg" controller="false" style="width:0;height:0">ERROR</audio>
+        <audio id="sounds" src="~/sounds/success.mp3" type="audio/mpeg" controller="false" style="width:0;height:0">ERROR</audio>
         <div id="tb">
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
         </div>
         <table id="dg" class="easyui-datagrid" toolbar="#tb"
-                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">
-            <thead>
-                <tr>
-                    <th field="startTime" width="60" sortabl="true">出发时间</th>
-                    <th field="endTime" width="60">返回时间</th>
-                    <th field="vehicle" width="80" formatter="$.vehicleFormatter">车辆</th>
-                    <th field="altVehicle" width="80" formatter="$.altVehicleFormatter">替用车辆</th>
-                    <th field="routeName" width="60" sortable="true">线路名称</th>
-                    <th field="status" width="60" align="center">状态</th>
-                    <th field="remark" width="100">备注</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-    <div data-options="region:'center'">
-        <audio id="sounde" src="~/sounds/error.mp3" type="audio/mpeg" controller="false" style="width:0;height:0">ERROR</audio>
-        <audio id="sounds" src="~/sounds/success.mp3" type="audio/mpeg" controller="false" style="width:0;height:0">ERROR</audio>
-        <table id="dgWorker" class="easyui-datagrid"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="workRoleName">
             <thead>
                 <tr>
@@ -113,20 +90,6 @@
     </div>
 </div>
 
-@*弹窗*@
-<div id="dlg" class="easyui-dialog" title="物品领用" closed="true" modal="true" align="center" style="height: 600px; width: 550px;">
-    <div class="easyui-layout" fit="true">
-        <div data-options="region:'north', border:true" style="height:350px">
-            <p id="routeInfo" class="routeInfo"></p>
-            <img id="photo" class="photo" alt="照片" src="" />
-            <p id="workerInfo" class="workerInfo"></p>
-        </div>
-        <div data-options="region:'center'" style="border:3px solid #ccc; padding:10px">
-            <ul id="articles" class="article">
-            </ul>
-        </div>
-    </div>
-</div>
 
 @*弹窗*@
 <div id="dlg2" class="easyui-dialog" title="物品领用" closed="true" modal="true" align="center" style="height: 600px; width: 1100px;">

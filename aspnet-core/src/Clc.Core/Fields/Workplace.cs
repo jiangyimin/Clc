@@ -65,12 +65,12 @@ namespace Clc.Fields
         // Rules
 
         /// <summary>
-        /// 每班最短时长
+        /// 每班最短时长（分钟）
         /// </summary>
         public int MinDuration { get; set; }     
 
         /// <summary>
-        /// 每班最长时长
+        /// 每班最长时长（小时）
         /// </summary>
         public int MaxDuration { get; set; }   
 
@@ -104,8 +104,8 @@ namespace Clc.Fields
             DateTime end = ClcUtils.GetDateTime(endTime);
             if (start > end)
                 return "结束时间不能小于开始时间!";
-            if (end.Subtract(start).TotalHours < MinDuration)
-                return string.Format("时段长度小于规定({0}小时)", MinDuration);
+            if (end.Subtract(start).TotalMinutes < MinDuration)
+                return string.Format("时段长度小于规定({0}分钟)", MinDuration);
             if (end.Subtract(start).TotalHours > MaxDuration)
                 return string.Format("时段长度大于规定({0}小时)", MaxDuration);
 

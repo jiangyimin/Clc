@@ -48,7 +48,7 @@ namespace Clc.Web.Controllers
         {
             var ret = _doorRecordAppService.GetNotifyInfo(doorRecordId);
 
-            WeixinUtils.SendMessage("app01", ret.Item1, $"你申请的{ret.Item2}已打开");
+            WeixinUtils.SendMessage("App01", ret.Item1, $"你申请的{ret.Item2}已打开");
             return Json( new { Message = "已通知" });
         }
 

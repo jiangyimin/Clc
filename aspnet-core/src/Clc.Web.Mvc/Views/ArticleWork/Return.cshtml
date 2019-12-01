@@ -21,7 +21,7 @@
 
         finput.matchWorker = function(rfid) {
             if (!work.validate()) return;
-            abp.services.app.work.matchWorkerForArticle(false, work.me.workplaceId, work.me.today, work.me.depotId, work.me.affairId, rfid, getRouteId()).done(function(ret) {
+            abp.services.app.work.matchWorkerForArticle(false, work.me.workplaceId, work.me.today, work.me.depotId, rfid, getRouteId()).done(function(ret) {
                 if (ret.message != null) {
                     finput.error(ret.message);
                     return;
@@ -79,7 +79,7 @@
 
 <div class="easyui-layout" fit="true">
     <div data-options="region:'north', split:true, border:false" style="min-height:120px; height:70%">
-        <div id="tb" style="background:yellow">
+        <div id="tb" style="background:red">
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
         </div>

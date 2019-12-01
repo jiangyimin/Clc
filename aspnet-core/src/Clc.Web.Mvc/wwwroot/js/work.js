@@ -11,6 +11,14 @@
         return true;
     }
 
+    work.validate2 = function() {
+        if (work.me.affairId == 0) {
+            abp.notify.error("请先验入任务，然后关闭窗口重新进入！", "", { positionClass : 'toast-top-center'} );
+            return false;
+        };
+        return true;
+    }
+
     work.getTomorrow = function(today) {
         var now = today.split('-')
         now = new Date(Number(now['0']),(Number(now['1'])-1),Number(now['2']));

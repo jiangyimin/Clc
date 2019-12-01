@@ -120,10 +120,11 @@ function startplay(ip) {
     config();
 
     var obj = document.getElementById("EasyPlayerOcx");
-    var url = "rtsp://" + "ip" + ":554/h264/ch1/av_stream";
+    var url = "rtsp://" + ip + ":554/h264/ch1/av_stream";
     var rendertype = 7; //document.getElementById("rendertype").value;
     var name = "admin"; //document.getElementById("name").value;
     var password = abp.setting.get('Const.CameraPassword');
+    // alert(ip + " " + password);
     var harddecode = 1; //document.getElementById("harddecode").checked ? 1 : 0;
     var rtpovertcp = 1; // document.getElementById("rtpovertcp").checked ? 1 : 0;
     obj.Start(url, rendertype, name, password, harddecode, rtpovertcp);
@@ -170,7 +171,7 @@ function allConfirmed() {
 }
 
 function doOpenDoor() {
-    notifyAskWorkers();
+    notifyAskWorkers(doorRecordId);
     // udpate askDoorRecord
     abp.services.app.doorRecord.carryoutAskOpen(doorRecordId, work.me.affairId).done(function() {
         $('#dg').datagrid('reload');
@@ -181,7 +182,7 @@ function doOpenDoor() {
     ws && ws.send(doorIp);
 }
 
-function notifyAskWorkers(workers, doorName) {
+function notifyAskWorkers(doorRecordId) {
     abp.ajax({
         contentType: 'application/x-www-form-urlencoded',
         url: 'NotifyAskWorkers',
