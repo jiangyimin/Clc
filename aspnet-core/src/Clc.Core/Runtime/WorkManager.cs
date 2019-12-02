@@ -459,14 +459,65 @@ namespace Clc.Works
                     else
                         ret = (true, "lockScreen " + workerCn);
                     break;
-                case "开门":
+                case "触发开门":
                     return WeixinTriggerAsk(workerCn);
+                case "申请开门":
+                    return WeixinAskOpenDoor(workerCn);
                 default:
                     ret = (false, "系统无此命令");
                     break;
             }
 
             return ret;
+        }
+
+        public (bool, string) WeixinAskOpenDoor(string workerCn) 
+        {
+            var worker = GetWorkerByCn(workerCn);
+            if (worker == null) return (false, "未登记在工作人员表中");
+
+            // find affair
+            var affair = FindDutyAffairByWorkerId(worker.Id);
+            if (affair == null) return (false, "你无任务需要申请开门");
+
+            var wp = GetWorkplace(affair.WorkplaceId);
+            if (wp.Name.Contains("金库")) return (false, "金库不允许用手机方式申请开门");
+            if (wp.AskOpenStyle != "直接") return (false, "需要设置为直接方式开门");
+            
+            int minNum = int.Parse(SettingManager.GetSettingValue(AppSettingNames.Rule.MinWorkersOnDuty));
+            int askInterval = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.AskOpenInterval));
+            // scan affair workers
+            int askCount = 0; 
+            DateTime min = DateTime.Now;
+            int[] workers = new int[0];
+            foreach (AffairWorkerCacheItem aw in affair.Workers)
+            {
+                if (aw.WorkerId == worker.Id) {
+                    if (aw.LastAskDoor.HasValue && DateTime.Now.Subtract(aw.LastAskDoor.Value) > TimeSpan.FromSeconds(askInterval))
+                        return (false, $"两次申请需要间隔{askInterval}(秒）以上");
+                    using (CurrentUnitOfWork.SetTenantId(1)) { SetLastAskDoorTime(affair, aw); };
+
+                    workers.Append(aw.WorkerId);
+                    askCount++;
+                }
+                else {
+                    if (aw.LastAskDoor.HasValue) {
+                        workers.Append(aw.WorkerId);
+                        askCount++;
+                        if (aw.LastAskDoor.Value < min) min = aw.LastAskDoor.Value;
+                    }
+                }
+            }
+
+            if (askCount < minNum) return (false, "等待其他人申请开门");
+            if (DateTime.Now.Subtract(min) > TimeSpan.FromSeconds(askInterval)) 
+                return (false, "等待其他人申请开门");
+            
+            // Right
+            using (CurrentUnitOfWork.SetTenantId(1)) {
+                SetAskDoorRecord(wp.Id, affair.Id, workers, false);
+            }
+            return (true, "askOpenDoor " + string.Format("你有来自{0}({1})的任务开门申请", wp.Name, GetDepot(worker.DepotId).Name));
         }
 
         public (bool, string) AskOpenDoor(int depotId, int affairId, int doorId, int[] workers, bool waiting = false)
@@ -526,8 +577,9 @@ namespace Clc.Works
             var query = _askdoorRepository.GetAllIncluding(x => x.Workplace)
                 .Where(x => x.AskTime.Date == DateTime.Now.Date && x.Workplace.DepotId == worker.DepotId && x.Approver != x.AskReason);
             var record = query.FirstOrDefault();
-            if (record == null) return (false, "请先再电脑上申请开门");
+            if (record == null) return (false, "请先在电脑上申请开门");
 
+            if (!record.AskReason.Contains(workerCn)) return (false, "你尚未申请开门");
             List<string> cns = new List<string>(record.Approver.Split());
             var newApprover = GetSortedStringList(cns);
             record.Approver = newApprover;
@@ -537,7 +589,7 @@ namespace Clc.Works
                 return (true, "askOpenDoor " + string.Format("你有来自{0}({1})的任务开门申请", record.Workplace.Name, name));
             }
             else
-                return (false, "请等待其他申请人员操作");
+                return (false, "请等待其他申请人员触发开门");
         }
         #endregion
 

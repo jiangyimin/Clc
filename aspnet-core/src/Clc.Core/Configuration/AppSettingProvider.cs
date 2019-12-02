@@ -158,6 +158,12 @@ namespace Clc.Configuration
                     new FixedLocalizableString("还物截止时间(分)"),
                     scopes: SettingScopes.Tenant
                 ),
+                new SettingDefinition(
+                    AppSettingNames.TimeRule.AskOpenInterval, 
+                    "40", 
+                    new FixedLocalizableString("申请开门间隔(秒)"),
+                    scopes: SettingScopes.Tenant
+                ),
             };
         }
     }
