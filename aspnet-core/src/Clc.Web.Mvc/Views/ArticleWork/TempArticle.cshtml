@@ -3,19 +3,19 @@
     <environment names="Development">
         <script src="~/js/work.js" asp-append-version="true"></script>
         <script src="~/js/finput.js" asp-append-version="true"></script>
-        <script src="~/view-resources/Views/ArticleWork/Lend.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/ArticleWork/TempArticle.js" asp-append-version="true"></script>
     </environment>
 
     <environment names="Staging,Production">
         <script src="~/js/work.min.js" asp-append-version="true"></script>
         <script src="~/js/finput.min.js" asp-append-version="true"></script>
-        <script src="~/view-resources/Views/ArticleWork/Lend.min.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/ArticleWork/TempArticle.min.js" asp-append-version="true"></script>
     </environment>
 
     <script type="text/javascript">
         finput.matchWorker = function(rfid) {
             var app = finput.style == 0 ? 
-                abp.services.app.work.MatchWorkerForStoreTempArticle : abp.services.app.work.MatchWorkerForTaskTempArticle
+                abp.services.app.work.matchWorkerForStoreTempArticle : abp.services.app.work.matchWorkerForTaskTempArticle
             app(work.me.today, work.me.depotId, work.me.affairId, rfid).done(function(ret) {
                 if (ret.message != null) {
                     finput.error(ret.message);
@@ -50,10 +50,11 @@
         function askOpen() {
             abp.message.confirm('确认要申请吗?', '确认', function (r) {
                 if (r) {
+                    var st = finput.style == 0 ? '临存' : '临取';
                     abp.ajax({
                         contentType: 'application/x-www-form-urlencoded',
-                        url: 'AskOpen',
-                        data: {depotId: work.me.depotId, routeId: finput.route.id, affairId: work.me.affairId, doorId: work.me.workplaceId, askWorkers: work.me.workers }  
+                        url: 'AskOpenTemp',
+                        data: {style: st, depotId: work.me.depotId, routeName: finput.route.routeName, affairId: work.me.affairId, doorId: work.me.workplaceId, askWorkers: work.me.workers }  
                     }).done(function (ret) {
                         abp.notify.info('你的申请已发往监控中心', '', { positionClass : 'toast-top-right'} );
                     });
@@ -89,7 +90,7 @@
 
 
 @*弹窗*@
-<div id="dlg2" class="easyui-dialog" closed="true" modal="true" align="center" style="height: 600px; width: 1100px;">
+<div id="dlg2" class="easyui-dialog" closed="true" title="扫描物品" modal="true" align="center" style="height: 600px; width: 1100px;">
     <div class="easyui-layout" fit="true">
         <div data-options="region:'west', border:true" style="width:50%">
             <div class="easyui-layout" fit="true">

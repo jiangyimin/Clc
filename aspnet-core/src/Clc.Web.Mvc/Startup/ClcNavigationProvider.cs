@@ -103,6 +103,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Article_Checkin", new FixedLocalizableString("验入/申请"), url: "Checkin"))
                     .AddItem(new MenuItemDefinition("Article_Lend", new FixedLocalizableString("领用"), url: "ArticleWork/Lend"))
                     .AddItem(new MenuItemDefinition("Article_Return", new FixedLocalizableString("归还"), url: "ArticleWork/Return"))
+                    .AddItem(new MenuItemDefinition("Article_TempArticle", new FixedLocalizableString("临时存取"), url: "ArticleWork/TempArticle"))
                     .AddItem(new MenuItemDefinition("Article_List", new FixedLocalizableString("物品清单"), url: "ArticleWork/List"))
                     .AddItem(new MenuItemDefinition("Article_Record", new FixedLocalizableString("物品记录查询"), url: "ArticleWork/RecordQuery"))
                     .AddItem(new MenuItemDefinition("Article_AltCheckin", new FixedLocalizableString("验证金库人员"), url: "AltCheckin"))
@@ -114,7 +115,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Box_Out", new FixedLocalizableString("出箱"), url: "BoxWork/OutBox"))
                     .AddItem(new MenuItemDefinition("Box_List", new FixedLocalizableString("尾箱清单"), url: "BoxWork/List"))
                     .AddItem(new MenuItemDefinition("Box_Record", new FixedLocalizableString("尾箱记录查询"), url: "BoxWork/RecordQuery"))
-                 );
+                );
         }
 
         private static ILocalizableString L(string name)

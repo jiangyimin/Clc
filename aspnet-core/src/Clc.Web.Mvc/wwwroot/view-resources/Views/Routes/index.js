@@ -5,8 +5,7 @@
             $('#dd').datebox('setValue', mds.today);
 
             $('#dg').datagrid({
-                url: 'Routes/GridData',
-                queryParams: {CarryoutDate: mds.today}
+                url: 'Routes/GridData?CarryoutDate=' + mds.today
             });
         });
 

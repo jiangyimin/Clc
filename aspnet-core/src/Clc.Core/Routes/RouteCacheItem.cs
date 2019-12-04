@@ -11,6 +11,7 @@ namespace Clc.Routes
     public class RouteCacheItem : EntityDto
     {
         public string RouteName { get; set; }
+        public int DepotId { get; set; }
 
         public string Status { get; set; }
 

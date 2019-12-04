@@ -572,12 +572,12 @@ namespace Clc.Works
             return (true, "askOpenDoor " + string.Format("你有来自{0}({1})的任务开门申请", wp.Name, GetDepot(worker.DepotId).Name));
         }
 
-        public (bool, string) AskOpenDoor(int depotId, int affairId, int doorId, int[] workers, bool waiting = false)
+        public (bool, string) AskOpenDoor(int depotId, int affairId, int doorId, int[] workers, int taskId, bool waiting = false)
         {
             // judge workplace is vault
             var wp = _workplaceCache[doorId];
             if (string.IsNullOrEmpty(wp.AskOpenStyle)) return (false, "不需要申请开门");
-            if (wp.AskOpenStyle == "线路") return (false, "设置为线路任务方式开门");
+            if (wp.AskOpenStyle == "线路") return (false, "已设置为线路任务方式开门");
             var isVault = wp.Name.Contains("金库");
 
             var affair = _affairCache.GetAffair(DateTime.Now.Date, depotId, affairId);
@@ -585,6 +585,7 @@ namespace Clc.Works
             // scan affair workers
             foreach (AffairWorkerCacheItem aw in affair.Workers)
             {
+                if (aw.CheckoutTime.HasValue) continue;
                 // judge this worker VaultDuty.
                 var duties = _workRoleCache[aw.WorkRoleId].Duties;
                 var VD = !string.IsNullOrEmpty(duties) && duties.Contains("金库");
@@ -605,6 +606,17 @@ namespace Clc.Works
 
             if (isVault)
             {
+                if (taskId != 0)
+                {
+                    AffairEvent e = new AffairEvent();
+                    e.AffairId = affairId;
+                    e.Name = "金库子任务开门";
+                    e.EventTime = DateTime.Now;
+                    e.Issurer = GetWorkerString(workers);
+                    var task = _affairTaskRepository.Get(taskId);
+                    e.Description = task.Content;
+                    _affairEventRepository.Insert(e);
+                }
                 SetAskDoorRecord(doorId, affairId, workers, waiting);
                 if (!waiting) return (true, "你的金库开门申请已发往监控中心");
             }
@@ -619,6 +631,28 @@ namespace Clc.Works
         public void RouteAskOpenDoor(string style, int routeId, int affairId, int workplaceId, string askWorkers)
         {
             SetRouteAskDoorRecord(style, routeId, workplaceId, affairId, askWorkers);
+        }
+
+        public WorkerCacheItem GetCaptain(int depotId)
+        {
+            var captain = _workerCache.GetList().FirstOrDefault(x => x.DepotId == depotId && x.PostName == "大队长");
+            if (captain == null) throw new Exception();
+            return captain;
+
+        }
+        public void InsertTempAskDoorRecord(string style, int depotId, string routeName, int affairId, int doorId, string askWorkers, string cn)
+        {
+            // Get captain of this depotId
+            
+            var askDoor = new AskDoorRecord();
+            askDoor.AskTime = DateTime.Now;
+            askDoor.WorkplaceId = doorId;
+            askDoor.AskAffairId = affairId;
+            askDoor.AskWorkers = askWorkers;
+            askDoor.AskReason = cn;
+            askDoor.Remark = style + $"({routeName})";
+            _askdoorRepository.Insert(askDoor);
+
         }
 
         // used in weixin

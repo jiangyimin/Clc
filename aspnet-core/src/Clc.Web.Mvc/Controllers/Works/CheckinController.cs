@@ -59,7 +59,7 @@ namespace Clc.Web.Controllers
                 if (!ClcUtils.NowInTimeZone(start, 0, wp.AskOpenDeadline)) return Json(new {success = false, message = "不在申请开门时段"});
             }
 
-            var ret = WorkManager.AskOpenDoor(wp.DepotId, affairId, doorId, workers, wait);
+            var ret = WorkManager.AskOpenDoor(wp.DepotId, affairId, doorId, workers, taskId, wait);
 
             if (ret.Item1)
             {

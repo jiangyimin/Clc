@@ -57,7 +57,7 @@
                 return;
             }
             abp.services.app.articleRecord.lend(finput.route.id, rwId, finput.getArticles(), work.me.workers).done(function(count) {
-                finput.success(finput.GetWorker() + '领用了' + count + '件物品');
+                finput.success(finput.getWorker() + '领用了' + count + '件物品');
                 abp.services.app.route.setStatus(work.me.today, getDepotId(), finput.route.id, '领物');
                 finput.submitArticlesDone();
             });

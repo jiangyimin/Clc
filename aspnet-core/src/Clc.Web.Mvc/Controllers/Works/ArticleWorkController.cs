@@ -10,6 +10,7 @@ using Clc.Works;
 using Clc.Routes;
 using Clc.ArticleRecords;
 using Clc.RealTime;
+using Clc.Web.MessageHandlers;
 
 namespace Clc.Web.Controllers
 {
@@ -97,6 +98,17 @@ namespace Clc.Web.Controllers
             _context.Clients.All.SendAsync("getMessage", "askOpenDoor " + string.Format("你有来自{0}({1})的线路开门申请", wpName, depotName));
 
             return Json(new {});
+        }
+
+        [HttpPost]
+        [DontWrapResult]
+        public JsonResult AskOpenTemp(string style, int depotId, string routeName, int affairId, int doorId, string askWorkers)
+        {
+            var captain = WorkManager.GetCaptain(depotId);
+            WorkManager.InsertTempAskDoorRecord(style, depotId, routeName, affairId, doorId, askWorkers, captain.Cn);
+
+            WeixinUtils.SendMessage("App03", captain.Cn, "请审批临时存取开门请求");
+            return Json(new {Message = "已通知队长处理"});
         }
 
     }
