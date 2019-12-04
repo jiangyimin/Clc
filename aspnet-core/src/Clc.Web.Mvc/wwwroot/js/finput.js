@@ -153,6 +153,11 @@ var finput = finput || {};
         return finput.index == 2 ? finput.articles2 : finput.articles;
     }
 
+    finput.getWorker = function() {
+        return finput.index == 2 ? finput.worker2.cn + ' ' + finput.worker2.name
+                                    : finput.worker.cn + ' ' + finput.worker.name;
+    }
+    
     finput.getWorkerRfid = function() {
         return finput.index == 2 ? finput.worker2.rfid : finput.worker.rfid;
     }
@@ -181,6 +186,15 @@ var finput = finput || {};
         return false;
     }
 
+    // used by TempArticles
+    finput.RfidisInArticles = function(rfid) {
+        var as = finput.getArticles();
+        for (var i = 0; i < as.length; i++) {
+            if (as[i].rfid == rfid) {
+                finput.style == 0 ? as[i].recordId = 0 : as[i].Return = true;
+            }
+        }
+    }
 
     finput.pushArticle = function(a) {
         var as = finput.getArticles();
@@ -195,7 +209,8 @@ var finput = finput || {};
     finput.articlesAllReturn = function() {
         var as = finput.getArticles();
         for (var i = 0; i < as.length; i++) {
-            if (!as[i].isReturn) return false;
+            if (finput.style == 0 && as[i].record != 0) return false;   // use in tempArticles
+            if (finput.style == 1 && !as[i].isReturn) return false;
         }
         return true;
     }

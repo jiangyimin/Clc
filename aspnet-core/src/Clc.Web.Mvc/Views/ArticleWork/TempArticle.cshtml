@@ -14,7 +14,9 @@
 
     <script type="text/javascript">
         finput.matchWorker = function(rfid) {
-            abp.services.app.work.matchWorkerForTemp(true, work.me.workplaceId, work.me.today, rfid).done(function(ret) {
+            var app = finput.style == 0 ? 
+                abp.services.app.work.MatchWorkerForStoreTempArticle : abp.services.app.work.MatchWorkerForTaskTempArticle
+            app(work.me.today, work.me.depotId, work.me.affairId, rfid).done(function(ret) {
                 if (ret.message != null) {
                     finput.error(ret.message);
                     return;
@@ -24,29 +26,23 @@
         };
 
         finput.articleScanned = function(rfid) {
-            abp.services.app.work.matchArticleForTemp(finput.worker.cn, finput.route.vehicleCn, finput.route.routeName, finput.worker.articleTypeList, rfid).done(function(ret) {
-                if (ret.item1 != '') {
-                    abp.notify.error(ret.item1);
-                    return;
-                };
-                var a = ret.item2;
-                var isIn = finput.IsInLendArticles(a.articleId);
-                if (isIn == 2) abp.notify.warn('此物品已领，不用再扫');
-                if (isIn == 1) abp.notify.warn('此物品刚扫，现被移除');
-                if (isIn == 0) finput.pushArticle(a);
+            if (!finput.RfidIsInArticles(rfid)) {
+                abp.notify.error('此物品不在归还列表中');
+                return;
+            };
 
-                finput.showArticles();
-            });
+            finput.showArticles();
         }
 
         finput.submitArticles = function(rwId) {
-            if (finput.isEmptyArticles()) {
-                finput.error('未领用任何物品');
+            if (!finput.articlesAllReturn()) {
+                abp.notify.error('还需要扫描物品');
                 return;
             }
-            abp.services.app.articleRecord.lend(finput.route.id, rwId, finput.getArticles(), work.me.workers).done(function(count) {
-                finput.success(finput.worker.name + '领用了' + count + '件物品');
-                abp.services.app.route.setStatus(work.me.today, work.me.depotId, finput.route.id, '领物');
+
+            abp.services.app.affair.InsertTempArticle(finput.style, worker.me.affiarId, finput.route.id, finput.getWorker(), work.me.workers).done(function(count) {
+                var st = finput.style == 0 ? '临存' : '临取';
+                finput.success(finput.getWorker() + st + '了物品');
                 finput.submitArticlesDone();
             });
         }
@@ -75,15 +71,16 @@
         <div id="tb">
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+            &nbsp;取物&nbsp;<input id="take" class="easyui-checkbox">
         </div>
         <table id="dg" class="easyui-datagrid" toolbar="#tb"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="workRoleName">
             <thead>
                 <tr>
-                    <th field="workRoleName" width="80">工作角色</th>
-                    <th field="worker" width="80" formatter="$.workerFormatter">人员</th>
-                    <th field="altWorker" width="80" formatter="$.altWorkerFormatter">替班人员</th>
-                    <th field="articleList" width="200">物品清单</th>
+                    <th field="route" width="80">线路信息</th>
+                    <th field="worker" width="80">存取人</th>
+                    <th field="articleList" width="80">存取无</th>
+                    <th field="takeTime" width="80" formatter="$.datetimeFormatter">取回时间</th>
                  </tr>
             </thead>
         </table>
@@ -92,7 +89,7 @@
 
 
 @*弹窗*@
-<div id="dlg2" class="easyui-dialog" title="物品领用" closed="true" modal="true" align="center" style="height: 600px; width: 1100px;">
+<div id="dlg2" class="easyui-dialog" closed="true" modal="true" align="center" style="height: 600px; width: 1100px;">
     <div class="easyui-layout" fit="true">
         <div data-options="region:'west', border:true" style="width:50%">
             <div class="easyui-layout" fit="true">

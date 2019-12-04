@@ -257,6 +257,7 @@ function parseMessage(msg) {
         return;
     }
     if (cmd[0] == "askOpenDoor") {
+        // alert(me.loginRoleNames);
         if (me.loginRoleNames.indexOf("Monitor") != -1) {
             abp.event.trigger('askOpenDoor');
             abp.notify.info(cmd[1]);
@@ -273,7 +274,7 @@ function parseMessage(msg) {
     if (cmd[0] == "emergOpenDoor") {
         if (me.loginRoleNames.indexOf("Monitor") != -1) {
             abp.event.trigger('emergOpenDoor');
-            abp.notify.info(cmd[1]);
+            abp.notify.warn(cmd[1]);
         }
         return;
     }

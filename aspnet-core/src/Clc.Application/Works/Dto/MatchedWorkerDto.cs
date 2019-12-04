@@ -32,5 +32,14 @@ namespace Clc.Works.Dto
             Duties = role.Duties;
             WorkRoleName = role.Name;
         }
+
+        public MatchedWorkerDto(Worker w)
+        {
+            Id = w.Id;
+            Cn = w.Cn;
+            Name = w.Name;
+            Rfid = w.Rfid;
+            Photo = w.Photo != null ? Convert.ToBase64String(w.Photo) : null;
+        }
     }
 }

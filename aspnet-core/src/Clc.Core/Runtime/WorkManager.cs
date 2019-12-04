@@ -31,6 +31,7 @@ namespace Clc.Works
         private readonly IRepository<Affair> _affairRepository;
         private readonly IRepository<AffairWorker> _affairWorkerRepository;
         private readonly IRepository<AffairTask> _affairTaskRepository;
+        private readonly IRepository<AffairEvent> _affairEventRepository;
         private readonly IRepository<AskDoorRecord> _askdoorRepository;
 
         public WorkManager(IWorkerCache workerCache,
@@ -47,6 +48,7 @@ namespace Clc.Works
             IRepository<Affair> affairRepository,
             IRepository<AffairWorker> affairWorkerRepository,
             IRepository<AffairTask> affairTaskRepository,
+            IRepository<AffairEvent> affairEventRepository,
             IRepository<AskDoorRecord> askdoorRepository)
         {
             _workerCache = workerCache;
@@ -65,6 +67,7 @@ namespace Clc.Works
             _affairRepository = affairRepository;
             _affairWorkerRepository = affairWorkerRepository;
             _affairTaskRepository = affairTaskRepository;
+            _affairEventRepository = affairEventRepository;
 
             _askdoorRepository = askdoorRepository;
         }
@@ -413,10 +416,58 @@ namespace Clc.Works
             return _affairCache.GetAffairWorker(carryoutDate, depotId, workerId);
         }
 
+        public bool HadStore(int affairId, Worker worker) 
+        {
+            var query = _affairEventRepository.GetAll()
+                .Where(x => x.AffairId == affairId && x.Name == "临时存物" && x.Issurer.Contains($"{worker.Cn} {worker.Name}"));
+            return query.ToList().Count > 0;
+        }
+
+        public bool HadTake(int affairId, Worker worker) 
+        {
+            var query = _affairEventRepository.GetAll()
+                .Where(x => x.AffairId == affairId && x.Name == "临时取物" && x.Issurer.Contains($"{worker.Cn} {worker.Name}"));
+            return query.ToList().Count > 0;
+        }
+
+        public (List<AffairEvent>, List<AffairEvent>) GetTempArticles(int affairId) 
+        {
+            var query = _affairEventRepository.GetAll().Where(x => x.AffairId == affairId && x.Name == "临时存物");
+
+            var stores = query.ToList();
+            query = _affairEventRepository.GetAll().Where(x => x.AffairId == affairId && x.Name == "临时还物");
+            return (stores, query.ToList());           
+        }
+        
+        public List<AffairEvent> GetStores(int affairId, Worker worker) 
+        {
+            var query = _affairEventRepository.GetAll()
+                .Where(x => x.AffairId == affairId && x.Name == "临时存物" && x.Issurer.Contains($"{worker.Cn} {worker.Name}"));
+            
+            var store = query.FirstOrDefault();
+            var routeInfo = store.Issurer.Split(',')[0];
+
+            query = _affairEventRepository.GetAll()
+                .Where(x => x.AffairId == affairId && x.Name == "临时存物" && x.Issurer.Contains(routeInfo));
+            var stores = query.ToList();
+            if (stores.Count < 2) return null;
+
+            if (stores[0].Issurer.Contains($"{worker.Cn} {worker.Name}"))
+                return stores;
+            
+            return new List<AffairEvent>() { stores[1], stores[0] };
+        } 
+
         public Article GetArticle(int id)
         {
             return _articleCache[id];
         }
+
+        public Article GetArticle(string cn)
+        {
+            return _articleCache.GetList().FirstOrDefault(x => x.Cn == cn);
+        }
+        
         public Box GetBox(int id)
         {
             return _boxCache[id];
@@ -475,6 +526,7 @@ namespace Clc.Works
         {
             var worker = GetWorkerByCn(workerCn);
             if (worker == null) return (false, "未登记在工作人员表中");
+            // return (true, "askOpenDoor " + string.Format("你有来自{0}({1})的任务开门申请", 1, 2));//, wp.Name, GetDepot(worker.DepotId).Name));
 
             // find affair
             var affair = FindDutyAffairByWorkerId(worker.Id);
@@ -525,6 +577,7 @@ namespace Clc.Works
             // judge workplace is vault
             var wp = _workplaceCache[doorId];
             if (string.IsNullOrEmpty(wp.AskOpenStyle)) return (false, "不需要申请开门");
+            if (wp.AskOpenStyle == "线路") return (false, "设置为线路任务方式开门");
             var isVault = wp.Name.Contains("金库");
 
             var affair = _affairCache.GetAffair(DateTime.Now.Date, depotId, affairId);
@@ -563,9 +616,9 @@ namespace Clc.Works
             return (true, "请去门口用手机触发申请");
         }
 
-        public void RouteAskOpenDoor(int routeId, int affairId, int workplaceId, string askWorkers)
+        public void RouteAskOpenDoor(string style, int routeId, int affairId, int workplaceId, string askWorkers)
         {
-            SetRouteAskDoorRecord(routeId, workplaceId, affairId, askWorkers);
+            SetRouteAskDoorRecord(style, routeId, workplaceId, affairId, askWorkers);
         }
 
         // used in weixin
@@ -580,7 +633,14 @@ namespace Clc.Works
             if (record == null) return (false, "请先在电脑上申请开门");
 
             if (!record.AskReason.Contains(workerCn)) return (false, "你尚未申请开门");
-            List<string> cns = new List<string>(record.Approver.Split());
+            List<string> cns = new List<string>();
+            if (!string.IsNullOrEmpty(record.Approver))
+            {
+                cns.AddRange(record.Approver.Split()); 
+               if (!cns.Contains(workerCn)) cns.Add(workerCn);
+            }
+            else
+                cns.Add(workerCn);
             var newApprover = GetSortedStringList(cns);
             record.Approver = newApprover;
 
@@ -676,7 +736,8 @@ namespace Clc.Works
         {
             var sa = cns.OrderBy(x => x);
             string ret = null;
-            foreach (var s in sa) ret += $"{s} ";
+            foreach (var s in sa) 
+                if (s.Length > 0) ret += $"{s} ";
             return ret;
         }
  
@@ -699,7 +760,7 @@ namespace Clc.Works
             affairWorker.LastAskDoor = DateTime.Now;
         }
 
-        private void SetRouteAskDoorRecord(int routeId, int doorId, int affairId, string askWorkers)
+        private void SetRouteAskDoorRecord(string style, int routeId, int doorId, int affairId, string askWorkers)
         {
             var askDoor = new AskDoorRecord();
             askDoor.AskTime = DateTime.Now;
@@ -707,6 +768,7 @@ namespace Clc.Works
             askDoor.AskAffairId = affairId;
             askDoor.RouteId = routeId;
             askDoor.AskWorkers = askWorkers;
+            askDoor.Remark = style;
             _askdoorRepository.Insert(askDoor);
             CurrentUnitOfWork.SaveChanges();
         }

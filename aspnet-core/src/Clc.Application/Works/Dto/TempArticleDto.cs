@@ -1,14 +1,15 @@
 using System;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using Clc.Affairs;
 
-namespace Clc.Affairs.Dto
+namespace Clc.Works.Dto
 {
     /// <summary>
     /// AffairEnventDto
     /// </summary>
     [AutoMap(typeof(AffairEvent))]
-    public class AffairEventDto : EntityDto
+    public class TempArticleDto : EntityDto
     {
         public int AffairId { get; set; }
         
@@ -23,8 +24,8 @@ namespace Clc.Affairs.Dto
 
         public string Issurer { get; set; }
 
-        // only for mds.js 
-        public string Postfix { get; } = "Event";
+        public string Taked { get; set; }
+
     }
 }
 

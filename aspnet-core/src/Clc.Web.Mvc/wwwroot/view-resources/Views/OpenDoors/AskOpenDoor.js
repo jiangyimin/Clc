@@ -77,11 +77,12 @@
     
         // register event
         window.parent.abp.event.on('askOpenDoor', function () {
+            // alert('on ask');
             $("#sounds")[0].play();
             $('#dg').datagrid('reload');
         });
 
-        $('#dlgConform').dialog({
+        $('#dlgConfirm').dialog({
             onClose: function() {
                 cds = [];
                 confirms.innerHTML = '';
@@ -175,6 +176,7 @@ function doOpenDoor() {
     // udpate askDoorRecord
     abp.services.app.doorRecord.carryoutAskOpen(doorRecordId, work.me.affairId).done(function() {
         $('#dg').datagrid('reload');
+        // alert('before close')
         $('#dlgConfirm').dialog('close');
     });
 

@@ -2,9 +2,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Clc.Affairs;
 
-namespace Clc.Affairs
+namespace Clc.Affairs.Dto
 {
     /// <summary>
     /// AffairWorkerDto

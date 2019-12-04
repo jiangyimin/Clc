@@ -66,6 +66,13 @@ namespace Clc.Web.Controllers
         }
 
         [DontWrapResult]
+        public JsonResult GridDataTemp(int affairId)
+        {
+            var output = _workAppService.GetTempArticles(affairId);
+            return Json( new { rows = output });
+        }
+
+        [DontWrapResult]
         public async Task<JsonResult> GridDataWorker(int id)
         {
             var output = await _routeAppService.GetRouteWorkers(id, GetSorting());
@@ -81,9 +88,9 @@ namespace Clc.Web.Controllers
 
         [HttpPost]
         [DontWrapResult]
-        public JsonResult AskOpen(int depotId, int routeId, int affairId, int doorId, string askWorkers)
+        public JsonResult AskOpen(string style, int depotId, int routeId, int affairId, int doorId, string askWorkers)
         {
-            WorkManager.RouteAskOpenDoor(routeId, affairId, doorId, askWorkers);
+            WorkManager.RouteAskOpenDoor(style, routeId, affairId, doorId, askWorkers);
 
             var depotName = WorkManager.GetDepot(depotId).Name;
             var wpName = WorkManager.GetWorkplace(doorId).Name;

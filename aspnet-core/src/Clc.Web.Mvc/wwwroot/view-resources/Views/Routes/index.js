@@ -10,6 +10,26 @@
             });
         });
 
+        // #tb Buttons
+        $('#tomorror').checkbox({
+            onChange: function() {
+                if ($('#tomorror').checkbox('options').checked) {
+                    var t = work.getTomorrow(mds.today);
+                    // alert(t);
+                    $('#dd').datebox('setValue', t);
+                    $('#dg').datagrid({
+                        url: 'Routes/GridData?CarryoutDate=' + t
+                    });
+                }
+                else {
+                    $('#dd').datebox('setValue', mds.today);
+                    $('#dg').datagrid({
+                        url: 'Routes/GridData?CarryoutDate=' + mds.today
+                    });
+                }
+            }
+        });
+
         $('#tb').children('a[name="event"]').click(function (e) {
             if (mds.masterCurrentRow === null ) {   
                 abp.notify.error("先选择线路");

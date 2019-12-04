@@ -26,6 +26,8 @@ namespace Clc.Works
         
         List<RouteCacheItem> GetCachedRoutes(int wpId, DateTime carryouDate, int depotId, int affairId);
 
+        List<TempArticleDto> GetTempArticles(int affairId);
+
         string GetReportToManagers();
 
         #region Agent / Workers
@@ -57,6 +59,8 @@ namespace Clc.Works
         #region article
 
         RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, int wpId, DateTime carryoutDate, int depotId, string rfid, int routeId);
+        RouteWorkerMatchResult MatchWorkerForTakeTempArticle(DateTime carryoutDate, int depotId, int affairId, string rfid);
+        RouteWorkerMatchResult MatchWorkerForStoreTempArticle(DateTime carryoutDate, int depotId, int affairId, string rfid);
         
         (string, RouteArticleCDto) MatchArticleForLend(string workerCn, string vehicleCn, string routeName, string articleTypeList, string rfid);
         (string, int) MatchArticleForReturn(string rfid);
