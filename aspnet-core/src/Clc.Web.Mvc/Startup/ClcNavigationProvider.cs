@@ -89,7 +89,8 @@ namespace Clc.Web.Startup
                 // Monitor
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
                     .AddItem(new MenuItemDefinition("Monitor_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Monitor/KeyPoints"))
-                    .AddItem(new MenuItemDefinition("Monitor_Affairs", new FixedLocalizableString("任务查询"), url: "OpenDoors/AffairQuery"))
+                    .AddItem(new MenuItemDefinition("Monitor_Affairs", new FixedLocalizableString("任务查询"), url: "Monitor/AffairQuery"))
+                    .AddItem(new MenuItemDefinition("Monitor_Affairs", new FixedLocalizableString("线路查询"), url: "Monitor/RouteQuery"))
                     .AddItem(new MenuItemDefinition("Monitor_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Monitor/ArticleRecords"))
 
 

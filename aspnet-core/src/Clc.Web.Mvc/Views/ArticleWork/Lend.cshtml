@@ -18,12 +18,12 @@
             if (row == null) return 0;
             return row.id;
         }
+
         function getDepotId() {
             var row = $('#dg').datagrid('getSelected');
-            if (row == null) return work.me.depot;
-            return row.depotId;
+            if (row == null) return finput.route.depotId;
+            return row.depotId;            
         }
-
         finput.matchWorker = function(rfid) {
             if (!work.validate()) return;
             abp.services.app.work.matchWorkerForArticle(true, work.me.workplaceId, work.me.today, getDepotId(), rfid, getRouteId()).done(function(ret) {
@@ -54,23 +54,23 @@
         finput.submitArticles = function(rwId) {
             if (finput.isEmptyArticles()) {
                 finput.error('未领用任何物品');
-                return;
+                return false;
             }
             abp.services.app.articleRecord.lend(finput.route.id, rwId, finput.getArticles(), work.me.workers).done(function(count) {
                 finput.success(finput.getWorker() + '领用了' + count + '件物品');
-                abp.services.app.route.setStatus(work.me.today, getDepotId(), finput.route.id, '领物');
+                abp.services.app.route.setStatus(work.me.today, finput.route.depotId, finput.route.id, '领物');
                 finput.submitArticlesDone();
             });
+            return true;
         }
 
-        function askOpen() {
+        function askOpen() { 
             abp.message.confirm('确认要申请吗?', '确认', function (r) {
                 if (r) {
-                    var style = finput.style == 0 ? "领物" : "还物";
                     abp.ajax({
                         contentType: 'application/x-www-form-urlencoded',
                         url: 'AskOpen',
-                        data: {style: style, depotId: work.me.depotId, routeId: finput.route.id, affairId: work.me.affairId, doorId: work.me.workplaceId, askWorkers: work.me.workers }  
+                        data: {style: '领物', depotId: work.me.depotId, routeId: finput.route.id, affairId: work.me.affairId, doorId: work.me.workplaceId, askWorkers: work.me.workers }  
                     }).done(function (ret) {
                         abp.notify.info('你的申请已发往监控中心', '', { positionClass : 'toast-top-right'} );
                     });

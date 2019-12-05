@@ -80,8 +80,16 @@ namespace Clc.Web.Controllers
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
             if (dto != null && !string.IsNullOrEmpty(password) && dto.OutletPassword == password)
             {
-                if (taskId != 0)
+                if (taskId != 0) {
                     _weixinAppService.SetIdentifyTime(taskId);
+                }
+                else {
+                    string issuer = null;
+                    foreach (var w in dto.Workers) {
+                        issuer += $"{w.Cn} {w.Name},";
+                    }
+                    _weixinAppService.SetIdentifyEvent(dto.RouteId, $"{dto.OutletCn} {dto.OutletName}", issuer);
+                }
                 return View("Information2", dto);
             }
             else

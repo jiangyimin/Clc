@@ -12,6 +12,7 @@ using Clc.Runtime;
 using Clc.Runtime.Cache;
 using Clc.Types;
 using Clc.Works;
+using Clc.Works.Dto;
 
 namespace Clc.Affairs
 {
@@ -125,19 +126,19 @@ namespace Clc.Affairs
                 }
 
 
-                var tasks =  _taskRepository.GetAllList(e => e.AffairId == a.Id);
-                foreach (AffairTask t in tasks)
-                {
-                    AffairTask task = new AffairTask();
-                    task.AffairId = affairId;
-                    task.WorkplaceId = t.WorkplaceId;
-                    task.Content = t.Content;
-                    task.StartTime = t.StartTime;
-                    task.EndTime = t.EndTime;
-                    task.CreateWorkerId = workerId;
-                    task.CreateTime = DateTime.Now;
-                    await _taskRepository.InsertAsync(task);
-                }
+                // var tasks =  _taskRepository.GetAllList(e => e.AffairId == a.Id);
+                // foreach (AffairTask t in tasks)
+                // {
+                //     AffairTask task = new AffairTask();
+                //     task.AffairId = affairId;
+                //     task.WorkplaceId = t.WorkplaceId;
+                //     task.Content = t.Content;
+                //     task.StartTime = t.StartTime;
+                //     task.EndTime = t.EndTime;
+                //     task.CreateWorkerId = workerId;
+                //     task.CreateTime = DateTime.Now;
+                //     await _taskRepository.InsertAsync(task);
+                // }
            }
             return list.Count;
         }
@@ -315,7 +316,24 @@ namespace Clc.Affairs
             return ObjectMapper.Map<AffairEventDto>(entity);
         }
 
+        public async Task<AffairEventDto> InsertTempArticle(string style, int affairId, List<RouteArticleCDto> articles, string workers)
+        {
+            string desc = null;
+            foreach (var a in articles) {
+                desc += a.DisplayText + ',';
+            }
 
+            var entity = new AffairEvent();
+            entity.AffairId = affairId;
+            entity.EventTime = DateTime.Now;
+            entity.Name = style;
+            entity.Description = desc;
+            entity.Issurer = workers;
+
+            await _eventRepository.InsertAsync(entity);
+            CurrentUnitOfWork.SaveChanges();
+            return ObjectMapper.Map<AffairEventDto>(entity);
+        }
         #endregion
 
         #region priavte

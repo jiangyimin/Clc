@@ -37,11 +37,6 @@ namespace Clc.Web.Controllers
             return View();
         }
         
-        public ActionResult AffairQuery()
-        {
-            return RedirectToAction("Query", "Affairs", new { Seld = 1});
-        } 
-
         [HttpPost]
         [DontWrapResult]
         public JsonResult NotifyAskWorkers(int doorRecordId)

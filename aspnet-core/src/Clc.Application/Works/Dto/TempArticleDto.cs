@@ -24,7 +24,7 @@ namespace Clc.Works.Dto
 
         public string Issurer { get; set; }
 
-        public string Taked { get; set; }
+        public DateTime? TakeTime { get; set; }
 
     }
 }

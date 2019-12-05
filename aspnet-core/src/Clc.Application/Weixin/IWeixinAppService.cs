@@ -18,6 +18,7 @@ namespace Clc.Weixin
         // List<RouteTaskDto> GetTaskList(string workerId);
 
         void SetIdentifyTime(int taskId);
+        void SetIdentifyEvent(int routeId, string outlet, string issuer);
 
         #endregion
 

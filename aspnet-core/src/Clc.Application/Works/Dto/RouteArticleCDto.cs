@@ -8,6 +8,8 @@ namespace Clc.Works.Dto
     public class RouteArticleCDto
     {
         public int ArticleId { get; set;}
+
+        public string Rfid { get; set; }
         public string DisplayText { get; set; }
 
         public int RecordId { get; set; }
@@ -20,6 +22,7 @@ namespace Clc.Works.Dto
             ArticleId = a.Id;
             DisplayText = a.Cn + " " + a.Name;
 
+            Rfid = a.Rfid;
             RecordId = recordId;
             IsReturn = isReturn;
         }

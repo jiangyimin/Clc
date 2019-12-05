@@ -79,7 +79,7 @@ namespace Clc.DoorRecords
 
         public async Task<List<AskDoorDto>> GetAskDoorsAsync(DateTime dt)
         {
-            var query = _askDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot, x => x.Route, x => x.AskAffair)
+            var query = _askDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot, x => x.Route, x => x.Route.Depot, x => x.AskAffair)
                 .Where(x => x.AskTime.Date == dt && x.AskReason == x.Approver && !x.ProcessTime.HasValue);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
@@ -145,6 +145,14 @@ namespace Clc.DoorRecords
             entity.ApproverId = approverId;
             await _emergDoorRepository.UpdateAsync(entity);
         }
+        public async Task ApproveTempDoor(int id, string approver)
+        {
+            // get AskDoorRecord
+            var entity = await _askDoorRepository.GetAsync(id);
+            entity.AskReason += '|' + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            entity.Approver = entity.AskReason;
+            await _askDoorRepository.UpdateAsync(entity);
+        }
 
         public async Task<EmergDoorRecordDto> GetLastUnApproveEmergDoor(int workerId)
         {
@@ -153,11 +161,21 @@ namespace Clc.DoorRecords
             return ObjectMapper.Map<EmergDoorRecordDto>(entity);
         }
 
+        public async Task<AskDoorDto> GetLastUnApproveTempDoor(string workerCn)
+        {
+            var query = _askDoorRepository.GetAllIncluding(x => x.Route)
+                .Where(x => x.AskReason == workerCn);
+            var entity = await AsyncQueryableExecuter.FirstOrDefaultAsync(query);
+            return ObjectMapper.Map<AskDoorDto>(entity);
+        }
+
         #region private
         private AskDoorDto MapToAskDoorDto(AskDoorRecord record)
         {
             var dto = ObjectMapper.Map<AskDoorDto>(record);
             dto.AskStyle = record.RouteId.HasValue ? $"线路({record.Route.RouteName})": "验证";
+            dto.RouteInfo = record.RouteId.HasValue ? $"{record.Route.RouteName}({record.Route.Depot.Name})": "";
+
             return dto;
         }
 

@@ -20,7 +20,7 @@ using Clc.Extensions;
 namespace Clc.Routes
 {
     // [AbpAllowAnonymous]
-    [AbpAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Article, PermissionNames.Pages_Box)]
+    [AbpAuthorize]
     public class RouteAppService : ClcAppServiceBase, IRouteAppService
     {
         public WorkManager WorkManager { get; set; }
@@ -390,7 +390,7 @@ namespace Clc.Routes
         public (Route, int) FindRouteForIdentify(int depotId, int workerId)
         {
             var query = _routeRepository.GetAllIncluding(x => x.Workers)
-                    .Where(x => x.DepotId == depotId && x.CarryoutDate == DateTime.Today && (x.Status == "激活" || x.Status == "还物"))
+                    .Where(x => x.DepotId == depotId && x.CarryoutDate == DateTime.Today && (x.Status == "激活" || x.Status == "领物"))
                     .OrderByDescending(x => x.StartTime);
             var routes = query.ToList();
 
@@ -423,7 +423,21 @@ namespace Clc.Routes
             var task = _taskRepository.Get(taskId);
             task.IdentifyTime = DateTime.Now;
             _taskRepository.Update(task);
-         }
+        }
+
+        [AbpAllowAnonymous]
+        public void SetIdentifyEvent(int routeId, string outlet, string issuer)
+        {
+            var entity = new RouteEvent();
+            entity.RouteId = routeId;
+            entity.TenantId = 1;
+            entity.EventTime = DateTime.Now;
+            entity.Name = "网点身份确认";
+            entity.Description = outlet;
+            entity.Issurer = issuer;
+            _eventRepository.InsertAsync(entity);
+            CurrentUnitOfWork.SaveChanges();
+        }
 
         #endregion
         

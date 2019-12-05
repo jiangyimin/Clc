@@ -186,7 +186,7 @@ namespace Clc.Works
                 var routeInfo = dto.Issurer.Split(',')[0];
                 foreach (var t in es.Item2) {
                     if (t.Issurer.Contains(routeInfo)) 
-                        dto.Taked = "已取";
+                        dto.TakeTime = t.EventTime;
                 }
 
                 dtos.Add(dto);
@@ -385,7 +385,7 @@ namespace Clc.Works
 
             var stores = WorkManager.GetStores(affairId, worker);
             if (stores == null || stores.Count < 2) {
-                result.Message = "需要双人操纵"; return result;
+                result.Message = "需要双人操作"; return result;
             }
 
             var routeInfo = stores[0].Issurer.Split(',')[0];

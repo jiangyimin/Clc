@@ -7,7 +7,7 @@
             if (!work.validate2()) return;
             $('#dd').datebox('setValue', work.me.today);
             $('#dg').datagrid({
-                url: 'GridDataTemp/AffairId=' + work.me.affairId
+                url: 'GridDataTemp?AffairId=' + work.me.affairId
             });
 
         });

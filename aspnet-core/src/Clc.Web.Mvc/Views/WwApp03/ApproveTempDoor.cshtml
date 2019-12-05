@@ -1,0 +1,33 @@
+﻿@model Clc.Web.Models.Weixin.ApproveTempDoorViewModel
+@{
+    ViewBag.Title = "审批临时存取开门";
+    Layout = "~/Views/Shared/_WeixinLayout.cshtml";
+}
+
+<form name="fm" action ="WwApp03/ApproveTempDoor" method="post" onsubmit="onSubmit()">
+    @Html.ValidationSummary()
+    <div class="weui-cells">
+        <input name="id" type="hidden">
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd"><label class="weui-label">场地门:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="workplaceNme" readonly type="text" value="@Model.WorkplaceName">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">线路信息:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="routeInfo" readonly type="text" value="@Model.RouteInfo">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">备注:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="remark" readonly type="text" value="@Model.Remark">
+            </div>
+        </div>
+        <div class="weui-btn-area">
+            <input type="submit" value="同意" class="weui-btn weui-btn_primary" />
+        </div>
+    </div>
+</form>

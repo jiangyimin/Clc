@@ -7,7 +7,10 @@ namespace Clc.Works.Dto
 
         // about Workers
         public int Id { get; set; }
+
+        public int DepotId { get; set; }
         public string RouteName { get; set; }
+
         public string VehicleCn { get; set; }
         public string VehicleLicense { get; set; }
 
@@ -21,6 +24,7 @@ namespace Clc.Works.Dto
         public MatchedRouteDto(RouteCacheItem r)
         {
             Id = r.Id;
+            DepotId = r.DepotId;
             RouteName = r.RouteName;
             if (!r.AltVehicleId.HasValue) 
             {

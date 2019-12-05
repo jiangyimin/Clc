@@ -44,5 +44,6 @@ namespace Clc.Routes
 
         (Route, int) FindRouteForIdentify(int depotId, int workerId);
         void SetIdentifyTime(int taskId);
+        void SetIdentifyEvent(int routeId, string outlet, string issuer);
     }
 }

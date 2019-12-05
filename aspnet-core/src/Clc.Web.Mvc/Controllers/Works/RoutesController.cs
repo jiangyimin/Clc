@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Clc.Web.Controllers
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Aux)]
+    [AbpMvcAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Aux, PermissionNames.Pages_Monitor)]
     public class RoutesController : ClcControllerBase
     {
         private readonly IRouteAppService _routeAppService;
@@ -28,9 +28,9 @@ namespace Clc.Web.Controllers
         {
             return View();
         }
-        public ActionResult Query()
+        public ActionResult Query(int seld)
         {
-            return View(0);
+            return View(seld);
         }
 
         [DontWrapResult]

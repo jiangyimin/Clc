@@ -11,7 +11,7 @@ var winput = winput || {};
         window.parent.displayRfid1(rfid);
         winput.matchWorker(rfid);
     }
-    winput.matchWorker = function () { alert("matchWorker") }
+    winput.matchWorker = function () { alert("请用鼠标点一下此页面！") }
 
     winput.onkeydown = function() {
         var keyCode = event.keyCode;

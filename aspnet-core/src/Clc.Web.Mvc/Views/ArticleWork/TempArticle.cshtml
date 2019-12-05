@@ -15,7 +15,7 @@
     <script type="text/javascript">
         finput.matchWorker = function(rfid) {
             var app = finput.style == 0 ? 
-                abp.services.app.work.matchWorkerForStoreTempArticle : abp.services.app.work.matchWorkerForTaskTempArticle
+                abp.services.app.work.matchWorkerForStoreTempArticle : abp.services.app.work.matchWorkerForTakeTempArticle;
             app(work.me.today, work.me.depotId, work.me.affairId, rfid).done(function(ret) {
                 if (ret.message != null) {
                     finput.error(ret.message);
@@ -26,7 +26,7 @@
         };
 
         finput.articleScanned = function(rfid) {
-            if (!finput.RfidIsInArticles(rfid)) {
+            if (!finput.rfidIsInArticles(rfid)) {
                 abp.notify.error('此物品不在归还列表中');
                 return;
             };
@@ -37,20 +37,22 @@
         finput.submitArticles = function(rwId) {
             if (!finput.articlesAllReturn()) {
                 abp.notify.error('还需要扫描物品');
-                return;
+                return false;
             }
 
-            abp.services.app.affair.InsertTempArticle(finput.style, worker.me.affiarId, finput.route.id, finput.getWorker(), work.me.workers).done(function(count) {
-                var st = finput.style == 0 ? '临存' : '临取';
+            var st = finput.style == 0 ? '临时存物' : '临时取物';
+            // alert(st);
+            abp.services.app.affair.insertTempArticle(st, work.me.affairId, finput.getArticles(), finput.route.routeName + ',' + finput.getWorker()).done(function(count) {
                 finput.success(finput.getWorker() + st + '了物品');
                 finput.submitArticlesDone();
             });
+            return true;
         }
 
         function askOpen() {
             abp.message.confirm('确认要申请吗?', '确认', function (r) {
                 if (r) {
-                    var st = finput.style == 0 ? '临存' : '临取';
+                    var st = finput.style == 0 ? '临时存物' : '临时取物';
                     abp.ajax({
                         contentType: 'application/x-www-form-urlencoded',
                         url: 'AskOpenTemp',
@@ -78,10 +80,10 @@
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="workRoleName">
             <thead>
                 <tr>
-                    <th field="route" width="80">线路信息</th>
-                    <th field="worker" width="80">存取人</th>
-                    <th field="articleList" width="80">存取无</th>
-                    <th field="takeTime" width="80" formatter="$.datetimeFormatter">取回时间</th>
+                    <th field="eventTime" width="80" formatter="$.datetimeFormatter">存物时间</th>
+                    <th field="issurer" width="100">存取人</th>
+                    <th field="description" width="160">物品列表</th>
+                    <th field="takeTime" width="80" formatter="$.timeFormatter">取回时间</th>
                  </tr>
             </thead>
         </table>

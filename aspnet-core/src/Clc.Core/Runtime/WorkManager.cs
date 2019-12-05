@@ -539,37 +539,40 @@ namespace Clc.Works
             int minNum = int.Parse(SettingManager.GetSettingValue(AppSettingNames.Rule.MinWorkersOnDuty));
             int askInterval = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.AskOpenInterval));
             // scan affair workers
-            int askCount = 0; 
-            DateTime min = DateTime.Now;
-            int[] workers = new int[0];
+            // int askCount = 0; 
+            // DateTime min = DateTime.Now;
+            List<int> workers = new List<int>();
             foreach (AffairWorkerCacheItem aw in affair.Workers)
             {
                 if (aw.WorkerId == worker.Id) {
-                    if (aw.LastAskDoor.HasValue && DateTime.Now.Subtract(aw.LastAskDoor.Value) > TimeSpan.FromSeconds(askInterval))
-                        return (false, $"两次申请需要间隔{askInterval}(秒）以上");
+                    //if (aw.LastAskDoor.HasValue && DateTime.Now.Subtract(aw.LastAskDoor.Value) < TimeSpan.FromSeconds(askInterval))
+                    //    return (false, $"两次申请需要间隔{askInterval}(秒）以上");
                     using (CurrentUnitOfWork.SetTenantId(1)) { SetLastAskDoorTime(affair, aw); };
 
-                    workers.Append(aw.WorkerId);
-                    askCount++;
-                }
-                else {
-                    if (aw.LastAskDoor.HasValue) {
-                        workers.Append(aw.WorkerId);
-                        askCount++;
-                        if (aw.LastAskDoor.Value < min) min = aw.LastAskDoor.Value;
+                    workers.Add(aw.WorkerId);
+                    if (workers.Count == minNum) {
+                        // Right
+                        //using (CurrentUnitOfWork.SetTenantId(1)) {
+                            SetAskDoorRecord(wp.Id, affair.Id, workers.ToArray(), false);
+                        //}
+                        return (true, "askOpenDoor " + string.Format("你有来自{0}({1})的任务开门申请", wp.Name, GetDepot(worker.DepotId).Name));
                     }
                 }
+                else {
+                    if (aw.LastAskDoor.HasValue && DateTime.Now.Subtract(aw.LastAskDoor.Value) < TimeSpan.FromSeconds(askInterval)) {
+                        workers.Add(aw.WorkerId);
+                        if (workers.Count == minNum) {
+                            // Right
+                            //using (CurrentUnitOfWork.SetTenantId(1)) {
+                                SetAskDoorRecord(wp.Id, affair.Id, workers.ToArray(), false);
+                            //}
+                            return (true, "askOpenDoor " + string.Format("你有来自{0}({1})的任务开门申请", wp.Name, GetDepot(worker.DepotId).Name));
+                        }
+                    }
+               }
             }
 
-            if (askCount < minNum) return (false, "等待其他人申请开门");
-            if (DateTime.Now.Subtract(min) > TimeSpan.FromSeconds(askInterval)) 
-                return (false, "等待其他人申请开门");
-            
-            // Right
-            using (CurrentUnitOfWork.SetTenantId(1)) {
-                SetAskDoorRecord(wp.Id, affair.Id, workers, false);
-            }
-            return (true, "askOpenDoor " + string.Format("你有来自{0}({1})的任务开门申请", wp.Name, GetDepot(worker.DepotId).Name));
+            return (false, "等待其他人申请开门");
         }
 
         public (bool, string) AskOpenDoor(int depotId, int affairId, int doorId, int[] workers, int taskId, bool waiting = false)
@@ -642,8 +645,6 @@ namespace Clc.Works
         }
         public void InsertTempAskDoorRecord(string style, int depotId, string routeName, int affairId, int doorId, string askWorkers, string cn)
         {
-            // Get captain of this depotId
-            
             var askDoor = new AskDoorRecord();
             askDoor.AskTime = DateTime.Now;
             askDoor.WorkplaceId = doorId;
@@ -817,7 +818,9 @@ namespace Clc.Works
             askDoor.AskWorkers = askWorkers;
             askDoor.AskReason = SortWorkers(workers);
             if (!waiting) askDoor.Approver = SortWorkers(workers);
+            askDoor.TenantId = 1;
             _askdoorRepository.Insert(askDoor);
+            CurrentUnitOfWork.SaveChanges();
         }
 
         private bool NeedCheckin(DateTime? checkinTime) 

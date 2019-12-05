@@ -22,6 +22,7 @@ namespace Clc.DoorRecords.Dto
         public string AskAffairContent { get; set; }
         public string AskStyle { get; set; }
 
+        public string RouteInfo { get; set; }
         public string AskWorkers { get; set; }
 
         public string Remark { get; set; }

@@ -80,6 +80,11 @@ namespace Clc.Weixin
             return dto;
         }
 
+        public void SetIdentifyEvent(int routeId, string outlet, string issuer)
+        {
+            _routeAppService.SetIdentifyEvent(routeId, outlet, issuer);
+        }
+
         public void SetIdentifyTime(int taskId)
         {
             _routeAppService.SetIdentifyTime(taskId);

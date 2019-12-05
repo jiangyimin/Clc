@@ -84,7 +84,7 @@ var finput = finput || {};
             }
         }
     }
-    finput.matchWorker = function () { alert("matchWorker") }
+    finput.matchWorker = function () { alert("请用鼠标点一下此页面！") }
 
     finput.onMatchWorker = function (ret) {
         finput.route = ret.routeMatched;
@@ -108,9 +108,9 @@ var finput = finput || {};
     finput.onWorkerConfirm = function () {
         var rwId = finput.index == 2 ? finput.worker2.routeWorkerId : finput.worker.routeWorkerId;
 
+        if (!finput.submitArticles(rwId)) return;
         if (finput.index == 1) 
             abp.notify.info('现在请扫描第二人的物品', '', { positionClass : 'toast-top-center'} );
-        finput.submitArticles(rwId);
     }
 
     finput.showWorker = function () {
@@ -187,13 +187,19 @@ var finput = finput || {};
     }
 
     // used by TempArticles
-    finput.RfidisInArticles = function(rfid) {
+    finput.rfidIsInArticles = function(rfid) {
         var as = finput.getArticles();
         for (var i = 0; i < as.length; i++) {
             if (as[i].rfid == rfid) {
-                finput.style == 0 ? as[i].recordId = 0 : as[i].Return = true;
+                if (finput.style == 0)
+                    as[i].recordId = 0;
+                else    
+                    as[i].isReturn = true;
             }
+
+            return true;
         }
+        return false;
     }
 
     finput.pushArticle = function(a) {
@@ -209,7 +215,7 @@ var finput = finput || {};
     finput.articlesAllReturn = function() {
         var as = finput.getArticles();
         for (var i = 0; i < as.length; i++) {
-            if (finput.style == 0 && as[i].record != 0) return false;   // use in tempArticles
+            if (finput.style == 0 && as[i].recordId != 0) return false;   // use in tempArticles
             if (finput.style == 1 && !as[i].isReturn) return false;
         }
         return true;
@@ -248,7 +254,7 @@ var finput = finput || {};
         return h;
     }
 
-    finput.submitArticles = function (id) { alert("submitArticles") }
+    finput.submitArticles = function (id) { alert("submitArticles"); return true; }
 
     // Box region
     finput.ShowWorerForBox = function (ret) {

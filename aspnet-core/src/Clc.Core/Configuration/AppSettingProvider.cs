@@ -160,7 +160,7 @@ namespace Clc.Configuration
                 ),
                 new SettingDefinition(
                     AppSettingNames.TimeRule.AskOpenInterval, 
-                    "40", 
+                    "60", 
                     new FixedLocalizableString("申请开门间隔(秒)"),
                     scopes: SettingScopes.Tenant
                 ),
