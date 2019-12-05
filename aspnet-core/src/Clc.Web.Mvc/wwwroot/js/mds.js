@@ -84,6 +84,8 @@ var mds = mds || {};
     }
 
     mds.operatorIsEnableT = function(row) {
+        if (row.identifyTime) return false;
+        if (row.endTimeActual) return false;
         return true;
     }
 

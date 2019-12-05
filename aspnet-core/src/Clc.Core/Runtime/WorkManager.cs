@@ -609,6 +609,7 @@ namespace Clc.Works
 
             if (isVault)
             {
+                string remark = null;
                 if (taskId != 0)
                 {
                     AffairEvent e = new AffairEvent();
@@ -619,8 +620,9 @@ namespace Clc.Works
                     var task = _affairTaskRepository.Get(taskId);
                     e.Description = task.Content;
                     _affairEventRepository.Insert(e);
+                    remark = $"金库子任务({task.Content})";
                 }
-                SetAskDoorRecord(doorId, affairId, workers, waiting);
+                SetAskDoorRecord(doorId, affairId, workers, waiting, remark);
                 if (!waiting) return (true, "你的金库开门申请已发往监控中心");
             }
             else {
@@ -808,7 +810,7 @@ namespace Clc.Works
             CurrentUnitOfWork.SaveChanges();
         }
 
-        private void SetAskDoorRecord(int doorId, int affairId, int[] workers, bool waiting)
+        private void SetAskDoorRecord(int doorId, int affairId, int[] workers, bool waiting, string remark = null)
         {
             var askWorkers = GetWorkerString(workers);
             var askDoor = new AskDoorRecord();
@@ -818,6 +820,7 @@ namespace Clc.Works
             askDoor.AskWorkers = askWorkers;
             askDoor.AskReason = SortWorkers(workers);
             if (!waiting) askDoor.Approver = SortWorkers(workers);
+            askDoor.Remark = remark;
             askDoor.TenantId = 1;
             _askdoorRepository.Insert(askDoor);
             CurrentUnitOfWork.SaveChanges();

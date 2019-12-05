@@ -48,10 +48,7 @@ namespace Clc.Affairs.Dto
         [StringLength(AffairTask.MaxRemarkLength)]
         public string Remark { get; set; }
 
-        [Required]
-        public int CreateWorkerId { get; set; }
         public string CreateWorkerName { get; set; }
-        public DateTime CreateTime { get; set; }
 
         // 实际选填的开始结束时间
         public DateTime? StartTimeActual { get; set; }

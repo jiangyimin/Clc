@@ -281,6 +281,7 @@ namespace Clc.Affairs
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
             workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+            
             var entity = ObjectMapper.Map<AffairTask>(input);
             entity.CreateWorkerId = workerId;
             entity.CreateTime = DateTime.Now;

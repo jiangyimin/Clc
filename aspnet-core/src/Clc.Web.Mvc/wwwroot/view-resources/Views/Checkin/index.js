@@ -87,6 +87,7 @@ function showAffair() {
 var cds = [];
 function openConfirmDialog(d) {
     for (var i = 0; i < d.length; i++) {
+        if (d[i].checkoutTime) continue;
         cds.push({ confirmed: false, displayText: d[i].workerCn + ' ' + d[i].workerName, workerId: d[i].workerId, rfid: d[i].workerRfid });
     };
     $('#dlgConfirm').dialog('open');
