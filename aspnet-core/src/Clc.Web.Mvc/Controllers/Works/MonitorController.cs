@@ -21,15 +21,20 @@ namespace Clc.Web.Controllers
         }
 
        
+        public ActionResult KeyPoints()
+        {
+            return RedirectToAction("KeyPoints", "Routes", new { Seld = 1});
+        } 
+
         public ActionResult AffairQuery()
         {
-            return RedirectToAction("Query", "Affairs", new { Seld = 1});
+            return RedirectToAction("RQuery", "Affairs", new { Seld = 1});
         } 
 
 
         public ActionResult RouteQuery()
         {
-            return RedirectToAction("Query", "Routes", new { Seld = 1});
+            return RedirectToAction("RQuery", "Routes", new { Seld = 1});
         } 
 
     }

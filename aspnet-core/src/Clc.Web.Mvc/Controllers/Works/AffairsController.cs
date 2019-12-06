@@ -24,7 +24,7 @@ namespace Clc.Web.Controllers
             return View();
         }
 
-        public ActionResult Query(int seld)
+        public ActionResult RQuery(int seld)
         {
             return View(seld);
         }

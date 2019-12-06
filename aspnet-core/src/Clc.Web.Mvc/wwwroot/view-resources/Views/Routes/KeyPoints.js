@@ -2,22 +2,24 @@
     $(function() {    
         abp.services.app.work.getToday().done(function (today) {
             $('#dd').datebox('setValue', today);
-            abp.services.app.field.getComboItems('Depot').done(function (data) {
-                $('#depot').combobox({
-                    data: data,
-                    valueField: 'value',
-                    textField: 'displayText'
-                })
-                $('#depot').combobox('setValue', window.parent.me.depotId);
-            });
-            showRoutes();
         });
 
-        $('#depot').combobox({
-            onChange: function(val) {
-                showRoutes();
-            }
+        abp.services.app.field.getComboItems('Depot').done(function (data) {
+            $('#depot').combobox({
+                data: data,
+                valueField: 'value',
+                textField: 'displayText'
+            })
+
+            $('#depot').combobox({
+                onChange: function(val) {
+                    showRoutes();
+                }
+            });
+
+            $('#depot').combobox('setValue', window.parent.me.depotId);
         });
+
 
         $('#dg').datagrid({
             onSelect: function() {
@@ -33,6 +35,8 @@
 
     function showRoutes() {
         var depotId = $('#depot').combobox('getValue');
+        if (!depotId) return;
+        if (!$('#dd').datebox('getValue')) return;
         if ($('#seld').val() == 0 && depotId != window.parent.me.depotId) {
             abp.notify.error('你不允许查看其他大队的线路');
             return;

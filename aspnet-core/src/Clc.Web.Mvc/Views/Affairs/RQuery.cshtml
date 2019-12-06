@@ -72,17 +72,6 @@
     </script>
 
     <script type="text/javascript">
-        mds.initfunction = function () {
-            // comboBoxs
-            abp.services.app.field.getComboItems('Depot').done(function (data) {
-                $('#depot').combobox({
-                    data: data,
-                    valueField: 'value',
-                    textField: 'displayText'
-                })
-            });
-        }
-
         mds.getUrl = function(postfix, masterRow) {
             if (postfix == mds.main.postfix) return '';       // impossible
 
