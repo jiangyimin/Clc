@@ -16,9 +16,10 @@ namespace Clc.Works.Dto
 
         public MatchedRouteDto(string routeInfo)
         {
-            var ss = routeInfo.Split();
-            Id = int.Parse(ss[0]);
-            RouteName = ss[1];
+            //var ss = routeInfo.Split();
+            //Id = int.Parse(ss[0]);
+            RouteName = routeInfo;
+            VehicleCn = VehicleLicense = string.Empty;
         }
         
         public MatchedRouteDto(RouteCacheItem r)

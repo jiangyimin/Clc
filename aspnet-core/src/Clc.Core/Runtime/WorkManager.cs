@@ -665,9 +665,10 @@ namespace Clc.Works
             if (worker == null) return (false, "未登记在工作人员表中");
 
             var query = _askdoorRepository.GetAllIncluding(x => x.Workplace)
-                .Where(x => x.AskTime.Date == DateTime.Now.Date && x.Workplace.DepotId == worker.DepotId && x.Approver != x.AskReason);
-            var record = query.FirstOrDefault();
+                .Where(x => x.AskTime.Date == DateTime.Now.Date && x.Workplace.DepotId == worker.DepotId && x.Approver != x.AskReason && x.Remark.Contains("手机触发"));
+            var record = query.FirstOrDefault(x => DateTime.Now.Subtract(x.AskTime) < TimeSpan.FromMinutes(5));
             if (record == null) return (false, "请先在电脑上申请开门");
+
 
             if (!record.AskReason.Contains(workerCn)) return (false, "你尚未申请开门");
             List<string> cns = new List<string>();
@@ -818,9 +819,15 @@ namespace Clc.Works
             askDoor.WorkplaceId = doorId;
             askDoor.AskAffairId = affairId;
             askDoor.AskWorkers = askWorkers;
-            askDoor.AskReason = SortWorkers(workers);
-            if (!waiting) askDoor.Approver = SortWorkers(workers);
             askDoor.Remark = remark;
+
+            askDoor.AskReason = SortWorkers(workers);
+            if (!waiting) {
+                askDoor.Approver = SortWorkers(workers);
+            }
+            else {
+                askDoor.Remark += "(手机触发)";
+            }
             askDoor.TenantId = 1;
             _askdoorRepository.Insert(askDoor);
             CurrentUnitOfWork.SaveChanges();

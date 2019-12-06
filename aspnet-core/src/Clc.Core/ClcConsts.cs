@@ -8,7 +8,7 @@
 
         public const bool MultiTenancyEnabled = true;
 
-        public const int CookieAuthExpireTime = 60;         // minutes
+        public const int CookieAuthExpireTime = 20;         // minutes
 
         public const int EntityListCacheSlidingExpireTime = 20;
 

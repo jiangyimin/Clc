@@ -195,9 +195,9 @@ var finput = finput || {};
                     as[i].recordId = 0;
                 else    
                     as[i].isReturn = true;
+                
+                return true;
             }
-
-            return true;
         }
         return false;
     }

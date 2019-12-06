@@ -264,6 +264,13 @@ function parseMessage(msg) {
         }
         return;
     }
+    if (cmd[0] == "keypoint") {
+        if (me.loginRoleNames.indexOf("Captain") != -1) {
+            var con = cmd[1].split(',', 2);
+            if (con[1] == me.depotId)
+                abp.notify.info(con[0]+"刚交接");
+        }
+    }
     if (cmd[0] == "askVaultGuard") {
         if (me.loginRoleNames.indexOf("Monitor") != -1) {
             // alert(cmd[1]);

@@ -40,6 +40,7 @@ namespace Clc.Works.Dto
             Name = w.Name;
             Rfid = w.Rfid;
             Photo = w.Photo != null ? Convert.ToBase64String(w.Photo) : null;
+            WorkRoleName = string.Empty;
         }
     }
 }

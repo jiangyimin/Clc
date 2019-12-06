@@ -26,6 +26,7 @@
         };
 
         finput.articleScanned = function(rfid) {
+            // alert("scanned"+rfid);
             if (!finput.rfidIsInArticles(rfid)) {
                 abp.notify.error('此物品不在归还列表中');
                 return;
@@ -42,7 +43,7 @@
 
             var st = finput.style == 0 ? '临时存物' : '临时取物';
             // alert(st);
-            abp.services.app.affair.insertTempArticle(st, work.me.affairId, finput.getArticles(), finput.route.routeName + ',' + finput.getWorker()).done(function(count) {
+            abp.services.app.affair.insertTempArticle(st, work.me.affairId, finput.getArticles(), finput.route.depotId, finput.route.routeName + ',' + finput.getWorker()).done(function(count) {
                 finput.success(finput.getWorker() + st + '了物品');
                 finput.submitArticlesDone();
             });
@@ -58,7 +59,7 @@
                         url: 'AskOpenTemp',
                         data: {style: st, depotId: work.me.depotId, routeName: finput.route.routeName, affairId: work.me.affairId, doorId: work.me.workplaceId, askWorkers: work.me.workers }  
                     }).done(function (ret) {
-                        abp.notify.info('你的申请已发往监控中心', '', { positionClass : 'toast-top-right'} );
+                        abp.notify.info(ret.message, '', { positionClass : 'toast-top-right'} );
                     });
                 }
             });

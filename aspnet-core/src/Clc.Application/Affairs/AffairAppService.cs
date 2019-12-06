@@ -249,7 +249,7 @@ namespace Clc.Affairs
             var query =_taskRepository.GetAllIncluding(x => x.Workplace, x => x.CreateWorker).Where(e => e.AffairId == id).OrderBy(sorting);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            return ObjectMapper.Map<List<AffairTaskDto>>(entities);
+            return entities.Select(MapToAffairTaskDto).ToList();
         }
 
         public async Task<AffairTaskDto> UpdateTask(AffairTaskDto input)
@@ -317,7 +317,7 @@ namespace Clc.Affairs
             return ObjectMapper.Map<AffairEventDto>(entity);
         }
 
-        public async Task<AffairEventDto> InsertTempArticle(string style, int affairId, List<RouteArticleCDto> articles, string workers)
+        public async Task<AffairEventDto> InsertTempArticle(string style, int affairId, List<RouteArticleCDto> articles, int depotId, string routeWorker)
         {
             string desc = null;
             foreach (var a in articles) {
@@ -329,7 +329,10 @@ namespace Clc.Affairs
             entity.EventTime = DateTime.Now;
             entity.Name = style;
             entity.Description = desc;
-            entity.Issurer = workers;
+            if (depotId > 0)
+                entity.Issurer = WorkManager.GetDepot(depotId).Name + routeWorker;
+            else
+                entity.Issurer = routeWorker;
 
             await _eventRepository.InsertAsync(entity);
             CurrentUnitOfWork.SaveChanges();
@@ -345,6 +348,14 @@ namespace Clc.Affairs
 
             if (aw.Worker.Photo != null) 
                 dto.PhotoString = Convert.ToBase64String(aw.Worker.Photo);
+            return dto;
+        }
+
+        private AffairTaskDto MapToAffairTaskDto(AffairTask task)
+        {
+            var dto = ObjectMapper.Map<AffairTaskDto>(task);
+
+            dto.DisplayCreateTime = task.CreateTime;
             return dto;
         }
 

@@ -42,7 +42,7 @@ namespace Clc.Affairs
 
         Task<AffairEventDto> InsertEvent(int affairId, string name, string desc, string issurer);
 
-        Task<AffairEventDto> InsertTempArticle(string style, int affairId, List<RouteArticleCDto> articles, string workers);
+        Task<AffairEventDto> InsertTempArticle(string style, int affairId, List<RouteArticleCDto> articles, int depotId, string routeWorker);
         #endregion
     }
 }

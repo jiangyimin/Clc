@@ -137,6 +137,7 @@ namespace Clc.DoorRecords
             await _emergDoorRepository.InsertAsync(entity);
        }
 
+        [AbpAllowAnonymous]
         public async Task ApproveEmergDoor(int id, int approverId)
         {
             // get EmergDoorRecord
@@ -145,6 +146,8 @@ namespace Clc.DoorRecords
             entity.ApproverId = approverId;
             await _emergDoorRepository.UpdateAsync(entity);
         }
+        
+        [AbpAllowAnonymous]
         public async Task ApproveTempDoor(int id, string approver)
         {
             // get AskDoorRecord
@@ -154,6 +157,7 @@ namespace Clc.DoorRecords
             await _askDoorRepository.UpdateAsync(entity);
         }
 
+        [AbpAllowAnonymous]
         public async Task<EmergDoorRecordDto> GetLastUnApproveEmergDoor(int workerId)
         {
             var query = _emergDoorRepository.GetAllIncluding(x => x.Issue, x => x.Workplace).Where(x => x.ApproverId == workerId);
@@ -161,9 +165,10 @@ namespace Clc.DoorRecords
             return ObjectMapper.Map<EmergDoorRecordDto>(entity);
         }
 
+        [AbpAllowAnonymous]
         public async Task<AskDoorDto> GetLastUnApproveTempDoor(string workerCn)
         {
-            var query = _askDoorRepository.GetAllIncluding(x => x.Route)
+            var query = _askDoorRepository.GetAllIncluding(x => x.Workplace)
                 .Where(x => x.AskReason == workerCn);
             var entity = await AsyncQueryableExecuter.FirstOrDefaultAsync(query);
             return ObjectMapper.Map<AskDoorDto>(entity);

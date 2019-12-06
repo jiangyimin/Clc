@@ -65,7 +65,7 @@
             { field: "startTimeActual", title: "作业开始时间", width: 80, sortable: true, formatter: $.timeFormatter },
             { field: "endTimeActual", title: "作业结束时间", width: 80, sortable: true, formatter: $.timeFormatter },
             { field: "createWorkerName", title: "创建人", width: 60 },
-            { field: "createTime", title: "创建时间", width: 60, formatter: $.timeFormatter },
+            { field: "displayCreateTime", title: "创建时间", width: 60, formatter: $.timeFormatter },
         ]];
         detail.insert = abp.services.app.affair.insertTask;
         detail.update = abp.services.app.affair.updateTask;
@@ -232,8 +232,6 @@
         <table class="edit-tbl">
             <input name="id" type="hidden" >
             <input name="affairId" type="hidden">
-            <input name="createWorkerId" type="hidden">
-            <input name="createTime" type="hidden">
             <tr>
                 <th><Label for="content">任务说明:</Label></th>
                 <td><input name="content" class="easyui-textbox" data-options="required: true, validType:'length[1, @AffairTask.MaxContentLength]'", style="width: 100%"></td>

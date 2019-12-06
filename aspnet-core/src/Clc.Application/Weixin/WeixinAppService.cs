@@ -109,6 +109,7 @@ namespace Clc.Weixin
             var v = _vehicleCache[ret.Item1.GetFactVehicleId()];
             dto.Vehicle = new WeixinVehicleDto() {Cn = v.Cn, License = v.License, Photo = v.Photo == null ? null : Convert.ToBase64String(v.Photo) };
 
+            dto.DepotId = ret.Item1.DepotId;
             dto.RouteId = ret.Item1.Id;
             dto.RouteName = ret.Item1.RouteName;
 

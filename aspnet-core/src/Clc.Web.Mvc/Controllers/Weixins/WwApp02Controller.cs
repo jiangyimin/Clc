@@ -8,12 +8,15 @@ using Clc.Extensions;
 using Clc.Web.Models.Weixin;
 using Clc.Clients;
 using Clc.Runtime.Cache;
+using Microsoft.AspNetCore.SignalR;
+using Clc.RealTime;
 
 namespace Clc.Web.Controllers
 {
     [IgnoreAntiforgeryToken]
     public class WwApp02Controller : ClcControllerBase
     {
+        private readonly IHubContext<MyChatHub> _context;
         private readonly string _corpId;
         private readonly string _secret;
         private readonly string _agentId;
@@ -22,13 +25,15 @@ namespace Clc.Web.Controllers
 
         private readonly IOutletCache _outletCache;
 
-        public WwApp02Controller(IHostingEnvironment env, IWeixinAppService weixinAppService, IOutletCache outletCache)
+        public WwApp02Controller(IHostingEnvironment env, IHubContext<MyChatHub> context, 
+            IWeixinAppService weixinAppService, IOutletCache outletCache)
         {
             var appConfiguration = env.GetAppConfiguration();
             _corpId = appConfiguration["SenparcWeixinSetting:CorpId"];
             _secret = appConfiguration[string.Format("SenparcWeixinSetting:{0}:Secret", "App02")];
             _agentId = appConfiguration[string.Format("SenparcWeixinSetting:{0}:AgentId", "App02")];
 
+            _context = context;
             _weixinAppService = weixinAppService;
             _outletCache = outletCache;
         }
@@ -82,6 +87,7 @@ namespace Clc.Web.Controllers
             {
                 if (taskId != 0) {
                     _weixinAppService.SetIdentifyTime(taskId);
+                    _context.Clients.All.SendAsync("getMessage", "keypoint " + string.Format("{0},{1}", dto.OutletName, dto.DepotId));
                 }
                 else {
                     string issuer = null;

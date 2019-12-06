@@ -54,6 +54,7 @@ namespace Clc.Weixin.Dto
         public WeixinVehicleDto Vehicle { get; set; }
 
         // Route and Tasks
+        public int DepotId { get; set; }
         public int RouteId { get; set; }
         public string RouteName { get; set; }
         public List<WeixinTaskDto> Tasks { get; set; }

@@ -33,6 +33,11 @@ namespace Clc.Web.Controllers
             return View(seld);
         }
 
+        public ActionResult KeyPoints(int seld)
+        {
+            return View(seld);
+        }
+
         [DontWrapResult]
         public async Task<JsonResult> GridData(DateTime carryoutDate)
         {

@@ -49,6 +49,7 @@ namespace Clc.Affairs.Dto
         public string Remark { get; set; }
 
         public string CreateWorkerName { get; set; }
+        public DateTime DisplayCreateTime { get; set; }
 
         // 实际选填的开始结束时间
         public DateTime? StartTimeActual { get; set; }

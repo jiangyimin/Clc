@@ -19,6 +19,8 @@ namespace Clc.DoorRecords.Dto
         public string AskAffairContent { get; set; }
         public string AskWorkers { get; set; }
 
+        public string Remark { get; set; }
+
         public int? MonitorAffairId { get; set; }
         public string MonitorWorkers { get; set; }
         public DateTime? ProcessTime { get; set; }

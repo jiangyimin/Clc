@@ -41,7 +41,7 @@ namespace Clc.Web.Controllers
         {
             var workerId = GetWeixinUserId();
 
-            if (workerId == 0 || WorkManager.WorkerHasDefaultWorkRoleName(workerId, "队长")) 
+            if (workerId == 0 || !WorkManager.WorkerHasDefaultWorkRoleName(workerId, "队长")) 
                 throw new System.Exception("无此人或不是队长职务");
 
             ApproveTempDoorViewModel vm = new ApproveTempDoorViewModel();
@@ -50,7 +50,6 @@ namespace Clc.Web.Controllers
             {
                 vm.Id = record.Id;
                 vm.WorkplaceName = record.WorkplaceName;
-                vm.RouteInfo = record.RouteInfo;
                 vm.Remark = record.Remark;
                 return View("ApproveTempDoor", vm);
             }
@@ -59,7 +58,7 @@ namespace Clc.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ApproveTempDoor(ApproveTempDoorViewModel vm)
+        public ActionResult ApproveTempAskDoor(ApproveTempDoorViewModel vm)
         {
             var worker = WorkManager.GetWorker(GetWeixinUserId());
             using (CurrentUnitOfWork.SetTenantId(1))
@@ -76,7 +75,7 @@ namespace Clc.Web.Controllers
         {
             var workerId = GetWeixinUserId();
 
-            if (workerId == 0 || WorkManager.WorkerHasDefaultWorkRoleName(workerId, "公司领导")) 
+            if (workerId == 0 || !WorkManager.WorkerHasDefaultWorkRoleName(workerId, "公司领导")) 
                 throw new System.Exception("无此人或不是公司领导职务");
 
             ApproveEmergDoorRecordViewModel vm = new ApproveEmergDoorRecordViewModel();

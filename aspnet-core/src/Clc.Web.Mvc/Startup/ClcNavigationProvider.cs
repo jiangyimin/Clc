@@ -62,7 +62,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Arrange_PreRoutes", new FixedLocalizableString("预排线路"), url: "PreRoutes"))
                     .AddItem(new MenuItemDefinition("Arrange_Routes", new FixedLocalizableString("线路任务"), url: "Routes"))
                     .AddItem(new MenuItemDefinition("Arrange_Affairs", new FixedLocalizableString("内部任务"), url: "Affairs"))
-                    .AddItem(new MenuItemDefinition("Arrange_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Monitor/KeyPoints"))
+                    .AddItem(new MenuItemDefinition("Arrange_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Routes/KeyPoints"))
                 // 今日情况
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("今日情况"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Arrange)
                     .AddItem(new MenuItemDefinition("Arrange_Signin", new FixedLocalizableString("签到"), url: "Today/Signins"))

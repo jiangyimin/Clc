@@ -28,9 +28,8 @@ namespace Clc.Web.Controllers
         private string _agentId;
         
         static public readonly Dictionary<string, string> _appDict = new Dictionary<string, string>() {
-            {"AskDoor", "App01"},
-            {"EmergDoor", "App01"},
-            {"TTT", "App02"}
+            {"ApproveTempAskDoor", "App03"},
+            {"ApproveEmergDoor", "App03"},
         };
 
         public WeixinAccountController(IHostingEnvironment env)
@@ -71,7 +70,7 @@ namespace Clc.Web.Controllers
         {
             //注销登录的用户，相当于ASP.NET中的FormsAuthentication.SignOut  
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            // return RedirectToAction("InList", "Weixin");
+            // return RedirectToAction("Login", "WeixinAccount");
         }
         
         [HttpPost]
@@ -108,7 +107,7 @@ namespace Clc.Web.Controllers
             }).Wait();
 
             string action = GetActionOfUrl(vm.ReturnUrl);
-            return RedirectToAction(action, "WwApp01");
+            return RedirectToAction(action, "Ww" + _appDict[action]);
             // return RedirectToPage(vm.ReturnUrl);
         }
 

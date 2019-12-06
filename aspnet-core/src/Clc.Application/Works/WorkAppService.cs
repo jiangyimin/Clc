@@ -389,13 +389,13 @@ namespace Clc.Works
             }
 
             var routeInfo = stores[0].Issurer.Split(',')[0];
-            var id = stores[0].Issurer.Split(',')[1].Split()[0];
+            var cn = stores[0].Issurer.Split(',')[1].Split()[0];
             result.RouteMatched = new MatchedRouteDto(routeInfo);
-            result.WorkerMatched = new MatchedWorkerDto(WorkManager.GetWorker(int.Parse(id)));
+            result.WorkerMatched = new MatchedWorkerDto(WorkManager.GetWorkerByCn(cn));
             result.Articles = GetArticles(stores[0].Description);
  
-            id = stores[1].Issurer.Split(',')[1].Split()[0];
-            result.WorkerMatched2 = new MatchedWorkerDto(WorkManager.GetWorker(int.Parse(id)));
+            cn = stores[1].Issurer.Split(',')[1].Split()[0];
+            result.WorkerMatched2 = new MatchedWorkerDto(WorkManager.GetWorkerByCn(cn));
             result.Articles2 = GetArticles(stores[1].Description);
             return result;
         }
@@ -645,7 +645,7 @@ namespace Clc.Works
 
                 var article = WorkManager.GetArticle(a.Split(' ')[0]);
                 if (article != null)
-                    ret.Add(new RouteArticleCDto(article, 0, true));
+                    ret.Add(new RouteArticleCDto(article, 0, false));
             }
             return ret;
         }
