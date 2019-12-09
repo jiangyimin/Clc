@@ -139,18 +139,23 @@ namespace Clc.ArticleRecords
             return  entities.Select(MapToSearchDto).ToList(); 
         }
 
-        public async Task<List<ArticleReportDto>> GetReportData()
+        public async Task<List<ArticleReportDto>> GetReportData(int wpId = 0)
         {
-            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
+            var depots = new List<int>();
+            if (wpId > 0)
+                depots = WorkManager.GetShareDepots(wpId);
+            else
+                depots.Add(WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync()));
+
             var query = _articleRepository.GetAllIncluding(x => x.ArticleType, x => x.ArticleRecord)
-                .Where(x => x.DepotId == depotId)   // && x.ArticleRecord != null && x.ArticleRecord.LendTime.Date == DateTime.Now.Date)
+                .Where(x => depots.Contains(x.DepotId))   // && x.ArticleRecord != null && x.ArticleRecord.LendTime.Date == DateTime.Now.Date)
                 .GroupBy(x => new { x.ArticleType.Cn, x.ArticleType.Name } )
                 .Select( p => new ArticleReportDto {
                     Cn = p.Key.Cn,
                     Name = p.Key.Name,
                     Count = p.Count(),
                     LendCount = p.Count(x => x.ArticleRecord != null && !x.ArticleRecord.ReturnTime.HasValue),
-                    UnReturnCount = p.Count(x => x.ArticleRecord != null && x.ArticleRecord.ReturnTime.HasValue)
+                    ReturnCount = p.Count(x => x.ArticleRecord != null && x.ArticleRecord.ReturnTime.HasValue)
                 })
                 .OrderBy(x => x.Cn);
                 

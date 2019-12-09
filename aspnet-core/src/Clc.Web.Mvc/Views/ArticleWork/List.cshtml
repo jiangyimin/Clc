@@ -9,32 +9,60 @@
     </environment>
 
     <script type="text/javascript">
-        abp.services.app.work.getMyCheckinAffair().done(function (wk) {
-            work.me = wk;
-            if (!work.validate()) return;
-            $('#dg').datagrid({
-                url: 'GridDataArticle',
-                queryParams: {WpId: work.me.workplaceId }
+        $(function() {
+            abp.services.app.work.getMyCheckinAffair().done(function (wk) {
+                work.me = wk;
+                if (!work.validate()) return;
+                $('#dg').datagrid({
+                    url: 'GridDataArticle',
+                    queryParams: {WpId: work.me.workplaceId }
+                });
+                sum();
             });
-
         });
+
+        function reload() {
+            if (!work.validate()) return;
+            sum();
+            $('#dg').datagrid('reload');
+        }
+
+        function sum() {
+            abp.services.app.articleRecord.getReportData(work.me.workplaceId).done(function (as) {
+                //alert(as.length);
+                var h = '';
+                for (var i = 0; i < as.length; i++) {
+                    var t = as[i].name + "(总数：" + as[i].count + "&nbsp;&nbsp;已领：" + as[i].lendCount + "&nbsp;&nbsp;已还：" + as[i].returnCount + ")";
+                    h += "<p class='summary'>" + t + "</p>";
+                }
+                summary.innerHTML = h;
+            });
+        }
     </script>
 }
 
-<table id="dg" class="easyui-datagrid" toolbar="#tb"
-        fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true"
-        pagination="true" pageSize="20" sortName="cn">
-    <thead>
-        <tr>
-            <th field="cn" width="60" align="center">编号</th>
-            <th field="name" width="100">名称</th>
-            <th field="articleTypeName" width="60">物品类型</th>
-            <th field="rfid" width="80">RFID</th>
-            <th field="bindInfo" width="80">绑定信息</th>
-            <th field="articleRecordInfo" width="320">领用归还信息</th>
-        </tr>
-    </thead>
-</table>
-<div id="tb">
-    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north'" style="height:70px">
+        <div id="summary" class="easyui-panel" style="background:#f3eeaf;height:100%;">
+        </div>
+    </div>
+    <div data-options="region:'center', border:false">
+        <table id="dg" class="easyui-datagrid" toolbar="#tb"
+                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true"
+                pagination="true" pageSize="20" sortName="cn">
+            <thead>
+                <tr>
+                    <th field="cn" width="60" align="center">编号</th>
+                    <th field="name" width="100">名称</th>
+                    <th field="articleTypeName" width="60">物品类型</th>
+                    <th field="rfid" width="80">RFID</th>
+                    <th field="bindInfo" width="80">绑定信息</th>
+                    <th field="articleRecordInfo" width="320">领用归还信息</th>
+                </tr>
+            </thead>
+        </table>
+        <div id="tb">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="reload()">刷新</a>
+        </div>
+    </div>
 </div>

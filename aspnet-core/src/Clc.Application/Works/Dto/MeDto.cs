@@ -10,14 +10,16 @@ namespace Clc.Works.Dto
     public class MeDto
     {
         public string WorkerCn { get; set; }
+        public string WorkerName { get; set; }
         public int DepotId { get; set; }
         public string LoginRoleNames { get; set; }
 
         public MeDto() {}
-        public MeDto(string roles, string cn, int id)
+        public MeDto(string roles, string cn, string name, int id)
         {
             LoginRoleNames = roles;
             WorkerCn = cn;
+            WorkerName = name;
             DepotId = id;
         }
     }

@@ -79,7 +79,7 @@ namespace Clc.Fields
             var list = new List<ComboboxItemDto>();
 
             int depotId = _workerCache[GetCurrentUserWorkerIdAsync().Result].DepotId;
-            var lst = _workerCache.GetList().FindAll(x => x.DepotId == depotId);
+            var lst = _workerCache.GetList().FindAll(x => x.DepotId == depotId && x.IsActive == true);
             lst.Sort( (a, b) => a.Cn.CompareTo(b.Cn) );
 
             var role = _workRoleCache[workRoleId];
@@ -106,7 +106,7 @@ namespace Clc.Fields
         {
             if (all)
             {
-                return ObjectMapper.Map<List<WorkerCacheItem>>(_workerCache.GetList());
+                return ObjectMapper.Map<List<WorkerCacheItem>>(_workerCache.GetList().FindAll(x => x.IsActive == true));
             }
             else
             {

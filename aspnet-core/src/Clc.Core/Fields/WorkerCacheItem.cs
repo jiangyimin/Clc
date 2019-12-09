@@ -25,6 +25,8 @@ namespace Clc.Fields
         public string Finger { get; set; }
         public string Finger2 { get; set; }
 
+        public bool IsActive { get; set; }
+
         public string CnNamePost { 
             get {
                 return string.Format("{0} {1}({2})", Cn, Name, PostName);

@@ -52,7 +52,7 @@ namespace Clc.Web.Controllers
             foreach(var a in data)
             {
                 string title = string.Format("今日<{0}>领用情况", a.Name);
-                string desc = string.Format("已领数量：{0}， 未还数量：{1}", a.LendCount, a.UnReturnCount);
+                string desc = string.Format("已领数量：{0}， 未还数量：{1}", a.LendCount, a.ReturnCount);
                 WeixinUtils.SendTextCard("app03", toUser, title, desc);
             }
         }

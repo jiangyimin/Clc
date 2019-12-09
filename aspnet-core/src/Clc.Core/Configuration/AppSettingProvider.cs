@@ -33,7 +33,7 @@ namespace Clc.Configuration
                 ),
                 new SettingDefinition(
                     AppSettingNames.VI.CompanyImageName, 
-                    "user.png", 
+                    "company.jpg", 
                     new FixedLocalizableString("公司图标名"),
                     scopes: SettingScopes.Tenant
                 ),

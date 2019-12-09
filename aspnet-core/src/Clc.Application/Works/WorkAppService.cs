@@ -103,13 +103,13 @@ namespace Clc.Works
         {
             int workerId = GetCurrentUserWorkerIdAsync().Result; 
             if (workerId == 0) 
-                return new MeDto("system", "", 0);
+                return new MeDto("system", "", "", 0);
             
             if (WorkManager.WorkerHasDefaultWorkRoleName(workerId, "队长"))
                 workerId = WorkManager.GetCaptainOrAgentId(workerId);
 
             var worker = WorkManager.GetWorker(workerId);
-            return new MeDto(worker.LoginRoleNames, worker.Cn, worker.DepotId);
+            return new MeDto(worker.LoginRoleNames, worker.Cn, worker.Name, worker.DepotId);
         }
 
         public string GetToday()

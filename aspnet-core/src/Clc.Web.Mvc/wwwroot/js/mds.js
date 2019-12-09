@@ -79,13 +79,14 @@ var mds = mds || {};
     }
 
     mds.operatorIsEnableW = function(row) {
-        if (mds.Style == 'Aux') return false;
+        if (mds.style == 'Aux') return false;
         return true;
     }
 
     mds.operatorIsEnableT = function(row) {
         if (row.identifyTime) return false;
         if (row.endTimeActual) return false;
+        if (mds.style == 'Aux' && row.createWorkerName != window.parent.me.workerName) return false;
         return true;
     }
 

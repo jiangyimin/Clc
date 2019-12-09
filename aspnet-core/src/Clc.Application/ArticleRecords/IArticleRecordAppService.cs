@@ -21,6 +21,6 @@ namespace Clc.ArticleRecords
         Task<List<ArticleRecordSearchDto>> SearchByDay(DateTime theDay);
         Task<List<ArticleRecordSearchDto>> SearchByArticleId(int articleId, DateTime begin, DateTime end);
 
-        Task<List<ArticleReportDto>> GetReportData();
+        Task<List<ArticleReportDto>> GetReportData(int wpId = 0);
     }
 }

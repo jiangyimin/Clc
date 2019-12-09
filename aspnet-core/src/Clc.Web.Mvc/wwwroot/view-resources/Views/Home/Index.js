@@ -309,8 +309,8 @@ function verifyPasswordAndTrigger()
         if (result == true) {
             abp.notify.success("密码验证正确");
             // alert(verifyAction);
-            abp.event.trigger('verifyDone', { name: verifyAction, style: false });
             closeActivateDialog();
+            abp.event.trigger('verifyDone', { name: verifyAction, style: false });
         }
         else
             abp.notify.error("密码错误");
@@ -326,8 +326,8 @@ function verifyFingerAndTrigger()
         abp.services.app.work.verifyFinger(finger, me.workerCn).done(function(ret) {
             abp.notify.info(ret.item2);
             if (ret.item1) {
-                abp.event.trigger('verifyDone', { name: verifyAction, style: true });
                 closeActivateDialog();
+                abp.event.trigger('verifyDone', { name: verifyAction, style: true });
             };
         });
     }

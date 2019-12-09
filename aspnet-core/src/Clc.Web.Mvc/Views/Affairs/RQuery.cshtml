@@ -64,6 +64,7 @@
             { field: "startTimeActual", title: "作业开始时间", width: 80, sortable: true, formatter: $.timeFormatter },
             { field: "endTimeActual", title: "作业结束时间", width: 80, sortable: true, formatter: $.timeFormatter },
             { field: "createWorkerName", title: "创建人", width: 60 },
+            { field: "displayCreateTime", title: "创建时间", width: 60, formatter: $.timeFormatter  },
         ]];
         detail.insert = abp.services.app.affair.insertTask;
         detail.update = abp.services.app.affair.updateTask;

@@ -435,7 +435,7 @@ namespace Clc.Works
             var query = _affairEventRepository.GetAll().Where(x => x.AffairId == affairId && x.Name == "临时存物");
 
             var stores = query.ToList();
-            query = _affairEventRepository.GetAll().Where(x => x.AffairId == affairId && x.Name == "临时还物");
+            query = _affairEventRepository.GetAll().Where(x => x.AffairId == affairId && x.Name == "临时取物");
             return (stores, query.ToList());           
         }
         
