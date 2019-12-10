@@ -153,7 +153,7 @@ namespace Clc.Affairs
             {
                 Affair affair = _affairRepository.Get(id);
                 if (affair.Status != "安排") continue;          // Skip
-                var reason = CanActivateAffair(affair);
+                var reason = affair.CarryoutDate > DateTime.Now.Date ? null : CanActivateAffair(affair);
                 if (reason != null)
                 {
                     var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
@@ -367,7 +367,7 @@ namespace Clc.Affairs
             // check time
             var start  = ClcUtils.GetDateTime(affair.StartTime).Subtract(new TimeSpan(12, 0, 0));
             var end = ClcUtils.GetDateTime(affair.EndTime);
-            if (!ClcUtils.NowInTimeZone(start, end))  return $"未到激活提前量(半天)或已过结束时间";
+            if (!ClcUtils.NowInTimeZone(start, end))  return $"已过结束时间或提前了半天";
 
             // check same workerId in same route
             var workers = _workerRepository.GetAllList(w => w.AffairId == affair.Id);

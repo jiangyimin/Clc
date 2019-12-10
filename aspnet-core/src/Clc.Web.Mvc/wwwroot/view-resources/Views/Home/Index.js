@@ -53,12 +53,12 @@
          });
 
          // abp.notify.info('指纹仪已准备好');
-        $('dlgActivate').dialog({
-            onClose: function () { 
-                verifyAction = ''; 
-                abp.event.trigger('activateDialogClosed');
-            }
-        });
+        // $('dlgActivate').dialog({
+        //     onClose: function () { 
+        //         verifyAction = ''; 
+        //         abp.event.trigger('activateDialogClosed');
+        //     }
+        // });
 
         initFingerActivex();
     });

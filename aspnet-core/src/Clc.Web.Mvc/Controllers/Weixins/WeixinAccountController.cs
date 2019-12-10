@@ -40,6 +40,7 @@ namespace Clc.Web.Controllers
 
         public ActionResult Login(string returnUrl, string code) 
         {
+            if (returnUrl == null) return null;
             // 根据 returnUrl 得到 AppName， 然后得到_secret和_agentId
             string appName = _appDict[GetActionOfUrl(returnUrl)];
             _secret = _appConfiguration[string.Format("SenparcWeixinSetting:{0}:Secret", appName)];
@@ -47,7 +48,8 @@ namespace Clc.Web.Controllers
 
             if (string.IsNullOrEmpty(code))
             {
-                // return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                // 备案
+                //return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
 
             var vm = new LoginViewModel() {
@@ -58,6 +60,7 @@ namespace Clc.Web.Controllers
                 var accessToken = AccessTokenContainer.GetToken(_corpId, _secret);           
                 GetUserInfoResult userInfo = OAuth2Api.GetUserId(accessToken, code);
                 vm.WorkerCn = userInfo.UserId;
+                vm.DeviceId = userInfo.DeviceId;
             }
             catch {
                 Logger.Error("微信登录错误");

@@ -28,7 +28,9 @@ namespace Clc.Works
 
         List<TempArticleDto> GetTempArticles(int affairId);
 
-        string GetReportToManagers();
+        (string, string) GetReportToManagers();
+
+        TaskReportDto GetTaskReportData(); 
 
         #region Agent / Workers
         string GetAgentString();

@@ -61,10 +61,7 @@ namespace Clc.Web.Controllers
         public ActionResult ApproveTempAskDoor(ApproveTempDoorViewModel vm)
         {
             var worker = WorkManager.GetWorker(GetWeixinUserId());
-            using (CurrentUnitOfWork.SetTenantId(1))
-            {
-                _doorAppService.ApproveTempDoor(vm.Id, worker.Cn);
-            }
+            _doorAppService.ApproveTempDoor(vm.Id, worker.Cn);
             
             _context.Clients.All.SendAsync("getMessage", "askOpenDoor " + string.Format("{0}批准{1}临时存取开门", worker.Name, vm.WorkplaceName));
             return RedirectToAction("WeixinNotify", "Error", new { Message = "同意审批，并下达到监控室" });
@@ -95,11 +92,7 @@ namespace Clc.Web.Controllers
         public ActionResult ApproveEmergDoor(ApproveEmergDoorRecordViewModel vm)
         {
             var name = WorkManager.GetWorkerName(GetWeixinUserId());
-            using (CurrentUnitOfWork.SetTenantId(1))
-            {
-                _doorAppService.ApproveEmergDoor(GetWeixinUserId(), vm.Id);
-            }
-            
+            _doorAppService.ApproveEmergDoor(vm.Id, GetWeixinUserId());            
             _context.Clients.All.SendAsync("getMessage", "emergOpenDoor " + string.Format("{0}批准开门{1}", name, vm.WorkplaceName));
             return RedirectToAction("WeixinNotify", "Error", new { Message = "同意审批，并下达到监控室" });
         }

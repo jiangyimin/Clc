@@ -154,8 +154,8 @@ namespace Clc.ArticleRecords
                     Cn = p.Key.Cn,
                     Name = p.Key.Name,
                     Count = p.Count(),
-                    LendCount = p.Count(x => x.ArticleRecord != null && !x.ArticleRecord.ReturnTime.HasValue),
-                    ReturnCount = p.Count(x => x.ArticleRecord != null && x.ArticleRecord.ReturnTime.HasValue)
+                    LendCount = p.Count(x => x.ArticleRecord != null && x.ArticleRecord.LendTime.Date == DateTime.Now),
+                    UnReturnCount = p.Count(x => x.ArticleRecord != null && !x.ArticleRecord.ReturnTime.HasValue)
                 })
                 .OrderBy(x => x.Cn);
                 

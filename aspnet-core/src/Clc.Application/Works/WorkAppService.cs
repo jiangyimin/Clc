@@ -31,7 +31,7 @@ namespace Clc.Works
         private readonly IRepository<Signin> _signinRepository;
         private readonly IRepository<Route> _routeRepository;
         private readonly IRepository<RouteArticle> _routeArticleRepository;
-        // private readonly IRepository<RouteTask> _routeTaskRepository;
+        private readonly IRepository<RouteTask> _routeTaskRepository;
         private readonly IRepository<Depot> _depotRepository;
         private readonly IRouteCache _routeCache;
         private readonly IWorkRoleCache _workRoleCache;
@@ -45,6 +45,7 @@ namespace Clc.Works
         public WorkAppService(IRepository<Signin> signinRepository,
             IRepository<Route> routeRepository,
             IRepository<RouteArticle> routeArticleRepository,
+            IRepository<RouteTask> routeTaskRepository,
             IRepository<Depot> depotRepository,
             IRouteCache routeCache,
             IWorkRoleCache workRoleCache,
@@ -57,6 +58,7 @@ namespace Clc.Works
             _signinRepository = signinRepository;
             _routeRepository = routeRepository;
             _routeArticleRepository = routeArticleRepository;
+            _routeTaskRepository = routeTaskRepository;
             _depotRepository = depotRepository;
 
             _routeCache = routeCache;
@@ -195,10 +197,40 @@ namespace Clc.Works
             return dtos;
         }
 
-        public string GetReportToManagers()
+        public (string, string) GetReportToManagers()
         {
             int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
-            return WorkManager.GetReportToManagers(depotId);
+            return (WorkManager.GetDepot(depotId).Name, WorkManager.GetReportToManagers(depotId));
+        }
+
+        public TaskReportDto GetTaskReportData()
+        {
+            var data = new TaskReportDto();
+
+            // Route
+            int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
+            var routes = _routeCache.Get(DateTime.Now.Date, depotId);
+            int count = 0;
+            foreach (var r in routes) {
+                count += r.Workers.Count;
+            }
+            data.Route = new CountPair(routes.Count, count);
+
+            // Affair
+            var ret = WorkManager.GetAffairReportData(DateTime.Now.Date, depotId);
+            data.Affair = new CountPair(ret.Item1, ret.Item2);
+
+            // Task (fee)
+            var query = _routeTaskRepository.GetAllIncluding(x => x.Route, x => x.Outlet, x => x.Outlet.Customer, x => x.TaskType)
+                .Where(x => x.Route.CarryoutDate == DateTime.Now.Date && x.Route.DepotId == depotId && x.TaskType.isTemporary == true);
+            data.Tasks = ObjectMapper.Map<List<TemporaryTaskDto>>(query.ToList());
+
+            var fee = 0;
+            foreach (var t in data.Tasks)
+                fee += t.Price.HasValue ? (int)t.Price : t.TaskTypeBasicPrice;
+            data.Task = new CountPair(data.Tasks.Count, fee);
+
+            return data;
         }
 
         #region Agent

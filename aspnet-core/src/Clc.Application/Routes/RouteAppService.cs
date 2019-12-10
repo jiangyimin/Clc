@@ -334,6 +334,15 @@ namespace Clc.Routes
             return ObjectMapper.Map<RouteTaskDto>(entity);
         }
 
+        public async Task<RouteTaskDto> UpdateTaskPrice(int id, int price)
+        {
+            var entity = await _taskRepository.GetAsync(id);
+            entity.Price = price;
+            await _taskRepository.UpdateAsync(entity);
+            CurrentUnitOfWork.SaveChanges();
+            return ObjectMapper.Map<RouteTaskDto>(entity);
+        }
+
         public async Task<RouteTaskDto> InsertTask(RouteTaskDto input)
         {
             int workerId = GetCurrentUserWorkerIdAsync().Result;

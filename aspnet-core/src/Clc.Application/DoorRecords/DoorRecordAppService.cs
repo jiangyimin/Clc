@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
@@ -89,7 +90,7 @@ namespace Clc.DoorRecords
 
         public async Task<List<EmergDoorDto>> GetEmergDoorsAsync(DateTime dt)
         {
-            var query = _emergDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot, x => x.Issue)
+            var query = _emergDoorRepository.GetAllIncluding(x => x.Workplace, x => x.Workplace.Depot, x => x.Issue, x => x.Approver)
                 .Where(x => x.CreateTime.Date == dt && x.ApprovalTime.HasValue && !x.ProcessTime.HasValue);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
@@ -102,7 +103,9 @@ namespace Clc.DoorRecords
             var record = _askDoorRepository.Get(id);
 
             var doorName = WorkManager.GetWorkplace(record.WorkplaceId).Name;
-            return (record.AskWorkers.Substring(0, 5), doorName);
+            var match = Regex.Matches(record.AskWorkers, @"\d+").Select(m => m.Value).ToList();
+
+            return (string.Join('|', match), doorName);
         }
 
 
@@ -138,23 +141,23 @@ namespace Clc.DoorRecords
        }
 
         [AbpAllowAnonymous]
-        public async Task ApproveEmergDoor(int id, int approverId)
+        public void ApproveEmergDoor(int id, int approverId)
         {
             // get EmergDoorRecord
-            var entity = await _emergDoorRepository.GetAsync(id);
+            var entity = _emergDoorRepository.Get(id);
             entity.ApprovalTime = DateTime.Now;
             entity.ApproverId = approverId;
-            await _emergDoorRepository.UpdateAsync(entity);
+            _emergDoorRepository.Update(entity);
         }
         
         [AbpAllowAnonymous]
-        public async Task ApproveTempDoor(int id, string approver)
+        public void ApproveTempDoor(int id, string approver)
         {
             // get AskDoorRecord
-            var entity = await _askDoorRepository.GetAsync(id);
+            var entity = _askDoorRepository.Get(id);
             entity.AskReason += '|' + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             entity.Approver = entity.AskReason;
-            await _askDoorRepository.UpdateAsync(entity);
+            _askDoorRepository.Update(entity);
         }
 
         [AbpAllowAnonymous]

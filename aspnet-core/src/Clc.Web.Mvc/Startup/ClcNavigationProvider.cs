@@ -67,16 +67,16 @@ namespace Clc.Web.Startup
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("今日情况"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Arrange)
                     .AddItem(new MenuItemDefinition("Arrange_Signin", new FixedLocalizableString("签到"), url: "Today/Signins"))
                     .AddItem(new MenuItemDefinition("Arrange_Article", new FixedLocalizableString("物品"), url: "Today/ArticleList"))
-                    .AddItem(new MenuItemDefinition("Arrange_Box", new FixedLocalizableString("尾箱"), url: "Today/BoxList"))
-                    .AddItem(new MenuItemDefinition("Arrange_Route", new FixedLocalizableString("线路"), url: "Today/RouteList"))
-                    .AddItem(new MenuItemDefinition("Arrange_Vehicle", new FixedLocalizableString("车辆"), url: "Today/VehicleList"))
+                    .AddItem(new MenuItemDefinition("Arrange_Route", new FixedLocalizableString("线路"), url: "Today/TaskList"))
+                    //.AddItem(new MenuItemDefinition("Arrange_Box", new FixedLocalizableString("尾箱"), url: "Today/BoxList"))
+                    //.AddItem(new MenuItemDefinition("Arrange_Vehicle", new FixedLocalizableString("车辆"), url: "Today/VehicleList"))
                     .AddItem(new MenuItemDefinition("Arrange_Issue", new FixedLocalizableString("大事记录"), url: "Issue"))
                 
                 // Statistic and QUery
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
-                    .AddItem(new MenuItemDefinition("Statistic_Worker", new FixedLocalizableString("人"), url: "Checkin/Home"))
-                    .AddItem(new MenuItemDefinition("Statistic_Vehicle", new FixedLocalizableString("车"), url: "Monitor/AskOpenDoor"))
-                    .AddItem(new MenuItemDefinition("Statistic_RouteTask", new FixedLocalizableString("押运任务费用"), url: "Monitor/EmergOpenDoor"))
+                    //.AddItem(new MenuItemDefinition("Statistic_Worker", new FixedLocalizableString("人"), url: "Checkin/Home"))
+                    //.AddItem(new MenuItemDefinition("Statistic_Vehicle", new FixedLocalizableString("车"), url: "Monitor/AskOpenDoor"))
+                    //.AddItem(new MenuItemDefinition("Statistic_RouteTask", new FixedLocalizableString("押运任务费用"), url: "Routes/EmergOpenDoor"))
                     .AddItem(new MenuItemDefinition("Query_Routes", new FixedLocalizableString("线路查询"), url: "Routes/RQuery"))
                     .AddItem(new MenuItemDefinition("Query_Affairs", new FixedLocalizableString("任务查询"), url: "Affairs/RQuery"))
 

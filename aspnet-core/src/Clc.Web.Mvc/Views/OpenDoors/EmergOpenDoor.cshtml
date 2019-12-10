@@ -97,12 +97,11 @@
             <thead>
                 <tr>
                     <th field="createTime" width="60" formatter="$.timeFormatter">创建时间</th>
-                    <th field="issueContent" width="100">原因说明</th>
                     <th field="workplaceDepotName" width="60">大队</th>
                     <th field="workplaceName" width="60">门禁名称</th>
-                    <th field="approvalTime" width="60" formatter="$.timeFormatter">审批时间</th>
+                    <th field="issueContent" width="100">原因说明</th>
                     <th field="approverName" width="60">审批人</th>
-                    <th field="EmergDoorPassword" width="60">应急开门密码</th>
+                    <th field="approvalTime" width="60" formatter="$.timeFormatter">审批时间</th>
                 </tr>
             </thead>
         </table>
@@ -110,15 +109,9 @@
 </div>
 
 @*多人确认弹窗*@
-<div id="dlgConfirm" class="easyui-dialog" title="卡或指纹确认" closed="true" modal="true" align="center" style="height: 250px; width: 500px;">
-    <table id="dgConfirm" class="easyui-datagrid" fit="true" fitColumns="true" striped="true" singleSelect="true" checkOnSelect="false">
-        <thead>
-            <tr>
-                <th field="confirmed" width="80" align="center">已确认</th>
-                <th field="workerCn" width="80">人员编号</th>
-                <th field="workerName" width="80">人员姓名</th>
-                <th field="op" width="80" formatter="operatorConfirm">操作</th>
-            </tr>
-        </thead>
-    </table>
+<div id="dlgConfirm" class="easyui-dialog" title="卡或指纹确认" closed="true" modal="true" align="center" style="height: 250px; width: 450px;">
+    <div class="easyui-panel" fit="true">
+        <ul id="confirms" class="article">
+        </ul>
+    </div>
 </div>

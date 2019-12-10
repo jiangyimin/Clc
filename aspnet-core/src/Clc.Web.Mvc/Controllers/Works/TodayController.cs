@@ -42,20 +42,40 @@ namespace Clc.Web.Controllers
         {
             return View();
         }
-        
+
+        public ActionResult TaskList()
+        {
+            return View();
+        }
+
         public async Task ReportArticleTo()
         {
-            var toUser = _workAppService.GetReportToManagers();
-            if (string.IsNullOrEmpty(toUser)) return;
+            var ret = _workAppService.GetReportToManagers();
+            if (string.IsNullOrEmpty(ret.Item2)) return;
 
             var data = await _articleRecordAppService.GetReportData();
+            string title = string.Format("今日<{0}>物品领用情况", ret.Item1);
+            string desc = null;
             foreach(var a in data)
             {
-                string title = string.Format("今日<{0}>领用情况", a.Name);
-                string desc = string.Format("已领数量：{0}， 未还数量：{1}", a.LendCount, a.ReturnCount);
-                WeixinUtils.SendTextCard("app03", toUser, title, desc);
+                desc += string.Format("{0}已领：{1}， 未还：{2}\n", a.Name, a.LendCount, a.UnReturnCount);
             }
+            WeixinUtils.SendTextCard("App03", ret.Item2, title, desc);
         }
+
+        public void ReportTaskTo() 
+        {
+            var ret = _workAppService.GetReportToManagers();
+            if (string.IsNullOrEmpty(ret.Item2)) return;
+
+            var data = _workAppService.GetTaskReportData();
+            string title = string.Format("今日<{0}>线路任务情况", ret.Item1);
+            string desc = string.Format("线路数：{0} 条 (安排人员： {1}人）\n", data.Route.Count1, data.Route.Count2);
+            desc += string.Format("内务数：{0} 条 (安排人员： {1}人）\n", data.Affair.Count1, data.Affair.Count2);
+            desc += string.Format("收费中调数：{0} 个 (收费： {1}元）\n", data.Task.Count1, data.Task.Count2);
+            WeixinUtils.SendTextCard("App03", ret.Item2, title, desc);
+        }
+
         public async Task ReportBoxTo()
         {
             // var toUser = _workAppService.GetReportToManagers();

@@ -34,6 +34,9 @@ namespace Clc.Routes
         Task<List<RouteTaskDto>> GetRouteTasks(int id, string sorting);
         Task<RouteTaskDto> InsertTask(RouteTaskDto input);
         Task<RouteTaskDto> UpdateTask(RouteTaskDto input);
+
+        Task<RouteTaskDto> UpdateTaskPrice(int id, int price);
+
         Task DeleteTask(int id);
 
         Task<List<RouteEventDto>> GetRouteEvents(int id);

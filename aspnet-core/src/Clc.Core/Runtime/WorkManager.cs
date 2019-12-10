@@ -133,7 +133,7 @@ namespace Clc.Works
         public List<WorkerCacheItem> GetWorkersByDefaultWorkRoleName(string name)
         {
             var lst = new List<WorkerCacheItem>();
-            foreach (var w in _workerCache.GetList())
+            foreach (var w in _workerCache.GetList().FindAll(x => x.IsActive == true))
             {
                 var roleName = _postCache[w.PostId].DefaultWorkRoleName;
                 if (!string.IsNullOrEmpty(roleName) && roleName == name)
@@ -472,6 +472,17 @@ namespace Clc.Works
         {
             return _boxCache[id];
         }
+
+        public (int, int) GetAffairReportData(DateTime carryoutDate, int depotId)
+        {
+            var affairs = _affairCache.Get(DateTime.Now.Date, depotId);
+            int count = 0;
+            foreach (var a in affairs) {
+                count += a.Workers.Count;
+            }
+            return (affairs.Count, count);
+        }
+        
         #endregion
 
         #region Weixin Receive Command and AskOpenDoor

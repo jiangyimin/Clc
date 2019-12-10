@@ -40,7 +40,7 @@
                 //alert(as.length);
                 var h = '';
                 for (var i = 0; i < as.length; i++) {
-                    var t = as[i].name + "(总数：" + as[i].count + "&nbsp;&nbsp;已领：" + as[i].lendCount + "&nbsp;&nbsp;已还：" + as[i].returnCount + ")";
+                    var t = as[i].name + "(总数：" + as[i].count + "&nbsp;&nbsp;今领：" + as[i].lendCount + "&nbsp;&nbsp;未还：" + as[i].unReturnCount + ")";
                     h += "<p class='summary'>" + t + "</p>";
                 }
                 summary.innerHTML = h;

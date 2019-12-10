@@ -10,6 +10,9 @@ using Clc.Clients;
 using Clc.Runtime.Cache;
 using Microsoft.AspNetCore.SignalR;
 using Clc.RealTime;
+using Senparc.Weixin.Work.AdvancedAPIs;
+using Senparc.Weixin.Work.Containers;
+using Senparc.Weixin.Work.AdvancedAPIs.OAuth2;
 
 namespace Clc.Web.Controllers
 {
@@ -38,8 +41,13 @@ namespace Clc.Web.Controllers
             _outletCache = outletCache;
         }
 
-        public ActionResult Identify()
+        public ActionResult Identify(string code)
         {
+            if (string.IsNullOrEmpty(code))
+            {
+                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+            }
+            
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
             
             if (dto == null)
@@ -48,7 +56,15 @@ namespace Clc.Web.Controllers
                 {
                     ReturnUrl = AbsoluteUri()
                 };
-                
+                try {
+                    var accessToken = AccessTokenContainer.GetToken(_corpId, _secret);           
+                    GetUserInfoResult userInfo = OAuth2Api.GetUserId(accessToken, code);
+                    vm.WorkerCn = userInfo.UserId;
+                    vm.DeviceId = userInfo.DeviceId;
+                }
+                catch {
+                    Logger.Error("微信授权错误");
+                }               
                 return View("login", vm);
             }
             else

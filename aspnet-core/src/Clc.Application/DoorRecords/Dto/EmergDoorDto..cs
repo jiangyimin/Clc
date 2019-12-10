@@ -10,6 +10,7 @@ namespace Clc.DoorRecords.Dto
     {
         public DateTime CreateTime { get; set; }
 
+        public string WorkplaceDepotName { get; set; }
         public string WorkplaceName { get; set; }
         public string WorkplaceDoorIp { get; set; }
         public string IssueContent { get; set; }
@@ -20,7 +21,7 @@ namespace Clc.DoorRecords.Dto
         public string ApproverName { get; set; }
         public DateTime? ApprovalTime { get; set; }
 
-        public string EmergDoorPassword { get; set; }
-        public string WorkplaceEmergPassword { get; set; }
+        //public string EmergDoorPassword { get; set; }
+        //public string WorkplaceEmergPassword { get; set; }
     }
 }

@@ -51,16 +51,15 @@
             };
 
             // judge emergPassword.
-           if (row.emergDoorPassword != row.workplaceEmergPassword) {
-                abp.notify.error("应急密码不符！", "", { positionClass : 'toast-top-center'} );
-                return;
-            };
+            //if (row.emergDoorPassword != row.workplaceEmergPassword) {
+            //    abp.notify.error("应急密码不符！", "", { positionClass : 'toast-top-center'} );
+            //    return;
+            //};
 
             status = 'emerg';
             doorIp = row.workplaceDoorIp;
             doorRecordId = row.id;
-
-            $('#dlg').dialog('open');
+            openConfirmDialog(work.aws);
         });  
 
         $('#tbDoor').children('a[name="open"]').click(function (e) {
@@ -90,6 +89,8 @@
 
         $('#dlgConform').dialog({
             onClose: function() {
+                cds = [];
+                confirms.innerHTML = '';
                 status = '';
                 doorIp = 0;
                 doorRecordId = 0;
@@ -98,30 +99,57 @@
     });
 })();
 
-function openConfirmDialog(data) {
-    for (var i = 0; i < data.length; i++) data[i].confirmed = '';
-
+var cds = [];
+function openConfirmDialog(d) {
+    for (var i = 0; i < d.length; i++) {
+        cds.push({ confirmed: false, displayText: d[i].workerCn + ' ' + d[i].workerName, workerId: d[i].workerId, rfid: d[i].workerRfid });
+    };
     $('#dlgConfirm').dialog('open');
-    $('#dgConfirm').datagrid('loadData', { rows: data });
+    confirms.innerHTML = createHTML();
+    // alert(confirms.innerHTML);
 }
 
+function createHTML() {
+    var h = '';        
+    for (var i = 0; i < cds.length; i++) {
+        // alert(as[i].recordId);
+        if (cds[i].confirmed)
+            h += "<li><input type='checkbox' checked='true' onclick='return false'>&nbsp;" + cds[i].displayText + "&nbsp;&nbsp;";
+        else
+            h += "<li><input type='checkbox' onclick='return false'>&nbsp;" + cds[i].displayText + "&nbsp;&nbsp;";
+
+        h += "<a href='javascript:void(0)' onclick='fingerConfirm(" + i + ")'>指纹确认</a>" + "</li>";
+    }
+    return h;
+}
+
+
 function allConfirmed() {
-    for (var i = 0; i < work.aws.length; i++) {
-        if (work.aws[i].confirmed == '') return false;
+    for (var i = 0; i < cds.length; i++) {
+        if (!cds[i].confirmed) return false;
     }
     return true;
 }
 
 function doOpenDoor() {
+    notifyAskWorkers(doorRecordId);
     // udpate askDoorRecord
-    if (doorRecordId == 0)
+    abp.services.app.doorRecord.carryoutAskOpen(doorRecordId, work.me.affairId).done(function() {
+        $('#dg').datagrid('reload');
+        // alert('before close')
         $('#dlgConfirm').dialog('close');
-    else
-        abp.services.app.doorRecord.carryoutEmergOpen(doorRecordId, work.me.affairId).done(function() {
-            $('#dg').datagrid('reload');
-            $('#dlgConfirm').dialog('close');
-        });
+    });
 
     abp.notify.success('已发送开门命令到对应的门禁', '', { positionClass : 'toast-top-center' });
     ws && ws.send(doorIp);
+}
+
+function notifyAskWorkers(doorRecordId) {
+    abp.ajax({
+        contentType: 'application/x-www-form-urlencoded',
+        url: 'NotifyAskWorkers',
+        data: {doorRecordId: doorRecordId }  
+    }).done(function (ret) {
+        // abp.notify.info(ret.message);
+    });
 }

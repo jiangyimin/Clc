@@ -4,10 +4,12 @@
     Layout = "~/Views/Shared/_WeixinLayout.cshtml";
 }
 
-<form name="fm" action ="WwApp03/ApproveEmergDoor" method="post" onsubmit="onSubmit()">
+<form name="fm" action ="/WwApp03/ApproveEmergDoor" method="post" onsubmit="onSubmit()">
     @Html.ValidationSummary()
+    <div class="weui-cells__title" style="margin-bottom:10px">内容</div>
     <div class="weui-cells">
-        <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <input name="id" type="hidden" value="@Model.Id">
+        <div class="weui-cell">
             <div class="weui-cell__hd"><label class="weui-label">场地门:</label></div>
             <div class="weui-cell__bd">
                 <input class="weui-input" name="workplaceNme" readonly type="text" value="@Model.WorkplaceName">

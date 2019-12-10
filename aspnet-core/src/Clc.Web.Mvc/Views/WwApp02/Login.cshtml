@@ -12,7 +12,7 @@
             <input type="hidden" id="returnUrl" name="ReturnUrl" value="@Model.ReturnUrl" />
             <div class="weui-cell__hd"><label for="workerCn" class="weui-label">工号:</label></div>
             <div class="weui-cell__bd">
-                <input class="weui-input" name="workerCn" type="text" placeholder="请输入工号" />
+                <input class="weui-input" name="workerCn" type="text" value="@Model.WorkerCn" placeholder="请输入工号" />
             </div>
         </div>
         <div class="weui-cell" style="margin-bottom:10px">
@@ -24,7 +24,7 @@
         <div class="weui-cell" style="margin-bottom:10px">
             <div class="weui-cell__hd"><label for="DeviceId" class="weui-label">设备号:</label></div>
             <div class="weui-cell__bd">
-                <input class="weui-input" name="deviceId" type="text" readonly="readonly" />
+                <input class="weui-input" name="deviceId" type="text" readonly="readonly" value="@Model.DeviceId" />
             </div>
         </div>
         <div class="weui-cell">
