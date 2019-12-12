@@ -36,7 +36,9 @@
         };
 
         finput.articleScanned = function(rfid) {
-            abp.services.app.work.matchArticleForLend(finput.worker.cn, finput.route.vehicleCn, finput.route.routeName, finput.worker.articleTypeList, rfid).done(function(ret) {
+            var worker = finput.index == 2 ? finput.worker2 : finput.worker;
+
+            abp.services.app.work.matchArticleForLend(worker.cn, finput.route.vehicleCn, finput.route.routeName, worker.articleTypeList, rfid).done(function(ret) {
                 if (ret.item1 != '') {
                     abp.notify.error(ret.item1);
                     return;

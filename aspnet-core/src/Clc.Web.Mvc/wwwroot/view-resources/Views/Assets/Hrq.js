@@ -5,14 +5,9 @@
                 data: d, valueField: 'value', textField: 'displayText'
             });
         });
-        abp.services.app.type.getComboItems('Post').done(function (d) {
-            $('#post').combobox({
-                data: d, valueField: 'value', textField: 'displayText'
-            });
-        });
 
-        abp.services.app.type.getComboItems('Status').done(function (d) {
-            $('#status').combobox({
+        abp.services.app.type.getComboItems('Category').done(function (d) {
+            $('#category').combobox({
                 data: d, valueField: 'value', textField: 'displayText'
             });
         });
@@ -20,7 +15,7 @@
         $('#fmSearch').children('a[name="search"]').click(function (e) {
             $('#dg').datagrid({
                 url: 'GetPagedData',
-                queryParams: $('#fmSearch').serializeFormToObject() // { depotId: $('#depot').val(), postId: $('#post').val() }
+                queryParams: $('#fmSearch').serializeFormToObject()
             });
         });
 

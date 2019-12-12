@@ -27,6 +27,8 @@ namespace Clc.Types
         private readonly List<string> _statusItems = new List<string>() {"在职", "离职" };
         private readonly List<string> _processStyleItems = new List<string>() {"报送", "应急开门", "值班信息" };
 
+        private readonly List<string> _categoryItems = new List<string>() {"电子设备", "办公设备", "电脑" };
+
         public TypeAppService(DutyProvider dutyProvider, 
             IArticleTypeCache articleTypeCache,
             IPostCache postCache,
@@ -114,6 +116,10 @@ namespace Clc.Types
                     break;
                 case "ProcessStyle":
                     foreach (string t in _processStyleItems)
+                        lst.Add(new ComboboxItemDto { Value = t, DisplayText = t });
+                    break;
+                case "Category":
+                    foreach (string t in _categoryItems)
                         lst.Add(new ComboboxItemDto { Value = t, DisplayText = t });
                     break;
                 default:

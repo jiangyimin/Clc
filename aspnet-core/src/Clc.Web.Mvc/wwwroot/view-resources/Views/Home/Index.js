@@ -31,35 +31,28 @@
             if (me.loginRoleNames == "system") unlockScreen();
         });
 
-         // 侦听ESC for unlockscreen, 
-         document.onkeyup = EscKeyUp;
-         // Signalr
-         var chatHub = null;
-         abp.signalr.startConnection(abp.appPath + 'signalr-myChatHub', function(connection) {
-             chatHub = connection; // Save a reference to the hub
+        // 侦听ESC for unlockscreen, 
+        document.onkeyup = EscKeyUp;
+        // Signalr
+        var chatHub = null;
+        abp.signalr.startConnection(abp.appPath + 'signalr-myChatHub', function(connection) {
+            chatHub = connection; // Save a reference to the hub
          
-             connection.on('getMessage', function(message) { // Register for incoming messages
-                 parseMessage(message);
-                 console.log('received message: ' + message);
-             });
-         }).then(function(connection) {
-             abp.log.debug('Connected to myChatHub server!');
-             abp.event.trigger('myChatHub.connected');
-         });
+            connection.on('getMessage', function(message) { // Register for incoming messages
+                parseMessage(message);
+                console.log('received message: ' + message);
+            });
+        }).then(function(connection) {
+            abp.log.debug('Connected to myChatHub server!');
+            abp.event.trigger('myChatHub.connected');
+        });
          
-         abp.event.on('myChatHub.connected', function() { // Register for connect event
-             chatHub.invoke('sendMessage', "Hi everybody, I'm connected to the chat!"); // Send a message to the server
-             abp.notify.info("与实时推送服务连接成功");
-         });
+        abp.event.on('myChatHub.connected', function() { // Register for connect event
+            chatHub.invoke('sendMessage', "Hi everybody, I'm connected to the chat!"); // Send a message to the server
+            abp.notify.info("与实时推送服务连接成功");
+        });
 
-         // abp.notify.info('指纹仪已准备好');
-        // $('dlgActivate').dialog({
-        //     onClose: function () { 
-        //         verifyAction = ''; 
-        //         abp.event.trigger('activateDialogClosed');
-        //     }
-        // });
-
+        // abp.notify.info('指纹仪已准备好');
         initFingerActivex();
     });
 
@@ -284,51 +277,5 @@ function parseMessage(msg) {
             abp.notify.warn(cmd[1]);
         }
         return;
-    }
-}
-
-// for Captain Verify
-var verifyAction = '';
-
-function openActivateDialog(action) {
-    verifyAction = action;
-    $('#dlgActivate').dialog('open');
-    $('#passwordActivate').next('span').find('input').focus();
-}
-
-function closeActivateDialog() {
-    // alert(verifyAction);
-    $('#fmActivate').form('clear');
-    $('#dlgActivate').dialog('close');
-}
-
-function verifyPasswordAndTrigger()
-{
-    var pwd = $('#passwordActivate').val();
-    abp.services.app.work.verifyUnlockPassword(pwd).done(function(result) {
-        if (result == true) {
-            abp.notify.success("密码验证正确");
-            // alert(verifyAction);
-            closeActivateDialog();
-            abp.event.trigger('verifyDone', { name: verifyAction, style: false });
-        }
-        else
-            abp.notify.error("密码错误");
-    });    
-}
-
-function verifyFingerAndTrigger()
-{
-    abp.notify.info("请把指纹放到指纹仪上");
-    var finger = getFingerCode();
-    if (finger != '') {
-        // alert(finger);
-        abp.services.app.work.verifyFinger(finger, me.workerCn).done(function(ret) {
-            abp.notify.info(ret.item2);
-            if (ret.item1) {
-                closeActivateDialog();
-                abp.event.trigger('verifyDone', { name: verifyAction, style: true });
-            };
-        });
     }
 }

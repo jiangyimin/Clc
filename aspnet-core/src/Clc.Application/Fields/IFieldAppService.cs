@@ -19,8 +19,14 @@ namespace Clc.Fields
         Task<PagedResultDto<WorkerFingerDto>> GetWorkerFingersAsync(PagedAndSortedResultRequestDto input);
         Task<WorkerFingerDto> UpdateWorkerFingerAsync(WorkerFingerDto input);
 
-        // WorkerFile
-        Task<PagedResultDto<WorkerFileDto>> GetPagedResult(int depotId, PagedAndSortedResultRequestDto input);
+        // WorkerFile and Asset
+        Task<PagedResultDto<AssetDto>> SearchAssetPagedResult(PagedAssetResultRequestDto input);
+        Task<PagedResultDto<WorkerFileDto>> SearchFilePagedResult(PagedFileResultRequestDto input);
         List<ComboboxItemDto> GetWorkerComboItems(int depotId);
+
+        // WorkerFinger
+        bool AllowEditWorkerFinger();
+
+        // Asset
     }
 }

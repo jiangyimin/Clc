@@ -67,7 +67,7 @@
                     onSelect: function (node) {
                         crud.parentId = node.id;
                         $('#datagrid').datagrid({
-                            url: crud.dgDefault.name + '/GetFilePagedData/' + node.id
+                            url: crud.dgDefault.name + '/GridData/' + node.id
                         });
                         abp.services.app.field.getWorkerComboItems(node.id).done(function(ret) {
                             crud.setComboBox('#workerId', ret);
@@ -145,11 +145,11 @@
                 <th><Label for="school">毕业院校:</Label></th>
                 <td><input name="school" class="easyui-textbox" style="width: 100%"></td>
                 <th><Label for="stature">身高:</Label></th>
-                <td><input name="stature" class="easyui-numberbox" style="width: 100%"></td>
+                <td><input name="stature" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><Label for="weight">体重:</Label></th>
-                <td><input name="weight" class="easyui-numberbox" style="width: 100%"></td>
+                <td><input name="weight" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
                 <th><Label for="maritalStatus">婚姻状况:</Label></th>
                 <td><input id="maritalStatus" name="maritalStatus" class="easyui-combobox" style="width: 100%"></td>
             </tr>

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Clc.Web.Controllers
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_Hrm)]
+    [AbpMvcAuthorize(PermissionNames.Pages_Hrm, PermissionNames.Pages_Hrq)]
     public class AssetsController : ClcCrudController<Asset, AssetDto>
     {
         private readonly IFieldAppService _fieldAppService;
@@ -20,16 +20,22 @@ namespace Clc.Web.Controllers
             _fieldAppService = fieldAppService;
         }
 
-        [DontWrapResult]
-        public async Task<JsonResult> GetFilePagedData(int id)
-        {
-            var output = await _fieldAppService.GetPagedResult(id, GetPagedInput());
-            return Json( new { total = output.TotalCount, rows = output.Items });
-        }
-
-        public ActionResult Query()
+        public ActionResult Hrq()
         {
             return View();
         }
+
+        [HttpPost]
+        [DontWrapResult]
+        public async Task<JsonResult> GetPagedData(PagedAssetResultRequestDto input)
+        {
+            var p = GetPagedInput();
+            input.MaxResultCount = p.MaxResultCount;
+            input.Sorting = p.Sorting;
+            input.SkipCount = p.SkipCount;
+            var output = await _fieldAppService.SearchAssetPagedResult(input);
+            return Json( new { total = output.TotalCount, rows = output.Items });
+        }
+
 	}
 }

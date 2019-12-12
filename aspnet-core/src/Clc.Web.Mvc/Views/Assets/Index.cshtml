@@ -14,15 +14,55 @@
             { field: "category", title: "资产类别", width: 80 },
             { field: "address", title: "存放地", width: 80 },
             { field: "chargePerson", title: "责任人", width: 80 },
-            { field: "useDate", title: "使用日期", width: 80 },
-            { field: "retireDate", title: "报废日期", width: 80},
+            { field: "useDate", title: "使用日期", width: 80, formatter: "$.dateFormatter" },
+            { field: "retireDate", title: "报废日期", width: 80, formatter: "$.dateFormatter" },
             { field: "remark", title: "说明", width: 80},
          ]];
-
-        function postFormatter (val) {
-            return crud.getComboTextByInt('#defaultPost', val);
-        }
+        crud.parentField = 'depotId';
+        // crud.children = true;
     </script>
+}
+
+@section endScript
+{
+    <script type="text/javascript">
+        crud.startfunction = function () {
+            abp.services.app.type.getComboItems('Category').done(function(d) {
+                crud.setComboBox('#category', d);
+            });
+
+            abp.services.app.field.getComboItems('Depot').done(function(depots) {
+                crud.setComboBox('#depotId', depots);
+                var treeData = [];
+                depots.forEach( function (val, index, arr) {
+                    treeData.push({ id: val.value, text: val.displayText });
+                });
+                $('#tree').tree({
+                    data: treeData,
+                    onSelect: function (node) {
+                        crud.parentId = node.id;
+                        $('#datagrid').datagrid({
+                            url: crud.dgDefault.name + '/GetPagedData/' + 'DepotId=' + node.id
+                        });
+                    }
+                });
+            });
+        };
+    </script>
+}
+
+@section headHtml
+{
+    <div id="cc" class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'west', split:true, minWidth:80, width:150, title:'客户'">
+            <ul id="tree" class="easyui-tree" style="margin-top:6px"></ul>
+        </div>
+        <div data-options="region:'center', border:false">
+}
+@section footHtml
+{
+        </div>
+    </div>
 }
 
 @*弹窗*@
@@ -32,11 +72,7 @@
             <input id="id" name="id" type="hidden">
             <tr>
                 <th><label for="depotId">所属：</label></th>
-                <td><input id="depotId" name="depotId" readonly="true" class="easyui-combobox" style="width: 100%"></td>
-            </tr>
-            <tr>
-                <th><label for="workerId">人员：</label></th>
-                <td><input id="workerId" name="workerId" class="easyui-combobox" data-options="required:true" style="width: 220px"></td>
+                <td><input id="depotId" name="depotId" class="easyui-combobox" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="cn">编号：</label></th>
@@ -68,7 +104,7 @@
             </tr>
             <tr>
                 <th><label for="remark">备注：</label></th>
-                <td><input name="remark" class="easyui-textbox" data-options="required:true, validType:'length[1, @WorkerFile.MaxFileCnLength]'" style="width: 100%"></td>
+                <td><input name="remark" class="easyui-textbox" data-options="validType:'length[1, @Asset.MaxRemarkLength]'" style="width: 100%"></td>
             </tr>
          </table>
     </form>

@@ -58,7 +58,7 @@ namespace Clc.Web.Controllers
             string desc = null;
             foreach(var a in data)
             {
-                desc += string.Format("{0}已领：{1}， 未还：{2}\n", a.Name, a.LendCount, a.UnReturnCount);
+                desc += string.Format("{0}今领：{1}， 未还：{2}\n", a.Name, a.LendCount, a.UnReturnCount);
             }
             WeixinUtils.SendTextCard("App03", ret.Item2, title, desc);
         }

@@ -4,16 +4,21 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Linq;
+using Abp.Linq.Extensions;
+using Clc.Configuration;
 using Clc.Fields.Dto;
 using Clc.Runtime.Cache;
+using Clc.Works;
 
 namespace Clc.Fields
 {
     [AbpAuthorize]
     public class FieldAppService : ClcAppServiceBase, IFieldAppService
     {
+        public WorkManager WorkManager { get; set; }
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
 
         private readonly IDepotCache _depotCache;
@@ -25,6 +30,7 @@ namespace Clc.Fields
 
         private readonly IRepository<Worker> _workerRepository;
         private readonly IRepository<WorkerFile> _workerFileRepository;
+        private readonly IRepository<Asset> _assetRepository;
 
         public FieldAppService(IDepotCache depotCache,
             IWorkplaceCache workplaceCache,
@@ -33,7 +39,8 @@ namespace Clc.Fields
             IPostCache postCache,
             IWorkRoleCache workRoleCache,
             IRepository<Worker> workerRepository, 
-            IRepository<WorkerFile> workerFileRepository)
+            IRepository<WorkerFile> workerFileRepository,
+            IRepository<Asset> assetRepository)
         {
             _depotCache = depotCache;
             _workplaceCache = workplaceCache;
@@ -43,6 +50,7 @@ namespace Clc.Fields
             _workRoleCache = workRoleCache;
             _workerRepository = workerRepository;
             _workerFileRepository = workerFileRepository;
+            _assetRepository = assetRepository;
         }
 
         public List<ComboboxItemDto> GetComboItems(string name)
@@ -160,10 +168,32 @@ namespace Clc.Fields
             return ObjectMapper.Map<WorkerFingerDto>(entity);
         }
 
-        public async Task<PagedResultDto<WorkerFileDto>> GetPagedResult(int depotId, PagedAndSortedResultRequestDto input)
+        public async Task<PagedResultDto<AssetDto>> SearchAssetPagedResult(PagedAssetResultRequestDto input)
         {
-            var query = _workerFileRepository.GetAllIncluding(x => x.Worker)
-                .Where(x => x.Worker.DepotId == depotId);
+            var query = _assetRepository.GetAllIncluding(x => x.Depot)
+                .WhereIf(input.DepotId.HasValue, x => x.DepotId == input.DepotId.Value)
+                .WhereIf(input.Category != null, x => x.Category == input.Category);
+
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+
+            if (!string.IsNullOrWhiteSpace(input.Sorting))
+                query = query.OrderBy(input.Sorting);                               // Applying Sorting
+            query = query.Skip(input.SkipCount).Take(input.MaxResultCount);     // Applying Paging
+
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+
+            return new PagedResultDto<AssetDto>(
+                totalCount,
+                ObjectMapper.Map<List<AssetDto>>(entities)
+            );
+        }
+        
+        public async Task<PagedResultDto<WorkerFileDto>> SearchFilePagedResult(PagedFileResultRequestDto input)
+        {
+            var query = _workerFileRepository.GetAllIncluding(x => x.Worker, x => x.Worker.Depot, x => x.Worker.Post)
+                .WhereIf(input.DepotId.HasValue, x => x.Worker.DepotId == input.DepotId.Value)
+                .WhereIf(input.PostId.HasValue, x => x.Worker.DepotId == input.PostId.Value)
+                .WhereIf(input.Status != null, x => x.Status == input.Status);
 
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
@@ -190,5 +220,17 @@ namespace Clc.Fields
 
             return list;
         }
+
+        public bool AllowEditWorkerFinger()
+        {
+            int workerId = GetCurrentUserWorkerIdAsync().Result;
+            var depot = WorkManager.GetDepot(WorkManager.GetWorker(workerId).DepotId);
+
+            var depots = SettingManager.GetSettingValue(AppSettingNames.Rule.EditWorkerDepots);
+            if (!depots.Split('|', ',').Contains(depot.Name)) 
+                return false;
+            return true;
+        }
+
     }
 }

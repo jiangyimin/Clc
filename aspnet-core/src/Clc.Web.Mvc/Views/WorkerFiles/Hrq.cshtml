@@ -13,31 +13,36 @@
 <div class="easyui-layout" fit="true">
     <!-- BEGIN of main -->
     <div data-options="region:'center', border:false">
-
+        <div id="tb">
+            <form id="fmSearch">
+                <a name="search" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true">查询</a>
+                &nbsp;大队：<input id="depot" name="depotId" class="easyui-combobox" style="width: 100px">
+                &nbsp;岗位：<input id="post" name="postId" class="easyui-combobox" style="width: 100px">
+                &nbsp;在职：<input id="status" name="status" class="easyui-combobox" style="width: 100px">
+            </form>
+        </div>
         <table id="dg" class="easyui-datagrid" toolbar="#tb" pagination="true" pageSize="20" sortName="fileCn"
             fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" >
             <thead>
                 <tr>
-                    <th field="workerCn" width="80">用户名</th>
-                    <th field="workerName" width="80">显示名称</th>
-                    <th field="fileCn" width="80">角色</th>
+                    <th field="fileCn" width="80">档案号</th>
+                    <th field="workerDepotName" width="80">所属</th>
+                    <th field="workerName" width="80">姓名</th>
+                    <th field="workerPostName" width="80">岗位</th>
+                    <th field="status" width="80">在职</th>
                 </tr>
             </thead>
         </table>
-        <div id="tb">
-            <a name="search" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true">查询</a>
-            <input id="deopt" class="easyui-combobox" data-options="required:true" style="width: 100px">
-        </div>
     </div>
     <div data-options="region:'east', split:true, title:'卡片信息', collapse:true, border:false" style="min-width:120px; width:720px">
     <form id="fm" class="easyui-form" method="post" novalidate>
         <table class="edit-tbl2">
             <input id="id" name="id" type="hidden">
             <tr>
-                <th><label for="depotId">所属：</label></th>
-                <td><input id="depotId" name="depotId" readonly="true" class="easyui-combobox" style="width: 100%"></td>
-                <th><label for="workerId">人员：</label></th>
-                <td><input id="workerId" name="workerId" class="easyui-combobox" data-options="required:true" style="width: 220px"></td>
+                <th><label for="depot">所属：</label></th>
+                <td><input name="workerDepotName" readonly="true" class="easyui-combobox" style="width: 100%"></td>
+                <th><label for="worker">人员：</label></th>
+                <td><input name="workerName" class="easyui-combobox" data-options="required:true" style="width: 220px"></td>
             </tr>
             <tr>
                 <th><label for="fileCn">文件编号：</label></th>
@@ -124,7 +129,7 @@
             </tr>
             <tr>
                 <th><Label for="status">在职:</Label></th>
-                <td><input id="status"  name="status" class="easyui-combobox" style="width: 100%"></td>
+                <td><input name="status" class="easyui-combobox" style="width: 100%"></td>
                 <th><Label for="remark">备注:</Label></th>
                 <td><input name="remark" class="easyui-textbox" style="width: 100%"></td>
             </tr>

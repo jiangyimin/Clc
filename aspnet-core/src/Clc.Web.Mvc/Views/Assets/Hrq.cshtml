@@ -1,0 +1,83 @@
+﻿@using Clc.Fields
+@section scripts
+{
+    <environment names="Development">
+        <script src="~/view-resources/Views/Assets/Hrq.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/view-resources/Views/Assets/Hrq.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'center', border:false">
+        <div id="tb">
+            <form id="fmSearch">
+                <a name="search" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true">查询</a>
+                &nbsp;大队：<input id="depot" name="depotId" class="easyui-combobox" style="width: 100px">
+                &nbsp;类型：<input id="category" name="category" class="easyui-combobox" style="width: 100px">
+            </form>
+        </div>
+        <table id="dg" class="easyui-datagrid" toolbar="#tb" pagination="true" pageSize="20" sortName="cn"
+            fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" >
+            <thead>
+                <tr>
+                    <th field="cn" width="80">编号</th>
+                    <th field="name" width="80">名称</th>
+                    <th field="depotName" width="80">所属</th>
+                    <th field="category" width="80">类别</th>
+                    <th field="chargePerson" width="80">保管人</th>
+                    <th field="useDate" width="80" formatter="$.dateFormatter">使用日期</th>
+                </tr>
+            </thead>
+        </table>
+        <div id="tb">
+            <a name="search" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true">查询</a>
+            <input id="deopt" class="easyui-combobox" data-options="required:true" style="width: 100px">
+        </div>
+    </div>
+    <div data-options="region:'east', split:true, title:'卡片信息', collapse:true, border:false" style="min-width:120px; width:400px">
+    <form id="fm" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl">
+            <input id="id" name="id" type="hidden">
+            <tr>
+                <th><label for="depotName">所属：</label></th>
+                <td><input name="depotName" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="cn">编号：</label></th>
+                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[1, @Asset.MaxCnLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="name">名称：</label></th>
+                <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[1, @Asset.MaxNameLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="category">类别：</label></th>
+                <td><input name="category" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="address">存放地：</label></th>
+                <td><input name="address" class="easyui-textbox" data-options="required:true, validType:'length[1, @Asset.MaxAddressLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="chargePerson">责任人：</label></th>
+                <td><input name="chargePerson" class="easyui-textbox" data-options="required:true, validType:'length[1, @Asset.MaxAddressLength]'" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="UseDate">使用日期:</label></th>
+                <td><input name="useDate" class="easyui-datebox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="retireDate">预计报废日期：</label></th>
+                <td><input name="retireDate" class="easyui-datebox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="remark">备注：</label></th>
+                <td><input name="remark" class="easyui-textbox" data-options="validType:'length[1, @Asset.MaxRemarkLength]'" style="width: 100%"></td>
+            </tr>
+         </table>
+    </form>
+</div>
+</div>

@@ -130,8 +130,14 @@ namespace Clc.Configuration
                 ),
                 new SettingDefinition(
                     AppSettingNames.Rule.AltCheckinDepots, 
-                    "调度", 
+                    "调度",
                     new FixedLocalizableString("代验入大队列表"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.EditWorkerDepots, 
+                    "调度", 
+                    new FixedLocalizableString("允许编辑人员的大队列表"),
                     scopes: SettingScopes.Tenant
                 ),
             };

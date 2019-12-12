@@ -2,10 +2,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Abp.Runtime.Validation;
-using Clc.Authorization.Roles;
-using Clc.Fields;
-using Microsoft.AspNetCore.Http;
 
 namespace Clc.Fields.Dto
 {
@@ -15,6 +11,8 @@ namespace Clc.Fields.Dto
         public int WorkerId { get; set; }
         public string WorkerCn { get; set; }
         public string WorkerName { get; set; }
+        public string WorkerDepotName { get; set; }
+        public string WorkerPostName { get; set; }
         
         /// <summary>
         /// 编号

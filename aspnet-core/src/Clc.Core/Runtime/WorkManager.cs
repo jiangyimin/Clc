@@ -158,17 +158,6 @@ namespace Clc.Works
                 return GetWorkerByCn(depot.AgentCn).Id;
         }
         
-        public bool IsWorkerRoleUser(string workerCn)
-        {
-            var w = _workerCache.GetList().Find(x => x.Cn == workerCn);
-            if (w != null) 
-            {
-                var worker = _workerCache[w.Id];
-                return string.IsNullOrEmpty(worker.LoginRoleNames) ? false : true;
-            }
-            return false;
-        }
-
         #endregion
 
         #region Depot, Workplace, Vehicle
@@ -510,21 +499,17 @@ namespace Clc.Works
             (bool, string) ret = (false, null);
             switch (cmd) {
                 case "解屏":
-                    if (!IsWorkerRoleUser(workerCn)) 
-                        ret = (false, "你不需要"+cmd);
-                    else
-                        ret = (true, "unlockScreen " + workerCn);
+                    ret = (true, "unlockScreen " + workerCn);
                     break;
                 case "锁屏":
-                    if (!IsWorkerRoleUser(workerCn)) 
-                        ret = (false, "你不需要"+cmd);
-                    else
-                        ret = (true, "lockScreen " + workerCn);
+                    ret = (true, "lockScreen " + workerCn);
                     break;
                 case "触发开门":
-                    return WeixinTriggerAsk(workerCn);
+                    ret = WeixinTriggerAsk(workerCn);
+                    break;
                 case "申请开门":
-                    return WeixinAskOpenDoor(workerCn);
+                    ret = WeixinAskOpenDoor(workerCn);
+                    break;
                 default:
                     ret = (false, "系统无此命令");
                     break;

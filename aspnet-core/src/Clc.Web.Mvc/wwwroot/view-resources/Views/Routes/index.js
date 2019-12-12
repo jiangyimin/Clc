@@ -41,7 +41,7 @@
         });
 
         $('#tb').children('a[name="activate"]').click(function (e) {
-            window.parent.openActivateDialog('activateRoute');
+            work.openActivateDialog('activateRoute');
         })
 
         $('#tb').children('a[name="back"]').click(function (e) {
@@ -49,7 +49,7 @@
                 abp.notify.error("先选择线路");
                 return;
             };
-            window.parent.openActivateDialog('backRoute');
+            work.openActivateDialog('backRoute');
         })
 
         $('#tb').children('a[name="close"]').click(function (e) {
@@ -125,13 +125,14 @@
             });
         });
 
-        window.parent.abp.event.on('verifyDone', function(p) {
-            if (p.name == 'activateRoute')
-                activate(p.style);
-            if (p.name == 'backRoute')
-                back(p.style);
-        });
     });
+
+    work.verifyDone = function (verifyAction, style) {
+        if (verifyAction == 'activateRoute')
+            activate(style);
+        if (verifyAction == 'backRoute')
+            back(style);
+    };
 
     function back(style) {
         var status = mds.masterCurrentRow.status;

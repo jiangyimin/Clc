@@ -40,11 +40,11 @@
         })
 
         $('#tb').children('a[name="activate"]').click(function (e) {
-            window.parent.openActivateDialog('activateAffair');
+            work.openActivateDialog('activateAffair');
         })
 
         $('#tbTask').children('a[name="add"]').click(function (e) {
-            window.parent.openActivateDialog('addTask');
+            work.openActivateDialog('addTask');
         })
 
         $('#tb').children('a[name="back"]').click(function (e) {
@@ -56,7 +56,7 @@
                 abp.notify.error("激活状态才允许回退");
                 return;
             };
-            window.parent.openActivateDialog('backAffair');
+            work.openActivateDialog('backAffair');
         })
 
         $('#tb').children('a[name="createFrom"]').click(function (e) {
@@ -84,19 +84,20 @@
                 }
             })
         });
-
-        window.parent.abp.event.on('verifyDone', function(p) {
-            if (p.name == 'activateAffair')
-                activate(p.style);
-            
-            if (p.name == 'backAffair')
-                back(p.style);
-            
-            if (p.name == 'addTask') {
-                mds.add('Task');
-            }
-        });
     });
+
+    work.verifyDone = function (verifyAction, style) {
+        // alert('enter verfyDone');
+        if (verifyAction == 'activateAffair')
+            activate(style);
+        
+        if (verifyAction == 'backAffair')
+            back(style);
+        
+        if (verifyAction == 'addTask') {
+            mds.add('Task');
+        }
+    };
 
     function back(style) {
         abp.services.app.affair.back(mds.masterCurrentRow.id, style).done(function () {
