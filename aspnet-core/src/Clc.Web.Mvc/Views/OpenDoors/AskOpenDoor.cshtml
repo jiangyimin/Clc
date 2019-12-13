@@ -20,27 +20,6 @@
         var doorRecordId = 0;
         var doorIp = '';
 
-        winput.matchWorker = function(rfid) {
-            //if (!allowCardWhenCheckin) {
-            //    abp.notify.error('系统设置为不允许刷卡验证');
-            //    return;
-            //}
-            if (status == '') {
-                abp.notify.warn('现在不需刷卡');
-                return;
-            }
-
-            for (var i = 0; i < cds.length; i++) {
-                if (cds[i].rfid == rfid) {
-                    cds[i].confirmed = true;
-                    confirms.innerHTML = createHTML();
-                
-                    if (allConfirmed()) doOpenDoor();
-                    break;
-                }
-            }
-        }  
-
         function fingerConfirm (index) {
             abp.notify.info('请将指纹放到指纹仪上');
             var finger = window.parent.getFingerCode();

@@ -92,6 +92,27 @@
             }
         });
     });
+
+    winput.matchWorker = function(rfid) {
+        if (status == '') {
+            abp.notify.warn('现在不需刷卡');
+            return;
+        }
+        var found = false;
+        for (var i = 0; i < cds.length; i++) {
+            if (cds[i].rfid == rfid) {
+                found = true;
+                cds[i].confirmed = true;
+                confirms.innerHTML = createHTML();
+            
+                if (allConfirmed()) doOpenDoor();
+                break;
+            }
+        }
+
+        if (!found) abp.notify.warn('无此RFID');
+    }  
+
 })();
 
 function createPhotosHTML(ws) {
@@ -117,18 +138,19 @@ function config() {
 }
 
 function startplay(ip) {
-    stopplay();
-    config();
+    //stopplay();
+    //config();
 
     var obj = document.getElementById("EasyPlayerOcx");
-    var url = "rtsp://" + ip + ":554/h264/ch1/av_stream";
+    var url = "rtsp://" + ip + "/h264/ch1/av_stream";
     var rendertype = 7; //document.getElementById("rendertype").value;
     var name = "admin"; //document.getElementById("name").value;
     var password = abp.setting.get('Const.CameraPassword');
-    // alert(ip + " " + password);
+    // alert(url + " " + password);
     var harddecode = 1; //document.getElementById("harddecode").checked ? 1 : 0;
     var rtpovertcp = 1; // document.getElementById("rtpovertcp").checked ? 1 : 0;
     obj.Start(url, rendertype, name, password, harddecode, rtpovertcp);
+    config();
     //alert(url+";"+rendertype+";"+name+";"+password);
 }
 

@@ -159,12 +159,13 @@
             if (row.status == "安排") ids.push(row.id);
         };
 
+        abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
+            abp.notify.info("下达最新的激活线路");
+        });
+
         abp.services.app.route.activate(ids, style).done(function (ret) {
             abp.notify.success('有' + ret.item2 + '个线路被激活');
             // Cache active routes
-            abp.services.app.route.setActiveRouteCache(mds.today).done(function() {
-                abp.notify.info("下达最新的激活线路");
-            });
             if (ret.item1) abp.notify.error(ret.item1);
             mds.reload('');
         });

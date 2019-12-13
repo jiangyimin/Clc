@@ -594,7 +594,7 @@ namespace Clc.Works
                 var rt = _routeTypeCache[route.RouteTypeId];
                 if (isLend && !ClcUtils.NowInTimeZone(route.StartTime, rt.LendArticleLead, rt.LendArticleDeadline)) continue;
                 var span = int.Parse(SettingManager.GetSettingValue(AppSettingNames.TimeRule.ReturnDeadline));
-                if (!isLend && DateTime.Now > ClcUtils.GetDateTime(route.EndTime).AddMinutes(span)) continue;
+                if (routeId == 0 && !isLend && DateTime.Now > ClcUtils.GetDateTime(route.EndTime).AddMinutes(span)) continue;
 
                 foreach (var rw in route.Workers) 
                 {

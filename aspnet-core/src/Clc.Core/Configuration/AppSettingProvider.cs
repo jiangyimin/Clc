@@ -51,6 +51,12 @@ namespace Clc.Configuration
             return new List<SettingDefinition>
             {
                 new SettingDefinition(
+                    AppSettingNames.Const.FingerThreshold, 
+                    "30", 
+                    new FixedLocalizableString("指纹通过阀值"),
+                    scopes: SettingScopes.Tenant
+                ),
+                new SettingDefinition(
                     AppSettingNames.Const.IdentifyEmergencyPassword, 
                     User.UserDefaultPassword, 
                     new FixedLocalizableString("身份确认紧急密码"),

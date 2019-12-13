@@ -307,7 +307,8 @@ namespace Clc.Works
             var w = _workerCache[workerId];
             var ret = MatchFinger(src, w.Finger, w.Finger2);
 
-            if (ret.Item1 > 50) 
+            var threshold = int.Parse(SettingManager.GetSettingValue(AppSettingNames.Const.FingerThreshold));
+            if (ret.Item1 > threshold) 
                 return (true, $"{ret.Item2}得分({ret.Item1})");
             else
                 return (false, $"指纹不匹配(得分{ret.Item1})");

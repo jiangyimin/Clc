@@ -13,6 +13,7 @@
 
         public static class Const
         {
+           public const string FingerThreshold = "Const.FingerThreshold";
            public const string IdentifyEmergencyPassword = "Const.IdentifyEmergencyPassword";
            public const string CameraPassword = "Const.CameraPassword";
             public const string WorkerRfidLength = "Const.WorkerRfidLength";
