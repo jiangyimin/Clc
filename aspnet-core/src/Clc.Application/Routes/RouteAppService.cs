@@ -173,14 +173,13 @@ namespace Clc.Routes
             return (null, count);
         }
 
-        public async Task SetActiveRouteCache(DateTime carryoutDate)
+        public void SetActiveRouteCache(DateTime carryoutDate)
         {
-            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
+            int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
             // 为激活任务设置缓存
             var query = _routeRepository.GetAllIncluding(x => x.Vehicle, x => x.AltVehicle, x => x.Workers)
                 .Where(x => x.CarryoutDate == carryoutDate && x.DepotId == depotId && _activeStatus.Contains(x.Status));
-            var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            var lst = ObjectMapper.Map<List<RouteCacheItem>>(entities);
+           var lst = ObjectMapper.Map<List<RouteCacheItem>>(query.ToList());
             if (lst.Count > 0)
                 _routeCache.Set(carryoutDate, depotId, lst);
         }

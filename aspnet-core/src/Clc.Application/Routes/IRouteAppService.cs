@@ -17,6 +17,7 @@ namespace Clc.Routes
         Task<RouteDto> Update(RouteDto input);
         Task Delete(int id);
 
+        void SetActiveRouteCache(DateTime carryoutDate);
         void SetStatus(DateTime carryoutDate, int depotId, int routeId, string status);
         Task<(string, int)> Activate(List<int> ids, bool finger);
         Task<int> Close(List<int> ids);
