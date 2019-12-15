@@ -11,7 +11,7 @@ using Clc.Web.MessageHandlers;
 
 namespace Clc.Web.Controllers
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_Monitor)]
+    [AbpMvcAuthorize(PermissionNames.Pages_Monitor, PermissionNames.Pages_Arrange)]
     public class OpenDoorsController : ClcControllerBase
     {
         private readonly IWorkAppService _workAppService;
@@ -32,9 +32,9 @@ namespace Clc.Web.Controllers
             return View();
         }
 
-        public ActionResult RecordQuery()
+        public ActionResult RecordQuery(int depotId = 0)
         {
-            return View();
+            return View(depotId);
         }
         
         [HttpPost]
@@ -48,9 +48,9 @@ namespace Clc.Web.Controllers
         }
 
         [DontWrapResult]
-        public async Task<JsonResult> GridDataDoor()
+        public async Task<JsonResult> GridDataDoor(int depotId = 0)
         {
-            var output = await _doorRecordAppService.GetDoorsAsync();
+            var output = await _doorRecordAppService.GetDoorsAsync(depotId);
             return Json( new { rows = output });
         }
 

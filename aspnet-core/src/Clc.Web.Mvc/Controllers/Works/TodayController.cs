@@ -48,6 +48,12 @@ namespace Clc.Web.Controllers
             return View();
         }
 
+        public ActionResult DoorRecordQuery()
+        {
+            var me = _workAppService.GetMe();
+            return RedirectToAction("RecordQuery", "OpenDoors", new { depotId = me.DepotId });
+        }
+        
         public async Task ReportArticleTo()
         {
             var ret = _workAppService.GetReportToManagers();

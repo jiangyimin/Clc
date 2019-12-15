@@ -169,5 +169,12 @@ namespace Clc.Web.Controllers
             dto.OutletCipertext = outlet.Ciphertext;
             HttpContext.Session.SetObjectAsJson("WxIdentify", dto);                
         }
+
+        #region Vehicle
+        public ActionResult VehicleAddOil()
+        {
+            return View();
+        }
+        #endregion
     }
 }

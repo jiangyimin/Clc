@@ -55,6 +55,8 @@ namespace Clc.Fields
         [StringLength(MaxReportToLength)]
         public string ReportTo { get; set; }
 
+        // public DateTime? LastReportDate { get; set; }
+
         [StringLength(Worker.MaxCnLength)]
         public string AgentCn { get; set; }
 

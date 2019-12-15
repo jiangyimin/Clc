@@ -17,7 +17,7 @@ using Clc.Works.Dto;
 
 namespace Clc.Issues
 {
-    [AbpAuthorize(PermissionNames.Pages_Arrange)]
+    [AbpAuthorize(PermissionNames.Pages_Arrange, PermissionNames.Pages_Monitor)]
     public class IssueAppService : ClcAppServiceBase, IIssueAppService
     {
         public WorkManager WorkManager { get; set; }
@@ -47,6 +47,15 @@ namespace Clc.Issues
                 entities.Select(MapToIssueDto).ToList()
             );
         }
+
+        public async Task<List<IssueDto>> GetOndutyIssuesAsync(DateTime dt)
+        {
+            var query = _issueRepository.GetAllIncluding(x => x.Depot)
+                .Where(x => x.CreateTime.Date == dt && x.ProcessStyle == "值班信息");
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return ObjectMapper.Map<List<IssueDto>>(entities);
+        }
+
         public async Task InsertAsync(IssueInputDto input)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
@@ -31,6 +32,8 @@ namespace Clc.Routes
         [Required]
         public int BoxRecordId { get; set; }
         public BoxRecord BoxRecord { get; set; }
+
+        // public DateTime? DeliverTime { get; set; }
     }
 }
 

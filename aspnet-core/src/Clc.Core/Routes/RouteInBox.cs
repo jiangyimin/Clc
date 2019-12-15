@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -33,6 +34,8 @@ namespace Clc.Routes
         public int BoxRecordId { get; set; }
 
         public BoxRecord BoxRecord { get; set; }
+
+        // public DateTime? PickupTime { get; set; }
     }
 }
 

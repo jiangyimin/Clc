@@ -1,0 +1,30 @@
+﻿@section Scripts
+{
+    <environment names="Development">
+        <script src="~/js/work.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Monitor/IssueQuery.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/js/work.min.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Monitor/IssueQuery.min.js" asp-append-version="true"></script>
+    </environment>
+
+}
+
+<div id="tb">
+    日期: <input id="dd" class="easyui-datebox" readonly="true" style="width:120px">
+    &nbsp;昨天&nbsp;<input id="yesterday" class="easyui-checkbox">
+    <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+</div>
+<table id="dg" class="easyui-datagrid" toolbar="#tb"
+        fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="createTime">
+    <thead>
+        <tr>
+            <th field="depotName" width="60">大队</th>
+            <th field="content" width="240">值班说明</th>
+            <th field="processContent" width="60">处理方式</th>
+            <th field="createTime" width="60" formatter="$.timeFormatter">创建时间</th>
+        </tr>
+    </thead>
+</table>

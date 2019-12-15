@@ -1,9 +1,11 @@
-﻿@section Scripts
+﻿@model int
+@section Scripts
 {
     <script type="text/javascript">
         $(function() {
+            var depotId = $('#depotId').val();
             $('#dgDoor').datagrid({
-                url: 'GridDataDoor',
+                url: 'GridDataDoor?DepotId=' + depotId,
                 onSelect: function (index, row) {
                     reloadSelectedTab();
                 }
@@ -38,6 +40,7 @@
 
 <div class="easyui-layout" fit="true">
     <div data-options="region:'west', title:'门禁列表', split:true, border:false" style="width:160px">
+        <input id="depotId" type="hidden" value="@Model">
         <table id="dgDoor" class="easyui-datagrid"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true">
             <thead>
@@ -56,7 +59,6 @@
                     <thead>
                         <tr>
                             <th field="askTime" width="60" formatter="$.datetimeFormatter">申请时间</th>
-                            <th field="workplaceDepotName" width="60">大队</th>
                             <th field="workplaceName" width="60">门禁名称</th>
                             <th field="askStyle" width="60">申请方式</th>
                             <th field="askAffairContent" width="120">任务说明</th>

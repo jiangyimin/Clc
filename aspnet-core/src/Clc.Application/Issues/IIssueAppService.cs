@@ -12,6 +12,8 @@ namespace Clc.Issues
     {
         Task<PagedResultDto<IssueDto>> GetIssuesAsync(PagedResultRequestDto requestDto);
 
+        Task<List<IssueDto>> GetOndutyIssuesAsync(DateTime dt);
+
         Task InsertAsync(IssueInputDto input);
 
         Task ProcessIssue(int id, string processContent);

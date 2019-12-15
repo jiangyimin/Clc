@@ -7,6 +7,7 @@ using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq;
+using Abp.Linq.Extensions;
 using Clc.Authorization;
 using Clc.DoorRecords.Dto;
 using Clc.Fields;
@@ -35,9 +36,10 @@ namespace Clc.DoorRecords
             _workplaceRepository = workplaceRepository;
         }
 
-        public async Task<List<DoorDto>> GetDoorsAsync()
+        public async Task<List<DoorDto>> GetDoorsAsync(int depotId)
         {
             var query = _workplaceRepository.GetAllIncluding(x => x.Depot)
+                .WhereIf(depotId > 0, x => x.DepotId == depotId)
                 .Where(x => !string.IsNullOrEmpty(x.AskOpenStyle));
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return ObjectMapper.Map<List<DoorDto>>(entities);

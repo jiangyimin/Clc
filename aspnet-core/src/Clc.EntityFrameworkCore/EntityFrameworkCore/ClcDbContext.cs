@@ -22,6 +22,9 @@ namespace Clc.EntityFrameworkCore
         public DbSet<TaskType> TaskTypes { get; set; }
         public DbSet<WorkRole> WorkRoles { get; set; }
 
+        // public DBset<OilType> OilTypes { get; set; }     // Clc2
+        // public DBset<VehicleMTType> VehicleMTTypes { get; set; }     // Clc2
+        
         // Fields
         public DbSet<Depot> Depots { get; set; }
         public DbSet<Workplace> Workplaces { get; set; }
@@ -31,7 +34,7 @@ namespace Clc.EntityFrameworkCore
         public DbSet<Article> Articles { get; set; }
         public DbSet<ArticleTypeBind> ArticleTypeBinds { get; set; }
         public DbSet<Asset> Assets { get; set; }
-
+        // public DbSet<GasStation> GasStations { get; set; }      // Clc2
 
         // Clients
         public DbSet<Customer> Customers { get; set; }
@@ -48,6 +51,9 @@ namespace Clc.EntityFrameworkCore
         public DbSet<EmergDoorRecord> EmergDoorRecords { get; set; }
         public DbSet<VehicleRecord> VehicleRecords { get; set; }
 
+        // public DbSet<OilRecord> OilRecords { get; set; }
+        // public DbSet<VehicleMTRecord> VehicleMTMTRecords { get; set; }
+
         // Affairs
         public DbSet<Affair> Affairs { get; set; }
         public DbSet<AffairWorker> AffairWorkers { get; set; }
@@ -58,6 +64,8 @@ namespace Clc.EntityFrameworkCore
         public DbSet<PreRoute> PreRoutes { get; set; }
         public DbSet<PreRouteWorker> PreRouteWorkers { get; set; }
         public DbSet<PreRouteTask> PreRouteTasks { get; set; }
+        // public DbSet<PreVehicleWorker> PreVehicleWorkers { get; set; }
+
         // Routes
         public DbSet<Route> Routes { get; set; }
         public DbSet<RouteWorker> RouteWorkers { get; set; }
@@ -116,6 +124,12 @@ namespace Clc.EntityFrameworkCore
             {
                 b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
             });
+            
+            // modelBuilder.Entity<GasStation>(b =>
+            // {
+            //     b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
+            // });
+            
             
             // Clients
             modelBuilder.Entity<Customer>(b =>
@@ -242,6 +256,8 @@ namespace Clc.EntityFrameworkCore
                 .HasOne(b => b.Vehicle).WithMany().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<PreRouteWorker>()
                 .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<PreVehicleWorker>()
+            //    .HasOne(b => b.Worker).WithMany().OnDelete(DeleteBehavior.Restrict);
                 
              // Routes
             modelBuilder.Entity<Route>()

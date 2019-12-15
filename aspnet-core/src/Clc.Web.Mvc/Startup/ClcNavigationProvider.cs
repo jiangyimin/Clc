@@ -77,6 +77,7 @@ namespace Clc.Web.Startup
                     //.AddItem(new MenuItemDefinition("Statistic_Worker", new FixedLocalizableString("人"), url: "Checkin/Home"))
                     //.AddItem(new MenuItemDefinition("Statistic_Vehicle", new FixedLocalizableString("车"), url: "Monitor/AskOpenDoor"))
                     //.AddItem(new MenuItemDefinition("Statistic_RouteTask", new FixedLocalizableString("押运任务费用"), url: "Routes/EmergOpenDoor"))
+                    .AddItem(new MenuItemDefinition("Query_DoorRecords", new FixedLocalizableString("开门记录查询"), url: "Today/DoorRecordQuery"))
                     .AddItem(new MenuItemDefinition("Query_Routes", new FixedLocalizableString("线路查询"), url: "Routes/RQuery"))
                     .AddItem(new MenuItemDefinition("Query_Affairs", new FixedLocalizableString("任务查询"), url: "Affairs/RQuery"))
 
@@ -88,6 +89,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Door_Records", new FixedLocalizableString("开门记录查询"), url: "OpenDoors/RecordQuery"))
                 // Monitor
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Monitor, new FixedLocalizableString("监控"), icon: "fa fa-envelope", requiredPermissionName: PermissionNames.Pages_Monitor)
+                    .AddItem(new MenuItemDefinition("Monitor_Issues", new FixedLocalizableString("值班记录查询"), url: "Monitor/IssueQuery"))
                     .AddItem(new MenuItemDefinition("Monitor_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Monitor/KeyPoints"))
                     .AddItem(new MenuItemDefinition("Monitor_Affairs", new FixedLocalizableString("任务查询"), url: "Monitor/AffairQuery"))
                     .AddItem(new MenuItemDefinition("Monitor_Affairs", new FixedLocalizableString("线路查询"), url: "Monitor/RouteQuery"))

@@ -9,7 +9,7 @@ namespace Clc.DoorRecords
 {
     public interface IDoorRecordAppService : IApplicationService
     {
-        Task<List<DoorDto>> GetDoorsAsync();
+        Task<List<DoorDto>> GetDoorsAsync(int depotId);
 
         Task<PagedResultDto<AskDoorRecordDto>> GetAskDoorRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input);
         Task<PagedResultDto<EmergDoorRecordDto>> GetEmergDoorRecordsAsync(int workplaceId, PagedAndSortedResultRequestDto input);

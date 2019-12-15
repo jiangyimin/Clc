@@ -14,6 +14,7 @@ namespace Clc.Issues.Dto
         // 大队
         public int DepotId { get; set; }
 
+        public string DepotName { get; set; }
         public string CreateWorkerName { get; set; }
         
         public string Content { get; set; }

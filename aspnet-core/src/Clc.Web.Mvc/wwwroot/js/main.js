@@ -5,11 +5,11 @@
 
     //加载状态为complete时移除loading效果
     function completeLoading() {
-        if (document.readyState === "complete") {
+        //if (document.readyState === "complete") {
             var loadingMask = document.getElementById('loadingDiv');
             if (loadingMask !== null)
                 loadingMask.parentNode.removeChild(loadingMask);
-        }
+        //}
     };
 
     //Notification handler

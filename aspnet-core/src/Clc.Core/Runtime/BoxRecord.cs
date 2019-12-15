@@ -43,7 +43,12 @@ namespace Clc.Runtime
         public string InWorkers { get; set; }
         
         [StringLength(MaxWorkersLength)]
-        public string OutWorkers { get; set; }        
+        public string OutWorkers { get; set; }    
+
+        // public int? InRouteTaskId { get; set; }
+        // public virtual RouteTask InRouteTask { get; set; }
+        // public int? OutRouteTaskId { get; set; }
+        // public virtual RouteTask OutRouteTask { get; set; }
     }
 }
 

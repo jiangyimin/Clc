@@ -6,6 +6,8 @@ using Clc.Works;
 using Clc.DoorRecords;
 using Microsoft.AspNetCore.SignalR;
 using Clc.RealTime;
+using Clc.Weixin.Dto;
+using Clc.Fields;
 
 namespace Clc.Web.Controllers
 {
@@ -47,22 +49,18 @@ namespace Clc.Web.Controllers
             return View();
         }
 
-        public ActionResult ReceiveBox(int id)
+        public ActionResult ReceiveBox()
         {
-            // var dto = new WxOutletDto();
+            var dto = new WxOutletDto();
 
-            // using (CurrentUnitOfWork.SetTenantId(id))
-            // using (AbpSession.Use(id, null))
-            // {
-            //     Worker worker = DomainManager.GetWorkerByCn("62536");
-            //     dto.SetWorker(worker);
-            //     dto.SetWorker2(DomainManager.GetWorkerByCn("62563"));
-            //     dto.SetVehice(DomainManager.GetVehicles(worker.DepotId)[0]);
+            Worker worker = WorkManager.GetWorkerByCn("10023");
+            dto.SetWorker(worker);
+            dto.SetWorker2(WorkManager.GetWorkerByCn("10024"));
+            dto.SetVehice(WorkManager.GetVehicle(3));
 
-            //     dto.TaskBoxs.Add(new WeixinTaskBoxDto("07", "7号柜员箱"));
-            //     dto.TaskBoxs.Add(new WeixinTaskBoxDto("12", "12号柜员箱"));
-            //     dto.TaskBoxs.Add(new WeixinTaskBoxDto("Q1", "1号清分箱"));
-            // }
+            dto.TaskBoxs.Add(new WeixinTaskBoxDto("07", "7号柜员箱"));
+            dto.TaskBoxs.Add(new WeixinTaskBoxDto("12", "12号柜员箱"));
+            dto.TaskBoxs.Add(new WeixinTaskBoxDto("Q1", "1号清分箱"));
             return View();
         }
     }
