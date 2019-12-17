@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
@@ -231,6 +232,17 @@ namespace Clc.Works
             data.Task = new CountPair(data.Tasks.Count, fee);
 
             return data;
+        }
+
+        public async Task<List<TemporaryTaskDto>> GetFeeTasks(DateTime dt, string sorting)
+        {
+            // Task (fee)
+            var query = _routeTaskRepository.GetAllIncluding(x => x.Route, x => x.Route.Depot, x => x.Outlet, x => x.Outlet.Customer, x => x.TaskType)
+                .Where(x => x.Route.CarryoutDate == DateTime.Now.Date &&  x.TaskType.isTemporary == true); 
+            query = query.OrderBy(sorting);
+
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return ObjectMapper.Map<List<TemporaryTaskDto>>(entities);
         }
 
         #region Agent

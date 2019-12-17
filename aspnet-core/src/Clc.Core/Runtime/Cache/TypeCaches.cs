@@ -46,4 +46,20 @@ namespace Clc.Runtime.Cache
         }
     }
 
+    public class OilTypeCache : EntityListCache<OilType, OilType, OilType>, IOilTypeCache, ITransientDependency
+    {
+        public OilTypeCache(ICacheManager cacheManager, IRepository<OilType> repository, IObjectMapper objectMapper)
+            : base(cacheManager, repository, objectMapper)
+        {
+        }
+    }
+
+    public class VehicleMTTypeCache : EntityListCache<VehicleMTType, VehicleMTType, VehicleMTType>, IVehicleMTTypeCache, ITransientDependency
+    {
+        public VehicleMTTypeCache(ICacheManager cacheManager, IRepository<VehicleMTType> repository, IObjectMapper objectMapper)
+            : base(cacheManager, repository, objectMapper)
+        {
+        }
+    }
+
 }

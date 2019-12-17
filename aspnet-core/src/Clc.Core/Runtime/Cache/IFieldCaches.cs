@@ -21,4 +21,9 @@ namespace Clc.Runtime.Cache
     public interface IWorkplaceCache : IEntityListCache<Workplace, Workplace, Workplace>
     {
     }
+
+    public interface IGasStationCache : IEntityListCache<GasStation, GasStation, GasStation>
+    {
+    }
+
 }

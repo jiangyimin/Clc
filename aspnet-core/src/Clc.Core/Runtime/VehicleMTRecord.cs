@@ -29,8 +29,6 @@ namespace Clc.Runtime
         public int CreateWorkerId { get; set; }
         public Worker CreateWorker { get; set; }
 
-        // 日期
-        public DateTime MTDate { get; set; }
         // 车辆
         [Required]
         public int VehicleId { get; set; }
@@ -40,7 +38,9 @@ namespace Clc.Runtime
         public int VehicleMTTypeId { get; set; }
         public VehicleMTType VehicleMTType { get; set; }
 
-        public double Quantity { get; set; }
+        // 日期
+        public DateTime MTDate { get; set; }
+        
         public double Price { get; set; }
         
         [Required]

@@ -13,6 +13,7 @@ namespace Clc.Authorization.Roles
             public const string Admin = "Admin";
             public const string Hrm = "Hrm";            // 人事数据维护
             public const string Hrq = "Hrq";            // 人事数据查询
+            public const string Statistic = "Statistic";            // 统计
 
             // Worker Roles，用户名: Worker+Cn, 密码：User.WorkerUserDefaultPassword
             public const string Captain = "Captain";    // 队长

@@ -60,4 +60,12 @@ namespace Clc.Runtime.Cache
         {
         }
     }
+    
+    public class GasStationCache : EntityListCache<GasStation, GasStation, GasStation>, IGasStationCache, ITransientDependency
+    {
+        public GasStationCache(ICacheManager cacheManager, IRepository<GasStation> repository, IObjectMapper objectMapper)
+            : base(cacheManager, repository, objectMapper)
+        {
+        }
+    }
 }

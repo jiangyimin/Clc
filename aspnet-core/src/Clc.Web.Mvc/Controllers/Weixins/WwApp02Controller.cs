@@ -13,23 +13,39 @@ using Clc.RealTime;
 using Senparc.Weixin.Work.AdvancedAPIs;
 using Senparc.Weixin.Work.Containers;
 using Senparc.Weixin.Work.AdvancedAPIs.OAuth2;
+using Clc.Types;
+using Clc.Works;
+using Clc.VehicleRecords;
 
 namespace Clc.Web.Controllers
 {
     [IgnoreAntiforgeryToken]
     public class WwApp02Controller : ClcControllerBase
     {
+        public WorkManager WorkManager { get; set; }
         private readonly IHubContext<MyChatHub> _context;
         private readonly string _corpId;
         private readonly string _secret;
         private readonly string _agentId;
 
         private readonly IWeixinAppService _weixinAppService;
+        private readonly IVehicleRecordAppService _recordAppService;
+        private readonly IGasStationCache _gasStationCache;
+        private readonly IOilTypeCache _oilTypeCache;
+        private readonly IVehicleMTTypeCache _vehicleMTTypeCache;
+        private readonly IVehicleCache _vehicleCache;
 
         private readonly IOutletCache _outletCache;
 
-        public WwApp02Controller(IHostingEnvironment env, IHubContext<MyChatHub> context, 
-            IWeixinAppService weixinAppService, IOutletCache outletCache)
+        public WwApp02Controller(
+            IHostingEnvironment env, 
+            IHubContext<MyChatHub> context, 
+            IWeixinAppService weixinAppService,
+            IGasStationCache gasStationCache,
+            IOilTypeCache oilTypeCache,
+            IVehicleMTTypeCache vehicleMTTypeCache,
+            IVehicleCache vehicleCache,
+            IOutletCache outletCache)
         {
             var appConfiguration = env.GetAppConfiguration();
             _corpId = appConfiguration["SenparcWeixinSetting:CorpId"];
@@ -38,6 +54,11 @@ namespace Clc.Web.Controllers
 
             _context = context;
             _weixinAppService = weixinAppService;
+
+            _gasStationCache = gasStationCache;
+            _oilTypeCache = oilTypeCache;
+            _vehicleMTTypeCache = vehicleMTTypeCache;
+            _vehicleCache = vehicleCache;
             _outletCache = outletCache;
         }
 
@@ -171,9 +192,83 @@ namespace Clc.Web.Controllers
         }
 
         #region Vehicle
-        public ActionResult VehicleAddOil()
+        public ActionResult Oil(string code)
         {
+            if (string.IsNullOrEmpty(code))
+            {
+                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+            }
+
+            string workerCn = null;
+            try {
+                var accessToken = AccessTokenContainer.GetToken(_corpId, _secret);           
+                GetUserInfoResult userInfo = OAuth2Api.GetUserId(accessToken, code);
+                workerCn = userInfo.UserId;
+            }
+            catch {
+                Logger.Error("微信授权错误");
+            }               
+
+            if (workerCn == null) return Content("系统取不到你的微信标识号");
+
+            var worker = WorkManager.GetWorkerByCn(workerCn);
+            var depot = WorkManager.GetDepot(worker.DepotId);
+            var vm = new OilViewModel();
+            vm.WorkerId = worker.Id;
+
+            foreach (var v in _vehicleCache.GetList().FindAll(x => x.DepotId == depot.Id))
+                vm.Vehicles.Add(new ComboItemModel() { Id = v.Id, Name = v.Cn + v.License});
+            foreach (var v in _gasStationCache.GetList().FindAll(x => x.DepotList.Contains(depot.Name)))
+                vm.GasStations.Add(new ComboItemModel() { Id = v.Id, Name = v.Name});
+            foreach (var t in _oilTypeCache.GetList())
+                vm.OilTypes.Add(new ComboItemModel() { Id = t.Id, Name = t.Name});
+            
             return View();
+        }
+
+        public ActionResult VehicleMT(string code)
+        {
+            if (string.IsNullOrEmpty(code))
+            {
+                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+            }
+
+            string workerCn = null;
+            try {
+                var accessToken = AccessTokenContainer.GetToken(_corpId, _secret);           
+                GetUserInfoResult userInfo = OAuth2Api.GetUserId(accessToken, code);
+                workerCn = userInfo.UserId;
+            }
+            catch {
+                Logger.Error("微信授权错误");
+            }               
+
+            if (workerCn == null) return Content("系统取不到你的微信标识号");
+
+            var worker = WorkManager.GetWorkerByCn(workerCn);
+            var depot = WorkManager.GetDepot(worker.DepotId);
+            var vm = new OilViewModel();
+            vm.WorkerId = worker.Id;
+
+            foreach (var v in _vehicleCache.GetList().FindAll(x => x.DepotId == depot.Id))
+                vm.Vehicles.Add(new ComboItemModel() { Id = v.Id, Name = v.Cn + v.License});
+            foreach (var t in _vehicleMTTypeCache.GetList())
+                vm.OilTypes.Add(new ComboItemModel() { Id = t.Id, Name = t.Name});
+            
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult DoOil(OilViewModel vm)
+        {
+            _recordAppService.InsertOilRecord(vm.WorkerId, vm.VehicleId, vm.GasStationId, vm.OilTypeId, vm.Quantity, vm.Price, vm.Mileage, vm.Remark);
+            return Content("添加成功");
+        }
+
+        [HttpPost]
+        public ActionResult DoVehicle(VehicleMTViewModel vm)
+        {
+            return Content("添加成功");
         }
         #endregion
     }

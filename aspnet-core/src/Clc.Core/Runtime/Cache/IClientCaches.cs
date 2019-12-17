@@ -13,4 +13,8 @@ namespace Clc.Runtime.Cache
     public interface IBoxCache : IEntityListCache<Box, Box, Box>
     {
     }
+
+    public interface ICustomerTaskTypeCache : IEntityListCache<CustomerTaskType, CustomerTaskType, CustomerTaskType>
+    {
+    }
 }

@@ -10,6 +10,7 @@ using Clc.ArticleRecords;
 using Clc.Web.MessageHandlers;
 using Clc.BoxRecords;
 using Microsoft.AspNetCore.Http;
+using Clc.VehicleRecords;
 
 namespace Clc.Web.Controllers
 {
@@ -19,14 +20,17 @@ namespace Clc.Web.Controllers
         private readonly IWorkAppService _workAppService;
         private readonly IArticleRecordAppService _articleRecordAppService;
         private readonly IBoxRecordAppService _boxRecordAppService;
+        private readonly IVehicleRecordAppService _vehicleRecordAppService;
 
         public TodayController(IWorkAppService workAppService, 
             IArticleRecordAppService articleRecordAppService,
-            IBoxRecordAppService boxRecordAppService)
+            IBoxRecordAppService boxRecordAppService,
+            IVehicleRecordAppService vehicleRecordAppService)
         {
             _workAppService = workAppService;
             _articleRecordAppService = articleRecordAppService;
             _boxRecordAppService = boxRecordAppService;
+            _vehicleRecordAppService = vehicleRecordAppService;
         }
 
         public ActionResult Signins()
@@ -44,6 +48,11 @@ namespace Clc.Web.Controllers
         }
 
         public ActionResult TaskList()
+        {
+            return View();
+        }
+
+        public ActionResult VehicleList()
         {
             return View();
         }
@@ -97,6 +106,19 @@ namespace Clc.Web.Controllers
             }
         }
 
+        public async Task ReportVehicleTo()
+        {
+            var ret = _workAppService.GetReportToManagers();
+            if (string.IsNullOrEmpty(ret.Item2)) return;
+
+            var data = await _vehicleRecordAppService.GetReportData();
+            
+            string title = "";
+            string desc = string.Format("贵行的{0}于{1}入库");
+
+            WeixinUtils.SendTextCard("App04", ret.Item2, title, desc);
+        }
+
         [DontWrapResult]
         public async Task<JsonResult> GridData(DateTime carryoutDate)
         {
@@ -111,10 +133,24 @@ namespace Clc.Web.Controllers
             return Json(new { total = output.TotalCount, rows = output.Items });
         }
 
-        [DontWrapResult]
+         [DontWrapResult]
         public async Task<JsonResult> GridDataBox()
         {
             var output = await _boxRecordAppService.GetBoxesAsync(GetPagedInput());
+            return Json(new { total = output.TotalCount, rows = output.Items });
+        }
+
+        [DontWrapResult]
+        public async Task<JsonResult> GridDataOil()
+        {
+            var output = await _vehicleRecordAppService.GetOilRecordsAsync(GetPagedInput());
+            return Json(new { total = output.TotalCount, rows = output.Items });
+        }
+
+        [DontWrapResult]
+        public async Task<JsonResult> GridDataMT()
+        {
+            var output = await _vehicleRecordAppService.GetVehicleMTRecordsAsync(GetPagedInput());
             return Json(new { total = output.TotalCount, rows = output.Items });
         }
     }

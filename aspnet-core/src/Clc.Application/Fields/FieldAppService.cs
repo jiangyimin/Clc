@@ -27,17 +27,18 @@ namespace Clc.Fields
         private readonly IVehicleCache _vehicleCache;
         private readonly IPostCache _postCache;
         private readonly IWorkRoleCache _workRoleCache;
+        private readonly IGasStationCache _gasStationCache;
 
         private readonly IRepository<Worker> _workerRepository;
         private readonly IRepository<WorkerFile> _workerFileRepository;
         private readonly IRepository<Asset> _assetRepository;
-
         public FieldAppService(IDepotCache depotCache,
             IWorkplaceCache workplaceCache,
             IWorkerCache workerCache,
             IVehicleCache vehicleCache,
             IPostCache postCache,
             IWorkRoleCache workRoleCache,
+            IGasStationCache gasStationCache,
             IRepository<Worker> workerRepository, 
             IRepository<WorkerFile> workerFileRepository,
             IRepository<Asset> assetRepository)
@@ -48,6 +49,7 @@ namespace Clc.Fields
             _vehicleCache = vehicleCache;
             _postCache = postCache;
             _workRoleCache = workRoleCache;
+            _gasStationCache = gasStationCache;
             _workerRepository = workerRepository;
             _workerFileRepository = workerFileRepository;
             _assetRepository = assetRepository;
@@ -65,6 +67,10 @@ namespace Clc.Fields
                 case "DepotWithCn":
                     foreach (Depot t in _depotCache.GetList())
                         lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = string.Format("{0} {1}", t.Cn, t.Name) });
+                    break;
+                case "GasStation":
+                    foreach (GasStation t in _gasStationCache.GetList())
+                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
                     break;
                 default:
                     break;

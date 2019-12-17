@@ -1,0 +1,70 @@
+﻿@model Clc.Web.Models.Weixin.OilViewModel
+@{
+    ViewBag.Title = "加油";
+    Layout = "~/Views/Shared/_WeixinLayout.cshtml";
+}
+
+<form name="fm" class="weui-cells weui-cells_form" action ="/WwApp02/DoOil" method="post" onsubmit="onSubmit()">
+    @Html.ValidationSummary()
+    <input name="workerId" type="hidden" value="@Model.WorkerId">
+    <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell__hd"><label class="weui-label">车辆:</label></div>
+        <div class="weui-cell__bd">
+            <select class="weui-select" name="vehicleId">
+            @for (int i = 0; i < Model.Vehicles.Count; i++)
+            {
+                <option value="@Model.Vehicles[i].Id">@Model.Vehicles[i].Name</option>
+            }
+            </select>
+        </div>
+    </div>
+    <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell__hd"><label class="weui-label">加油点:</label></div>
+        <div class="weui-cell__bd">
+            <select class="weui-select" name="gasStationId">
+            @for (int i = 0; i < Model.GasStations.Count; i++)
+            {
+                <option value="@Model.GasStations[i].Id">@Model.GasStations[i].Name</option>
+            }
+            </select>
+        </div>
+    </div>
+    <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell__hd"><label class="weui-label">油品:</label></div>
+        <div class="weui-cell__bd">
+            <select class="weui-select" name="oilTypeId">
+            @for (int i = 0; i < Model.OilTypes.Count; i++)
+            {
+                <option value="@Model.OilTypes[i].Id">@Model.OilTypes[i].Name</option>
+            }
+            </select>
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label for="Quantity" class="weui-label">油量（升）:</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="quantity" type="number" step="0.01" placeholder="请输入油量" />
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label for="Price" class="weui-label">价格（元）:</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="price" type="number" step="0.01" placeholder="请输入价格" />
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label for="mileage" class="weui-label">里程（公里）:</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="mileage" type="number" placeholder="请输入里程" />
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label for="remark" class="weui-label">备注:</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="remark" type="text" />
+        </div>
+    </div>
+    <div class="weui-cell">
+        <input type="submit" value="确定" class="weui-btn weui-btn_primary" />
+    </div>
+</form>

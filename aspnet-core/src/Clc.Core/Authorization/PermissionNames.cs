@@ -25,7 +25,7 @@
         // 上面是总部权限（对应菜单夹），下面的是分部权限（对应菜单夹）
         // Captain 的菜单夹
         public const string Pages_Arrange = "Pages.Arrange";            // Captain-任务安排
-        public const string Pages_Statistic = "Pages.Statistic";        // Captain-统计和日结
+        public const string Pages_Statistic = "Pages.Statistic";        // Captain-查询与统计
         public const string Pages_Aux = "Page.Aux";                     // Captian（Aux）-辅助(含监看线路、物和箱)
 
         // PlaceA(物）的菜单夹

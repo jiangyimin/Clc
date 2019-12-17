@@ -27,13 +27,17 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             };
             CreateRoleAndUser(StaticRoleNames.Tenants.Admin, permissions, false, AbpUserBase.AdminUserName, User.DefaultPassword);
 
-            // Hrm RoleAndUser
+            // Hrm Role
             permissions = new string[] { PermissionNames.Pages_Hrm };
             CreateRole(StaticRoleNames.Tenants.Hrm, permissions, true);
 
-            // Hrq RoleAndUser
+            // Hrq Role
             permissions = new string[] { PermissionNames.Pages_Hrq };
             CreateRole(StaticRoleNames.Tenants.Hrq, permissions, true);
+
+            // Statistic Role
+            permissions = new string[] { PermissionNames.Pages_Statistic };
+            CreateRole(StaticRoleNames.Tenants.Statistic, permissions, true);
 
             //
             // Worker Roles

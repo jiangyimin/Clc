@@ -29,9 +29,10 @@
     </script>
 }
 
-<form class="weui-cells weui-cells_form" name="fm" method="post">
-    <input type="hidden" id="taskId" name="taskId" value="@Model.TaskId"/>
+<form action ="/WwApp02/Oil" method="post" onsubmit="checkSubmit()">
     @Html.ValidationSummary()
+    <div class="weui-cells__title" style="margin-bottom:10px">填写内容</div>
+    <div  class="weui-cells">
     <div class="weui-cell" style="margin-bottom:5px">
         <div class="weui-cell__hd"><label for="OutletCn" class="weui-label">网点编号:</label></div>
         <div class="weui-cell__bd">

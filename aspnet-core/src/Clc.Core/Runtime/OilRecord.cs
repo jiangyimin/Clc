@@ -41,7 +41,7 @@ namespace Clc.Runtime
         public int OilTypeId { get; set; }
         public OilType OilType { get; set; }
 
-        public double OilQuantity { get; set; }
+        public double Quantity { get; set; }
         public double Price { get; set; }
 
         public double Mileage { get; set; }

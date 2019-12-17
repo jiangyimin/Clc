@@ -20,5 +20,11 @@ namespace Clc.Runtime.Cache
 
     public interface IWorkRoleCache : IEntityListCache<WorkRole, WorkRole, WorkRole>
     {
-    }   
+    }
+    public interface IOilTypeCache : IEntityListCache<OilType, OilType, OilType>
+    {
+    }
+    public interface IVehicleMTTypeCache : IEntityListCache<VehicleMTType, VehicleMTType, VehicleMTType>
+    {
+    }
 }

@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
-using Clc.Affairs;
 using Clc.Fields;
 using Clc.Routes;
 

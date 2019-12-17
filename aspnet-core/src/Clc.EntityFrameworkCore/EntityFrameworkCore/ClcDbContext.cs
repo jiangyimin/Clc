@@ -40,6 +40,7 @@ namespace Clc.EntityFrameworkCore
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Outlet> Outlets { get; set; }
         public DbSet<Box> Boxes { get; set; }
+        // public DbSet<CustomerTaskType> CustomerTaskTypes { get; set; }
 
         // Runtimes        
         public DbSet<Signin> Signins { get; set; }
@@ -146,6 +147,11 @@ namespace Clc.EntityFrameworkCore
             {
                 b.HasIndex(e => new { e.TenantId, e.Cn}).IsUnique();
             });
+
+            //modelBuilder.Entity<CustomerTaskType>(b =>
+            //{
+            //    b.HasIndex(e => new { e.CustomerId, e.TaskTypeId, e.DepotId}).IsUnique();
+            //});
 
             // Works
             modelBuilder.Entity<Signin>(b =>

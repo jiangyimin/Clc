@@ -5,12 +5,10 @@
 @section workScripts
 {
     <environment names="Development">
-        <script src="~/js/finput.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/BoxWork/InBox.js" asp-append-version="true"></script>
     </environment>
 
     <environment names="Staging,Production">
-        <script src="~/js/finput.min.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/BoxWork/InBox.min.js" asp-append-version="true"></script>
     </environment>
 }
@@ -18,15 +16,6 @@
 @section funcScripts
 {
     <script type="text/javascript">
-        finput.matchWorker = function(rfid) {
-            abp.services.app.work.matchWorkerForInBox(work.dd, work.myWork.affairId, rfid).done(function(ret) {
-                if (ret.message != null) {
-                    abp.notify.error(ret.message);
-                    return;
-                }
-                finput.showWorker(ret);
-            });
-        };
 
         finput.boxScanned = function(rfid) {
             abp.services.app.work.matchInBox(work.dd, work.myWork.affairId, finput.route.id, rfid).done(function(ret) {

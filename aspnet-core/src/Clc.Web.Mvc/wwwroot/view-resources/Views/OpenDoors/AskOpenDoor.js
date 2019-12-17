@@ -74,12 +74,17 @@
         $('#tbCamera').children('a[name="close"]').click(function (e) {
             stopplay();
         });
-    
+        
+        // 定时器
+        setInterval(function() {
+            if (status == '') $('#dg').datagrid('reload');
+        }, 30000);
+
         // register event
         window.parent.abp.event.on('askOpenDoor', function () {
             // alert('on ask');
             $("#sounds")[0].play();
-            $('#dg').datagrid('reload');
+            if (status == '') $('#dg').datagrid('reload');
         });
 
         $('#dlgConfirm').dialog({

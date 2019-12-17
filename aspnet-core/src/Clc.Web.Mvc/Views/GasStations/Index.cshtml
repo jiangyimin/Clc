@@ -1,0 +1,73 @@
+﻿@using Clc.Fields
+@{
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+}
+
+@section customScript
+{
+    <script type="text/javascript">
+        crud.dgDefault.name = 'GasStations';
+        crud.dgDefault.sortName = 'cn';
+        // crud.dgDefault.title = abp.setting.get('VI.DepotTitleName');
+        crud.dgDefault.columns = [[
+            { field: "cn", title: "编号", width: 100 },
+            { field: "name", title: "名称", width: 100 },
+            { field: "depotList", title: "允许大队列表", width: 150 },
+            { field: "longitude", title: "经度", width: 120 },
+            { field: "latitude", title: "纬度", width: 120 },
+            { field: "remark", title: "备注", width: 100 },
+        ]];
+    </script>
+}
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 450px; padding: 10px;">
+    <form id="fm" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl">
+            <input id="id" name="id" type="hidden">
+            <tr>
+                <th><label for="cn">编号：</label></th>
+                <td><input name="cn" class="easyui-textbox" data-options="required:true, validType:'length[2, @GasStation.MaxCnLength]'" style="width: 100%"></td>
+            </tr>
+                <th><label for="name">名称：</label></th>
+                <td><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[2, @GasStation.MaxNameLength]'" style="width: 100%"></td>
+            </tr>
+            </tr>
+                <th><label for="depotList">允许大队列表：</label></th>
+                <td><input name="depotList" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
+             <tr>
+                <th><label for="longitude">经度：</label></th>
+                <td><input name="longitude" class="easyui-numberbox" data-options="precision:6" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="latitude">纬度：</label></th>
+                <td><input name="latitude" class="easyui-numberbox" data-options="precision:6" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="radius">签到半径(米)：</label></th>
+                <td><input name="radius" class="easyui-numberbox" style="width: 100%"></td>
+            </tr>
+            </tr>
+                <th><label for="unlockScreenPassword">解屏密码：</label></th>
+                <td><input name="unlockScreenPassword" class="easyui-textbox" data-options="validType:'length[2, @Depot.MaxPasswordLength]'" style="width: 100%"></td>
+            </tr>
+            </tr>
+                <th><label for="remark">备注：</label></th>
+                <td><input name="remark" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="activeRouteNeedCheckin">激活线路先签到: </label></th>
+                <td><input name="activeRouteNeedCheckin" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
+            </tr>
+            <tr>
+                <th><label for="allowCardWhenCheckin">验入允许刷卡: </label></th>
+                <td><input name="allowCardWhenCheckin" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
+            </tr>
+            <tr>
+                <th><label for="localUnlockScreen">本地解屏: </label></th>
+                <td><input name="localUnlockScreen" class="easyui-switchbutton" data-options="height:24,onText:'是',offText:'否'"></td>
+            </tr>
+        </table>
+    </form>
+</div>

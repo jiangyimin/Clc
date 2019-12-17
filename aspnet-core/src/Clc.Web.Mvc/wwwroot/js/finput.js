@@ -84,7 +84,7 @@ var finput = finput || {};
             }
         }
     }
-    finput.matchWorker = function () { alert("请用鼠标点一下此页面！") }
+    finput.matchWorker = function () { alert("请用鼠标点一下此页面的刷新按钮！") }
 
     finput.onMatchWorker = function (ret) {
         finput.route = ret.routeMatched;

@@ -10,6 +10,12 @@
                 })
             });
             reload();
+
+            $('#dg').datagrid({
+                onSelect: function(index, row) {
+                    $('#remark').textbox('setValue', row.remark);
+                }
+            }
         });
 
         function reload() {
@@ -30,11 +36,10 @@
                 return;
             }
 
-            var price = $('#price').val();
-            // alert(row.id);
-            if (price == null) return;
+            var remark = $('#remark').val();
+            if (remark == null) return;
 
-            abp.services.app.route.updateTaskPrice(row.id, price).done(function() {
+            abp.services.app.route.updateTaskRemark(row.id, remark).done(function() {
                 reload();
             })
         }
@@ -58,9 +63,9 @@
     <div data-options="region:'center', border:false">
         <div id="tb">
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="reload()">刷新</a>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价格:
-            <input id="price" class="easyui-numberbox" style="width:80px;">
-            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="update()">修改价格</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注:
+            <input id="remark" class="easyui-textbox" style="width:250px;">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="update()">修改备注信息</a>
             <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发送到:
             <input id="toLeader" class="easyui-combobox" style="width:120px;"> -->
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="reportTo()">报送</a>

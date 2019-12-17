@@ -16,6 +16,8 @@ namespace Clc.Types
         private readonly ITaskTypeCache _taskTypeCache;
         private readonly IWorkRoleCache _workRoleCache;
         private readonly IWorkplaceCache _workplaceCache;
+        private readonly IOilTypeCache _oilTypeCache;
+        private readonly IVehicleMTTypeCache _vehicleMTTypeCache;
 
         private readonly List<string>　_askOpenStyleItems = new List<string>() {"直接", "验证", "线路"};
         private readonly List<string> _bindStyleItems = new List<string>() {"人", "车", "线路" };
@@ -35,7 +37,9 @@ namespace Clc.Types
             IRouteTypeCache routeTypeCache,
             ITaskTypeCache taskTypeCache,
             IWorkRoleCache workRoleCache,
-            IWorkplaceCache workplaceCache)
+            IWorkplaceCache workplaceCache,
+            IOilTypeCache oilTypeCache,
+            IVehicleMTTypeCache vehicleMTTypeCache)
         {
             _dutyProvider = dutyProvider;
             _articleTypeCache = articleTypeCache;
@@ -44,8 +48,9 @@ namespace Clc.Types
             _taskTypeCache = taskTypeCache;
             _workRoleCache = workRoleCache;
             _workplaceCache = workplaceCache;
+            _oilTypeCache = oilTypeCache;
+            _vehicleMTTypeCache = vehicleMTTypeCache;
         }
-
        
         public Task<List<ComboboxItemDto>> GetDutyCategories()
         {
@@ -76,6 +81,10 @@ namespace Clc.Types
                     break;
                 case "TaskType":
                     foreach (TaskType t in _taskTypeCache.GetList())
+                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
+                    break;
+                 case "TaskTypeFee":
+                    foreach (TaskType t in _taskTypeCache.GetList().FindAll(x => x.isTemporary == true))
                         lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
                     break;
                 case "WorkRole":
@@ -121,6 +130,14 @@ namespace Clc.Types
                 case "Category":
                     foreach (string t in _categoryItems)
                         lst.Add(new ComboboxItemDto { Value = t, DisplayText = t });
+                    break;
+                case "OilType":
+                    foreach (var t in _oilTypeCache.GetList())
+                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
+                    break;
+                case "VehicleMTType":
+                    foreach (var t in _vehicleMTTypeCache.GetList())
+                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
                     break;
                 default:
                     break;

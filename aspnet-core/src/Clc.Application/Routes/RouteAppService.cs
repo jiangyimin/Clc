@@ -3,23 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq;
 using Clc.Routes.Dto;
-using Clc.Authorization;
 using Clc.PreRoutes;
 using Clc.Runtime.Cache;
 using Clc.Works;
 using Clc.Runtime;
 using Clc.Types;
-using Clc.Configuration;
 using Clc.Extensions;
 
 namespace Clc.Routes
 {
-    // [AbpAllowAnonymous]
     [AbpAuthorize]
     public class RouteAppService : ClcAppServiceBase, IRouteAppService
     {
@@ -333,10 +329,19 @@ namespace Clc.Routes
             return ObjectMapper.Map<RouteTaskDto>(entity);
         }
 
+        public async Task<RouteTaskDto> UpdateTaskRemark(int id, string remark)
+        {
+            var entity = await _taskRepository.GetAsync(id);
+            entity.Remark = remark;
+            await _taskRepository.UpdateAsync(entity);
+            CurrentUnitOfWork.SaveChanges();
+            return ObjectMapper.Map<RouteTaskDto>(entity);
+        }
+
         public async Task<RouteTaskDto> UpdateTaskPrice(int id, int price)
         {
             var entity = await _taskRepository.GetAsync(id);
-            entity.Price = price;
+            entity.Price = (float)price;
             await _taskRepository.UpdateAsync(entity);
             CurrentUnitOfWork.SaveChanges();
             return ObjectMapper.Map<RouteTaskDto>(entity);

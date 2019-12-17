@@ -31,6 +31,7 @@ namespace Clc.Works
         (string, string) GetReportToManagers();
 
         TaskReportDto GetTaskReportData(); 
+        Task<List<TemporaryTaskDto>> GetFeeTasks(DateTime dt, string sorting);
 
         #region Agent / Workers
         string GetAgentString();

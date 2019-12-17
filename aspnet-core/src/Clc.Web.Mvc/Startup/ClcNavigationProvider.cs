@@ -35,6 +35,8 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Type_RouteTypes", new FixedLocalizableString("线路类型"), url: "RouteTypes"))
                     .AddItem(new MenuItemDefinition("Type_TaskTypes", new FixedLocalizableString("押运任务类型"), url: "TaskTypes"))
                     .AddItem(new MenuItemDefinition("Type_WorkRoles", new FixedLocalizableString("工作角色"), url: "WorkRoles"))
+                    .AddItem(new MenuItemDefinition("Type_OilTypes", new FixedLocalizableString("油品"), url: "OilTypes"))
+                    .AddItem(new MenuItemDefinition("Type_VehicleMTTypes", new FixedLocalizableString("车辆维护类型"), url: "VehicleMTTypes"))
                // Fields
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Fields, new FixedLocalizableString("场地及资源"), icon: "fa fa-globe", requiredPermissionName: PermissionNames.Pages_Fields)
                     .AddItem(new MenuItemDefinition("Field_Depots", new FixedLocalizableString("运行中心"), url: "Depots"))
@@ -43,9 +45,11 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Field_Vehicles", new FixedLocalizableString("车辆"), url: "Vehicles"))
                     .AddItem(new MenuItemDefinition("Field_Articles", new FixedLocalizableString("物品"), url: "Articles"))
                     .AddItem(new MenuItemDefinition("Field_ArticleTypeBinds", new FixedLocalizableString("物品类型绑定"), url: "ArticleTypeBinds"))
+                    .AddItem(new MenuItemDefinition("Field_GasStations", new FixedLocalizableString("加油点"), url: "GasStations"))
                 // Clients
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Clients, new FixedLocalizableString("客户"), icon: "fa fa-th-large", requiredPermissionName: PermissionNames.Pages_Clients)
                     .AddItem(new MenuItemDefinition("Client_Customers", new FixedLocalizableString("客户"), url: "Customers"))
+                    .AddItem(new MenuItemDefinition("Client_CustomerTaskTypes", new FixedLocalizableString("客户之任务类型"), url: "CustomerTaskTypes"))
                     .AddItem(new MenuItemDefinition("Client_Outlets", new FixedLocalizableString("网点"), url: "Outlets"))
                     .AddItem(new MenuItemDefinition("Client_Boxes", new FixedLocalizableString("尾箱"), url: "Boxes"))
                 // Hrm
@@ -55,6 +59,10 @@ namespace Clc.Web.Startup
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Hrq, new FixedLocalizableString("档案查看"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Hrq)
                     .AddItem(new MenuItemDefinition("Hrq_WorkerFiles", new FixedLocalizableString("查询人员档案"), url: "WorkerFiles/Hrq"))
                     .AddItem(new MenuItemDefinition("Hrq_Documents", new FixedLocalizableString("查询固定资产"), url: "Assets/Hrq"))
+                // Statistic
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
+                    .AddItem(new MenuItemDefinition("Check_Task", new FixedLocalizableString("收费中调核对"), url: "Statistic/CheckTask"))
+                    .AddItem(new MenuItemDefinition("Statistic_Task", new FixedLocalizableString("收费中调统计"), url: "WorkerFiles/Hrq"))
                                
                 // Arrange
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("工作安排"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
@@ -69,11 +77,11 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Arrange_Article", new FixedLocalizableString("物品"), url: "Today/ArticleList"))
                     .AddItem(new MenuItemDefinition("Arrange_Route", new FixedLocalizableString("线路"), url: "Today/TaskList"))
                     //.AddItem(new MenuItemDefinition("Arrange_Box", new FixedLocalizableString("尾箱"), url: "Today/BoxList"))
-                    //.AddItem(new MenuItemDefinition("Arrange_Vehicle", new FixedLocalizableString("车辆"), url: "Today/VehicleList"))
+                    .AddItem(new MenuItemDefinition("Arrange_Vehicle", new FixedLocalizableString("车辆"), url: "Today/VehicleList"))
                     .AddItem(new MenuItemDefinition("Arrange_Issue", new FixedLocalizableString("大事记录"), url: "Issue"))
                 
-                // Statistic and QUery
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
+                // Query and Statistic
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Query, new FixedLocalizableString("统计查询"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Query)
                     //.AddItem(new MenuItemDefinition("Statistic_Worker", new FixedLocalizableString("人"), url: "Checkin/Home"))
                     //.AddItem(new MenuItemDefinition("Statistic_Vehicle", new FixedLocalizableString("车"), url: "Monitor/AskOpenDoor"))
                     //.AddItem(new MenuItemDefinition("Statistic_RouteTask", new FixedLocalizableString("押运任务费用"), url: "Routes/EmergOpenDoor"))

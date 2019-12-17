@@ -21,6 +21,7 @@ namespace Clc.Works.Dto
     [AutoMap(typeof(RouteTask))]
     public class TemporaryTaskDto : EntityDto
     {
+        public string RouteDepotName { get; set; }
         public string RouteRouteName { get; set; }
 
         public string OutletCustomerName { get; set; }

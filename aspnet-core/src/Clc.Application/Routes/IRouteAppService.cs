@@ -36,6 +36,7 @@ namespace Clc.Routes
         Task<RouteTaskDto> InsertTask(RouteTaskDto input);
         Task<RouteTaskDto> UpdateTask(RouteTaskDto input);
 
+        Task<RouteTaskDto> UpdateTaskRemark(int id, string remark);
         Task<RouteTaskDto> UpdateTaskPrice(int id, int price);
 
         Task DeleteTask(int id);

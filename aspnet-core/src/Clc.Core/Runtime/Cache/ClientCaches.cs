@@ -27,4 +27,13 @@ namespace Clc.Runtime.Cache
         {
         }
     }
+
+    public class CustomerTaskTypeCache : EntityListCache<CustomerTaskType, CustomerTaskType, CustomerTaskType>, ICustomerTaskTypeCache, ITransientDependency
+    {
+        public CustomerTaskTypeCache(ICacheManager cacheManager, IRepository<CustomerTaskType> repository, IObjectMapper objectMapper)
+            : base(cacheManager, repository, objectMapper)
+        {
+        }
+    }
+
 }

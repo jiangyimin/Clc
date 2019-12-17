@@ -11,7 +11,7 @@ namespace Clc.Types
     public class OilType : Entity, IMustHaveTenant
     {
         public const int MaxCnLength = 1;
-        public const int MaxNameLength = 8;
+        public const int MaxNameLength = 20;
 
  
         // Implement of IMustHaveTenant
