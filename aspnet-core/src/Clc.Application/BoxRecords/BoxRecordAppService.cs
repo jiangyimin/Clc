@@ -114,7 +114,7 @@ namespace Clc.BoxRecords
         public async Task<List<BoxRecordSearchDto>> SearchByDay(DateTime theDay)
         {
             var query = _recordRepository.GetAllIncluding(x => x.Box)
-                .Where(x => x.InTime.Date == theDay);
+                .Where(x => x.InTime.Value.Date == theDay);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return  entities.Select(MapToSearchDto).ToList(); 
@@ -123,7 +123,7 @@ namespace Clc.BoxRecords
         public async Task<List<BoxRecordSearchDto>> SearchByBoxId(int boxId, DateTime begin, DateTime end)
         {
             var query = _recordRepository.GetAllIncluding(x => x.Box)
-                .Where(x => x.BoxId == boxId && x.InTime.Date >= begin && x.InTime.Date <= end);
+                .Where(x => x.BoxId == boxId && x.InTime.Value.Date >= begin && x.InTime.Value.Date <= end);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return  entities.Select(MapToSearchDto).ToList(); 
@@ -132,12 +132,12 @@ namespace Clc.BoxRecords
         public async Task<List<BoxReportDto>> GetReportData()
         {
             var query = _boxRepository.GetAllIncluding(x => x.Outlet, x => x.BoxRecord)
-                .Where(x => x.BoxRecord != null && x.BoxRecord.InTime.Date == DateTime.Now.Date)
+                .Where(x => x.BoxRecord != null && x.BoxRecord.InTime.Value.Date == DateTime.Now.Date)
                 .Select( x => new BoxReportDto {
                     OutletName = x.Outlet.Name, 
                     ToUser = x.Outlet.Weixins,
                     BoxName = x.Name,
-                    InTime = x.BoxRecord.InTime.ToString("yyyy/MM/dd HH:mm")
+                    InTime = x.BoxRecord.InTime.Value.ToString("yyyy/MM/dd HH:mm")
                 });
             return await AsyncQueryableExecuter.ToListAsync(query);            
         }
@@ -152,7 +152,7 @@ namespace Clc.BoxRecords
             if (record == null) return dto;
 
         
-            string l = $"入库时间：{record.InTime.ToString("yyyy-MM-dd HH:mm")} ";
+            string l = $"入库时间：{record.InTime.Value.ToString("yyyy-MM-dd HH:mm")} ";
             string r = record.OutTime.HasValue ? $"【出库时间：{record.OutTime.Value.ToString("yyyy-MM-dd HH:mm")}】" : "【未出库】";
             dto.BoxRecordInfo = l + r;
             return dto;
@@ -163,7 +163,7 @@ namespace Clc.BoxRecords
             var dto = new BoxRecordSearchDto();
             dto.Box = record.Box.Name;
             // dto.Worker = worker.Cn + ' ' + worker.Name;
-            dto.InTime = record.InTime.ToString("yyyy-MM-dd HH:mm:ss");
+            dto.InTime = record.InTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
             dto.OutTime = record.OutTime.HasValue ? record.OutTime.Value.ToString("yyyy-MM-dd HH:mm:ss") : null;
             dto.InWorkers = record.InWorkers;
             dto.OutWorkers = record.OutWorkers;

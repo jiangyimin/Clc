@@ -61,6 +61,20 @@ namespace Clc.Web.Controllers
         }
 
         [DontWrapResult]
+        public async Task<JsonResult> GridDataInBox(int id)
+        {
+            var output = await _routeAppService.GetTaskInBoxes(id, GetSorting());
+            return Json( new { rows = output });
+        }
+
+        [DontWrapResult]
+        public async Task<JsonResult> GridDataOutBox(int id)
+        {
+            var output = await _routeAppService.GetTaskOutBoxes(id, GetSorting());
+            return Json( new { rows = output });
+        }
+
+        [DontWrapResult]
         public async Task<JsonResult> GridDataBox(bool isReturn)
         {
             var output = await _recordAppService.GetBoxesAsync(GetPagedInput());

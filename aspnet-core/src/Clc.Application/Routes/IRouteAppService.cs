@@ -33,6 +33,8 @@ namespace Clc.Routes
         Task DeleteWorker(int id);
 
         Task<List<RouteTaskDto>> GetRouteTasks(int id, string sorting);
+        Task<List<TaskInBoxDto>> GetTaskInBoxes(int id, string sorting);
+        Task<List<TaskOutBoxDto>> GetTaskOutBoxes(int id, string sorting);
         Task<RouteTaskDto> InsertTask(RouteTaskDto input);
         Task<RouteTaskDto> UpdateTask(RouteTaskDto input);
 
@@ -43,8 +45,6 @@ namespace Clc.Routes
 
         Task<List<RouteEventDto>> GetRouteEvents(int id);
         Task<List<RouteArticleDto>> GetRouteArticles(int id, string sorting);
-        Task<List<RouteInBoxDto>> GetRouteInBoxes(int id, string sorting);
-        Task<List<RouteOutBoxDto>> GetRouteOutBoxes(int id, string sorting);
         #endregion
 
         (Route, int) FindRouteForIdentify(int depotId, int workerId);

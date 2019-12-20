@@ -6,6 +6,7 @@ using Clc.Authorization;
 using Clc.Controllers;
 using Clc.PreRoutes;
 using System.Threading.Tasks;
+using Clc.Fields;
 
 namespace Clc.Web.Controllers
 {
@@ -13,13 +14,20 @@ namespace Clc.Web.Controllers
     public class PreRoutesController : ClcControllerBase
     {
         private readonly IPreRouteAppService _preRouteAppService;
+        private readonly IFieldAppService _fieldAppService;
 
-        public PreRoutesController(IPreRouteAppService preRouteAppService)
+        public PreRoutesController(IPreRouteAppService preRouteAppService, IFieldAppService fieldAppService)
         {
             _preRouteAppService = preRouteAppService;
+            _fieldAppService = fieldAppService;
        }
 
         public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult VehicleWorkers()
         {
             return View();
         }
@@ -44,6 +52,22 @@ namespace Clc.Web.Controllers
         {
             var output = await _preRouteAppService.GetPreRouteTasks(id, GetSorting());
             return Json( new { rows = output });
-         }
+        }
+
+        [DontWrapResult]
+        public JsonResult GridDataVehicle()
+        {
+            var output = _fieldAppService.GetVehicleListItems();
+            return Json( new { rows = output });
+        }
+
+    
+        [DontWrapResult]
+        public async Task<JsonResult> GridDataVehicleWorker(int id)
+        {
+            var sorting = GetSorting();
+            var output = await _preRouteAppService.GetPreVehicleWorkers(id, GetSorting());
+            return Json( new { rows = output });
+        }
     }
 }

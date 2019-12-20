@@ -35,7 +35,6 @@ namespace Clc.Routes
 
         public BoxRecord BoxRecord { get; set; }
 
-        // public DateTime? PickupTime { get; set; }
     }
 }
 

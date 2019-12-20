@@ -1,6 +1,36 @@
 ﻿@section scripts
 {
-    <script type="text/javascript"> 
+    <script type="text/javascript">
+        $(function() {
+            abp.services.app.work.getToday().done(function (today) {
+                $('#dd').datebox('setValue', today);
+                $('#ddEnd').datebox('setValue', today);
+            });
+
+            abp.services.app.field.getComboItems('Depot').done(function (data) {
+                $('#depot').combobox({ data: data, valueField: 'value', textField: 'displayText' })
+            });
+
+            abp.services.app.client.getComboItems('Customer').done(function (data) {
+                $('#customer').combobox({ data: data, valueField: 'value', textField: 'displayText' })
+            });
+
+            $('#dd').datebox({
+                onChange: function() {
+                    $('#dg').datagrid({
+                        url: 'GridDataTask?Dt=' + $('#dd').datebox('getValue')
+                    });
+                }
+            });
+        })
+
+        function searchTasks() {
+            $('#dg').datagrid({
+                url: 'SearchTasks',
+                queryParams: $('#fmSearch').serializeFormToObject()
+            });           
+        }
+
         function update() {
             var row = $('#dg').datagrid('getSelected');
             if (row == null) {
@@ -12,34 +42,40 @@
             if (price == null) return;
 
             abp.services.app.route.updateTaskPrice(row.id, price).done(function() {
-                reload();
+                $('#dg').datagrid('reload');
             })
         }
 
         function caculate() {
-
+            abp.services.app.work.caculateTasksPrice($('#dd').datebox('getValue')).done(function() {
+                $('#dg').datagrid('reload');
+            });
         }
     </script>
 }
 
 <div class="easyui-layout" fit="true">
-    <div data-options="region:'north'" style="height:70px">
-        <div id="summary" class="easyui-panel" style="background:#f3eeaf;height:100%">
-        </div>
-    </div>
     <div data-options="region:'center', border:false">
         <div id="tb">
-            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+            <form id="fmSearch">
+                开始日期: <input id="dd" name="start" class="easyui-datebox" style="width:120px">
+                结束日期: <input id="ddEnd" name="end" class="easyui-datebox" style="width:120px">
+                大队: <input id="depot" name="depotId" class="easyui-combobox" style="width:120px">
+                客户: <input id="customer" name="customerId" class="easyui-combobox" style="width:120px">
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="searchTasks()">查询</a>
+            </form>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价格:
-            <input id="price" class="easyui-numberbox" style="width:250px;">
+            <input id="price" class="easyui-numberbox" style="width:100px;">
             <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" onclick="update()">修改价格</a>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="caculate()">计算价格</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="$.toExcel('#dg', '费用清单')">导出到Excel</a>
         </div>
-        <table id="dg" class="easyui-datagrid" toolbar="#tb"
+        <table id="dg" class="easyui-datagrid" toolbar="#tb" sortName='id'
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true">
             <thead>
                 <tr>
-                    <th field="outletCustomerName" width="80" sortable="true">大队</th>
+                    <th field="routeCarryoutDate" width="80" sortable="true" formatter="$.dateFormatter">日期</th>
+                    <th field="routeDepotName" width="80" sortable="true">大队</th>
                     <th field="outletCustomerName" width="80" sortable="true">所属</th>
                     <th field="outlet" width="160" formatter="$.outletFormatter">网点</th>
                     <th field="taskTypeName" width="70">任务类型</th>
@@ -48,7 +84,6 @@
                     <th field="routeRouteName" width="100">线路名称</th>
                     <th field="remark" width="100">任务备注</th>
                     <th field="price" width="80" align="center">费用</th>
-                    <th field="taskTypeBasicPrice" width="80" align="center">缺省基价</th>
                 </tr>
             </thead>
         </table>

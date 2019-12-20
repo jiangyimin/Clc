@@ -1,73 +1,32 @@
-﻿@{
-    Layout = "~/Views/Shared/_WorkLayout.cshtml";
-}
-
-@section workScripts
+﻿@section Scripts
 {
     <environment names="Development">
+        <script src="~/js/work.js" asp-append-version="true"></script>
+        <script src="~/js/finput.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/BoxWork/InBox.js" asp-append-version="true"></script>
     </environment>
 
     <environment names="Staging,Production">
+        <script src="~/js/work.min.js" asp-append-version="true"></script>
+        <script src="~/js/finput.min.js" asp-append-version="true"></script>
         <script src="~/view-resources/Views/BoxWork/InBox.min.js" asp-append-version="true"></script>
     </environment>
 }
 
-@section funcScripts
-{
-    <script type="text/javascript">
-
-        finput.boxScanned = function(rfid) {
-            abp.services.app.work.matchInBox(work.dd, work.myWork.affairId, finput.route.id, rfid).done(function(ret) {
-                if (ret.item1 != '') {
-                    abp.notify.error(ret.item1);
-                    return;
-                };
-                var b = ret.item2;
-                if (finput.isInBoxes(b.boxId)) {
-                    abp.notify.warn('此尾箱已扫描');
-                    return;
-                };
-
-                // alert(b.boxId);
-                abp.services.app.boxRecord.getBoxStatus(b.boxId).done(function (status) {
-                    if (status != null) abp.notify.warn(status);
-                    finput.boxes.push(b);
-                    $('#dl').datalist('loadData', finput.boxes);
-                });
-            });
-        }
-
-        finput.onWorkerConfirm = function() {
-            if (finput.boxes.length == 0) {
-                abp.notify.warn('未入库任何尾箱')
-                return;
-            }
-
-            // alert(finput.boxes.length);
-            abp.services.app.boxRecord.in(finput.route.id, finput.boxes, work.myWork.workers).done(function(count) {
-                abp.notify.info(finput.worker.name+'入库了'+count+'个尾箱');
-                $('#dlg').dialog('close');
-            });
-        }
-    </script>
-}
-
 <div class="easyui-layout" fit="true">
-    <div data-options="region:'north', split:true, border:false" style="min-height:120px; height:70%">
+    <div data-options="region:'north', split:true, border:false" style="min-height:120px; height:55%">
         <div id="tb">
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
-            &nbsp;全部&nbsp;<input id="all" class="easyui-checkbox">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="workers"></span>
         </div>
-        <table id="dg" title="线路列表" class="easyui-datagrid" toolbar="#tb"
+        <table id="dg" class="easyui-datagrid" toolbar="#tb"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">
             <thead>
                 <tr>
                     <th field="startTime" width="60" sortabl="true">出发时间</th>
                     <th field="endTime" width="60">返回时间</th>
-                    <th field="vehicle" width="80" formatter="work.vehicleFormatter">车辆</th>
+                    <th field="vehicle" width="80" formatter="$.vehicleFormatter">车辆</th>
+                    <th field="altVehicle" width="80" formatter="$.altVehicleFormatter">替用车辆</th>
                     <th field="routeName" width="60" sortable="true">线路名称</th>
                     <th field="status" width="60" align="center">状态</th>
                     <th field="remark" width="100" align="center">备注</th>
@@ -76,33 +35,39 @@
         </table>
     </div>
     <div data-options="region:'center'">
-        <table id="dgTask" class="easyui-datagrid"
-                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="arriveTime">
-            <thead>
-                <tr>
-                    <th field="arriveTime" width="80">到达时间</th>
-                    <th field="outlet" width="120" formatter="work.outletFormatter">网点</th>
-                    <th field="taskTypeName" width="60">任务类型</th>
-                    <th field="inBoxList" width="250">入箱清单</th>
-                 </tr>
-            </thead>
-        </table>
-    </div>
-</div>
-
-@*弹窗*@
-<div id="dlg" class="easyui-dialog" title="入箱" closed="true" modal="true" align="center" style="height: 600px; width: 850px;">
-    <div class="easyui-layout" fit="true">
-        <div data-options="region:'west', border:true" style="width:250px">
-            <!-- <div style="font-size:48px; align: 'center'; backgroud-color: darkslategray; color: white"> -->
-                <p id="routeName" class="route"></p>
-                <p id="vehicle" class="route"></p>
-            <!-- </div> -->
-            <img id="photo" alt="照片" src="" style="margin-left:20px; width:200px; height:220px;" />
-            <p id="worker" class="worker"></p>
-        </div>
-        <div data-options="region:'center'" style="border:3px solid #ccc; padding:10px">
-            <div id="dl" class="esayui-datalist" fit="true" rownumbers="true" fitColumns="true" striped="true">
+        <div class="easyui-layout" fit="true">
+            <div data-options="region:'west', split:true, border:false" style="width:50%">
+                <div id="tbTask">
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dgTask').datagrid('reload')">刷新</a>
+                </div>
+                <table id="dgTask" class="easyui-datagrid" toolbar="#tbTask"
+                        fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="arriveTime">
+                    <thead>
+                        <tr>
+                            <th field="arriveTime" width="80">到达时间</th>
+                            <th field="outlet" width="140" formatter="$.outletFormatter">网点</th>
+                            <th field="taskTypeName" width="60">任务类型</th>
+                            <th field="inBoxNum" width="60">入箱数量</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div data-options="region:'center'">
+                <div id="tbBox">
+                    <input id="boxId" class="easyui-combobox" style="width:120px">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addBox()">加入本网点尾箱</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="selectBox()">选择其他网点尾箱</a>
+                </div>
+                <table id="dgBox" class="easyui-datagrid" toolbar="#tbBox"
+                        fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="id">
+                    <thead>
+                        <tr>
+                            <th field="boxRecordBoxCn" width="80">箱号</th>
+                            <th field="boxRecordBoxOutletName" width="120">来自网点</th>
+                            <th field="boxRecordPickupTime" width="120" formatter="$.timeFormatter">收箱时间</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>

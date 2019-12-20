@@ -35,7 +35,7 @@ namespace Clc.VehicleRecords
         {
             int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
             
-            var query = _oilRecordRepository.GetAllIncluding(x => x.Vehicle, x => x.GasStation, x => x.OilType)
+            var query = _oilRecordRepository.GetAllIncluding(x => x.CreateWorker, x => x.Vehicle, x => x.GasStation, x => x.OilType, x => x.ProcessWorker)
                 .Where(x => x.Vehicle.DepotId == depotId);
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
             if (!string.IsNullOrWhiteSpace(input.Sorting))
@@ -52,14 +52,40 @@ namespace Clc.VehicleRecords
 
         public async Task<VehicleReportDto> GetReportData() 
         {
-            return null;
+            int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
+            var query = _oilRecordRepository.GetAllIncluding(x => x.Vehicle)
+                .Where(x => x.CreateTime.Date == DateTime.Now.Date && x.Vehicle.DepotId == depotId)
+                .GroupBy( x => x.Vehicle.DepotId )
+                .Select( p => new VehicleReportDto {
+                    OilCount = p.Count(),
+                    OilQuantity = p.Sum(x => x.Quantity),
+                    OilPrice = p.Sum(x => x.Price),
+                });               
+            var list = await AsyncQueryableExecuter.ToListAsync(query);
+            var ret = new VehicleReportDto();
+            if (list.Count > 0)
+                ret = list[0];
+
+            var queryMT = _vehicleMTRecordRepository.GetAllIncluding(x => x.Vehicle)
+                .Where(x => x.CreateTime.Date == DateTime.Now.Date && x.Vehicle.DepotId == depotId)
+                .GroupBy( x => x.Vehicle.DepotId )
+                .Select( p => new {
+                    MTCount = p.Count(),
+                    MTPrice = p.Sum(x => x.Price),
+                });               
+            var listMT = await AsyncQueryableExecuter.ToListAsync(queryMT);
+            if (listMT.Count > 0) {
+                ret.MTCount = listMT[0].MTCount;
+                ret.MTPrice = listMT[0].MTPrice;
+            }
+            return ret;
         }
 
         public async Task<PagedResultDto<VehicleMTRecordDto>> GetVehicleMTRecordsAsync(PagedAndSortedResultRequestDto input)
         {
             int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
             
-            var query = _vehicleMTRecordRepository.GetAllIncluding(x => x.Vehicle, x => x.VehicleMTType)
+            var query = _vehicleMTRecordRepository.GetAllIncluding(x => x.CreateWorker, x => x.Vehicle, x => x.VehicleMTType, x => x.ProcessWorker)
                 .Where(x => x.Vehicle.DepotId == depotId);
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
             if (!string.IsNullOrWhiteSpace(input.Sorting))
@@ -112,6 +138,7 @@ namespace Clc.VehicleRecords
             entity.CreateTime = DateTime.Now;
             entity.CreateWorkerId = workerId;
             entity.VehicleId = vehicleId;
+            entity.GasStationId = gasStationId;
             entity.OilTypeId = oilTypeId;
             entity.Quantity = quantity;
             entity.Price = price;

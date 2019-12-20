@@ -31,7 +31,12 @@ namespace Clc.Works
         (string, string) GetReportToManagers();
 
         TaskReportDto GetTaskReportData(); 
+
+        void SetReportDate();
+
         Task<List<TemporaryTaskDto>> GetFeeTasks(DateTime dt, string sorting);
+        Task<List<TemporaryTaskDto>> GetFeeTasks(FeeTaskSearchRequestDto input, string sorting);
+        Task CaculateTasksPrice(DateTime dt);
 
         #region Agent / Workers
         string GetAgentString();

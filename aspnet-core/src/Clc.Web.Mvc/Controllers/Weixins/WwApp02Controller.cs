@@ -16,6 +16,7 @@ using Senparc.Weixin.Work.AdvancedAPIs.OAuth2;
 using Clc.Types;
 using Clc.Works;
 using Clc.VehicleRecords;
+using System;
 
 namespace Clc.Web.Controllers
 {
@@ -41,6 +42,7 @@ namespace Clc.Web.Controllers
             IHostingEnvironment env, 
             IHubContext<MyChatHub> context, 
             IWeixinAppService weixinAppService,
+            IVehicleRecordAppService recordAppService,
             IGasStationCache gasStationCache,
             IOilTypeCache oilTypeCache,
             IVehicleMTTypeCache vehicleMTTypeCache,
@@ -54,6 +56,7 @@ namespace Clc.Web.Controllers
 
             _context = context;
             _weixinAppService = weixinAppService;
+            _recordAppService = recordAppService;
 
             _gasStationCache = gasStationCache;
             _oilTypeCache = oilTypeCache;
@@ -196,7 +199,7 @@ namespace Clc.Web.Controllers
         {
             if (string.IsNullOrEmpty(code))
             {
-                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                // return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
 
             string workerCn = null;
@@ -209,28 +212,29 @@ namespace Clc.Web.Controllers
                 Logger.Error("微信授权错误");
             }               
 
-            if (workerCn == null) return Content("系统取不到你的微信标识号");
-
+            //if (workerCn == null) return Content("系统取不到你的微信标识号");
+            workerCn = "90005";
             var worker = WorkManager.GetWorkerByCn(workerCn);
+            if (!worker.WorkRoleNames.Contains("司机")) return Content("需要司机角色");
             var depot = WorkManager.GetDepot(worker.DepotId);
             var vm = new OilViewModel();
             vm.WorkerId = worker.Id;
 
             foreach (var v in _vehicleCache.GetList().FindAll(x => x.DepotId == depot.Id))
                 vm.Vehicles.Add(new ComboItemModel() { Id = v.Id, Name = v.Cn + v.License});
-            foreach (var v in _gasStationCache.GetList().FindAll(x => x.DepotList.Contains(depot.Name)))
+            foreach (var v in _gasStationCache.GetList().FindAll(x => string.IsNullOrEmpty(x.DepotList) || x.DepotList.Contains(depot.Name)))
                 vm.GasStations.Add(new ComboItemModel() { Id = v.Id, Name = v.Name});
             foreach (var t in _oilTypeCache.GetList())
                 vm.OilTypes.Add(new ComboItemModel() { Id = t.Id, Name = t.Name});
             
-            return View();
+            return View(vm);
         }
 
         public ActionResult VehicleMT(string code)
         {
             if (string.IsNullOrEmpty(code))
             {
-                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                //return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
 
             string workerCn = null;
@@ -243,32 +247,35 @@ namespace Clc.Web.Controllers
                 Logger.Error("微信授权错误");
             }               
 
-            if (workerCn == null) return Content("系统取不到你的微信标识号");
+            //if (workerCn == null) return Content("系统取不到你的微信标识号");
+            workerCn = "90005";
 
             var worker = WorkManager.GetWorkerByCn(workerCn);
+            if (!worker.WorkRoleNames.Contains("司机")) return Content("需要司机角色");
             var depot = WorkManager.GetDepot(worker.DepotId);
-            var vm = new OilViewModel();
+            var vm = new VehicleMTViewModel();
             vm.WorkerId = worker.Id;
 
             foreach (var v in _vehicleCache.GetList().FindAll(x => x.DepotId == depot.Id))
                 vm.Vehicles.Add(new ComboItemModel() { Id = v.Id, Name = v.Cn + v.License});
             foreach (var t in _vehicleMTTypeCache.GetList())
-                vm.OilTypes.Add(new ComboItemModel() { Id = t.Id, Name = t.Name});
+                vm.VehicleMTTypes.Add(new ComboItemModel() { Id = t.Id, Name = t.Name});
             
-            return View();
+            return View(vm);
         }
 
         [HttpPost]
         public ActionResult DoOil(OilViewModel vm)
         {
             _recordAppService.InsertOilRecord(vm.WorkerId, vm.VehicleId, vm.GasStationId, vm.OilTypeId, vm.Quantity, vm.Price, vm.Mileage, vm.Remark);
-            return Content("添加成功");
+            return RedirectToAction("WeixinNotify", "Error", new { Message = "添加成功" });
         }
 
         [HttpPost]
-        public ActionResult DoVehicle(VehicleMTViewModel vm)
+        public ActionResult DoVehicleMT(VehicleMTViewModel vm)
         {
-            return Content("添加成功");
+            _recordAppService.InsertVehicleMTRecord(vm.WorkerId, vm.VehicleId, vm.VehicleMTTypeId, vm.MTDate, vm.Content, vm.Price, vm.Remark);
+            return RedirectToAction("WeixinNotify", "Error", new { Message = "添加成功" });
         }
         #endregion
     }

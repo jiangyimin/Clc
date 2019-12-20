@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -55,7 +56,7 @@ namespace Clc.Fields
         [StringLength(MaxReportToLength)]
         public string ReportTo { get; set; }
 
-        // public DateTime? LastReportDate { get; set; }
+        public DateTime? LastReportDate { get; set; }
 
         [StringLength(Worker.MaxCnLength)]
         public string AgentCn { get; set; }

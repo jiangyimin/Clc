@@ -1,0 +1,149 @@
+﻿@section Scripts
+{
+    <script type="text/javascript">
+        var masterRow = {};
+        $(function() {
+            abp.services.app.type.getRouteWorkRoleItems(1).done(function (data) {
+                $('#workRole').combobox({
+                    data: data, 
+                    valueField: 'id', 
+                    textField: 'name'
+                });  
+            });
+
+            $('#dg').datagrid({
+                onSelect: function(index, row) {
+                    masterRow = row;
+                    $('#dgWorker').datagrid({
+                        url: 'GridDataVehicleWorker/' + row.id
+                    });
+                }
+            });
+
+            $('#workRole').combobox({
+                onChange: function (val) {
+                    if (!val) return;
+                    abp.services.app.field.getWorkerItemsByWorkRole(val).done(function (data) {
+                        $('#worker').combobox({ data: data, valueField: 'value', textField: 'displayText' });
+                    });
+                }
+            });
+        });
+
+        function add() {
+            alert('enter addWorker');
+            var row = $('#dg').datagrid('getSelected');
+            if (row == null) {
+                abp.notify.error("先选择车辆记录");
+                return;
+            };
+
+            $('#dlg').dialog('open').dialog('setTitle', '增加');
+            $('#fm').form('clear');
+            $('#fm').find('input[name="id"]').attr('value', 0);   // 将Id值置为0
+            $('#fm').find('input[name="vehicleId"]').attr('value', row.id);
+        };
+
+        function editw(index) {
+            $('#dlg').dialog('open').dialog('setTitle', '编辑');
+            var row = $('#dgWorker').datagrid('getRows')[index]; 
+        
+            $('#fm').form('load', row);
+            $('#fm').find('input[name=vehicleId"]').attr('value', masterRow.id);
+        };
+
+        function deletew(index) {
+            var row = $('#dgWorker').datagrid('getRows')[index];
+            abp.message.confirm('确认要删除此记录吗?', '请确认', function (r) {
+                if (r) {
+                    abp.services.app.preRoute.deleteVehicleWorker(row.id).done(function () {
+                        abp.notify.info('删除操作成功')
+                        $('#dgWorker').datagrid('reload');
+                    });
+                };
+            });
+        };
+
+        function save() {
+           if (!$('#fm').form('validate')) {
+                abp.notify.error('字段输入有错误');
+                return;
+            };
+    
+            abp.ui.setBusy($('#fm'));
+            var dto = $('#fm').serializeFormToObject();      //serializeFormToObject is defined in main.js
+            var dfd = $('#dlg').panel('options').title == '增加' ? abp.services.app.preRoute.insertVehicleWorker : abp.services.app.preRoute.updateVehicleWorker;
+            dfd(dto).done(function () {
+                abp.ui.clearBusy($('#fm'));
+                abp.notify.info($('#dlg').panel('options').title+'操作成功');
+                $('#dgWorker').datagrid('reload');
+                $('#dlg').dialog('close');
+            });
+        };
+
+        // formatter
+        function operator (val, row, index) {
+            var htmlTag = '<a href="javascript:void(0)" onclick="editw(' + index + ')">编辑</a>';
+            htmlTag = htmlTag + '<span>&nbsp;&nbsp;&nbsp;</span>';
+            htmlTag = htmlTag + '<a href="javascript:void(0)" onclick="deletew(' + index + ')">删除</a>';
+            return htmlTag;
+        };
+    </script>
+}
+
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'west', split:true, border:false" style="width:40%">
+        <div id="tb">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+        </div>
+        <table id="dg" class="easyui-datagrid" toolbar="#tb" url="GridDataVehicle"
+                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="cn">
+            <thead>
+                <tr>
+                    <th field="cn" width="60" sortabl="true">车辆编号</th>
+                    <th field="license" width="60">车牌号</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div data-options="region:'center'">
+        <div id="tbWorker">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dgWorker').datagrid('reload')">刷新</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="add()">添加</a>
+        </div>
+        <table id="dgWorker" class="easyui-datagrid" toolbar="#tbWorker" 
+                fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="workRoleName">
+            <thead>
+                <tr>
+                    <th field="workRoleName" width="80">工作角色</th>
+                    <th field="workerCn" width="80">人员编号</th>
+                    <th field="workerName" width="80">人员姓名</th>
+                    <th field="workRoleArticleTypeList" width="200">物品类型列表</th>
+                    <th field="operator" width="80" align="center" formatter="operator">操作</th>
+                 </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@*Worker弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlgButtons" align="center" style="width: 400px; padding: 10px;">
+    <form id="fm" method="post" novalidate>
+        <table class="edit-tbl">
+            <input name="id" type="hidden" >
+            <input name="vehicleId" type="hidden">
+            <tr>
+                <th><Label for="workRoleId">线路角色:</Label></th>
+                <td><input id="workRole" name="workRoleId" class="easyui-combobox" data-options="required: true" style="width: 200px"></td>
+            </tr>
+            <tr>
+                <th><Label for="workerId">人员:</Label></th>
+                <td><input id="worker" name="workerId" class="easyui-combobox" data-options="required: true" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dlgButtons">
+    <a name="save" class="easyui-linkbutton" iconCls="icon-save" onclick="save()">保存</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('#dlg').dialog('close')">取消</a>
+</div>

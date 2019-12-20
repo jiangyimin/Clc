@@ -6,6 +6,7 @@ using Clc.Controllers;
 using System.Threading.Tasks;
 using System;
 using Clc.Works;
+using Clc.Works.Dto;
 
 namespace Clc.Web.Controllers
 {
@@ -28,6 +29,13 @@ namespace Clc.Web.Controllers
         public async Task<JsonResult> GridDataTask(DateTime dt)
         {
             var output = await _workAppService.GetFeeTasks(dt, GetSorting());
+            return Json( new { rows = output });
+        }
+
+        [DontWrapResult]
+        public async Task<JsonResult> SearchTasks(FeeTaskSearchRequestDto input)
+        {
+            var output = await _workAppService.GetFeeTasks(input, GetSorting());
             return Json( new { rows = output });
         }
     }

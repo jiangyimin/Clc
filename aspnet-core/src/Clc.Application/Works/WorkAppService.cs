@@ -8,6 +8,7 @@ using Abp.Authorization;
 using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Linq;
+using Abp.Linq.Extensions;
 using Clc.Affairs;
 using Clc.Configuration;
 using Clc.Extensions;
@@ -42,6 +43,7 @@ namespace Clc.Works
         private readonly IArticleTypeCache _articleTypeCache;
         private readonly IBoxCache _boxCache;
         private readonly IOutletCache _outletCache;
+        private readonly ICustomerTaskTypeCache _customerTaskTypeCache;
 
         public WorkAppService(IRepository<Signin> signinRepository,
             IRepository<Route> routeRepository,
@@ -54,7 +56,8 @@ namespace Clc.Works
             IArticleCache articleCache,
             IArticleTypeCache articleTypeCache,
             IBoxCache boxCache,
-            IOutletCache outletCache)
+            IOutletCache outletCache,
+            ICustomerTaskTypeCache customerTaskTypeCache)
         {
             _signinRepository = signinRepository;
             _routeRepository = routeRepository;
@@ -69,6 +72,7 @@ namespace Clc.Works
             _articleTypeCache = articleTypeCache;
             _boxCache = boxCache;
             _outletCache = outletCache;
+            _customerTaskTypeCache = customerTaskTypeCache;
         }
 
         public bool VerifyUnlockPassword(string password)
@@ -234,15 +238,67 @@ namespace Clc.Works
             return data;
         }
 
+        public void SetReportDate()
+        {
+            int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
+
+            var depot = _depotRepository.Get(depotId);
+            depot.LastReportDate = DateTime.Now;
+            _depotRepository.Update(depot);
+        }
+        
         public async Task<List<TemporaryTaskDto>> GetFeeTasks(DateTime dt, string sorting)
         {
             // Task (fee)
             var query = _routeTaskRepository.GetAllIncluding(x => x.Route, x => x.Route.Depot, x => x.Outlet, x => x.Outlet.Customer, x => x.TaskType)
-                .Where(x => x.Route.CarryoutDate == DateTime.Now.Date &&  x.TaskType.isTemporary == true); 
+                .Where(x => x.Route.CarryoutDate == dt &&  x.TaskType.isTemporary == true); 
             query = query.OrderBy(sorting);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return ObjectMapper.Map<List<TemporaryTaskDto>>(entities);
+        }
+
+        public async Task<List<TemporaryTaskDto>> GetFeeTasks(FeeTaskSearchRequestDto input, string sorting)
+        {
+            var query = _routeTaskRepository.GetAllIncluding(x => x.Route, x => x.Route.Depot, x => x.Outlet, x => x.Outlet.Customer, x => x.TaskType)
+                .Where(x => x.Route.CarryoutDate >= input.Start && x.Route.CarryoutDate <= input.End &&  x.TaskType.isTemporary == true)
+                .WhereIf(input.CustomerId.HasValue, x => x.Outlet.Customer.Id == input.CustomerId.Value)
+                .WhereIf(input.DepotId.HasValue, x => x.Route.DepotId == input.DepotId.Value);
+            query = query.OrderBy(sorting);
+
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return ObjectMapper.Map<List<TemporaryTaskDto>>(entities);
+        }
+
+        public async Task CaculateTasksPrice(DateTime dt)
+        {
+            var query = _routeTaskRepository.GetAllIncluding(x => x.Route, x => x.Route.Depot, x => x.Outlet, x => x.Outlet.Customer, x => x.TaskType)
+                .Where(x => x.Route.CarryoutDate == DateTime.Now.Date &&  x.TaskType.isTemporary == true); 
+            
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            foreach (var e in entities) 
+            {
+                if (e.Price.HasValue) continue;
+
+                e.Price = GetDefaultPrice(e);
+                await _routeTaskRepository.UpdateAsync(e);
+            }
+        }
+
+        private float GetDefaultPrice(RouteTask t)
+        {
+            var lst = _customerTaskTypeCache.GetList().FindAll(x => x.DepotId.HasValue);
+            var lstVoid = _customerTaskTypeCache.GetList().FindAll(x => !x.DepotId.HasValue);
+            var type = lst.FindLast(x => x.DepotId.Value == t.Route.DepotId && x.TaskTypeId == t.TaskTypeId);
+            var typeVoid = lstVoid.FindLast(x => x.TaskTypeId == t.TaskTypeId);
+
+            if (type != null)
+                return type.Price;
+            
+            if (typeVoid != null)
+                return typeVoid.Price;
+            
+            return t.TaskType.BasicPrice;
         }
 
         #region Agent

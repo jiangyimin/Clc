@@ -18,5 +18,10 @@ namespace Clc.Web.Models.Weixin
         public double Price { get; set; }
         public string Remark { get; set; }
 
+        public VehicleMTViewModel()
+        {
+            Vehicles = new List<ComboItemModel>();
+            VehicleMTTypes = new List<ComboItemModel>();
+        }
     }
 }

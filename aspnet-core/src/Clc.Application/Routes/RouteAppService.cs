@@ -34,6 +34,7 @@ namespace Clc.Routes
         private readonly IRepository<PreRoute> _preRouteRepository;
         private readonly IRepository<PreRouteWorker> _preRouteWorkerRepository;
         private readonly IRepository<PreRouteTask> _preRouteTaskRepository;
+        private readonly IRepository<PreVehicleWorker> _preVehicleWorkerRepository;
         private readonly IRepository<ArticleRecord> _articleRecordRepository;
         private readonly IRepository<BoxRecord> _boxRecordRepository;
         private readonly ITaskTypeCache _taskTypeCache;
@@ -51,6 +52,7 @@ namespace Clc.Routes
             IRepository<PreRoute> preRouteRepository,
             IRepository<PreRouteWorker> preRouteWorkerRepository,
             IRepository<PreRouteTask> preRouteTaskRepository, 
+            IRepository<PreVehicleWorker> preVehicleWorkerRepository,
             IRepository<ArticleRecord> articleRecordRepository,           
             IRepository<BoxRecord> boxRecordRepository,   
             IRouteTypeCache routeTypeCache,        
@@ -68,6 +70,7 @@ namespace Clc.Routes
             _preRouteRepository = preRouteRepository;
             _preRouteWorkerRepository = preRouteWorkerRepository;
             _preRouteTaskRepository = preRouteTaskRepository;
+            _preVehicleWorkerRepository = preVehicleWorkerRepository;
             _articleRecordRepository = articleRecordRepository;
             _boxRecordRepository = boxRecordRepository;
             _routeTypeCache = routeTypeCache;
@@ -259,10 +262,17 @@ namespace Clc.Routes
                 {
                     int insertRouteId = await CopyInsertRouteAndGetId(r, depotId, carryoutDate, workerId);
 
-                    var workers =  _preRouteWorkerRepository.GetAllList(e => e.PreRouteId == r.Id);
-                    foreach (PreRouteWorker w in workers)
-                        await CopyInsertWorker(w, insertRouteId);
-
+                    var vws = _preVehicleWorkerRepository.GetAllList(e => e.VehicleId == r.VehicleId);
+                    if (vws.Count > 0) {
+                        foreach (PreVehicleWorker w in vws)
+                            await CopyInsertVehicleWorker(w, insertRouteId);
+                    }
+                    else {
+                        var workers = _preRouteWorkerRepository.GetAllList(e => e.PreRouteId == r.Id);
+                        foreach (PreRouteWorker w in workers)
+                            await CopyInsertWorker(w, insertRouteId);
+                    }
+                    
                     var tasks =  _preRouteTaskRepository.GetAllList(e => e.PreRouteId == r.Id);
                     foreach (PreRouteTask t in tasks)
                         await CopyInsertTask(t, insertRouteId, workerId);
@@ -318,6 +328,24 @@ namespace Clc.Routes
             var lst = entities.Select(MapToTask).ToList();
             return lst;
         }
+        public async Task<List<TaskInBoxDto>> GetTaskInBoxes(int id, string sorting)
+        {
+            var query = _inBoxRepository.GetAllIncluding(x => x.BoxRecord, x=> x.BoxRecord.Box, x => x.BoxRecord.Box.Outlet)
+                .Where(e => e.RouteTaskId == id).OrderBy(sorting);
+            
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return ObjectMapper.Map<List<TaskInBoxDto>>(entities);
+        }
+
+        public async Task<List<TaskOutBoxDto>> GetTaskOutBoxes(int id, string sorting)
+        {
+            var query = _outBoxRepository.GetAllIncluding(x => x.BoxRecord, x=> x.BoxRecord.Box, x => x.BoxRecord.Box.Outlet)
+                .Where(e => e.RouteTaskId == id).OrderBy(sorting);
+            
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            return ObjectMapper.Map<List<TaskOutBoxDto>>(entities);
+        }
+
 
         public async Task<RouteTaskDto> UpdateTask(RouteTaskDto input)
         {
@@ -376,7 +404,7 @@ namespace Clc.Routes
             var query = _articleRepository.GetAll().Where(e => e.RouteId == id).OrderBy(sorting);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            return new List<RouteArticleDto>(entities.Select(ObjectMapper.Map<RouteArticleDto>).ToList());
+            return entities.Select(ObjectMapper.Map<RouteArticleDto>).ToList();
         }
 
         public async Task<List<RouteInBoxDto>> GetRouteInBoxes(int id, string sorting)
@@ -384,7 +412,7 @@ namespace Clc.Routes
             var query = _inBoxRepository.GetAll().Where(e => e.RouteId == id).OrderBy(sorting);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            return new List<RouteInBoxDto>(entities.Select(ObjectMapper.Map<RouteInBoxDto>).ToList());
+            return entities.Select(ObjectMapper.Map<RouteInBoxDto>).ToList();
         }
 
         public async Task<List<RouteOutBoxDto>> GetRouteOutBoxes(int id, string sorting)
@@ -392,7 +420,7 @@ namespace Clc.Routes
             var query = _outBoxRepository.GetAll().Where(e => e.RouteId == id).OrderBy(sorting);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
-            return new List<RouteOutBoxDto>(entities.Select(ObjectMapper.Map<RouteOutBoxDto>).ToList());
+            return entities.Select(ObjectMapper.Map<RouteOutBoxDto>).ToList();
         }
 
         #endregion
@@ -533,6 +561,15 @@ namespace Clc.Routes
             await _taskRepository.InsertAsync(task);
         }
 
+        private async Task CopyInsertVehicleWorker(PreVehicleWorker src, int routeId)
+        {
+            RouteWorker worker = new RouteWorker();
+            worker.RouteId = routeId;
+            worker.WorkerId = src.WorkerId;
+            worker.WorkRoleId = src.WorkRoleId;
+            await _workerRepository.InsertAsync(worker);
+        }
+
         private RouteWorkerDto MapToWorker(RouteWorker rw)
         {
             var dto = ObjectMapper.Map<RouteWorkerDto>(rw);
@@ -559,16 +596,19 @@ namespace Clc.Routes
         {
             var dto = ObjectMapper.Map<RouteTaskDto>(rt);
 
-            if (rt.InBoxes != null)
+            if (rt.InBoxes != null) {
+                dto.InBoxNum = rt.InBoxes.Count;
                 foreach (var ib in rt.InBoxes) 
                 {
                     var record = _boxRecordRepository.Get(ib.BoxRecordId);
                     var b = WorkManager.GetBox(record.BoxId);
-                    dto.InBoxList += string.Format("{0} {1}({2}) ", b.Cn, b.Name, record.InTime.ToString("HH:mm"));
+
+                    dto.InBoxList += string.Format("{0} {1}({2}) ", b.Cn, b.Name, record.InTime.Value.ToString("HH:mm"));
                 }
+            }
 
-
-            if (rt.OutBoxes != null)
+            if (rt.OutBoxes != null) {
+                dto.OutBoxNum = rt.OutBoxes.Count;
                 foreach (var ob in rt.OutBoxes) 
                 {
                     var record = _boxRecordRepository.Get(ob.BoxRecordId);
@@ -576,12 +616,16 @@ namespace Clc.Routes
                     if (record.OutTime.HasValue)
                         dto.OutBoxList += string.Format("{0} {1}({2}) ", b.Cn, b.Name, record.OutTime.Value.ToString("HH:mm"));
                 }
-
+            }
             return dto;
         }
 
         private string CanActivateRoute(Route route)
         {
+            var depot = WorkManager.GetDepot(route.DepotId);
+            if (depot.LastReportDate.HasValue && depot.LastReportDate.Value >= route.CarryoutDate)
+                return "已日结";
+
             var routeType = _routeTypeCache[route.RouteTypeId];
 
             // check Active Ahead

@@ -23,6 +23,10 @@ namespace Clc.Clients
             var lst = new List<ComboboxItemDto>();
             switch (name) 
             {
+               case "Customer":
+                    foreach (Customer t in _customerCache.GetList())
+                        lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = t.Name });
+                    break;
                case "CustomerWithCn":
                     foreach (Customer t in _customerCache.GetList())
                         lst.Add(new ComboboxItemDto { Value = t.Id.ToString(), DisplayText = string.Format("{0} {1}", t.Cn, t.Name) });

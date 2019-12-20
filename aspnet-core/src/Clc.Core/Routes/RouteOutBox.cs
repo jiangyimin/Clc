@@ -33,7 +33,6 @@ namespace Clc.Routes
         public int BoxRecordId { get; set; }
         public BoxRecord BoxRecord { get; set; }
 
-        // public DateTime? DeliverTime { get; set; }
     }
 }
 

@@ -30,8 +30,7 @@ namespace Clc.Runtime
         /// <summary>
         /// 进时间
         /// </summary>
-        [Required]
-        public DateTime InTime { get; set; }
+        public DateTime? InTime { get; set; }
 
         /// <summary>
         /// 出时间
@@ -45,10 +44,12 @@ namespace Clc.Runtime
         [StringLength(MaxWorkersLength)]
         public string OutWorkers { get; set; }    
 
-        // public int? InRouteTaskId { get; set; }
-        // public virtual RouteTask InRouteTask { get; set; }
-        // public int? OutRouteTaskId { get; set; }
-        // public virtual RouteTask OutRouteTask { get; set; }
+        public DateTime? PickupTime { get; set; }
+        public DateTime? DeliverTime { get; set; }
+        public int? InRouteTaskId { get; set; }
+        public virtual RouteTask InRouteTask { get; set; }
+        public int? OutRouteTaskId { get; set; }
+        public virtual RouteTask OutRouteTask { get; set; }
     }
 }
 

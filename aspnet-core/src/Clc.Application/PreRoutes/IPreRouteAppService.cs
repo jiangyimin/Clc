@@ -26,6 +26,10 @@ namespace Clc.PreRoutes
         Task<PreRouteTaskDto> UpdateTask(PreRouteTaskDto input);
         Task DeleteTask(int id);
 
+        Task<List<PreVehicleWorkerDto>> GetPreVehicleWorkers(int id, string sorting);
+        Task<PreVehicleWorkerDto> InsertVehicleWorker(PreVehicleWorkerDto input);
+        Task<PreVehicleWorkerDto> UpdateVehicleWorker(PreVehicleWorkerDto input);
+        Task DeleteVehicleWorker(int id);
         #endregion
     }
 }

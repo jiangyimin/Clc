@@ -7,10 +7,10 @@
 {
     <script type="text/javascript">
         crud.dgDefault.name = 'CustomerTaskTypes';
-        crud.dgDefault.sortName = 'cn';
+        crud.dgDefault.sortName = 'taskTypeId';
         crud.dgDefault.columns = [[
-            { field: "taskTypeId", title: "任务类型", width: 80 },
-            { field: "depotId", title: "大队", width: 80 },
+            { field: "taskTypeId", title: "任务类型", width: 80, formatter: taskTypeFormatter },
+            { field: "depotId", title: "大队", width: 80, formatter: depotFormatter },
             { field: "price", title: "价格", width: 80 },
             { field: "remark", title: "备注", width: 100 },
          ]];
@@ -19,7 +19,10 @@
 
         // formatters
         function taskTypeFormatter(val) {
-            return crud.getComboTextByInt('#taskType', val);
+            return crud.getComboTextByInt('#taskTypeId', val);
+        }
+        function depotFormatter(val) {
+            return crud.getComboTextByInt('#depotId', val);
         }
     </script>
 }
@@ -27,14 +30,15 @@
 @section endScript
 {
     <script type="text/javascript">
-        crud.startfunction = function () {            
+        crud.startfunction = function () {         
             abp.services.app.type.getComboItems('TaskTypeFee').done(function(types) {
-                crud.setComboBox('#taskType', types);
+                crud.setComboBox('#taskTypeId', types);
             });
-            abp.services.app.fild.getComboItems('Depot').done(function(depots) {
-                crud.setComboBox('#depot', depots);
+            abp.services.app.field.getComboItems('Depot').done(function(depots) {
+                crud.setComboBox('#depotId', depots);
+            });
 
-            abp.services.app.client.getComboItems('CustomerWithCn').done(function(customers) {
+            abp.services.app.client.getComboItems('Customer').done(function(customers) {
                 crud.setComboBox('#customerId', customers);
                 var treeData = [];
                 customers.forEach( function (val, index, arr) {
@@ -79,11 +83,11 @@
             </tr>
             <tr>
                 <th><label for="taskTypeId">收费任务类型:</Label></th>
-                <td><input id="taskType" name="taskTypeId" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
+                <td><input id="taskTypeId" name="taskTypeId" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="depotId">大队:</Label></th>
-                <td><input id="depot" name="depotId" class="easyui-combobox" style="width: 100%"></td>
+                <td><input id="depotId" name="depotId" class="easyui-combobox" style="width: 100%"></td>
             </tr>
             <tr>
                 <th><label for="price">价格:</label></th>

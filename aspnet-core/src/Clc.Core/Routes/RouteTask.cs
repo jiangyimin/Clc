@@ -64,6 +64,7 @@ namespace Clc.Routes
 
         [StringLength(MaxOutletIdentifyInfoLength)]
         public string OutletIdentifyInfo { get; set; }
+        public string Rated { get; set; }
 
         public float? Price { get; set; }
 

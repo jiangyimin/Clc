@@ -44,7 +44,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             //
             // Captain
             permissions = new string[] { 
-                PermissionNames.Pages_Arrange, PermissionNames.Pages_Statistic, PermissionNames.Pages_Query
+                PermissionNames.Pages_Arrange, PermissionNames.Pages_Query
             };
 
             CreateRole(StaticRoleNames.Tenants.Captain, permissions, true);

@@ -18,10 +18,14 @@
 {
     <script type="text/javascript">      
         function reportTo() {
-            abp.ajax({
-                url: 'ReportBoxTo',
-                success: function (data) {
-                    abp.notify.info("报告已发出");
+            abp.message.confirm('报送后将不能激活任务线路，确认报送吗?', '请确认', function (r) {
+                if (r) {
+                    abp.ajax({
+                        url: 'ReportBoxTo',
+                        success: function (data) {
+                            abp.notify.info("报告已发出");
+                        }
+                    });
                 }
             });
         }

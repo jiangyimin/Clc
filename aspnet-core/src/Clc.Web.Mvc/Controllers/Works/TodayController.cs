@@ -76,6 +76,7 @@ namespace Clc.Web.Controllers
                 desc += string.Format("{0}今领：{1}， 未还：{2}\n", a.Name, a.LendCount, a.UnReturnCount);
             }
             WeixinUtils.SendTextCard("App03", ret.Item2, title, desc);
+            _workAppService.SetReportDate();
         }
 
         public void ReportTaskTo() 
@@ -89,6 +90,7 @@ namespace Clc.Web.Controllers
             desc += string.Format("内务数：{0} 条 (安排人员： {1}人）\n", data.Affair.Count1, data.Affair.Count2);
             desc += string.Format("收费中调数：{0} 个 (收费： {1}元）\n", data.Task.Count1, data.Task.Count2);
             WeixinUtils.SendTextCard("App03", ret.Item2, title, desc);
+            _workAppService.SetReportDate();
         }
 
         public async Task ReportBoxTo()
@@ -113,10 +115,12 @@ namespace Clc.Web.Controllers
 
             var data = await _vehicleRecordAppService.GetReportData();
             
-            string title = "";
-            string desc = string.Format("贵行的{0}于{1}入库");
+            string title = string.Format("今日<{0}>车辆加油维修情况", ret.Item1);;
+            string desc = string.Format("加油次数：{0} (量：{1}}升   费用:{2}元\n", data.OilCount, data.OilQuantity, data.OilPrice);
+            desc += string.Format("车辆维修次数：{0} (费用： {1}元)", data.MTCount, data.MTPrice);
 
             WeixinUtils.SendTextCard("App04", ret.Item2, title, desc);
+            _workAppService.SetReportDate();
         }
 
         [DontWrapResult]

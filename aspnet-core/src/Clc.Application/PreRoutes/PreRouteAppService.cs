@@ -12,7 +12,7 @@ using Clc.Works;
 
 namespace Clc.PreRoutes
 {
-    [AbpAuthorize(PermissionNames.Pages_Arrange)]
+    [AbpAuthorize(PermissionNames.Pages_Arrange)] 
     public class PreRouteAppService : ClcAppServiceBase, IPreRouteAppService
     {
         public WorkManager WorkManager { get; set; }
@@ -22,14 +22,17 @@ namespace Clc.PreRoutes
         private readonly IRepository<PreRoute> _preRouteRepository;
         private readonly IRepository<PreRouteWorker> _workerRepository;
         private readonly IRepository<PreRouteTask> _taskRepository;
+        private readonly IRepository<PreVehicleWorker> _vehicleWorkerRepository;
 
         public PreRouteAppService(IRepository<PreRoute> preRouteRepository, 
             IRepository<PreRouteWorker> workerRepository,
-            IRepository<PreRouteTask> taskRepository)
+            IRepository<PreRouteTask> taskRepository,
+            IRepository<PreVehicleWorker> vehicleWorkerRepository)
         {
             _preRouteRepository = preRouteRepository;
             _workerRepository = workerRepository;
             _taskRepository = taskRepository;
+            _vehicleWorkerRepository = vehicleWorkerRepository;
         }
 
         public async Task<List<PreRouteDto>> GetPreRoutesAsync(string sorting)
@@ -129,6 +132,39 @@ namespace Clc.PreRoutes
             await _taskRepository.DeleteAsync(id);
         }
 
+
+        public async Task<List<PreVehicleWorkerDto>> GetPreVehicleWorkers(int id, string sorting)
+        {
+            var query =_vehicleWorkerRepository.GetAllIncluding(x => x.Worker, x => x.WorkRole).Where(e => e.VehicleId == id);
+            query = query.OrderBy(x => x.WorkRole.Cn);            
+            var entities = await AsyncQueryableExecuter.ToListAsync(query);
+            var list = ObjectMapper.Map<List<PreVehicleWorkerDto>>(entities);
+            return list;
+        }
+
+        public async Task<PreVehicleWorkerDto> UpdateVehicleWorker(PreVehicleWorkerDto input)
+        {
+            var entity = await _vehicleWorkerRepository.GetAsync(input.Id);
+            ObjectMapper.Map<PreVehicleWorkerDto, PreVehicleWorker>(input, entity);
+
+            await _vehicleWorkerRepository.UpdateAsync(entity);
+            CurrentUnitOfWork.SaveChanges();
+            return ObjectMapper.Map<PreVehicleWorkerDto>(entity);
+        }
+
+        public async Task<PreVehicleWorkerDto> InsertVehicleWorker(PreVehicleWorkerDto input)
+        {
+            var entity = ObjectMapper.Map<PreVehicleWorker>(input);
+
+            await _vehicleWorkerRepository.InsertAsync(entity);
+            CurrentUnitOfWork.SaveChanges();
+            return ObjectMapper.Map<PreVehicleWorkerDto>(entity);
+        }
+
+        public async Task DeleteVehicleWorker(int id)
+        {
+            await _vehicleWorkerRepository.DeleteAsync(id);
+        }
         #endregion
     }
 }

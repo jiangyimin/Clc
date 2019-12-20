@@ -65,18 +65,20 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Statistic_Task", new FixedLocalizableString("收费中调统计"), url: "WorkerFiles/Hrq"))
                                
                 // Arrange
-                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("工作安排"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("预排"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
                     .AddItem(new MenuItemDefinition("Arrange_WorkerFingers", new FixedLocalizableString("指纹补录"), url: "WorkerFingers"))
                     .AddItem(new MenuItemDefinition("Arrange_PreRoutes", new FixedLocalizableString("预排线路"), url: "PreRoutes"))
+                    .AddItem(new MenuItemDefinition("Arrange_PreVehicleWorkers", new FixedLocalizableString("预排车组人员"), url: "PreRoutes/VehicleWorkers"))
+                ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("工作安排"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
+                    .AddItem(new MenuItemDefinition("Arrange_Signin", new FixedLocalizableString("签到"), url: "Today/Signins"))
                     .AddItem(new MenuItemDefinition("Arrange_Routes", new FixedLocalizableString("线路任务"), url: "Routes"))
                     .AddItem(new MenuItemDefinition("Arrange_Affairs", new FixedLocalizableString("内部任务"), url: "Affairs"))
                     .AddItem(new MenuItemDefinition("Arrange_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Routes/KeyPoints"))
                 // 今日情况
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("今日情况"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Arrange)
-                    .AddItem(new MenuItemDefinition("Arrange_Signin", new FixedLocalizableString("签到"), url: "Today/Signins"))
                     .AddItem(new MenuItemDefinition("Arrange_Article", new FixedLocalizableString("物品"), url: "Today/ArticleList"))
                     .AddItem(new MenuItemDefinition("Arrange_Route", new FixedLocalizableString("线路"), url: "Today/TaskList"))
-                    //.AddItem(new MenuItemDefinition("Arrange_Box", new FixedLocalizableString("尾箱"), url: "Today/BoxList"))
+                    .AddItem(new MenuItemDefinition("Arrange_Box", new FixedLocalizableString("尾箱"), url: "Today/BoxList"))
                     .AddItem(new MenuItemDefinition("Arrange_Vehicle", new FixedLocalizableString("车辆"), url: "Today/VehicleList"))
                     .AddItem(new MenuItemDefinition("Arrange_Issue", new FixedLocalizableString("大事记录"), url: "Issue"))
                 

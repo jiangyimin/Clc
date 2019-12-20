@@ -45,6 +45,8 @@ namespace Clc.Routes.Dto
         public string CreateWorkerName { get; set; }
         public string InBoxList { get; set; }
         public string OutBoxList { get; set; }
+        public int InBoxNum { get; set; }
+        public int OutBoxNum { get; set; }
         // only for mds.js 
         public string Postfix { get; } = "Task";
     }
