@@ -12,10 +12,13 @@ namespace Clc.Clients
 
         private readonly IOutletCache _outletCache;
 
-        public ClientAppService(ICustomerCache customerCache, IOutletCache outletCache)
+        private readonly IBoxCache _boxCache;
+
+        public ClientAppService(ICustomerCache customerCache, IOutletCache outletCache, IBoxCache boxCache)
         {
             _customerCache = customerCache;
             _outletCache = outletCache;
+            _boxCache = boxCache;
         }
 
         public List<ComboboxItemDto> GetComboItems(string name)
@@ -39,6 +42,15 @@ namespace Clc.Clients
                     break;
             }
             return lst;
-        }        
+        }
+
+        public List<ComboboxItemDto> GetBoxes(int outletId)
+        {
+            var lst = new List<ComboboxItemDto>();
+            foreach (Box b in  _boxCache.GetList().FindAll(x => x.OutletId == outletId))
+                lst.Add(new ComboboxItemDto { Value = b.Cn, DisplayText = string.Format("{0} {1}", b.Cn, b.Name) });
+            return lst;
+        }
+        
     }
 }

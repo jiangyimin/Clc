@@ -24,16 +24,19 @@ namespace Clc.BoxRecords
         public IAsyncQueryableExecuter AsyncQueryableExecuter { get; set; }
         private readonly IRepository<BoxRecord> _recordRepository;
         private readonly IRepository<Box> _boxRepository;
+        private readonly IRepository<RouteTask> _routeTaskRepository;
         private readonly IRepository<RouteInBox> _routeInBoxRepository;
         private readonly IRepository<RouteOutBox> _routeOutBoxRepository;
 
         public BoxRecordAppService(IRepository<BoxRecord> recordRepository, 
             IRepository<Box> boxRepository,
+            IRepository<RouteTask> routeTaskRepository,
             IRepository<RouteInBox> routeInBoxRepository,
             IRepository<RouteOutBox> routeOutBoxRepository)    
         {
             _recordRepository = recordRepository;
             _boxRepository = boxRepository;
+            _routeTaskRepository = routeTaskRepository;
             _routeInBoxRepository = routeInBoxRepository;
             _routeOutBoxRepository = routeOutBoxRepository;
         }
@@ -54,28 +57,40 @@ namespace Clc.BoxRecords
             );
         }
 
-        public int In(int routeId, List<RouteBoxCDto> boxes, string workers)
+        public string InBox(int taskId, string boxCn, string workers)
         {
-            foreach (var box in boxes)
-            {               
-                BoxRecord record = new BoxRecord() {
-                    BoxId = box.BoxId,
-                    InTime = DateTime.Now,
-                    InWorkers = workers
-                };
+            var task = _routeTaskRepository.Get(taskId);
+            var boxes = _routeInBoxRepository.GetAllIncluding(x => x.BoxRecord, x => x.BoxRecord.Box)
+                .Where(x => x.RouteTaskId == taskId).ToList();
 
-                int recordId = _recordRepository.InsertAndGetId(record);
-                Box b = _boxRepository.Get(box.BoxId);
-                b.BoxRecordId = recordId;
-
-                RouteInBox ri = new RouteInBox() {
-                    RouteId = routeId,
-                    RouteTaskId = box.TaskId,
-                    BoxRecordId = recordId
-                };
-                _routeInBoxRepository.Insert(ri);
+            if (boxes != null & boxes.Count > 0)
+            {
+                foreach (var bo in boxes)
+                    if (bo.BoxRecord.Box.Cn == boxCn && bo.BoxRecord.InTime.HasValue) return "此尾箱已入库";               
             }
-            return boxes.Count();
+
+            var box = WorkManager.GetBoxByCn(boxCn);
+            if (box.Id == 0) return "无此尾箱";
+
+            var record = new BoxRecord() {
+                BoxId = box.Id,
+                InTime = DateTime.Now,
+                InWorkers = workers
+            };
+            int recordId = _recordRepository.InsertAndGetId(record);
+
+            Box b = _boxRepository.Get(box.Id);
+            b.BoxRecordId = recordId;
+
+            RouteInBox ri = new RouteInBox() {
+                RouteId = task.RouteId,
+                RouteTaskId = task.Id,
+                BoxRecordId = recordId
+            };
+            
+            _routeInBoxRepository.Insert(ri);
+            
+            return null;
         }
 
         public string GetBoxStatus(int boxId) 
@@ -93,22 +108,36 @@ namespace Clc.BoxRecords
             return null;
         }
 
-        public int Out(int routeId, List<RouteBoxCDto> boxes, string workers)
+        public string OutBox(int taskId, string boxCn, string workers)
         {
-            foreach (var box in boxes)
-            {               
-                var record = _recordRepository.Get(box.RecordId);   
-                record.OutTime = DateTime.Now;
-                record.OutWorkers = workers;
+            var task = _routeTaskRepository.Get(taskId);
+            var boxes = _routeInBoxRepository.GetAllIncluding(x => x.BoxRecord, x => x.BoxRecord.Box)
+                .Where(x => x.RouteTaskId == taskId).ToList();
 
-                RouteOutBox ro = new RouteOutBox() {
-                    RouteId = routeId,
-                    RouteTaskId = box.TaskId,
-                    BoxRecordId = box.RecordId
-                };
-                _routeOutBoxRepository.Insert(ro);
-            }  
-            return boxes.Count; 
+            if (boxes != null & boxes.Count > 0)
+            {
+                foreach (var b in boxes)
+                    if (b.BoxRecord.Box.Cn == boxCn && b.BoxRecord.OutTime.HasValue) 
+                        return "此尾箱已出库";
+            }
+
+            var box = WorkManager.GetBoxByCn(boxCn);
+            if (box.Id == 0) return "无此尾箱";
+
+            if (!box.BoxRecordId.HasValue) return "此箱需要先入库";
+            var record = _recordRepository.Get(box.BoxRecordId.Value);
+            record.OutTime = DateTime.Now;
+            record.OutWorkers = workers;
+        
+            RouteOutBox ro = new RouteOutBox() {
+                RouteId = task.RouteId,
+                RouteTaskId = task.Id,
+                BoxRecordId = box.BoxRecordId.Value
+            };
+            
+            _routeOutBoxRepository.Insert(ro);
+            
+            return null;
         }
 
         public async Task<List<BoxRecordSearchDto>> SearchByDay(DateTime theDay)

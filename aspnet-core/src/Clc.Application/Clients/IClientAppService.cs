@@ -7,5 +7,7 @@ namespace Clc.Clients
     public interface IClientAppService : IApplicationService
     {
         List<ComboboxItemDto> GetComboItems(string name);
+
+        List<ComboboxItemDto> GetBoxes(int outletId);
     }
 }

@@ -37,7 +37,6 @@ namespace Clc.Runtime
         /// </summary>
         public DateTime? OutTime { get; set; }
 
-        [Required]
         [StringLength(MaxWorkersLength)]
         public string InWorkers { get; set; }
         

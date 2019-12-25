@@ -2275,7 +2275,6 @@ namespace Clc.Migrations
                     b.Property<DateTime?>("InTime");
 
                     b.Property<string>("InWorkers")
-                        .IsRequired()
                         .HasMaxLength(64);
 
                     b.Property<int?>("OutRouteTaskId");

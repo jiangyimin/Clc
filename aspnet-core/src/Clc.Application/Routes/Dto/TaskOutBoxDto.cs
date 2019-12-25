@@ -14,12 +14,8 @@ namespace Clc.Routes.Dto
         [Required]
         public int RouteId { get; set; }
 
-        /// <summary>
-        /// Box
-        /// </summary>
-        [Required]
-        public int BoxId { get; set; }
-        public string BoxCn { get; set; }
+        public string BoxRecordBoxCn { get; set; }
+        public string BoxRecordBoxOutletName { get; set; }
 
         /// <summary>
         /// RouteTask
@@ -29,6 +25,7 @@ namespace Clc.Routes.Dto
         [Required]
         public int BoxRecordId { get; set; }
 
+        public DateTime? BoxRecordOutTime { get; set; }
         public DateTime? BoxRecordReceiveTime { get; set; }
     }
 }

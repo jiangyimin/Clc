@@ -1,6 +1,8 @@
-
 (function() {        
     $(function() {
+        finput.DetectWorker = false;
+        finput.DetectArticle = false;
+        finput.DetectBox = true;
         abp.services.app.work.getMyCheckinAffair().done(function (wk) {
             work.me = wk;
             if (!work.validate2()) return;
@@ -21,6 +23,10 @@
 
         $('#dgTask').datagrid({
             onSelect: function (index, row) {
+                taskRow = row;
+                abp.services.app.client.getBoxes(row.outletId).done(function(boxes) {
+                    $('#boxId').combobox({data: boxes, valueField: 'value', textField: 'displayText' });
+                })
                 $('#dgBox').datagrid({
                     url: 'GridDataInBox/' + row.id
                 });
@@ -30,36 +36,46 @@
     });
 })();
 
-        finput.boxScanned = function(rfid) {
-            abp.services.app.work.matchInBox(work.dd, work.myWork.affairId, finput.route.id, rfid).done(function(ret) {
-                if (ret.item1 != '') {
-                    abp.notify.error(ret.item1);
-                    return;
-                };
-                var b = ret.item2;
-                if (finput.isInBoxes(b.boxId)) {
-                    abp.notify.warn('此尾箱已扫描');
-                    return;
-                };
+var taskRow = null;
 
-                // alert(b.boxId);
-                abp.services.app.boxRecord.getBoxStatus(b.boxId).done(function (status) {
-                    if (status != null) abp.notify.warn(status);
-                    finput.boxes.push(b);
-                    $('#dl').datalist('loadData', finput.boxes);
-                });
-            });
-        }
+function addBox() {
+    if ($('#boxId').val() == null) {
+        abp.notify.error("请选择尾箱"); return;
+    }
+    //alert(taskRow.id+rfid+work.me.workers);
+    abp.services.app.boxRecord.inBox(taskRow.id, $('#boxId').val(), work.me.workers).done(function(ret) {
+        if (ret != null) {
+            abp.notify.error(ret);
+            return;
+        };
 
-        finput.onWorkerConfirm = function() {
-            if (finput.boxes.length == 0) {
-                abp.notify.warn('未入库任何尾箱')
+        abp.notify.success("成功入箱");
+        $('#dgBox').datagrid('reload');
+    }); 
+}
+
+finput.boxScanned = function(rfid) {
+    //alert(rfid);
+    if (taskRow == null) {
+        abp.notify.error("请选择任务线路"); return;
+    }
+
+    if (taskRow.outletCn != rfid.substr(0, 6)) {
+        abp.message.confirm('非本网点尾箱，确认继续?', '请确认', function (r) {
+            if (!r) {
                 return;
             }
+        });
+    }
 
-            // alert(finput.boxes.length);
-            abp.services.app.boxRecord.in(finput.route.id, finput.boxes, work.myWork.workers).done(function(count) {
-                abp.notify.info(finput.worker.name+'入库了'+count+'个尾箱');
-                $('#dlg').dialog('close');
-            });
-        }
+    //alert(taskRow.id+rfid+work.me.workers);
+    abp.services.app.boxRecord.inBox(taskRow.id, rfid, work.me.workers).done(function(ret) {
+        if (ret != null) {
+            abp.notify.error(ret);
+            return;
+        };
+        
+        abp.notify.success("成功入箱");
+        $('#dgBox').datagrid('reload');
+    });
+}

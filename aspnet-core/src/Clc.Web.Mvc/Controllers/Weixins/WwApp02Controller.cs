@@ -199,7 +199,7 @@ namespace Clc.Web.Controllers
         {
             if (string.IsNullOrEmpty(code))
             {
-                // return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
 
             string workerCn = null;
@@ -212,8 +212,8 @@ namespace Clc.Web.Controllers
                 Logger.Error("微信授权错误");
             }               
 
-            //if (workerCn == null) return Content("系统取不到你的微信标识号");
-            workerCn = "90005";
+            if (workerCn == null) return Content("系统取不到你的微信标识号");
+            //workerCn = "90005";
             var worker = WorkManager.GetWorkerByCn(workerCn);
             if (!worker.WorkRoleNames.Contains("司机")) return Content("需要司机角色");
             var depot = WorkManager.GetDepot(worker.DepotId);
@@ -234,7 +234,7 @@ namespace Clc.Web.Controllers
         {
             if (string.IsNullOrEmpty(code))
             {
-                //return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
 
             string workerCn = null;
@@ -247,8 +247,8 @@ namespace Clc.Web.Controllers
                 Logger.Error("微信授权错误");
             }               
 
-            //if (workerCn == null) return Content("系统取不到你的微信标识号");
-            workerCn = "90005";
+            if (workerCn == null) return Content("系统取不到你的微信标识号");
+            //workerCn = "90005";
 
             var worker = WorkManager.GetWorkerByCn(workerCn);
             if (!worker.WorkRoleNames.Contains("司机")) return Content("需要司机角色");

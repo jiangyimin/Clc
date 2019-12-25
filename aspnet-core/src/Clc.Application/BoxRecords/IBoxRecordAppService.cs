@@ -11,8 +11,8 @@ namespace Clc.BoxRecords
     public interface IBoxRecordAppService : IApplicationService
     {
         Task<PagedResultDto<BoxRecordDto>> GetBoxesAsync(PagedAndSortedResultRequestDto requestDto);
-        int In(int routeId, List<RouteBoxCDto> boxes, string workers);
-        int Out(int routeId, List<RouteBoxCDto> boxes, string workers);       
+        string InBox(int taskId, string rfid, string workers);
+        string OutBox(int taskId, string rfid, string workers);       
 
 
         string GetBoxStatus(int articleId);

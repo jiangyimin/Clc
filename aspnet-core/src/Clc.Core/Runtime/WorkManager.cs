@@ -458,6 +458,12 @@ namespace Clc.Works
             return _articleCache.GetList().FirstOrDefault(x => x.Cn == cn);
         }
         
+        public Box GetBoxByCn(string cn)
+        {
+            var b = _boxCache.GetList().Find(x => x.Cn == cn);
+            return b;
+        }
+        
         public Box GetBox(int id)
         {
             return _boxCache[id];

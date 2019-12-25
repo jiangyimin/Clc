@@ -25,6 +25,7 @@ namespace Clc.Routes.Dto
         public string BoxRecordBoxOutletName { get; set; }
         public DateTime? BoxRecordPickupTime { get; set; }
 
+        public DateTime? BoxRecordInTime { get; set; }
     }
 }
 

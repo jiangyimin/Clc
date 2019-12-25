@@ -77,10 +77,10 @@ namespace Clc.Works
 
         #region box
 
-        RouteWorkerMatchResult MatchWorkerForBox(int wpId, DateTime carryoutDate, int depotId, int affairId, string rfid);
+        //RouteWorkerMatchResult MatchWorkerForBox(int wpId, DateTime carryoutDate, int depotId, int affairId, string rfid);
         
-        (string, RouteBoxCDto) MatchInBox(DateTime carryoutDate, int affairId, int routeId, string rfid);
-        (string, RouteBoxCDto) MatchOutBox(DateTime carryoutDate, int affairId, int routeId, string rfid);
+        //(string, RouteBoxCDto) MatchInBox(DateTime carryoutDate, int affairId, int routeId, string rfid);
+        //(string, RouteBoxCDto) MatchOutBox(DateTime carryoutDate, int affairId, int routeId, string rfid);
         
         #endregion
     }

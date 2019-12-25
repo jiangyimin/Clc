@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clc.Migrations
 {
     [DbContext(typeof(ClcDbContext))]
-    [Migration("20191218060403_clc2")]
+    [Migration("20191225004926_clc2")]
     partial class clc2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2277,7 +2277,6 @@ namespace Clc.Migrations
                     b.Property<DateTime?>("InTime");
 
                     b.Property<string>("InWorkers")
-                        .IsRequired()
                         .HasMaxLength(64);
 
                     b.Property<int?>("OutRouteTaskId");

@@ -616,11 +616,12 @@ namespace Clc.Works
             return result;
         }
 
-        public (string, RouteBoxCDto) MatchInBox(DateTime carryoutDate, int affairId, int routeId, string rfid)
+        public string InBox(int taskId, string rfid, string workers)
         {
             var box = _boxCache.GetList().FirstOrDefault(x => x.Cn == rfid);
-            if (box == null) return ("没有对应的尾箱", null);
-            return (null, null);
+            if (box == null) return "没有对应的尾箱";
+            
+            return null;
         }
 
         public (string, RouteBoxCDto) MatchOutBox(DateTime carryoutDate, int affairId, int routeId, string rfid)

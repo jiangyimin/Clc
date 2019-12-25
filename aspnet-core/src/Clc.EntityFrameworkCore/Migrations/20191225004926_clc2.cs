@@ -26,6 +26,14 @@ namespace Clc.Migrations
                 table: "Depots",
                 nullable: true);
 
+            migrationBuilder.AlterColumn<string>(
+                name: "InWorkers",
+                table: "BoxRecords",
+                maxLength: 64,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldMaxLength: 64);
+
             migrationBuilder.AlterColumn<DateTime>(
                 name: "InTime",
                 table: "BoxRecords",
@@ -487,6 +495,15 @@ namespace Clc.Migrations
             migrationBuilder.DropColumn(
                 name: "PickupTime",
                 table: "BoxRecords");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "InWorkers",
+                table: "BoxRecords",
+                maxLength: 64,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldMaxLength: 64,
+                oldNullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "InTime",
