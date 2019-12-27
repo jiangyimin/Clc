@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "网点测试密码";
+    Layout = "~/Views/Shared/_WeixinLayout.cshtml";
+}
+    
+
+<form name="fm" method="post" onsubmit="checkSubmit()">
+    @Html.ValidationSummary()
+    <div class="weui-cells__title" style="margin-bottom:10px">填写内容</div>
+    <div  class="weui-cells">
+        <div class="weui-cell" style="margin-bottom:5px">
+            <div class="weui-cell__hd"><label for="OutletCn" class="weui-label">网点编号:</label></div>
+            <div class="weui-cell__bd">
+                <input type="hidden" name="taskId"/>
+                <input type="hidden" name="lat"/>
+                <input type="hidden" name="lon"/>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <input class="weui-btn weui-btn_plain-default" type="button" value="通知" onclick="selectOutlet()" style="margin-bottom:10px;" />
+            <input class="weui-btn weui-btn_plain-default" type="button" value="发送位置" onclick="sendLocation()" style="margin-bottom:10px;" />
+        </div>
+
+        <div class="weui-cell">
+            <input type="submit" value="二维码" class="weui-btn weui-btn_primary" />
+        </div>
+    </div>
+</form>
+
+@section footer
+{
+    <script type="text/javascript">
+        wx.config({
+            debug: false,
+            appId: '@ViewBag.appId',
+            timestamp: @ViewBag.timestamp,
+            nonceStr: '@ViewBag.noncestr',
+            signature: '@ViewBag.signature',
+            jsApiList: [
+                'openLocation',
+                'getLocation',
+            ]
+        });
+
+        wx.ready( function() {
+            weui.toast('配置正确', 500);
+        });
+
+        function sendLocation() {
+            wx.getLocation({
+                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    document.fm.lat.value = res.latitude;
+                    document.fm.lon.value = res.longitude;
+                    document.fm.action = "/WwApp02/SendLocation";
+                    document.fm.submit();
+                }   
+            });
+        }
+    </script>
+}

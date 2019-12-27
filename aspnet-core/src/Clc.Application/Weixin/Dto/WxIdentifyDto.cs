@@ -65,6 +65,7 @@ namespace Clc.Weixin.Dto
         public string OutletCipertext { get; set; }
 
         // Options
+        public bool AllowDoIdentify { get; set; }
         public string ErrorMessage { get; set; }
 
         public WxIdentifyDto()

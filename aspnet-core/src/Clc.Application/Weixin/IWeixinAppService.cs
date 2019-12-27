@@ -20,6 +20,7 @@ namespace Clc.Weixin
         void SetIdentifyTime(int taskId);
         void SetIdentifyEvent(int routeId, string outlet, string issuer);
 
+        void InsertRouteArriveEvent(int taskId, string addresss);
         #endregion
 
     }

@@ -47,8 +47,13 @@ namespace Clc.Routes
         Task<List<RouteArticleDto>> GetRouteArticles(int id, string sorting);
         #endregion
 
+        #region Weixin
         (Route, int) FindRouteForIdentify(int depotId, int workerId);
         void SetIdentifyTime(int taskId);
         void SetIdentifyEvent(int routeId, string outlet, string issuer);
+
+        void InsertRouteArriveEvent(int taskId, string address);
+        
+        #endregion
     }
 }

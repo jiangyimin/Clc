@@ -8,6 +8,9 @@ using Clc.Runtime.Cache;
 using Clc.Runtime;
 using Clc.DoorRecords.Dto;
 using Clc.Extensions;
+using Abp.Configuration;
+using Clc.Configuration;
+using System.Linq;
 
 namespace Clc.Weixin
 {
@@ -77,6 +80,7 @@ namespace Clc.Weixin
             if (ret.Item2 == null) 
                 dto.ErrorMessage = "需要辅助交接员";
             
+            dto.AllowDoIdentify = AllowDoIdentify(dto.DepotId);
             return dto;
         }
 
@@ -90,6 +94,20 @@ namespace Clc.Weixin
             _routeAppService.SetIdentifyTime(taskId);
         }
 
+        public void InsertRouteArriveEvent(int taskId, string address)
+        {
+            _routeAppService.InsertRouteArriveEvent(taskId, address);
+         }
+
+        private bool AllowDoIdentify(int depotId) 
+        {
+            var depot = WorkManager.GetDepot(depotId);
+            var depots = SettingManager.GetSettingValueForTenant(AppSettingNames.Rule.EditWorkerDepots, 1);
+            if (!string.IsNullOrEmpty(depots) && depots.Split('|', ',').Contains(depot.Name)) 
+                return true;
+            return false;
+        }
+        
         private (Route, Worker) FindRoute(Worker main, WxIdentifyDto dto)
         {
             var ret = _routeAppService.FindRouteForIdentify(main.DepotId, main.Id);

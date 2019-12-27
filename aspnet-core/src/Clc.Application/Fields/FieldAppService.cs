@@ -233,9 +233,9 @@ namespace Clc.Fields
             var depot = WorkManager.GetDepot(WorkManager.GetWorker(workerId).DepotId);
 
             var depots = SettingManager.GetSettingValue(AppSettingNames.Rule.EditWorkerDepots);
-            if (!depots.Split('|', ',').Contains(depot.Name)) 
-                return false;
-            return true;
+            if (!string.IsNullOrEmpty(depots) && depots.Split('|', ',').Contains(depot.Name)) 
+                return true;
+            return false;
         }
 
     }

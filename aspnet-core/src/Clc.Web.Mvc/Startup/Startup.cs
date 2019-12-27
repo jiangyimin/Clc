@@ -49,7 +49,7 @@ namespace Clc.Web.Startup
             AuthConfigurer.Configure(services, _appConfiguration);
 
             services.AddScoped<IWebResourceManager, WebResourceManager>();
-            services.AddSession(o => o.IdleTimeout = TimeSpan.FromSeconds(90));
+            services.AddSession(o => o.IdleTimeout = TimeSpan.FromSeconds(100));
 
             services.AddSignalR();
 

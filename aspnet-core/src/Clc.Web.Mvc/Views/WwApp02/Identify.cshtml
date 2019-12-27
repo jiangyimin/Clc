@@ -4,16 +4,49 @@
     Layout = "~/Views/Shared/_WeixinLayout.cshtml";
 }
     
-@section header
+<form name="fm" method="post">
+    @Html.ValidationSummary()
+    <div class="weui-cells__title">押运业务员使用区域</div>
+    <div class="weui-cells">
+    @if (@Model.AllowDoIdentify) 
+    {
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label for="OutletCn" class="weui-label">网点编号:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="outletCn" type="number" pattern="[0-9]*" placeholder="请输入网点编号" />
+            </div>
+        </div>
+        <input class="weui-btn weui-btn_plain-default" type="button" value="选择网点" onclick="selectOutlet()" />
+    }
+    @if (@Model.TaskId > 0)
+    {
+        <input class="weui-btn weui-btn_plain-default" type="button" value="无人交接" onclick="punchin()" />
+    }
+        <div class="weui-cells__title" style="margin-bottom:5px">银行网点使用区域</div>
+        <h2>&nbsp;&nbsp;@Model.OutletCn @Model.OutletName</h2>
+        
+        <div class="weui-cell">
+        <div class="weui-cell__hd"><label for="Password" class="weui-label">网点密码:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="password" type="password" pattern="[0-9]*" placeholder="请银行输入密码" />
+            </div>
+        </div>
+        <div class="weui-cell">
+            <input class="weui-btn  weui-btn_primary" type="button" value="确定" onclick="verifyOutlet()" />
+        </div>
+    </div>
+    <input type="hidden" name="TaskId" value="@Model.TaskId"/>
+</form>
+
+@section footer
 {
     <script type="text/javascript">
         window.onload = function() {
-            // alert('1');
             document.body.style.background = "url('../../../images/logowater.jpg'";
         }
 
         function selectOutlet() {
-            if (taskId.value != 0) {
+            if (document.fm.taskId.value != 0) {
                 alert('已确定网点');
             }
             else {
@@ -26,33 +59,34 @@
             document.fm.action = "/WwApp02/VerifyOutlet";
             document.fm.submit();
         }
+
+        function punchin() {
+            wx.getLocation({
+                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    var params = 'taskId=' + document.fm.taskId.value + 'lat=' + res.latitude + '&lon=' + res.longitude;
+                    myajax('/WwApp02/SendLocation', params, function cb() {
+                        weui.toast('发送成功', 3000)
+                    });
+                }   
+            });
+        }
+
+        wx.config({
+            debug: false,
+            appId: '@ViewBag.appId',
+            timestamp: @ViewBag.timestamp,
+            nonceStr: '@ViewBag.noncestr',
+            signature: '@ViewBag.signature',
+            jsApiList: [
+                'openLocation',
+                'getLocation',
+            ]
+        });
+
+        wx.ready( function() {
+            weui.toast('配置正确', 3000);
+        });
+
     </script>
 }
-
-<form name="fm" method="post" onsubmit="checkSubmit()">
-    @Html.ValidationSummary()
-    <div class="weui-cells__title" style="margin-bottom:10px">填写内容</div>
-    <div  class="weui-cells">
-    <div class="weui-cell" style="margin-bottom:5px">
-        <div class="weui-cell__hd"><label for="OutletCn" class="weui-label">网点编号:</label></div>
-        <div class="weui-cell__bd">
-            <input type="hidden" name="TaskId" value="@Model.TaskId"/>
-            <input class="weui-input" name="outletCn" type="number" pattern="[0-9]*" placeholder="请输入网点编号" />
-        </div>
-    </div>
-    <div>
-    <input class="weui-btn weui-btn_plain-default" type="button" value="选择网点" onclick="selectOutlet()" style="margin-bottom:15px;" />
-
-    <div class="weui-cells__title" style="margin-bottom:5px">银行网点使用区域</div>
-        <h2>&nbsp;&nbsp;@Model.OutletCn @Model.OutletName</h2>
-    </div>
-    <div class="weui-cell" style="margin-bottom:10px">
-        <div class="weui-cell__hd"><label for="Password" class="weui-label">网点密码:</label></div>
-        <div class="weui-cell__bd">
-            <input class="weui-input" name="password" type="password" pattern="[0-9]*" placeholder="请银行输入密码" />
-        </div>
-    </div>
-    <div>
-        <input class="weui-btn  weui-btn_primary" type="button" value="确定" onclick="verifyOutlet()" style="margin-bottom:5px" />
-    </div>
-</form>

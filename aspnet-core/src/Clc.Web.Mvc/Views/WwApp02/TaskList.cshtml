@@ -5,7 +5,10 @@
 }
 
 <form name="fm" class="weui-panel weui-panel_access" method="post">
-    <input class="weui-btn weui-btn_plain-default" type="button" value="选择清单外网点" onclick="selectOutlet()" style="margin-bottom:15px;" />
+    @if (@Model.AllowDoIdentify) 
+    {
+        <input class="weui-btn weui-btn_plain-default" type="button" value="选择清单外网点" onclick="selectOutlet()" style="margin-bottom:15px;" />
+    }
     <div class="weui-panel__hd">任务列表</div>
     @if (@Model.Tasks.Count > 0)
     {

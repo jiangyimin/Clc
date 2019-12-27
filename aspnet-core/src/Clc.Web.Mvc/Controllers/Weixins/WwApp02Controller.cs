@@ -1,22 +1,24 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Clc.Configuration;
 using Clc.Controllers;
 using Clc.Weixin;
 using Clc.Weixin.Dto;
 using Clc.Extensions;
 using Clc.Web.Models.Weixin;
-using Clc.Clients;
 using Clc.Runtime.Cache;
-using Microsoft.AspNetCore.SignalR;
 using Clc.RealTime;
+using Clc.Works;
+using Clc.VehicleRecords;
 using Senparc.Weixin.Work.AdvancedAPIs;
 using Senparc.Weixin.Work.Containers;
 using Senparc.Weixin.Work.AdvancedAPIs.OAuth2;
-using Clc.Types;
-using Clc.Works;
-using Clc.VehicleRecords;
-using System;
+using Senparc.Weixin.Work.Helpers;
+using System.Net;
+using System.IO;
+using System.Text;
+using Clc.Web.Helpers;
 
 namespace Clc.Web.Controllers
 {
@@ -69,7 +71,7 @@ namespace Clc.Web.Controllers
         {
             if (string.IsNullOrEmpty(code))
             {
-                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                // return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
             
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
@@ -97,10 +99,27 @@ namespace Clc.Web.Controllers
             }
         }
 
+
+        [HttpPost]
+        public ActionResult Login(LoginViewModel vm)
+        {
+            WxIdentifyDto dto = _weixinAppService.Login(vm.WorkerCn, vm.Password, vm.DeviceId);
+            if (!string.IsNullOrEmpty(dto.ErrorMessage))
+            {
+                ModelState.AddModelError("", dto.ErrorMessage);
+                return View(vm);
+            }
+
+            HttpContext.Session.SetObjectAsJson("WxIdentify", dto);
+            return Redirect(vm.ReturnUrl);
+        }
+
+
         [HttpPost]
         public ActionResult DoIdentify()
         {
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
+
             // clear something
             dto.TaskId = 0;
             dto.OutletCn = dto.OutletName = null;
@@ -112,6 +131,12 @@ namespace Clc.Web.Controllers
         [HttpPost]
         public ActionResult SelectTask(int taskId, int outletId)
         {
+            var jsapiticket = JsApiTicketContainer.GetTicket(_corpId, _secret);
+            ViewBag.appId = _corpId;
+            ViewBag.noncestr = JSSDKHelper.GetNoncestr();
+            ViewBag.timestamp = JSSDKHelper.GetTimestamp();
+            ViewBag.signature = JSSDKHelper.GetSignature(jsapiticket, ViewBag.nonceStr, ViewBag.timestamp, AbsoluteUri());
+
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
             dto.TaskId = taskId;
             SelectOutlet(outletId, dto);
@@ -146,21 +171,6 @@ namespace Clc.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(LoginViewModel vm)
-        {
-            WxIdentifyDto dto = _weixinAppService.Login(vm.WorkerCn, vm.Password, vm.DeviceId);
-            if (!string.IsNullOrEmpty(dto.ErrorMessage))
-            {
-                ModelState.AddModelError("", dto.ErrorMessage);
-                return View(vm);
-            }
-
-            HttpContext.Session.SetObjectAsJson("WxIdentify", dto);
-            return Redirect(vm.ReturnUrl);
-        }
-
-
-        [HttpPost]
         public ActionResult SelectOutlet(string outletCn)
         {
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
@@ -181,6 +191,16 @@ namespace Clc.Web.Controllers
                 ModelState.AddModelError("", "此编号没有对应的网点");
                 return View("Identify", dto);
             }
+        }
+
+        [HttpPost]
+        public ActionResult SendLocation(int taskId, double lat, double lon)
+        {
+            var m = BaiduMapHelper.CoordinateToAddress(lat, lon);
+
+            var addr = m.Result.AddressComponent.Street + m.Result.AddressComponent.Street_number;
+            _weixinAppService.InsertRouteArriveEvent(taskId, addr);
+            return Content(m.Result.AddressComponent.Street);
         }
 
         private void SelectOutlet(int outletId, WxIdentifyDto dto)

@@ -42,6 +42,8 @@ namespace Clc.Routes
         private readonly IRouteTypeCache _routeTypeCache;
         private readonly IRouteCache _routeCache;
 
+        private readonly IOutletCache _outletCache;
+
         public RouteAppService(IRepository<Route> routeRepository, 
             IRepository<RouteWorker> workerRepository,
             IRepository<RouteTask> taskRepository,
@@ -58,7 +60,8 @@ namespace Clc.Routes
             IRouteTypeCache routeTypeCache,        
             ITaskTypeCache taskTypeCache,
             IWorkRoleCache workRoleCache,
-            IRouteCache routeCache)
+            IRouteCache routeCache,
+            IOutletCache outletCache)
         {
             _routeRepository = routeRepository;
             _workerRepository = workerRepository;
@@ -77,6 +80,7 @@ namespace Clc.Routes
             _taskTypeCache = taskTypeCache;
             _workRoleCache = workRoleCache;
             _routeCache = routeCache;
+            _outletCache = outletCache;
         }
 
         public async Task<List<RouteDto>> GetRoutesAsync(DateTime carryoutDate, string sorting)
@@ -475,6 +479,23 @@ namespace Clc.Routes
             entity.EventTime = DateTime.Now;
             entity.Name = "网点身份确认";
             entity.Description = outlet;
+            entity.Issurer = issuer;
+            _eventRepository.InsertAsync(entity);
+            CurrentUnitOfWork.SaveChanges();
+        }
+
+        [AbpAllowAnonymous]
+        public void InsertRouteArriveEvent(int taskId, string address)
+        {
+            var task = _taskRepository.Get(taskId);
+            string issuer = string.Format("{0} {1}", _outletCache[task.OutletId], _taskTypeCache[task.TaskTypeId]);
+
+            var entity = new RouteEvent();
+            entity.RouteId = task.RouteId;
+            entity.TenantId = 1;
+            entity.EventTime = DateTime.Now;
+            entity.Name = "网点无人身份确认";
+            entity.Description = address;
             entity.Issurer = issuer;
             _eventRepository.InsertAsync(entity);
             CurrentUnitOfWork.SaveChanges();

@@ -142,7 +142,7 @@ namespace Clc.Configuration
                 ),
                 new SettingDefinition(
                     AppSettingNames.Rule.EditWorkerDepots, 
-                    "调度", 
+                    "", 
                     new FixedLocalizableString("允许编辑人员的大队列表"),
                     scopes: SettingScopes.Tenant
                 ),
