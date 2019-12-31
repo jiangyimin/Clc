@@ -113,15 +113,17 @@ namespace Clc.DoorRecords
 
         public async Task CarryoutAskOpen(int id, int monitorAffairId)
         {
+            if (id == 0) return;
             // get AskDoorRecord
             var entity = await _askDoorRepository.GetAsync(id);
             entity.ProcessTime = DateTime.Now;
             entity.MonitorAffairId = monitorAffairId;
             await _askDoorRepository.UpdateAsync(entity);
-         }
+        }
 
         public async Task CarryoutEmergOpen(int id, int monitorAffairId)
         {
+            if (id == 0) return;
             // get EmergDoorRecord
             var entity = await _emergDoorRepository.GetAsync(id);
             entity.ProcessTime = DateTime.Now;
@@ -165,7 +167,7 @@ namespace Clc.DoorRecords
         [AbpAllowAnonymous]
         public async Task<EmergDoorRecordDto> GetLastUnApproveEmergDoor(int workerId)
         {
-            var query = _emergDoorRepository.GetAllIncluding(x => x.Issue, x => x.Workplace).Where(x => x.ApproverId == workerId);
+            var query = _emergDoorRepository.GetAllIncluding(x => x.Issue, x => x.Workplace).Where(x => x.CreateTime.Date == DateTime.Now.Date && x.ApproverId == workerId && !x.ApprovalTime.HasValue);
             var entity = await AsyncQueryableExecuter.FirstOrDefaultAsync(query);
             return ObjectMapper.Map<EmergDoorRecordDto>(entity);
         }
@@ -174,7 +176,7 @@ namespace Clc.DoorRecords
         public async Task<AskDoorDto> GetLastUnApproveTempDoor(string workerCn)
         {
             var query = _askDoorRepository.GetAllIncluding(x => x.Workplace)
-                .Where(x => x.AskReason == workerCn);
+                .Where(x => x.AskTime.Date == DateTime.Now.Date && x.AskReason == workerCn && x.Approver == null);
             var entity = await AsyncQueryableExecuter.FirstOrDefaultAsync(query);
             return ObjectMapper.Map<AskDoorDto>(entity);
         }

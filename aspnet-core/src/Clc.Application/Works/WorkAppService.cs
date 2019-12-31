@@ -241,8 +241,22 @@ namespace Clc.Works
         public void SetReportDate()
         {
             int depotId = WorkManager.GetWorkerDepotId(GetCurrentUserWorkerIdAsync().Result);
-
             var depot = _depotRepository.Get(depotId);
+            
+            var t = SettingManager.GetSettingValue(AppSettingNames.TimeRule.ActivateTime);
+            var time = ClcUtils.GetDateTime(t, true);
+
+            depot.LastReportDate = time;
+            _depotRepository.Update(depot);
+        }
+        
+        public void SetReportTime(string depotName)
+        {
+            var d = WorkManager.GetDepotByName(depotName);
+            if (d == null) return;
+
+            var depot = _depotRepository.Get(d.Id);
+
             depot.LastReportDate = DateTime.Now;
             _depotRepository.Update(depot);
         }

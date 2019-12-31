@@ -2,6 +2,7 @@
 {
     <script type="text/javascript"> 
         $(function() {
+            // alert('getLeaser');
             abp.services.app.work.getLeaders().done(function(data) {
                 $('#toLeader').combobox({
                     data: data, 
@@ -15,7 +16,7 @@
                 onSelect: function(index, row) {
                     $('#remark').textbox('setValue', row.remark);
                 }
-            }
+            });
         });
 
         function reload() {
@@ -29,7 +30,7 @@
             });
         }
 
-        function update() {
+        function gupdate() {
             var row = $('#dg').datagrid('getSelected');
             if (row == null) {
                 abp.notify.error('请选择收费中调任务');
@@ -69,9 +70,9 @@
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="reload()">刷新</a>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注:
             <input id="remark" class="easyui-textbox" style="width:250px;">
-            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="update()">修改备注信息</a>
-            <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发送到:
-            <input id="toLeader" class="easyui-combobox" style="width:120px;"> -->
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="gupdate()">修改备注信息</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发送到:
+            <input id="toLeader" class="easyui-combobox" style="width:120px;">
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="reportTo()">报送</a>
         </div>
         <table id="dg" class="easyui-datagrid" toolbar="#tb"

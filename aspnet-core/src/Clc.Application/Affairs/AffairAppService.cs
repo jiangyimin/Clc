@@ -361,6 +361,10 @@ namespace Clc.Affairs
 
         private string CanActivateAffair(Affair affair)
         {
+            var depot = WorkManager.GetDepot(affair.DepotId);
+            if (depot.LastReportDate.HasValue && depot.LastReportDate.Value >= DateTime.Now)    // route.CarryoutDate)
+                return "未到可激活时点";
+
             // check workplace
             var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
 

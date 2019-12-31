@@ -171,7 +171,10 @@ namespace Clc.Works
         {
             return _depotCache[depotId];
         }
-
+        public Depot GetDepotByName(string name)
+        {
+            return _depotCache.GetList().Find(x => x.Name == name);
+        }
         public List<int> GetShareDepots(int wpId)
         {
             var wp = _workplaceCache[wpId];

@@ -176,6 +176,12 @@ namespace Clc.Configuration
                     new FixedLocalizableString("申请开门间隔(秒)"),
                     scopes: SettingScopes.Tenant
                 ),
+                new SettingDefinition(
+                    AppSettingNames.TimeRule.ActivateTime, 
+                    "05:00", 
+                    new FixedLocalizableString("激活时点"),
+                    scopes: SettingScopes.Tenant
+                ),
             };
         }
     }

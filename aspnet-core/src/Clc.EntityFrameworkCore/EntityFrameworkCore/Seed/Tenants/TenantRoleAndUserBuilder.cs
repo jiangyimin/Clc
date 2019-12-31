@@ -54,7 +54,7 @@ namespace Clc.EntityFrameworkCore.Seed.Tenants
             CreateRole(StaticRoleNames.Tenants.Aux, permissions, true);
             
             // Monitor 
-            permissions = new string[] { PermissionNames.Pages_Monitor, PermissionNames.Pages_Query };
+            permissions = new string[] { PermissionNames.Pages_Monitor };
             CreateRole(StaticRoleNames.Tenants.Monitor, permissions, true);
 
             // Article

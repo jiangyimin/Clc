@@ -49,7 +49,7 @@ namespace Clc.Web.Controllers
             if (string.IsNullOrEmpty(code))
             {
                 // 备案
-                //return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
 
             var vm = new LoginViewModel() {

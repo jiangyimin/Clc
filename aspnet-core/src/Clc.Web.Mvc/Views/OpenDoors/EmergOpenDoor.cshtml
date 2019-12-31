@@ -19,39 +19,16 @@
         var status = '';
         var doorIp = '';
         var doorRecordId = 0;
-    
-        winput.matchWorker = function(rfid) {
-            if (!allowCardWhenCheckin) {
-                abp.notify.error('系统设置为不允许刷卡验证');
-                return;
-            }
-            if (status == '') {
-                abp.notify.warn('现在不需刷卡');
-                return;
-            }
-
-            // var rows = $('#dg').datagrid('getRows');
-            for (var i = 0; i < work.aws.length; i++) {
-                if (work.aws[i].workerRfid == rfid) {
-                    work.aws[i].confirmed = "是";
-                    $('#dgConfirm').datagrid('loadData', { rows:work.aws });
-                
-                    if (allConfirmed()) doOpenDoor();
-                    break;
-                }
-            }
-        }
-    
+        
         function fingerConfirm (index) {
             abp.notify.info('请将指纹放到指纹仪上');
-            var row = $('#dgConfirm').datagrid('getRows')[index];
             var finger = window.parent.getFingerCode();
             if (finger != '') {
-                abp.services.app.work.confirmByFinger(finger, row.workerId).done(function(ret) {
+                abp.services.app.work.confirmByFinger(finger, cds[index].workerId).done(function(ret) {
                     if (ret.item1) {
                         abp.notify.info(ret.item2);
-                        row.confirmed = "是";
-                        $('#dgConfirm').datagrid('loadData', { rows: work.aws });
+                        cds[index].confirmed = true;
+                        confirms.innerHTML = createHTML();
 
                         if (allConfirmed()) doOpenDoor();
                     }
@@ -69,10 +46,12 @@
 }
 
 <div class="easyui-layout" fit="true">
-    <div data-options="region:'east', title:'门禁列表', collasped:true, split:true, border:false" style="width:350px">
+    <div data-options="region:'east', title:'门禁列表', collasped:true, split:true, border:false" style="width:450px">
         <audio id="sounds" src="~/sounds/success.mp3" type="audio/mpeg" controller="false" style="width:0;height:0">ERROR</audio>
         <div id="tbDoor">
-            门禁密码：<input id="password" class="easyui-numberbox" data-options="requried:true" style="width: 100px">
+            值班领导：<input id="leader" class="easyui-combobox" data-options="requried:true" style="width: 120px">
+            <a name="leaderFinger" href="javascript:void(0)" class="easyui-linkbutton" plain="true">领导验证</a>
+            <a name="allowActivate" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">大队激活</a>
             <a name="open" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">开门</a>
         </div>
         <table id="dgDoor" class="easyui-datagrid" toolbar="#tbDoor"

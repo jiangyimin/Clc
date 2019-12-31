@@ -488,7 +488,7 @@ namespace Clc.Routes
         public void InsertRouteArriveEvent(int taskId, string address)
         {
             var task = _taskRepository.Get(taskId);
-            string issuer = string.Format("{0} {1}", _outletCache[task.OutletId], _taskTypeCache[task.TaskTypeId]);
+            string issuer = string.Format("{0} {1}", _outletCache[task.OutletId].Name, _taskTypeCache[task.TaskTypeId].Name);
 
             var entity = new RouteEvent();
             entity.RouteId = task.RouteId;
@@ -644,8 +644,8 @@ namespace Clc.Routes
         private string CanActivateRoute(Route route)
         {
             var depot = WorkManager.GetDepot(route.DepotId);
-            if (depot.LastReportDate.HasValue && depot.LastReportDate.Value >= route.CarryoutDate)
-                return "已日结";
+            if (depot.LastReportDate.HasValue && depot.LastReportDate.Value >= DateTime.Now)    // route.CarryoutDate)
+                return "未到可激活时点";
 
             var routeType = _routeTypeCache[route.RouteTypeId];
 

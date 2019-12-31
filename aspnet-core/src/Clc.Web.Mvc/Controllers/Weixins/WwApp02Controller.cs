@@ -71,7 +71,7 @@ namespace Clc.Web.Controllers
         {
             if (string.IsNullOrEmpty(code))
             {
-                // return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
             
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
@@ -118,6 +118,12 @@ namespace Clc.Web.Controllers
         [HttpPost]
         public ActionResult DoIdentify()
         {
+            var jsapiticket = JsApiTicketContainer.GetTicket(_corpId, _secret);
+            ViewBag.appId = _corpId;
+            ViewBag.noncestr = JSSDKHelper.GetNoncestr();
+            ViewBag.timestamp = JSSDKHelper.GetTimestamp();
+            ViewBag.signature = JSSDKHelper.GetSignature(jsapiticket, ViewBag.nonceStr, ViewBag.timestamp, AbsoluteUri());
+
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
 
             // clear something
@@ -147,6 +153,12 @@ namespace Clc.Web.Controllers
         [HttpPost]
         public ActionResult VerifyOutlet(int taskId, string password)
         {
+            var jsapiticket = JsApiTicketContainer.GetTicket(_corpId, _secret);
+            ViewBag.appId = _corpId;
+            ViewBag.noncestr = JSSDKHelper.GetNoncestr();
+            ViewBag.timestamp = JSSDKHelper.GetTimestamp();
+            ViewBag.signature = JSSDKHelper.GetSignature(jsapiticket, ViewBag.nonceStr, ViewBag.timestamp, AbsoluteUri());
+            
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
             if (dto != null && !string.IsNullOrEmpty(password) && dto.OutletPassword == password)
             {
@@ -173,6 +185,12 @@ namespace Clc.Web.Controllers
         [HttpPost]
         public ActionResult SelectOutlet(string outletCn)
         {
+            var jsapiticket = JsApiTicketContainer.GetTicket(_corpId, _secret);
+            ViewBag.appId = _corpId;
+            ViewBag.noncestr = JSSDKHelper.GetNoncestr();
+            ViewBag.timestamp = JSSDKHelper.GetTimestamp();
+            ViewBag.signature = JSSDKHelper.GetSignature(jsapiticket, ViewBag.nonceStr, ViewBag.timestamp, AbsoluteUri());
+            
             WxIdentifyDto dto = HttpContext.Session.GetObjectFromJson<WxIdentifyDto>("WxIdentify");
             if (string.IsNullOrWhiteSpace(outletCn))
             {

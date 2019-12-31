@@ -41,6 +41,8 @@ namespace Clc.Web.Controllers
         [DontWrapResult]
         public JsonResult NotifyAskWorkers(int doorRecordId)
         {
+            if (doorRecordId == 0) return Json( new { Message = "直接开门方式" });
+            
             var ret = _doorRecordAppService.GetNotifyInfo(doorRecordId);
 
             WeixinUtils.SendMessage("App01", ret.Item1, $"你申请的{ret.Item2}已打开");

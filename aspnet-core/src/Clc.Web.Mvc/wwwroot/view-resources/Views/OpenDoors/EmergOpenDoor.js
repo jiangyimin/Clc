@@ -19,9 +19,18 @@
                 work.aws = aws;
                 // alert(aws.length);
             });
-    
+
+            $('#tbDoor').children('a[name="allowActivate"]').linkbutton('disable');  
+            $('#tbDoor').children('a[name="open"]').linkbutton('disable');  
         });
 
+        abp.services.app.work.getLeaders().done(function(data) {
+            $('#leader').combobox({
+                data: data, 
+                valueField: 'value', 
+                textField: 'displayText'
+            })
+        });
 
         // #tb Buttons
         $('#yesterday').checkbox({
@@ -44,6 +53,8 @@
         });
 
         $('#tb').children('a[name="open"]').click(function (e) {
+            if (status != '') return;   // important
+
             var row = $('#dg').datagrid('getSelected');
             if (!row) {
                 abp.notify.error("选择要应急开门申请", "", { positionClass : 'toast-top-center'} );
@@ -62,32 +73,71 @@
             openConfirmDialog(work.aws);
         });  
 
+        $('#tbDoor').children('a[name="leaderFinger"]').click(function (e) {
+            if ($('#leader').combobox('getValue') == null) return;
+
+            abp.notify.info('请领导将指纹放到指纹仪上');
+            var finger = window.parent.getFingerCode();
+            if (finger != '') {
+                abp.services.app.work.confirmByFinger(finger, $('#leader').combobox('getValue')).done(function(ret) {
+                    if (ret.item1) {
+                        $('#tbDoor').children('a[name="allowActivate"]').linkbutton('enable');  
+                        $('#tbDoor').children('a[name="open"]').linkbutton('enable');  
+                    }
+                    else
+                        abp.notify.error(ret.item2);
+                });
+            }
+
+        });
+
+        $('#tbDoor').children('a[name="allowActivate"]').click(function (e) {
+            if ($('#tbDoor').children('a[name="allowActivate"]').linkbutton('options').disabled) return;
+
+            var row = $('#dgDoor').datagrid('getSelected');
+            if (!row) {
+                abp.notify.error("选择要允许激活的大队", "", { positionClass : 'toast-top-center'} );
+                return;
+            };
+
+            abp.services.app.work.setReportTime(row.depotName).done(function(ret) {
+                abp.notify.success(row.depotName + "设置成功");
+                $('#tbDoor').children('a[name="allowActivate"]').linkbutton('disable');  
+                $('#tbDoor').children('a[name="open"]').linkbutton('disable');  
+            });
+        });
+
         $('#tbDoor').children('a[name="open"]').click(function (e) {
+            if ($('#tbDoor').children('a[name="open"]').linkbutton('options').disabled) return;
+
+            if (status != '') return;   // important
+
             var row = $('#dgDoor').datagrid('getSelected');
             if (!row) {
                 abp.notify.error("选择要开门的门禁", "", { positionClass : 'toast-top-center'} );
                 return;
             };
 
-            // alert(row.emergPassword);
-            // alert($('#password').val());
-            if ($('#password').val() != row.emergPassword) {
-                abp.notify.error("应急密码不符！", "", { positionClass : 'toast-top-center'} );
-                return;
-            };
-
             status = 'emerg';
             doorIp = row.doorIp;
             openConfirmDialog(work.aws);
+            $('#tbDoor').children('a[name="allowActivate"]').linkbutton('disable');  
+            $('#tbDoor').children('a[name="open"]').linkbutton('disable');  
         }); 
 
+
+        // 定时器
+        setInterval(function() {
+            if (status == '') $('#dg').datagrid('reload');
+        }, 30000);
+        
         // register event
         window.parent.abp.event.on('emergOpenDoor', function () {
             $("#sounds")[0].play();
             $('#dg').datagrid('reload');
         });
 
-        $('#dlgConform').dialog({
+        $('#dlgConfirm').dialog({
             onClose: function() {
                 cds = [];
                 confirms.innerHTML = '';
@@ -97,6 +147,26 @@
             }
         });
     });
+
+    winput.matchWorker = function(rfid) {
+        if (status == '') {
+            abp.notify.warn('现在不需刷卡');
+            return;
+        }
+        var found = false;
+        for (var i = 0; i < cds.length; i++) {
+            if (cds[i].rfid == rfid) {
+                found = true;
+                cds[i].confirmed = true;
+                confirms.innerHTML = createHTML();
+            
+                if (allConfirmed()) doOpenDoor();
+                break;
+            }
+        }
+
+        if (!found) abp.notify.warn('无此RFID');
+    }  
 })();
 
 var cds = [];
@@ -134,7 +204,7 @@ function allConfirmed() {
 function doOpenDoor() {
     notifyAskWorkers(doorRecordId);
     // udpate askDoorRecord
-    abp.services.app.doorRecord.carryoutAskOpen(doorRecordId, work.me.affairId).done(function() {
+    abp.services.app.doorRecord.carryoutEmergOpen(doorRecordId, work.me.affairId).done(function() {
         $('#dg').datagrid('reload');
         // alert('before close')
         $('#dlgConfirm').dialog('close');
@@ -153,3 +223,4 @@ function notifyAskWorkers(doorRecordId) {
         // abp.notify.info(ret.message);
     });
 }
+

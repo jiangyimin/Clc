@@ -41,7 +41,7 @@ namespace Clc.Web.Controllers
         public async Task<JsonResult> GridData()
         {
             var output = await _issueAppService.GetIssuesAsync(GetOnlyPagedInput());
-            return Json( new { totalCount = output.TotalCount, rows = output.Items });
+            return Json( new { total = output.TotalCount, rows = output.Items });
         }
 
         [HttpPost]

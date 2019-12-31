@@ -8,7 +8,7 @@
     @Html.ValidationSummary()
     <div class="weui-cells__title">押运业务员使用区域</div>
     <div class="weui-cells">
-    @if (@Model.AllowDoIdentify) 
+    @if (@Model.TaskId == 0) 
     {
         <div class="weui-cell">
             <div class="weui-cell__hd"><label for="OutletCn" class="weui-label">网点编号:</label></div>
@@ -35,7 +35,7 @@
             <input class="weui-btn  weui-btn_primary" type="button" value="确定" onclick="verifyOutlet()" />
         </div>
     </div>
-    <input type="hidden" name="TaskId" value="@Model.TaskId"/>
+    <input type="hidden" name="taskId" value="@Model.TaskId"/>
 </form>
 
 @section footer
@@ -46,6 +46,7 @@
         }
 
         function selectOutlet() {
+            // alert(document.fm.taskId.value);
             if (document.fm.taskId.value != 0) {
                 alert('已确定网点');
             }
@@ -64,8 +65,8 @@
             wx.getLocation({
                 type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
                 success: function (res) {
-                    var params = 'taskId=' + document.fm.taskId.value + 'lat=' + res.latitude + '&lon=' + res.longitude;
-                    myajax('/WwApp02/SendLocation', params, function cb() {
+                    var params = 'taskId=' + document.fm.taskId.value + '&lat=' + res.latitude + '&lon=' + res.longitude;
+                    myajax('/WwApp02/SendLocation', params, function () {
                         weui.toast('发送成功', 3000)
                     });
                 }   
@@ -85,7 +86,7 @@
         });
 
         wx.ready( function() {
-            weui.toast('配置正确', 3000);
+            weui.toast('配置正确', 1000);
         });
 
     </script>

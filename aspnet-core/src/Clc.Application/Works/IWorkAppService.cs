@@ -33,6 +33,7 @@ namespace Clc.Works
         TaskReportDto GetTaskReportData(); 
 
         void SetReportDate();
+        void SetReportTime(string depotName);
 
         Task<List<TemporaryTaskDto>> GetFeeTasks(DateTime dt, string sorting);
         Task<List<TemporaryTaskDto>> GetFeeTasks(FeeTaskSearchRequestDto input, string sorting);
