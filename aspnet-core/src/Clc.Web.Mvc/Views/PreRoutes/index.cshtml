@@ -138,11 +138,22 @@
                 $('#currentAgent').textbox('setValue', data);
             });
         }
+
         function setAgent() {
-            var id = $('#agent').combobox('getValue')
-            abp.services.app.work.setAgent(id).done(function () {
-                setCurrentAgent();
-            });
+            abp.notify.info('请将指纹放到指纹仪上');
+            var finger = window.parent.getFingerCode();
+            if (finger != '') {
+                abp.services.app.work.verifyFinger(finger, window.parent.me.workerCn).done(function(ret) {
+                    if (ret.item1) {
+                        var id = $('#agent').combobox('getValue')
+                        abp.services.app.work.setAgent(id).done(function () {
+                            setCurrentAgent();
+                        });
+                    }
+                    else
+                        abp.notify.error(ret.item2);
+                });
+            }
         }
         function resetAgent()
         {

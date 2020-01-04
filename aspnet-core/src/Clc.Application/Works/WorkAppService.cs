@@ -181,6 +181,11 @@ namespace Clc.Works
             return ret;
         }
 
+        public List<ComboboxItemDto> GetTodaySameWpAffairs(int wpId, DateTime carryoutDate, int depotId)
+        {
+            return WorkManager.GetTodaySameWpAffairs(wpId, carryoutDate, depotId);
+        }
+
         public List<TempArticleDto> GetTempArticles(int affairId) 
         {
             List<TempArticleDto> dtos = new List<TempArticleDto>();

@@ -26,6 +26,7 @@ namespace Clc.Works
         
         List<RouteCacheItem> GetCachedRoutes(int wpId, DateTime carryouDate, int depotId, int affairId);
 
+        List<ComboboxItemDto> GetTodaySameWpAffairs(int wpId, DateTime carryouDate, int depotId);
         List<TempArticleDto> GetTempArticles(int affairId);
 
         (string, string) GetReportToManagers();

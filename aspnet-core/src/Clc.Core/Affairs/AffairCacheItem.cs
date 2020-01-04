@@ -13,6 +13,8 @@ namespace Clc.Affairs
         /// Id Of Affair
         /// </summary>
         public int Id { get; set; }
+
+        public int DepotId { get; set; }
         
         /// <summary>
         /// Workplace

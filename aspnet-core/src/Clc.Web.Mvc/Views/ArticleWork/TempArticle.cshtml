@@ -13,10 +13,11 @@
     </environment>
 
     <script type="text/javascript">
+        var currentAffairId = 0;
         finput.matchWorker = function(rfid) {
             var app = finput.style == 0 ? 
                 abp.services.app.work.matchWorkerForStoreTempArticle : abp.services.app.work.matchWorkerForTakeTempArticle;
-            app(work.me.today, work.me.depotId, work.me.affairId, rfid).done(function(ret) {
+            app(work.me.today, work.me.depotId, currentAffairId, rfid).done(function(ret) {
                 if (ret.message != null) {
                     finput.error(ret.message);
                     return;
@@ -43,7 +44,7 @@
 
             var st = finput.style == 0 ? '临时存物' : '临时取物';
             // alert(st);
-            abp.services.app.affair.insertTempArticle(st, work.me.affairId, finput.getArticles(), finput.route.depotId, finput.route.routeName + ',' + finput.getWorker()).done(function(count) {
+            abp.services.app.affair.insertTempArticle(st, currentAffairId, finput.getArticles(), finput.route.depotId, finput.route.routeName + ',' + finput.getWorker()).done(function(count) {
                 finput.success(finput.getWorker() + st + '了物品');
                 finput.submitArticlesDone();
             });
@@ -57,7 +58,7 @@
                     abp.ajax({
                         contentType: 'application/x-www-form-urlencoded',
                         url: 'AskOpenTemp',
-                        data: {style: st, depotId: work.me.depotId, routeName: finput.route.routeName, affairId: work.me.affairId, doorId: work.me.workplaceId, askWorkers: work.me.workers }  
+                        data: {style: st, depotId: work.me.depotId, routeName: finput.route.routeName, affairId: currentAffairId, doorId: work.me.workplaceId, askWorkers: work.me.workers }  
                     }).done(function (ret) {
                         abp.notify.info(ret.message, '', { positionClass : 'toast-top-right'} );
                     });
@@ -75,6 +76,7 @@
         <div id="tb">
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+            今日其他班次:<input id="prevAffair" class="easyui-combobox" style="width:120px">
             &nbsp;取物&nbsp;<input id="take" class="easyui-checkbox">
         </div>
         <table id="dg" class="easyui-datagrid" toolbar="#tb"

@@ -16,16 +16,22 @@
         }
 
         function reportTo() {
-            abp.message.confirm('报送后将不能激活任务线路，确认报送吗?', '请确认', function (r) {
-                if (r) {
-                    abp.ajax({
-                        url: 'ReportVehicleTo',
-                        success: function (data) {
-                            abp.notify.info("报告已发出");
-                        }
-                    });
-                }
-            });
+            abp.notify.info('请将指纹放到指纹仪上');
+            var finger = window.parent.getFingerCode();
+            if (finger != '') {
+                abp.services.app.work.verifyFinger(finger, window.parent.me.workerCn).done(function(ret) {
+                    if (ret.item1) {
+                        abp.ajax({
+                            url: 'ReportVehicleTo/'+window.parent.me.workerName,
+                            success: function (data) {
+                                abp.notify.info("报告已发出");
+                            }
+                        });
+                    }
+                    else
+                        abp.notify.error(ret.item2);
+                });
+            }
         }
 
         function operatorOil (val, row, index) {

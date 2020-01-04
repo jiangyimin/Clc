@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Abp.Application.Services.Dto;
 using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Domain.Services;
@@ -326,6 +327,18 @@ namespace Clc.Works
         #endregion
 
         #region Affair，Article, Box,
+        public List<ComboboxItemDto> GetTodaySameWpAffairs(int wpId, DateTime carryoutDate, int depotId)
+        {
+            var ret = new List<ComboboxItemDto>();
+            foreach (var affair in _affairCache.Get(carryoutDate, depotId))
+            {
+                if (affair.WorkplaceId == wpId)
+                {
+                    ret.Add(new ComboboxItemDto() { Value = affair.Id.ToString(), DisplayText = string.Format("{0}-{1}", affair.StartTime, affair.EndTime)});
+                }
+            }
+            return ret;
+        }
 
         public AffairCacheItem FindCheckinAffairByWorkerId(int workerId)
         {
@@ -391,7 +404,7 @@ namespace Clc.Works
             {
                 if (AllCheckout(affair.Workers)) continue;
 
-                if (!ClcUtils.NowInTimeZone(affair.StartTime, wp.DutyLead, affair.EndTime)) continue;
+                if (!ClcUtils.NowInTimeZone(affair.StartTime, 3, affair.EndTime)) continue;      // wp.DutyLead
                 // 金库
                 if (affair.WorkplaceId == wp.Id) return affair;
             }

@@ -11,22 +11,27 @@ using Clc.Web.MessageHandlers;
 using Clc.BoxRecords;
 using Microsoft.AspNetCore.Http;
 using Clc.VehicleRecords;
+using Microsoft.AspNetCore.SignalR;
+using Clc.RealTime;
 
 namespace Clc.Web.Controllers
 {
     [AbpMvcAuthorize(PermissionNames.Pages_Arrange)]
     public class TodayController : ClcControllerBase
     {
+        private IHubContext<MyChatHub> _context;
         private readonly IWorkAppService _workAppService;
         private readonly IArticleRecordAppService _articleRecordAppService;
         private readonly IBoxRecordAppService _boxRecordAppService;
         private readonly IVehicleRecordAppService _vehicleRecordAppService;
 
-        public TodayController(IWorkAppService workAppService, 
+        public TodayController(IHubContext<MyChatHub> context,
+            IWorkAppService workAppService, 
             IArticleRecordAppService articleRecordAppService,
             IBoxRecordAppService boxRecordAppService,
             IVehicleRecordAppService vehicleRecordAppService)
         {
+            _context = context;
             _workAppService = workAppService;
             _articleRecordAppService = articleRecordAppService;
             _boxRecordAppService = boxRecordAppService;
@@ -63,13 +68,13 @@ namespace Clc.Web.Controllers
             return RedirectToAction("RecordQuery", "OpenDoors", new { depotId = me.DepotId });
         }
         
-        public async Task ReportArticleTo()
+        public async Task ReportArticleTo(string id)
         {
             var ret = _workAppService.GetReportToManagers();
             if (string.IsNullOrEmpty(ret.Item2)) return;
 
             var data = await _articleRecordAppService.GetReportData();
-            string title = string.Format("今日<{0}>物品领用情况", ret.Item1);
+            string title = string.Format("{0}报告今日<{1}>物品领用情况", id, ret.Item1);
             string desc = null;
             foreach(var a in data)
             {
@@ -77,15 +82,18 @@ namespace Clc.Web.Controllers
             }
             WeixinUtils.SendTextCard("App03", ret.Item2, title, desc);
             _workAppService.SetReportDate();
+
+            await _context.Clients.All.SendAsync("getMessage", "askVaultGuard " + string.Format("你有来自({0})的设防申请", ret.Item1));
+
         }
 
-        public void ReportTaskTo() 
+        public void ReportTaskTo(string id) 
         {
             var ret = _workAppService.GetReportToManagers();
             if (string.IsNullOrEmpty(ret.Item2)) return;
 
             var data = _workAppService.GetTaskReportData();
-            string title = string.Format("今日<{0}>线路任务情况", ret.Item1);
+            string title = string.Format("{0}报告今日<{1}>线路任务情况", id, ret.Item1);
             string desc = string.Format("线路数：{0} 条 (安排人员： {1}人）\n", data.Route.Count1, data.Route.Count2);
             desc += string.Format("内务数：{0} 条 (安排人员： {1}人）\n", data.Affair.Count1, data.Affair.Count2);
             desc += string.Format("收费中调数：{0} 个 (收费： {1}元）\n", data.Task.Count1, data.Task.Count2);
@@ -108,14 +116,14 @@ namespace Clc.Web.Controllers
             }
         }
 
-        public async Task ReportVehicleTo()
+        public async Task ReportVehicleTo(string id)
         {
             var ret = _workAppService.GetReportToManagers();
             if (string.IsNullOrEmpty(ret.Item2)) return;
 
             var data = await _vehicleRecordAppService.GetReportData();
             
-            string title = string.Format("今日<{0}>车辆加油维修情况", ret.Item1);;
+            string title = string.Format("{0}报告今日<{1}>车辆加油维修情况", id, ret.Item1);;
             string desc = string.Format("加油次数：{0} (量：{1}}升   费用:{2}元\n", data.OilCount, data.OilQuantity, data.OilPrice);
             desc += string.Format("车辆维修次数：{0} (费用： {1}元)", data.MTCount, data.MTPrice);
 

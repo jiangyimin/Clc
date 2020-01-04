@@ -51,6 +51,19 @@
         }
     
         function process(index) {
+            abp.notify.info('请将指纹放到指纹仪上');
+            var finger = window.parent.getFingerCode();
+            if (finger != '') {
+                abp.services.app.work.verifyFinger(finger, window.parent.me.workerCn).done(function(ret) {
+                    if (ret.item1)
+                        doProcess();
+                    else
+                        abp.notify.error(ret.item2);
+                });
+            }
+        }
+
+        function doProcess() {
             var r = $('#dg').datagrid('getRows')[index];
             if (r.processStyle == "应急开门") {
                 var doorId = $('#doorId').combobox('getValue');
@@ -82,7 +95,7 @@
                     abp.notify.info(data.content);
                 });
             }
-        };
+        }
     </script>
 }
 

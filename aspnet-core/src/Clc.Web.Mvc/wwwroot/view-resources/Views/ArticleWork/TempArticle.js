@@ -6,10 +6,24 @@
             work.me = wk;
             if (!work.validate2()) return;
             $('#dd').datebox('setValue', work.me.today);
-            $('#dg').datagrid({
-                url: 'GridDataTemp?AffairId=' + work.me.affairId
-            });
+            abp.services.app.work.getTodaySameWpAffairs(work.me.workplaceId, work.me.today, work.me.depotId).done(function (data) {
+                $('#prevAffair').combobox({
+                    data: data,
+                    valueField: 'value',
+                    textField: 'displayText'
+                });
 
+                $('#prevAffair').combobox('setValue', work.me.affairId);
+            });
+        });
+            
+        $('#prevAffair').combobox({
+            onChange: function(val) {
+                currentAffairId = $('#prevAffair').combobox('getValue');
+                $('#dg').datagrid({
+                    url: 'GridDataTemp?AffairId=' + currentAffairId
+                });
+            }
         });
 
         $('#take').checkbox({
