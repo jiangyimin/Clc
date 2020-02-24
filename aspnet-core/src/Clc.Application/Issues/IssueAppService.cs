@@ -50,7 +50,7 @@ namespace Clc.Issues
 
         public async Task<List<IssueDto>> GetOndutyIssuesAsync(DateTime dt)
         {
-            var query = _issueRepository.GetAllIncluding(x => x.Depot)
+            var query = _issueRepository.GetAllIncluding(x => x.Depot, x => x.ProcessWorker)
                 .Where(x => x.CreateTime.Date == dt && x.ProcessStyle == "值班信息");
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
             return ObjectMapper.Map<List<IssueDto>>(entities);
@@ -72,14 +72,18 @@ namespace Clc.Issues
             await _issueRepository.InsertAsync(entity);
         }
 
-        public async Task ProcessIssue(int id, string processContent)
+        public async Task<string> ProcessIssue(int id, string processContent)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();
             var entity = await _issueRepository.GetAsync(id);
             entity.ProcessTime = DateTime.Now;
             entity.ProcessWorkerId = workerId;
             entity.ProcessContent = processContent;
-            await _issueRepository.UpdateAsync(entity);         
+            await _issueRepository.UpdateAsync(entity);
+
+            var worker = WorkManager.GetWorker(workerId);
+            var depot = WorkManager.GetDepot(worker.DepotId);
+            return string.Format("{0}向你发送<{1}>值班信息", worker.Name, depot.Name);
         }
 
         private IssueDto MapToIssueDto(Issue issue)

@@ -72,8 +72,8 @@ namespace Clc.Web.Controllers
             try
             {
                 var toUsers = WorkManager.GetReportToManagers(depotId);
-                await _issueAppService.ProcessIssue(issueId, $"发送给{toUsers}");
-                WeixinUtils.SendMessage("App03", toUsers, content);
+                var title = await _issueAppService.ProcessIssue(issueId, $"发送给{toUsers}");
+                WeixinUtils.SendTextCard("App03", toUsers, title, content);
 
                 return Json(new { result = "success", content = $"完成处理并发送通知给{toUsers}" });
             }

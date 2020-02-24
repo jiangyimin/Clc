@@ -13,8 +13,7 @@
 }
 
 <div id="tb">
-    日期: <input id="dd" class="easyui-datebox" readonly="true" style="width:120px">
-    &nbsp;昨天&nbsp;<input id="yesterday" class="easyui-checkbox">
+    日期: <input id="dd" class="easyui-datebox" style="width:120px">
     <a name="reload" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
 </div>
 <table id="dg" class="easyui-datagrid" toolbar="#tb"
@@ -23,7 +22,7 @@
         <tr>
             <th field="depotName" width="60">大队</th>
             <th field="content" width="240">值班说明</th>
-            <th field="ProcessWorkerName" width="60">处理人</th>
+            <th field="processWorkerName" width="60">处理人</th>
             <th field="processContent" width="60">处理方式</th>
             <th field="createTime" width="60" formatter="$.timeFormatter">创建时间</th>
         </tr>

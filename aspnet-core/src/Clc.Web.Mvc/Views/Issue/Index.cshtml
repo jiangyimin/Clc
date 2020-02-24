@@ -56,14 +56,14 @@
             if (finger != '') {
                 abp.services.app.work.verifyFinger(finger, window.parent.me.workerCn).done(function(ret) {
                     if (ret.item1)
-                        doProcess();
+                        doProcess(index);
                     else
                         abp.notify.error(ret.item2);
                 });
             }
         }
 
-        function doProcess() {
+        function doProcess(index) {
             var r = $('#dg').datagrid('getRows')[index];
             if (r.processStyle == "应急开门") {
                 var doorId = $('#doorId').combobox('getValue');
@@ -93,6 +93,7 @@
                     data: {issueId: r.id, depotId: r.depotId, content: r.content }   
                 }).done(function (data) {
                     abp.notify.info(data.content);
+                    $('#dg').datagrid('reload');
                 });
             }
         }

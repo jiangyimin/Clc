@@ -16,6 +16,6 @@ namespace Clc.Issues
 
         Task InsertAsync(IssueInputDto input);
 
-        Task ProcessIssue(int id, string processContent);
+        Task<string> ProcessIssue(int id, string processContent);
     }
 }
