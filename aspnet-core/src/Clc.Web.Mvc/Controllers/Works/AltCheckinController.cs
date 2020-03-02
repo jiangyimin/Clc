@@ -35,5 +35,21 @@ namespace Clc.Web.Controllers
             });
         }
 
+        public ActionResult Trust()
+        {           
+            var affair = _workAppService.FindAltDutyTrustAffair();
+            return RedirectToAction("Index", "Checkin", new {
+                AltCheck = affair.AltCheck,
+                Today = affair.Today,
+                DepotId = affair.DepotId,
+                AffairId = affair.AffairId,
+                Content = affair.Content,
+                WorkplaceId = affair.WorkplaceId,
+                WorkplaceName = affair.WorkplaceName,
+                StartTime = affair.StartTime,
+                EndTIme = affair.EndTime
+            });
+        }
+
     }
 }

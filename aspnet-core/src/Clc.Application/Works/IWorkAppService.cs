@@ -23,6 +23,7 @@ namespace Clc.Works
         
         AffairWorkDto FindDutyAffair();
         AffairWorkDto FindAltDutyAffair();
+        AffairWorkDto FindAltDutyTrustAffair();
         
         List<RouteCacheItem> GetCachedRoutes(int wpId, DateTime carryouDate, int depotId, int affairId);
 

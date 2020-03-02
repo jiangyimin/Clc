@@ -1,5 +1,6 @@
 var finput = finput || {};
 (function ($) {
+    var confirmEnable = true;
     var waiting = false;
 
     finput.style = 0;           // set by outer
@@ -26,6 +27,7 @@ var finput = finput || {};
 
     // dialog open and close
     finput.onOpenDialog = function() {
+        confirmEnable = true;
         finput.dialogOpened = true;
         finput.DetectArticle = true;
     }
@@ -63,8 +65,15 @@ var finput = finput || {};
     // onWoker
     finput.onWorker = function (rfid) { 
         if (finput.dialogOpened == true) {
-            if (finput.getWorkerRfid() == rfid)
-                finput.onWorkerConfirm();
+            if (finput.getWorkerRfid() == rfid) {
+                if (confirmEnable == true) {
+                    confirmEnable = false;
+                    finput.onWorkerConfirm();
+                    setTimeout(function() {
+                        confirmEnable = true;
+                    }, 2000);
+                }
+            }
             else 
                 finput.error("请用本人工卡确认");
         }

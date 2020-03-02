@@ -154,6 +154,26 @@ namespace Clc.Works
             return dto.SetAffair(affair, wp.Name, true);
         }
         
+        public AffairWorkDto FindAltDutyTrustAffair()
+        {
+            var dto = new AffairWorkDto();
+            dto.AltCheck = true;
+            int workerId = GetCurrentUserWorkerIdAsync().Result;
+            var depot = WorkManager.GetDepot(WorkManager.GetWorker(workerId).DepotId);
+
+            var depots = SettingManager.GetSettingValue(AppSettingNames.Rule.AltCheckinDepots);
+            if (!depots.Split('|', ',').Contains(depot.Name)) return dto;
+
+            depot = WorkManager.GetDepotByName("调度");
+            var affair = WorkManager.FindAltDutyAffairByDepotId(depot.Id);
+            if (affair == null) return dto;
+
+            var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
+            dto.DepotId = depot.Id;
+            
+            return dto.SetAffair(affair, wp.Name, true);
+        }
+        
         public AffairWorkDto GetMyCheckinAffair()
         {
             var dto = new AffairWorkDto();
