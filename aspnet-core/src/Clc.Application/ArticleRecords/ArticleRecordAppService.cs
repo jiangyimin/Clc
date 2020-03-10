@@ -58,7 +58,7 @@ namespace Clc.ArticleRecords
         {
             var depots = WorkManager.GetShareDepots(wpId);
             
-            var query = _articleRepository.GetAllIncluding(x => x.ArticleType, x => x.ArticleRecord, x=>x.ArticleRecord.RouteWorker)
+            var query = _articleRepository.GetAllIncluding(x => x.ArticleType, x => x.ArticleRecord, x => x.ArticleRecord.RouteWorker, x => x.ArticleRecord.RouteWorker.Route)
                 .Where(a => depots.Contains(a.DepotId));
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
             if (!string.IsNullOrWhiteSpace(input.Sorting))
@@ -122,7 +122,7 @@ namespace Clc.ArticleRecords
         public async Task<List<ArticleRecordSearchDto>> SearchByDay(DateTime theDay)
         {
             int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
-            var query = _recordRepository.GetAllIncluding(x => x.Article, x => x.RouteWorker)
+            var query = _recordRepository.GetAllIncluding(x => x.Article, x => x.RouteWorker, x => x.RouteWorker.Route)
                 .Where(x => x.LendTime.Date == theDay && x.Article.DepotId == depotId);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
@@ -132,7 +132,7 @@ namespace Clc.ArticleRecords
         public async Task<List<ArticleRecordSearchDto>> SearchByArticleId(int articleId, DateTime begin, DateTime end)
         {
             int depotId = WorkManager.GetWorkerDepotId(await GetCurrentUserWorkerIdAsync());
-            var query = _recordRepository.GetAllIncluding(x => x.Article, x => x.RouteWorker)
+            var query = _recordRepository.GetAllIncluding(x => x.Article, x => x.RouteWorker, x => x.RouteWorker.Route)
                 .Where(x => x.ArticleId == articleId && x.LendTime.Date >= begin && x.LendTime.Date <= end);
             
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
@@ -191,6 +191,7 @@ namespace Clc.ArticleRecords
             dto.ReturnTime = record.ReturnTime.HasValue ? record.ReturnTime.Value.ToString("yyyy-MM-dd HH:mm:ss") : null;
             dto.LendWorkers = record.LendWorkers;
             dto.ReturnWorkers = record.ReturnWorkers;
+            dto.RouteName = record.RouteWorker.Route.RouteName;
             return dto;
         }
         #endregion

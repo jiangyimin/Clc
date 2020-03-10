@@ -24,7 +24,8 @@ namespace Clc.Works.Dto
         public DateTime RouteCarryoutDate { get; set; }
         public string RouteDepotName { get; set; }
         public string RouteRouteName { get; set; }
-
+        
+        public string RouteVehicleCn { get; set; }
         public string OutletCustomerName { get; set; }
         public int OutletId { get; set; }
         public string OutletCn { get; set; }

@@ -36,4 +36,12 @@ namespace Clc.Runtime.Cache
         }
     }
 
+    public class OutletTaskTypeCache : EntityListCache<OutletTaskType, OutletTaskType, OutletTaskType>, IOutletTaskTypeCache, ITransientDependency
+    {
+        public OutletTaskTypeCache(ICacheManager cacheManager, IRepository<OutletTaskType> repository, IObjectMapper objectMapper)
+            : base(cacheManager, repository, objectMapper)
+        {
+        }
+    }
+
 }

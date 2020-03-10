@@ -11,6 +11,8 @@
 
         public string LendWorkers { get; set; }
         public string ReturnWorkers { get; set; }
+
+        public string RouteName { get; set; }
     }
 }
 

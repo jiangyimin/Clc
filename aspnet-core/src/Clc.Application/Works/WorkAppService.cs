@@ -44,6 +44,7 @@ namespace Clc.Works
         private readonly IBoxCache _boxCache;
         private readonly IOutletCache _outletCache;
         private readonly ICustomerTaskTypeCache _customerTaskTypeCache;
+        private readonly IOutletTaskTypeCache _outletTaskTypeCache;
 
         public WorkAppService(IRepository<Signin> signinRepository,
             IRepository<Route> routeRepository,
@@ -57,7 +58,8 @@ namespace Clc.Works
             IArticleTypeCache articleTypeCache,
             IBoxCache boxCache,
             IOutletCache outletCache,
-            ICustomerTaskTypeCache customerTaskTypeCache)
+            ICustomerTaskTypeCache customerTaskTypeCache,
+            IOutletTaskTypeCache outletTaskTypeCache)
         {
             _signinRepository = signinRepository;
             _routeRepository = routeRepository;
@@ -73,6 +75,7 @@ namespace Clc.Works
             _boxCache = boxCache;
             _outletCache = outletCache;
             _customerTaskTypeCache = customerTaskTypeCache;
+            _outletTaskTypeCache = outletTaskTypeCache;
         }
 
         public bool VerifyUnlockPassword(string password)
@@ -289,7 +292,7 @@ namespace Clc.Works
         public async Task<List<TemporaryTaskDto>> GetFeeTasks(DateTime dt, string sorting)
         {
             // Task (fee)
-            var query = _routeTaskRepository.GetAllIncluding(x => x.Route, x => x.Route.Depot, x => x.Outlet, x => x.Outlet.Customer, x => x.TaskType)
+            var query = _routeTaskRepository.GetAllIncluding(x => x.Route, x => x.Route.Depot, x => x.Route.Vehicle, x => x.Outlet, x => x.Outlet.Customer, x => x.TaskType)
                 .Where(x => x.Route.CarryoutDate == dt &&  x.TaskType.isTemporary == true); 
             query = query.OrderBy(sorting);
 
@@ -299,10 +302,16 @@ namespace Clc.Works
 
         public async Task<List<TemporaryTaskDto>> GetFeeTasks(FeeTaskSearchRequestDto input, string sorting)
         {
-            var query = _routeTaskRepository.GetAllIncluding(x => x.Route, x => x.Route.Depot, x => x.Outlet, x => x.Outlet.Customer, x => x.TaskType)
+            var query = _routeTaskRepository.GetAllIncluding(x => x.Route, x => x.Route.Depot, x => x.Route.Vehicle, x => x.Outlet, x => x.Outlet.Customer, x => x.TaskType)
                 .Where(x => x.Route.CarryoutDate >= input.Start && x.Route.CarryoutDate <= input.End &&  x.TaskType.isTemporary == true)
+                .WhereIf(input.TaskTypeId.HasValue, x => x.TaskTypeId == input.TaskTypeId.Value)
+                .WhereIf(input.DepotId.HasValue, x => x.Route.DepotId == input.DepotId.Value)
+                .WhereIf(input.VehicleId.HasValue, x => x.Route.VehicleId == input.VehicleId.Value)
                 .WhereIf(input.CustomerId.HasValue, x => x.Outlet.Customer.Id == input.CustomerId.Value)
-                .WhereIf(input.DepotId.HasValue, x => x.Route.DepotId == input.DepotId.Value);
+                .WhereIf(input.OutletId.HasValue, x => x.OutletId == input.OutletId.Value)
+                .WhereIf(input.PriceLow.HasValue, x => x.Price >= input.PriceLow.Value)
+                .WhereIf(input.PriceHigh.HasValue, x => x.Price <= input.PriceLow.Value);
+
             query = query.OrderBy(sorting);
 
             var entities = await AsyncQueryableExecuter.ToListAsync(query);
@@ -326,10 +335,23 @@ namespace Clc.Works
 
         private float GetDefaultPrice(RouteTask t)
         {
+            var olst = _outletTaskTypeCache.GetList().FindAll(x => x.DepotId.HasValue);
+            var olstVoid = _outletTaskTypeCache.GetList().FindAll(x => !x.DepotId.HasValue);
+
             var lst = _customerTaskTypeCache.GetList().FindAll(x => x.DepotId.HasValue);
             var lstVoid = _customerTaskTypeCache.GetList().FindAll(x => !x.DepotId.HasValue);
-            var type = lst.FindLast(x => x.DepotId.Value == t.Route.DepotId && x.TaskTypeId == t.TaskTypeId);
+
+            var otype = olst.FindLast(x => x.DepotId.Value == t.Route.DepotId && x.TaskTypeId == t.TaskTypeId && x.OutletId == t.OutletId);
+            var otypeVoid = olstVoid.FindLast(x => x.TaskTypeId == t.TaskTypeId && x.OutletId == t.OutletId);
+
+            var type = lst.FindLast(x => x.DepotId.Value == t.Route.DepotId && x.TaskTypeId == t.TaskTypeId && x.CustomerId == t.Outlet.CustomerId);
             var typeVoid = lstVoid.FindLast(x => x.TaskTypeId == t.TaskTypeId);
+
+            if (otype != null)
+                return otype.Price;
+            
+            if (otypeVoid != null)
+                return otypeVoid.Price;
 
             if (type != null)
                 return type.Price;

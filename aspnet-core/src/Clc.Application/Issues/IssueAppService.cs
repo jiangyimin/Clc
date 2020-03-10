@@ -81,7 +81,7 @@ namespace Clc.Issues
             entity.ProcessContent = processContent;
             await _issueRepository.UpdateAsync(entity);
 
-            var worker = WorkManager.GetWorker(workerId);
+            var worker = WorkManager.GetWorker(WorkManager.GetCaptainOrAgentId(workerId));
             var depot = WorkManager.GetDepot(worker.DepotId);
             return string.Format("{0}向你发送<{1}>值班信息", worker.Name, depot.Name);
         }

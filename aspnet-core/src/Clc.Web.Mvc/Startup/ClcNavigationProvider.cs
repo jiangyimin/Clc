@@ -50,6 +50,7 @@ namespace Clc.Web.Startup
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Clients, new FixedLocalizableString("客户"), icon: "fa fa-th-large", requiredPermissionName: PermissionNames.Pages_Clients)
                     .AddItem(new MenuItemDefinition("Client_Customers", new FixedLocalizableString("客户"), url: "Customers"))
                     .AddItem(new MenuItemDefinition("Client_CustomerTaskTypes", new FixedLocalizableString("客户之任务类型"), url: "CustomerTaskTypes"))
+                    .AddItem(new MenuItemDefinition("Client_OutletTaskTypes", new FixedLocalizableString("网点之任务类型"), url: "OutletTaskTypes"))
                     .AddItem(new MenuItemDefinition("Client_Outlets", new FixedLocalizableString("网点"), url: "Outlets"))
                     .AddItem(new MenuItemDefinition("Client_Boxes", new FixedLocalizableString("尾箱"), url: "Boxes"))
                 // Hrm
@@ -62,7 +63,7 @@ namespace Clc.Web.Startup
                 // Statistic
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Statistic, new FixedLocalizableString("统计"), icon: "fa fa-file", requiredPermissionName: PermissionNames.Pages_Statistic)
                     .AddItem(new MenuItemDefinition("Check_Task", new FixedLocalizableString("收费中调核对"), url: "Statistic/CheckTask"))
-                    .AddItem(new MenuItemDefinition("Statistic_Task", new FixedLocalizableString("收费中调统计"), url: "WorkerFiles/Hrq"))
+                    // .AddItem(new MenuItemDefinition("Statistic_Task", new FixedLocalizableString("收费中调统计"), url: "WorkerFiles/Hrq"))
                                
                 // Arrange
                 ).AddItem(new MenuItemDefinition(PermissionNames.Pages_Arrange, new FixedLocalizableString("预排"), icon: "fa fa-th-list", requiredPermissionName: PermissionNames.Pages_Arrange)
@@ -103,7 +104,7 @@ namespace Clc.Web.Startup
                     .AddItem(new MenuItemDefinition("Monitor_KeyPoints", new FixedLocalizableString("线路关键点"), url: "Monitor/KeyPoints"))
                     .AddItem(new MenuItemDefinition("Monitor_Affairs", new FixedLocalizableString("任务查询"), url: "Monitor/AffairQuery"))
                     .AddItem(new MenuItemDefinition("Monitor_Affairs", new FixedLocalizableString("线路查询"), url: "Monitor/RouteQuery"))
-                    .AddItem(new MenuItemDefinition("Monitor_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Monitor/ArticleRecords"))
+                    //.AddItem(new MenuItemDefinition("Monitor_ArticleRecords", new FixedLocalizableString("物品领用记录查询"), url: "Monitor/ArticleRecords"))
 
 
                 // Aux

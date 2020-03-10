@@ -1,0 +1,102 @@
+﻿@using Clc.Clients
+@{
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+}
+
+@section customScript
+{
+    <script type="text/javascript">
+        crud.dgDefault.name = 'OutletTaskTypes';
+        crud.dgDefault.sortName = 'taskTypeId';
+        crud.dgDefault.columns = [[
+            { field: "taskTypeId", title: "任务类型", width: 80, formatter: taskTypeFormatter },
+            { field: "depotId", title: "大队", width: 80, formatter: depotFormatter },
+            { field: "price", title: "价格", width: 80 },
+            { field: "remark", title: "备注", width: 100 },
+         ]];
+        crud.parentField = 'outletId';
+        crud.children = true;
+
+        // formatters
+        function taskTypeFormatter(val) {
+            return crud.getComboTextByInt('#taskTypeId', val);
+        }
+        function depotFormatter(val) {
+            return crud.getComboTextByInt('#depotId', val);
+        }
+    </script>
+}
+
+@section endScript
+{
+    <script type="text/javascript">
+        crud.startfunction = function () {         
+            abp.services.app.type.getComboItems('TaskTypeFee').done(function(types) {
+                crud.setComboBox('#taskTypeId', types);
+            });
+            abp.services.app.field.getComboItems('Depot').done(function(depots) {
+                crud.setComboBox('#depotId', depots);
+            });
+
+            abp.services.app.client.getComboItems('OutletWithCn').done(function(outlets) {
+                crud.setComboBox('#outletId', outlets);
+                var treeData = [];
+                outlets.forEach( function (val, index, arr) {
+                    treeData.push({ id: val.value, text: val.displayText });
+                });
+                $('#tree').tree({
+                    data: treeData,
+                    onSelect: function (node) {
+                        crud.parentId = node.id;
+                        $('#datagrid').datagrid({
+                            url: crud.dgDefault.name + '/GetPagedData/' + 'OutletId=' + node.id
+                        });
+                    }
+                });
+            });
+        };
+    </script>
+}
+
+@section headHtml
+{
+    <div id="cc" class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'west', split:true, minWidth:80, width:250, title:'网点'">
+            <ul id="tree" class="easyui-tree" style="margin-top:6px"></ul>
+        </div>
+        <div data-options="region:'center', border:false">
+}
+@section footHtml
+{
+        </div>
+    </div>
+}
+
+@*弹窗*@
+<div id="dlg" class="easyui-dialog" closed="true" modal="true" buttons="#dlg-buttons" align="center" style="width: 400px; padding: 10px;">
+    <form id="fm" class="easyui-form" method="post" novalidate>
+        <table class="edit-tbl">
+            <input id="id" name="id" type="hidden">
+            <tr>
+                <th><label for="OutletId">网点：</label></th>
+                <td><input id="outletId" name="outletId" readonly class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="taskTypeId">收费任务类型:</Label></th>
+                <td><input id="taskTypeId" name="taskTypeId" class="easyui-combobox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="depotId">大队:</Label></th>
+                <td><input id="depotId" name="depotId" class="easyui-combobox" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="price">价格:</label></th>
+                <td><input name="price" class="easyui-numberbox" data-options="required:true" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <th><label for="remark">备注:</label></th>
+                <td><input name="remark" class="easyui-textbox" data-options="validType:'length[1, @OutletTaskType.MaxRemarkLength]'" style="width: 100%"></td>
+            </tr>
+        </table>
+    </form>
+</div>

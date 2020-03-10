@@ -17,4 +17,8 @@ namespace Clc.Runtime.Cache
     public interface ICustomerTaskTypeCache : IEntityListCache<CustomerTaskType, CustomerTaskType, CustomerTaskType>
     {
     }
+
+    public interface IOutletTaskTypeCache : IEntityListCache<OutletTaskType, OutletTaskType, OutletTaskType>
+    {
+    }
 }
