@@ -2,6 +2,7 @@ var finput = finput || {};
 (function ($) {
     var confirmEnable = true;
     var waiting = false;
+    var ws;     // websocket
 
     finput.style = 0;           // set by outer
     finput.currentRfid = '';
@@ -61,7 +62,7 @@ var finput = finput || {};
         // alert('play success');
         $('#sounds')[0].play();     // 播放声音
     }
-
+    
     // onWoker
     finput.onWorker = function (rfid) { 
         if (finput.dialogOpened == true) {
@@ -94,7 +95,8 @@ var finput = finput || {};
         }
     }
     finput.matchWorker = function () { alert("请用鼠标点一下此页面的刷新按钮！") }
-
+    finput.matchWorkerByCn = function ()  { alert("请用鼠标点一下此页面的刷新按钮！") }
+    
     finput.onMatchWorker = function (ret) {
         finput.route = ret.routeMatched;
         finput.worker = ret.workerMatched;
@@ -169,6 +171,9 @@ var finput = finput || {};
     
     finput.getWorkerRfid = function() {
         return finput.index == 2 ? finput.worker2.rfid : finput.worker.rfid;
+    }
+    finput.getWorkerCn = function() {
+        return finput.index == 2 ? finput.worker2.cn : finput.worker.cn;
     }
 
     // lead control recoredId, return control isReturn
@@ -325,6 +330,54 @@ var finput = finput || {};
         return false;
     }
 
+    finput.initWS = function() {
+        // alert('initWs');
+        ws = new WebSocket("ws://127.0.0.1:4649/");
+        ws.onopen = function () {
+            console.log("Open connection to websocket");
+            abp.notify.info('连接到枪柜刷脸机')
+        };
+        ws.onclose = function () {
+            console.log("Close connection to websocket");
+            // 断线重连
+            finput.initWS();
+        }
+
+        ws.onmessage = function (e) {
+            var cn = e.data;
+            if (cn.length == 5 && finput.DetectWorker == true) {
+                if (finput.dialogOpened == true) {
+                    if (finput.getWorkerCn() == cn) {
+                        if (confirmEnable == true) {
+                            confirmEnable = false;
+                            finput.onWorkerConfirm();
+                            setTimeout(function() {
+                                confirmEnable = true;
+                            }, 2000);
+                        }
+                    }
+                    else 
+                        finput.error("请用本人刷脸确认");
+                }
+                else {
+                    window.parent.displayRfid1(cn);
+        
+                    if (waiting) {      // judge another card
+                        if (finput.worker2.cn != cn) {
+                            finput.error("同组另一人的刷脸不对");
+                            return;
+                        }
+                        finput.success("同一组的两个人已都刷脸")
+                        finput.showWorker();
+                    }
+                    else {
+                        finput.matchWorkerByCn(cn);
+                    }
+                }
+            }
+        }    
+    }
+
     $(function () {
         // Set rfidLength
         finput.rfidLength.workerRfidLength = abp.setting.get('Const.WorkerRfidLength');
@@ -342,6 +395,9 @@ var finput = finput || {};
         $('#dlg2').dialog({
             onClose: function() { finput.onCloseDialog(); },
             onOpen: function() { finput.onOpenDialog(); }
-        })
+        });
+
+        // initWS
+        finput.initWS();
      });
 })(jQuery);

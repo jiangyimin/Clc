@@ -43,7 +43,13 @@
                     }
                 });
             });
+
+            crud.toolbarData.push({ text: "导出Excel", iconCls: "", handler: toExcel });
         };
+
+        function toExcel() {
+            $.toExcel('#datagrid', '网点清单')
+        }
     </script>
 }
 
