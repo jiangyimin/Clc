@@ -69,6 +69,7 @@ namespace Clc.Works
 
         #region article
 
+        string GetWorkerRfidByCn(string cn);
         RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, int wpId, DateTime carryoutDate, int depotId, string rfid, int routeId);
         RouteWorkerMatchResult MatchWorkerForTakeTempArticle(DateTime carryoutDate, int depotId, int affairId, string rfid);
         RouteWorkerMatchResult MatchWorkerForStoreTempArticle(DateTime carryoutDate, int depotId, int affairId, string rfid);

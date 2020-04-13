@@ -32,6 +32,8 @@
             public const string EnableDynEmergPassword = "Rule.EnableDynEmergPassword";
             public const string AltCheckinDepots = "Rule.AltCheckinDepots";
             public const string EditWorkerDepots = "Rule.EditWorkerDepots";
+
+            public const string BulletCabinets = "Rule.BulletCabinets";
         }
 
         public static class TimeRule

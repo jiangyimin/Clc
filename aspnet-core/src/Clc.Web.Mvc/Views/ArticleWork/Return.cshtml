@@ -24,6 +24,12 @@
             return row.depotId;
         }
 
+        finput.matchWorkerByCn = function(cn) {
+            abp.services.app.work.getWorkerRfidByCn(cn).done(function(rfid) {
+                finput.matchWorker(rfid)
+            })
+        } 
+
         finput.matchWorker = function(rfid) {
             if (!work.validate()) return;
             abp.services.app.work.matchWorkerForArticle(false, work.me.workplaceId, work.me.today, getDepotId(), rfid, getRouteId()).done(function(ret) {

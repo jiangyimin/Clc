@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
@@ -186,7 +187,10 @@ namespace Clc.Works
             var affair = WorkManager.FindCheckinAffairByWorkerId(workerId);
             if (affair == null) return dto;
             var wp = WorkManager.GetWorkplace(affair.WorkplaceId);
-            dto.Workers = GetWorkersInfo(affair);
+
+            var ret = GetWorkersInfo(affair);
+            dto.Workers = ret.Item1;
+            dto.WorkerCns = ret.Item2;
             return dto.SetAffair(affair, wp.Name, false);
         }
 
@@ -499,6 +503,13 @@ namespace Clc.Works
 
         #region Article
 
+        public string GetWorkerRfidByCn(string cn) 
+        {
+            var worker = WorkManager.GetWorkerByCn(cn);
+            if (worker == null) return "NNNNN";
+            return worker.Rfid;
+        }
+        
         public RouteWorkerMatchResult MatchWorkerForArticle(bool isLend, int wpId, DateTime carryoutDate, int depotId, string rfid, int routeId)
         {
             var result = new RouteWorkerMatchResult();
@@ -519,15 +530,31 @@ namespace Clc.Works
                 return result;
             }
 
+            // Route
             result.RouteMatched = new MatchedRouteDto(found.Item2);
+            result.RouteMatched.CaptainCn = WorkManager.GetCaptain(result.RouteMatched.DepotId).Cn;
+
+            // Worker1
             var w = found.Item3;
             result.WorkerMatched = new MatchedWorkerDto(w.Id, WorkManager.GetWorker(w.GetFactWorkerId()), _workRoleCache[w.WorkRoleId]);
             result.Articles = GetArticles(found.Item2.Id, w.Id);
+
+            // Worker2
             w = found.Item4;
             if (w != null)
             {
                 result.WorkerMatched2 = new MatchedWorkerDto(w.Id, WorkManager.GetWorker(w.GetFactWorkerId()), _workRoleCache[w.WorkRoleId]);
                 result.Articles2 = GetArticles(found.Item2.Id, w.Id);
+
+                var guns = GetGuns(result.RouteMatched.VehicleCn);
+                if (guns.Count == 2) {
+                    result.WorkerMatched.GunNo = guns[0].Item1;
+                    result.WorkerMatched.GunIp = guns[0].Item2;
+                    
+                    result.WorkerMatched2.GunNo = guns[1].Item1;
+                    result.WorkerMatched2.GunIp = guns[1].Item2;
+                }
+
             }
             return result;
         }
@@ -714,6 +741,7 @@ namespace Clc.Works
         #endregion
 
         #region private
+
         private (string, RouteCacheItem, RouteWorkerCacheItem, RouteWorkerCacheItem) FindEqualRfidWorkerForArticle(bool isLend, List<RouteCacheItem> routes, string rfid, int routeId = 0)
         {           
             foreach (var route in routes)
@@ -815,15 +843,34 @@ namespace Clc.Works
             return ret;
         }
      
-     
-        private string GetWorkersInfo(AffairCacheItem affair)
+        private List<(string, string)> GetGuns(string vehicleCn) 
+        {
+            var typeId = _articleTypeCache.GetList().First(m => m.Cn == "A").Id;
+            var guns = _articleCache.GetList().FindAll(m => m.ArticleTypeId == typeId && m.BindInfo.Substring(0, 3) == vehicleCn);
+
+            List<(string, string)> list = new List<(string, string)>();
+
+            Regex reg = new Regex(@"\d{8}");
+            foreach (var gun in guns) {
+                MatchCollection mc = reg.Matches(gun.Name);
+                if (mc.Count == 1)
+                    list.Add((mc[0].Groups[0].Value, gun.GunIp));
+            }
+
+            return list;
+        }
+
+        private (string, string) GetWorkersInfo(AffairCacheItem affair)
         {
             string info = null;
+            string cns = null;
             foreach (var aw in affair.Workers)
             {
-                info += string.Format("{0} ", WorkManager.GetWorker(aw.WorkerId).Name);
+                var worker = WorkManager.GetWorker(aw.WorkerId);
+                cns += worker.Cn;
+                info += string.Format("{0} ", worker.Name);
             }
-            return info;
+            return (info, cns);
         }
 
         #endregion

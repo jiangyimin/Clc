@@ -146,6 +146,13 @@ namespace Clc.Configuration
                     new FixedLocalizableString("允许编辑人员的大队列表"),
                     scopes: SettingScopes.Tenant
                 ),
+                new SettingDefinition(
+                    AppSettingNames.Rule.BulletCabinets, 
+                    "01 192.168.2.5", 
+                    new FixedLocalizableString("独立枪柜IP"),
+                    scopes: SettingScopes.Tenant,
+                    isVisibleToClients: true
+                ),
             };
         }
         private IEnumerable<SettingDefinition> GetTimeRuleSettingDefinitions(SettingDefinitionProviderContext context)

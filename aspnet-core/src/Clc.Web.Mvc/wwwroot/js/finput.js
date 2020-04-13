@@ -14,6 +14,8 @@ var finput = finput || {};
         articleRfidLength: 3,
         boxRfidLength: 8,
     };
+    finput.bulletDepot = '01';
+    finput.bulletIp = '192.168.0.1';
 
     finput.DetectWorker = true;
     finput.DetectArticle = false;
@@ -88,6 +90,8 @@ var finput = finput || {};
                 }
                 finput.success("同一组的两个人已都刷卡")
                 finput.showWorker();
+
+                finput.openGunCabinet();
             }
             else {
                 finput.matchWorker(rfid);
@@ -344,38 +348,35 @@ var finput = finput || {};
         }
 
         ws.onmessage = function (e) {
-            var cn = e.data;
-            if (cn.length == 5 && finput.DetectWorker == true) {
-                if (finput.dialogOpened == true) {
-                    if (finput.getWorkerCn() == cn) {
-                        if (confirmEnable == true) {
-                            confirmEnable = false;
-                            finput.onWorkerConfirm();
-                            setTimeout(function() {
-                                confirmEnable = true;
-                            }, 2000);
-                        }
-                    }
-                    else 
-                        finput.error("请用本人刷脸确认");
-                }
-                else {
-                    window.parent.displayRfid1(cn);
-        
-                    if (waiting) {      // judge another card
-                        if (finput.worker2.cn != cn) {
-                            finput.error("同组另一人的刷脸不对");
-                            return;
-                        }
-                        finput.success("同一组的两个人已都刷脸")
-                        finput.showWorker();
-                    }
-                    else {
-                        finput.matchWorkerByCn(cn);
-                    }
-                }
-            }
+            finput.matchWorkerByCn(e.data);
         }    
+    }
+
+    finput.openGunCabinet = function() {
+        
+        // open bullet
+        if (finput.route.depotCn === finput.bulletDepot) {
+
+        }
+    }
+
+    finput.sendOpenCommand = function(Ip) {
+        var manager1 = work.me.workerCns.length == 10 ? work.me.workerCns.substring(0, 5) : '';
+        var manager2 = work.me.workerCns.length == 10 ? work.me.workerCns.substring(5, 5) : '';
+
+        var param = {
+            worker: finput.worker.cn,
+            manager1: manager1,
+            manager2: manager2,
+            captain: finput.route.captainCn
+        };
+        
+        abp.ajax({
+            url: ip + '/People/SavePerson',
+            data: JSON.stringify(param)
+        }).done(function(data) {
+            abp.notify.info('发送了开门命令');
+        });
     }
 
     $(function () {
@@ -383,6 +384,12 @@ var finput = finput || {};
         finput.rfidLength.workerRfidLength = abp.setting.get('Const.WorkerRfidLength');
         finput.rfidLength.articleRfidLength = abp.setting.get('Const.ArticleRfidLength');
         finput.rfidLength.boxRfidLength = abp.setting.get('Const.BoxRfidLength');
+        var bullet = abp.setting.get('Rule.BulletCabinets').split(' ', 2);
+        if (bullet.length == 2) {
+            finput.bulletDepot = bullet[0];
+            finput.bulletIp = bullet[1];
+        }
+        
 
         // set envent
         window.document.onkeydown = finput.onkeydown;

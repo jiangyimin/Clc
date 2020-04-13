@@ -59,6 +59,8 @@ namespace Clc.Fields
         [StringLength(MaxBindInfoLength)]
         public string BindInfo { get; set; }
 
+        public string GunIp { get; set; 
+        }
         /// <summary>
         /// 最近进出记录号
         /// </summary>
