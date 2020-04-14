@@ -533,6 +533,7 @@ namespace Clc.Works
             // Route
             result.RouteMatched = new MatchedRouteDto(found.Item2);
             result.RouteMatched.CaptainCn = WorkManager.GetCaptain(result.RouteMatched.DepotId).Cn;
+            result.RouteMatched.DepotCn = WorkManager.GetDepot(result.RouteMatched.DepotId).Cn;
 
             // Worker1
             var w = found.Item3;
@@ -846,7 +847,8 @@ namespace Clc.Works
         private List<(string, string)> GetGuns(string vehicleCn) 
         {
             var typeId = _articleTypeCache.GetList().First(m => m.Cn == "A").Id;
-            var guns = _articleCache.GetList().FindAll(m => m.ArticleTypeId == typeId && m.BindInfo.Substring(0, 3) == vehicleCn);
+            var guns = _articleCache.GetList().FindAll(m => m.ArticleTypeId == typeId && 
+                !string.IsNullOrEmpty(m.BindInfo) && m.BindInfo.Length >= 3 && m.BindInfo.Substring(0, 3) == vehicleCn);
 
             List<(string, string)> list = new List<(string, string)>();
 

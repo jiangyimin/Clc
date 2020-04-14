@@ -4,6 +4,7 @@
         finput.style = 1;   // return
         abp.services.app.work.getMyCheckinAffair().done(function (wk) {
             work.me = wk;
+            finput.adminCns = wk.workerCns;
             if (!work.validate2()) return;
             $('#dd').datebox('setValue', work.me.today);
             $('#dg').datagrid({

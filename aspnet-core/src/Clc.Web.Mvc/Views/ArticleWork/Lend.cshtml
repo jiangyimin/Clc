@@ -27,8 +27,9 @@
 
         finput.matchWorkerByCn = function(cn) {
             abp.services.app.work.getWorkerRfidByCn(cn).done(function(rfid) {
-                finput.matchWorker(rfid)
-            })
+                // alert(rfid);
+                finput.matchWorker(rfid);
+            });
         } 
 
         finput.matchWorker = function(rfid) {

@@ -13,7 +13,8 @@
             { field: "name", title: "名称", width: 100 },
             { field: "articleTypeId", title: "类型", width: 80, formatter: articleTypeFormatter },
             { field: "rfid", title: "RFID", width: 100 },
-            { field: "bindInfo", title: "绑定内容", width: 100 }
+            { field: "bindInfo", title: "绑定内容", width: 100 }, 
+            { field: "gunIp", title: "枪的IP地址", width: 100 }
         ]];
         crud.parentField = 'depotId';
         crud.children = true;
@@ -102,7 +103,10 @@
                 <th><Label for="bindInfo">绑定内容: </Label></th>
                 <td><input name="bindInfo" class="easyui-textbox", data-options="validType:'length[2, @Article.MaxBindInfoLength]'" style="width: 100%"></td>
             </tr>
-            
+            <tr>
+                <th><Label for="gunIp">枪的IP地址: </Label></th>
+                <td><input name="gunIp" class="easyui-textbox" style="width: 100%"></td>
+            </tr>
         </table>
     </form>
 </div>

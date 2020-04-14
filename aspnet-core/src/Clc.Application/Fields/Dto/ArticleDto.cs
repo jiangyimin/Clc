@@ -28,6 +28,8 @@ namespace Clc.Fields.Dto
         [StringLength(Article.MaxBindInfoLength)]
         public string BindInfo { get; set; }
 
+        public string GunIp { get; set; }
+
     }
 }
 

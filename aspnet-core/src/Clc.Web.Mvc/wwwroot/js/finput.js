@@ -5,6 +5,7 @@ var finput = finput || {};
     var ws;     // websocket
 
     finput.style = 0;           // set by outer
+    finput.adminCns;            // set by outer
     finput.currentRfid = '';
     finput.dialogOpened = false;
     finput.index = 0;
@@ -90,8 +91,6 @@ var finput = finput || {};
                 }
                 finput.success("同一组的两个人已都刷卡")
                 finput.showWorker();
-
-                finput.openGunCabinet();
             }
             else {
                 finput.matchWorker(rfid);
@@ -145,6 +144,9 @@ var finput = finput || {};
             workerInfo2.innerHTML = finput.worker2.name + ' ' + finput.worker2.workRoleName;
             photo2.src = 'data:image/jpg;base64, ' + finput.worker2.photo;
             // finput.showArticles();
+
+            setTimeout(finput.openGunCabinet(), 500 );
+
         }
 
         // show Article Also
@@ -335,11 +337,11 @@ var finput = finput || {};
     }
 
     finput.initWS = function() {
-        // alert('initWs');
+        // alert('initWS');
         ws = new WebSocket("ws://127.0.0.1:4649/");
         ws.onopen = function () {
             console.log("Open connection to websocket");
-            abp.notify.info('连接到枪柜刷脸机')
+            abp.notify.info('连接到枪柜刷脸机');
         };
         ws.onclose = function () {
             console.log("Close connection to websocket");
@@ -348,34 +350,62 @@ var finput = finput || {};
         }
 
         ws.onmessage = function (e) {
+            console.log(e.data);
             finput.matchWorkerByCn(e.data);
-        }    
-    }
-
-    finput.openGunCabinet = function() {
-        
-        // open bullet
-        if (finput.route.depotCn === finput.bulletDepot) {
-
         }
     }
 
-    finput.sendOpenCommand = function(Ip) {
-        var manager1 = work.me.workerCns.length == 10 ? work.me.workerCns.substring(0, 5) : '';
-        var manager2 = work.me.workerCns.length == 10 ? work.me.workerCns.substring(5, 5) : '';
+    finput.openGunCabinet = function() {
 
+        finput.sendOpenCommand(finput.worker.gunIp, 1, "枪柜门")
+        finput.sendOpenCommand(finput.worker.gunIp, 2, "枪柜门")
+        // open bullet
+        // alert(finput.route.depotCn); alert(finput.bulletDepot); 
+        if (finput.route.depotCn === finput.bulletDepot) {
+            finput.sendOpenCommand(finput.bulletIp, 1, "弹柜门");
+            finput.sendOpenCommand(finput.bulletIp, 2, "弹柜门");
+        }
+    }
+
+    finput.sendOpenCommand = function(ip, index, dest) {
+        // alert(finput.adminCns);
+        var manager1 = finput.adminCns.length == 10 ? finput.adminCns.substr(0, 5) : '';
+        var manager2 = finput.adminCns.length == 10 ? finput.adminCns.substr(5, 5) : '';
+        var worker = index == 2 ? finput.worker2 : finput.worker;
+        // alert(worker.cn + manager1 + manager2 + finput.route.captainCn);
         var param = {
-            worker: finput.worker.cn,
-            manager1: manager1,
-            manager2: manager2,
-            captain: finput.route.captainCn
+            applyId: '',
+            persionid: worker.cn,
+            agencyPersonid: manager1,
+            fetchguntime: 0,
+            returnguntime: 0,
+            actualreturntime: 0,
+            applytime: 0,
+            gundata: 0,
+            bulletdata: 0,
+            approvalBulletNumber: 0,
+            returngundata: 0,
+            returnBulletNumber: 0,
+            taskinfo: 0,
+            applypersonid: finput.route.captainCn,
+            applystate: finput.style == 0 ? 1 : 12,
+            approvetime: 0,
+            gunadminid: manager2,
+            gunNumber: worker.gunNo,
+            applyReason: 0,
+            returnReason: 0,
+            info: ''
         };
         
-        abp.ajax({
-            url: ip + '/People/SavePerson',
-            data: JSON.stringify(param)
-        }).done(function(data) {
-            abp.notify.info('发送了开门命令');
+        var url = 'http://' + ip + ':15000/cgi-bin/GunBullet';
+        // abp.notify.info(url);
+        $.ajax({
+            url: url,
+            data: JSON.stringify(param),
+            type: 'post',
+            contentType: 'application/json',
+            success: function () { abp.notify.info('为'+ worker.Name + '开了' + dest); },
+            error: function() { abp.notify.error('连接到柜IP出错'); }
         });
     }
 
