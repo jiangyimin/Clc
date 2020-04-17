@@ -551,9 +551,11 @@ namespace Clc.Works
                 if (guns.Count == 2) {
                     result.WorkerMatched.GunNo = guns[0].Item1;
                     result.WorkerMatched.GunIp = guns[0].Item2;
+                    result.WorkerMatched.BulletNo = guns[0].Item3;
                     
                     result.WorkerMatched2.GunNo = guns[1].Item1;
                     result.WorkerMatched2.GunIp = guns[1].Item2;
+                    result.WorkerMatched.BulletNo = guns[1].Item3;
                 }
 
             }
@@ -844,19 +846,30 @@ namespace Clc.Works
             return ret;
         }
      
-        private List<(string, string)> GetGuns(string vehicleCn) 
+        private List<(string, string, string)> GetGuns(string vehicleCn) 
         {
             var typeId = _articleTypeCache.GetList().First(m => m.Cn == "A").Id;
             var guns = _articleCache.GetList().FindAll(m => m.ArticleTypeId == typeId && 
                 !string.IsNullOrEmpty(m.BindInfo) && m.BindInfo.Length >= 3 && m.BindInfo.Substring(0, 3) == vehicleCn);
 
-            List<(string, string)> list = new List<(string, string)>();
+            List<(string, string, string)> list = new List<(string, string, string)>();
 
             Regex reg = new Regex(@"\d{8}");
             foreach (var gun in guns) {
                 MatchCollection mc = reg.Matches(gun.Name);
+                var gunIps = gun.GunIp.Split(',');
+                string gunIp = null;
+                string bulletNo = null;
+                if (gunIps.Length == 1)
+                    gunIp = gunIps[0];
+
+                if (gunIps.Length == 2) {
+                    gunIp = gunIps[0].Trim();
+                    bulletNo = gunIps[1].Trim();
+                }  
+
                 if (mc.Count == 1)
-                    list.Add((mc[0].Groups[0].Value, gun.GunIp));
+                    list.Add((mc[0].Groups[0].Value, gunIp, bulletNo));
             }
 
             return list;

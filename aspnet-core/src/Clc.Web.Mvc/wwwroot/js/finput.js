@@ -66,7 +66,8 @@ var finput = finput || {};
         $('#sounds')[0].play();     // 播放声音
     }
     
-    // onWoker
+    // onWorker
+    finput.onWorkerByCn = function ()  { alert("不应出现此提示！") }
     finput.onWorker = function (rfid) { 
         if (finput.dialogOpened == true) {
             if (finput.getWorkerRfid() == rfid) {
@@ -98,7 +99,6 @@ var finput = finput || {};
         }
     }
     finput.matchWorker = function () { alert("请用鼠标点一下此页面的刷新按钮！") }
-    finput.matchWorkerByCn = function ()  { alert("请用鼠标点一下此页面的刷新按钮！") }
     
     finput.onMatchWorker = function (ret) {
         finput.route = ret.routeMatched;
@@ -145,7 +145,7 @@ var finput = finput || {};
             photo2.src = 'data:image/jpg;base64, ' + finput.worker2.photo;
             // finput.showArticles();
 
-            setTimeout(finput.openGunCabinet(), 500 );
+            setTimeout(finput.openGunCabinet(), 1000 );
 
         }
 
@@ -351,30 +351,32 @@ var finput = finput || {};
 
         ws.onmessage = function (e) {
             console.log(e.data);
-            finput.matchWorkerByCn(e.data);
+            finput.onWorkerByCn(e.data);
         }
     }
 
     finput.openGunCabinet = function() {
-
         finput.sendOpenCommand(finput.worker.gunIp, 1, "枪柜门")
-        finput.sendOpenCommand(finput.worker.gunIp, 2, "枪柜门")
+        finput.sendOpenCommand(finput.worker2.gunIp, 2, "枪柜门")
         // open bullet
         // alert(finput.route.depotCn); alert(finput.bulletDepot); 
-        if (finput.route.depotCn === finput.bulletDepot) {
+        if (finput.bulletDepot.indexOf(finput.route.depotCn) >= 0 ) {
             finput.sendOpenCommand(finput.bulletIp, 1, "弹柜门");
             finput.sendOpenCommand(finput.bulletIp, 2, "弹柜门");
         }
     }
 
     finput.sendOpenCommand = function(ip, index, dest) {
+        if (ip == null) {
+            abp.notify.error('枪未设置IP地址'); return;
+        }
         // alert(finput.adminCns);
         var manager1 = finput.adminCns.length == 10 ? finput.adminCns.substr(0, 5) : '';
         var manager2 = finput.adminCns.length == 10 ? finput.adminCns.substr(5, 5) : '';
         var worker = index == 2 ? finput.worker2 : finput.worker;
         // alert(worker.cn + manager1 + manager2 + finput.route.captainCn);
         var param = {
-            applyId: '',
+            applyid: '',
             persionid: worker.cn,
             agencyPersonid: manager1,
             fetchguntime: 0,
@@ -382,7 +384,7 @@ var finput = finput || {};
             actualreturntime: 0,
             applytime: 0,
             gundata: 0,
-            bulletdata: 0,
+            bulletdata: worker.bulletNo,
             approvalBulletNumber: 0,
             returngundata: 0,
             returnBulletNumber: 0,
@@ -391,6 +393,7 @@ var finput = finput || {};
             applystate: finput.style == 0 ? 1 : 12,
             approvetime: 0,
             gunadminid: manager2,
+            finishtime: 0,
             gunNumber: worker.gunNo,
             applyReason: 0,
             returnReason: 0,
@@ -398,14 +401,14 @@ var finput = finput || {};
         };
         
         var url = 'http://' + ip + ':15000/cgi-bin/GunBullet';
-        // abp.notify.info(url);
+        console.log(url);
+        console.log(param);
         $.ajax({
             url: url,
             data: JSON.stringify(param),
             type: 'post',
-            contentType: 'application/json',
-            success: function () { abp.notify.info('为'+ worker.Name + '开了' + dest); },
-            error: function() { abp.notify.error('连接到柜IP出错'); }
+            // contentType: 'application/json',
+            complete: function () { abp.notify.info('已为'+ worker.Name + '发送了开' + dest + '指令'); },
         });
     }
 
@@ -418,6 +421,7 @@ var finput = finput || {};
         if (bullet.length == 2) {
             finput.bulletDepot = bullet[0];
             finput.bulletIp = bullet[1];
+            console.log("弹柜大队和IP"+finput.bulletDepot+finput.bulletIp);
         }
         
 

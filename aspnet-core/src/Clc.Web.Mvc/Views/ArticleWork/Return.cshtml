@@ -24,10 +24,10 @@
             return row.depotId;
         }
 
-        finput.matchWorkerByCn = function(cn) {
+        finput.onWorkerByCn = function(cn) {
             abp.services.app.work.getWorkerRfidByCn(cn).done(function(rfid) {
-                finput.matchWorker(rfid)
-            })
+                finput.onWorker(rfid);
+           })
         } 
 
         finput.matchWorker = function(rfid) {

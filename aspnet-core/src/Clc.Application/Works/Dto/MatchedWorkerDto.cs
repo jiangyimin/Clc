@@ -22,6 +22,7 @@ namespace Clc.Works.Dto
 
         public string GunNo { get; set; }
         public string GunIp { get; set; } 
+        public string BulletNo { get; set; }
 
         public MatchedWorkerDto(int id, Worker w, WorkRole role)
         {
