@@ -11,6 +11,7 @@ namespace Clc.Works.Dto
         public int DepotId { get; set; }
         public string RouteName { get; set; }
 
+        public string MainVehicleCn { get; set; }
         public string VehicleCn { get; set; }
         public string VehicleLicense { get; set; }
 
@@ -30,6 +31,8 @@ namespace Clc.Works.Dto
             Id = r.Id;
             DepotId = r.DepotId;
             RouteName = r.RouteName;
+            MainVehicleCn = r.VehicleCn;
+            
             if (!r.AltVehicleId.HasValue) 
             {
                 VehicleCn = r.VehicleCn; 

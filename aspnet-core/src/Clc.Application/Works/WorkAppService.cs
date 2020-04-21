@@ -547,7 +547,7 @@ namespace Clc.Works
                 result.WorkerMatched2 = new MatchedWorkerDto(w.Id, WorkManager.GetWorker(w.GetFactWorkerId()), _workRoleCache[w.WorkRoleId]);
                 result.Articles2 = GetArticles(found.Item2.Id, w.Id);
 
-                var guns = GetGuns(result.RouteMatched.VehicleCn);
+                var guns = GetGuns(result.RouteMatched.MainVehicleCn);
                 if (guns.Count == 2) {
                     result.WorkerMatched.GunNo = guns[0].Item1;
                     result.WorkerMatched.GunIp = guns[0].Item2;
