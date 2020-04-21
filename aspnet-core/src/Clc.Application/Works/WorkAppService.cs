@@ -555,7 +555,7 @@ namespace Clc.Works
                     
                     result.WorkerMatched2.GunNo = guns[1].Item1;
                     result.WorkerMatched2.GunIp = guns[1].Item2;
-                    result.WorkerMatched.BulletNo = guns[1].Item3;
+                    result.WorkerMatched2.BulletNo = guns[1].Item3;
                 }
 
             }
