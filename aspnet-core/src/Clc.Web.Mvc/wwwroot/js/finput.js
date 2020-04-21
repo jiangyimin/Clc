@@ -356,17 +356,18 @@ var finput = finput || {};
     }
 
     finput.openGunCabinet = function() {
-        finput.sendOpenCommand(finput.worker.gunIp, 1, "枪柜门")
-        finput.sendOpenCommand(finput.worker2.gunIp, 2, "枪柜门")
+        var ind = finput.bulletDepot.indexOf(finput.route.depotCn) >= 0;
+        finput.sendOpenCommand(finput.worker.gunIp, 1, "枪柜门", ind)
+        finput.sendOpenCommand(finput.worker2.gunIp, 2, "枪柜门", ind)
         // open bullet
         // alert(finput.route.depotCn); alert(finput.bulletDepot); 
-        if (finput.bulletDepot.indexOf(finput.route.depotCn) >= 0 ) {
-            finput.sendOpenCommand(finput.bulletIp, 1, "弹柜门");
-            finput.sendOpenCommand(finput.bulletIp, 2, "弹柜门");
+        if (ind) {
+            finput.sendOpenCommand(finput.bulletIp, 1, "弹柜门", ind);
+            finput.sendOpenCommand(finput.bulletIp, 2, "弹柜门", ind);
         }
     }
 
-    finput.sendOpenCommand = function(ip, index, dest) {
+    finput.sendOpenCommand = function(ip, index, dest, ind) {
         if (ip == null) {
             abp.notify.error('枪未设置IP地址'); return;
         }
@@ -384,7 +385,7 @@ var finput = finput || {};
             actualreturntime: 0,
             applytime: 0,
             gundata: 0,
-            bulletdata: worker.bulletNo,
+            bulletdata: ind ? worker.bulletNo : 0,
             approvalBulletNumber: 0,
             returngundata: 0,
             returnBulletNumber: 0,
@@ -394,7 +395,7 @@ var finput = finput || {};
             approvetime: 0,
             gunadminid: manager2,
             finishtime: 0,
-            gunNumber: worker.gunNo,
+            gunNumber: ind ? '' : worker.gunNo,
             applyReason: 0,
             returnReason: 0,
             info: ''
