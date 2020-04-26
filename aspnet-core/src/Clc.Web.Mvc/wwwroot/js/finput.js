@@ -357,35 +357,36 @@ var finput = finput || {};
 
     finput.openGunCabinet = function() {
         var ind = finput.bulletDepot.indexOf(finput.route.depotCn) >= 0;
-        finput.sendOpenCommand(finput.worker.gunIp, 1, "枪柜门", ind)
-        finput.sendOpenCommand(finput.worker2.gunIp, 2, "枪柜门", ind)
+
+        var bulletNo = ind ? 0 : Number(finput.worker.bulletNo);
+        finput.sendOpenCommand(finput.worker.gunIp, finput.worker.cn, finput.worker.gunNo, bulletNo);
+        bulletNo = ind ? 0 : Number(finput.worker2.bulletNo);
+        finput.sendOpenCommand(finput.worker2.gunIp, finput.worker2.cn, finput.worker2.gunNo, bulletNo);
         // open bullet
         // alert(finput.route.depotCn); alert(finput.bulletDepot); 
         if (ind) {
-            finput.sendOpenCommand(finput.bulletIp, 1, "弹柜门", ind);
-            finput.sendOpenCommand(finput.bulletIp, 2, "弹柜门", ind);
+            finput.sendOpenCommand(finput.bulletIp, finput.worker.cn, '', Number(finput.worker.bulletNo));
+            finput.sendOpenCommand(finput.bulletIp, finput.worker2.cn, '', Number(finput.worker2.bulletNo));
         }
     }
 
-    finput.sendOpenCommand = function(ip, index, dest, ind) {
+    finput.sendOpenCommand = function(ip, workerCn, gunNo, bulletNo) {
         if (ip == null) {
             abp.notify.error('枪未设置IP地址'); return;
         }
         // alert(finput.adminCns);
         var manager1 = finput.adminCns.length == 10 ? finput.adminCns.substr(0, 5) : '';
         var manager2 = finput.adminCns.length == 10 ? finput.adminCns.substr(5, 5) : '';
-        var worker = index == 2 ? finput.worker2 : finput.worker;
-        // alert(worker.cn + manager1 + manager2 + finput.route.captainCn);
         var param = {
             applyid: '',
-            persionid: worker.cn,
+            persionid: workerCn,
             agencyPersonid: manager1,
             fetchguntime: 0,
             returnguntime: 0,
             actualreturntime: 0,
             applytime: 0,
             gundata: 0,
-            bulletdata: ind ? worker.bulletNo : 0,
+            bulletdata: bulletNo,
             approvalBulletNumber: 0,
             returngundata: 0,
             returnBulletNumber: 0,
@@ -395,14 +396,14 @@ var finput = finput || {};
             approvetime: 0,
             gunadminid: manager2,
             finishtime: 0,
-            gunNumber: ind ? '' : worker.gunNo,
+            gunNumber: gunNo,
             applyReason: 0,
             returnReason: 0,
             info: ''
         };
         
         var url = 'http://' + ip + ':15000/cgi-bin/GunBullet';
-        console.log(url);
+        // console.log(url);
         console.log(param);
         $.ajax({
             url: url,
