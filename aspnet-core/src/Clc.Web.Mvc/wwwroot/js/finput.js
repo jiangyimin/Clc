@@ -410,7 +410,7 @@ var finput = finput || {};
             data: JSON.stringify(param),
             type: 'post',
             // contentType: 'application/json',
-            complete: function () { abp.notify.info('已为'+ worker.Name + '发送了开' + dest + '指令'); },
+            complete: function () { abp.notify.info('已为'+ workerCn + '发送了开' + dest + '指令'); },
         });
     }
 
