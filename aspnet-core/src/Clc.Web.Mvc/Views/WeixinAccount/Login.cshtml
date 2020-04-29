@@ -6,12 +6,12 @@
 
 <form class="weui-cells weui-cells_form" action ="/WeixinAccount/Login" method="post" onsubmit="onSubmit()">
     @Html.ValidationSummary()
-    <div class="weui-cells__title">员工登录</div>
+    <div class="weui-cells__title">登录</div>
     <div  class="weui-cells">
         <div class="weui-cell">
-            <div class="weui-cell__hd"><label for="workerCn" class="weui-label">工号:</label></div>
+            <div class="weui-cell__hd"><label for="workerCn" class="weui-label">编号:</label></div>
             <div class="weui-cell__bd">
-                <input class="weui-input" name="workerCn" type="text" placeholder="请输入工号" value="@Model.WorkerCn" />
+                <input class="weui-input" name="workerCn" type="text" placeholder="请输入编号" value="@Model.WorkerCn" />
             </div>
         </div>
         <div class="weui-cell">

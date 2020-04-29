@@ -24,6 +24,7 @@ namespace Clc.Works
         private readonly IArticleCache _articleCache;
         private readonly IPostCache _postCache;
         private readonly IBoxCache _boxCache;
+        private readonly IOutletCache _outletCache;
 
         private readonly ISigninCache _signinCache;
         private readonly IRepository<Signin> _signinRepository;
@@ -43,6 +44,7 @@ namespace Clc.Works
             IArticleCache articleCache,
             IPostCache postCache,
             IBoxCache boxCache,
+            IOutletCache outletCache,
             ISigninCache signinCache,
             IRepository<Signin> signinRepository,
             IAffairCache affairCache,
@@ -60,6 +62,7 @@ namespace Clc.Works
             _articleCache = articleCache;
             _postCache = postCache;
             _boxCache = boxCache;
+            _outletCache = outletCache;
 
             _signinCache = signinCache;
             _signinRepository = signinRepository;
@@ -229,6 +232,11 @@ namespace Clc.Works
             var wp = _workplaceCache.GetList().FirstOrDefault(x => x.DepotId == depotId && x.Name.Contains("金库"));
             if (wp == null) return null;
             return depotName + wp.Name;
+        }
+
+        public Outlet GetOutletByCn(string cn) 
+        {
+            return _outletCache.GetList().FirstOrDefault(m => m.Cn == cn);
         }
 
         #endregion

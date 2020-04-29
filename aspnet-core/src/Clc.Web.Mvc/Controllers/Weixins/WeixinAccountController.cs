@@ -30,6 +30,7 @@ namespace Clc.Web.Controllers
         static public readonly Dictionary<string, string> _appDict = new Dictionary<string, string>() {
             {"ApproveTempAskDoor", "App03"},
             {"ApproveEmergDoor", "App03"},
+            {"ApproveEmergDoor", "App04"},
         };
 
         public WeixinAccountController(IHostingEnvironment env)
@@ -79,17 +80,33 @@ namespace Clc.Web.Controllers
         [HttpPost]
         public ActionResult Login(LoginViewModel vm)
         {
-            var worker = WorkManager.GetWorkerByCn(vm.WorkerCn);
-            if (worker == null || worker.Password != vm.Password)
-            {
-                ModelState.AddModelError("", "用户名或密码错误");
-                return View(vm);
+            int id = 0;
+            string cn = null;
+            if (vm.WorkerCn.Length >= 6) {
+                var outlet = WorkManager.GetOutletByCn(vm.WorkerCn.Substring(0, 6));
+                if (outlet == null || outlet.Password != vm.Password)
+                {
+                    ModelState.AddModelError("", "用户名或密码错误");
+                    return View(vm);
+                };
+                id = outlet.Id;
+                cn = vm.WorkerCn.Substring(0, 6);
             }
-
+            else 
+            {
+                var worker = WorkManager.GetWorkerByCn(vm.WorkerCn);
+                if (worker == null || worker.Password != vm.Password)
+                {
+                    ModelState.AddModelError("", "用户名或密码错误");
+                    return View(vm);
+                };
+                id = worker.Id;
+                cn = vm.WorkerCn;
+            }
             var claims = new[] 
             { 
-                new Claim("UserId", worker.Id.ToString()),
-                new Claim("Cn", vm.WorkerCn),
+                new Claim("UserId", id.ToString()),
+                new Claim("Cn", cn),
             };
 
             var claimsIdentity = new ClaimsIdentity(

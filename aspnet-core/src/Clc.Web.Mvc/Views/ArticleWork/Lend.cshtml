@@ -85,6 +85,11 @@
                     });
                 }
             });
+        }
+
+        function sendOpen() {
+            abp.notify.info("将发送开柜指令");
+            finput.openGunCabinet()
         }            
 
     </script>
@@ -95,6 +100,7 @@
         <div id="tb">
             任务日期: <input id="dd" class="easyui-datebox" style="width:120px" readonly>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="$('#dg').datagrid('reload')">刷新</a>
+            自动发送：<input id = "autoSend" class="easyui-switchbutton">
         </div>
         <table id="dg" class="easyui-datagrid" toolbar="#tb"
                 fit="true" fitColumns="true" rownumbers="true" singleSelect="true" striped="true" sortName="startTime">
@@ -164,6 +170,7 @@
                 <div data-options="region:'north', border:true" style="height:350px">
                     <div id="tb">
                         <a id="askOpen" href="javascript:void(0)" class="easyui-linkbutton" onclick="askOpen()" style="background:yellow">申请开门</a>
+                        <a id="sendOpen" href="javascript:void(0)" class="easyui-linkbutton" onclick="sendOpen()" style="background:yellow">发送开柜指令</a>
                     </div>
                     <div class="easyui-panel" fit="true" tools="#tb" style="padding: 10px">
                         <img id="photo2" class="photo" alt="照片" src="" style="margin-top: 38px" />

@@ -8,11 +8,12 @@ using Microsoft.AspNetCore.SignalR;
 using Clc.RealTime;
 using Clc.Weixin.Dto;
 using Clc.Fields;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clc.Web.Controllers
 {
     [IgnoreAntiforgeryToken]
-    // [Authorize(AuthenticationSchemes = "Cookies")]
+    [Authorize(AuthenticationSchemes = "Cookies")]
     public class WwApp04Controller : ClcControllerBase
     {
         public WorkManager WorkManager { get; set; }
@@ -34,12 +35,12 @@ namespace Clc.Web.Controllers
             _doorAppService = doorAppService;
         }
 
-        public ActionResult Index(string id, string code)
+        public ActionResult TaskList()
         {
-            return View();
+            return View(); 
         }
         
-        public ActionResult Grids()
+        public ActionResult GetTaskInfo()
         {
             return View();
         }

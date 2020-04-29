@@ -145,7 +145,9 @@ var finput = finput || {};
             photo2.src = 'data:image/jpg;base64, ' + finput.worker2.photo;
             // finput.showArticles();
 
-            setTimeout(finput.openGunCabinet(), 1000 );
+            console.log($('#autoSend').switchbutton('options').checked);
+            if ($('#autoSend').switchbutton('options').checked)
+                setTimeout(finput.openGunCabinet(), 1000 );
 
         }
 
@@ -410,7 +412,7 @@ var finput = finput || {};
             data: JSON.stringify(param),
             type: 'post',
             // contentType: 'application/json',
-            complete: function () { abp.notify.info('已为'+ workerCn + '发送了开' + dest + '指令'); },
+            complete: function () { abp.notify.info('已为'+ workerCn + '发送了开柜指令'); },
         });
     }
 
