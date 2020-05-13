@@ -86,9 +86,16 @@
             });
         }
 
-        function sendOpen() {
-            abp.notify.info("将发送开柜指令");
-            finput.openGunCabinet()
+        var isClick = true;
+        function sendOpen() {           
+            if (isClick) {
+                isClick = false;
+                setTimeout(function(){ 
+                    isClick = true; 
+                    abp.notify.info("将发送开柜指令");
+                }, 2000);
+                finput.openGunCabinet();
+            }
         }            
     </script>
 }
