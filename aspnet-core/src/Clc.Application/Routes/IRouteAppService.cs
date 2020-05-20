@@ -54,6 +54,11 @@ namespace Clc.Routes
 
         void InsertRouteArriveEvent(int taskId, string address);
         
+        List<RouteTask> GetTodayTasks(int outletId);
+        (int, int, int) GetRouteForLookup(int routeId);
+
+        void UpdateTaskRate(int taskId, int rated, string info);
+        
         #endregion
     }
 }

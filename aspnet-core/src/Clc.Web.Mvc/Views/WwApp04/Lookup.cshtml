@@ -1,0 +1,38 @@
+﻿@model List<Clc.Weixin.Dto.WeixinTaskDto>
+@{
+    ViewBag.Title = "任务查看";
+    Layout = "~/Views/Shared/_WeixinLayout.cshtml";
+}
+
+<form name="fm" class="weui-panel weui-panel_access" method="post">
+    <div class="weui-panel__hd">当天任务列表</div>
+    @if (@Model.Count > 0)
+    {
+        for (int i = 0; i < Model.Count; i++)
+        {
+            <div class="weui-panel__bd">
+                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg" onclick="selectTask(@Model[i].TaskId, @Model[i].RouteId)">
+                    <div class="weui-media-box__bd">
+                        <h2 class="weui-media-box__title"> 任务类型：@Model[i].TaskType  到达时间: @Model[i].ArriveTime</h2>
+                        <p class="weui-media-box__desc"> 确认时间：@Model[i].IdentifyTime</p>
+                    </div>
+                </a>
+            </div>
+        }
+    }
+    <input type="hidden" name="taskId" />
+    <input type="hidden" name="routeId" />
+</form>
+
+@section footer {
+    <script>
+        function selectTask(taskId, routeId) {
+            document.fm.taskId.value = taskId;
+            document.fm.routeId.value = routeId;
+            document.fm.action = "/WwApp04/LookupTask";
+            document.fm.submit();
+        }
+    </script>
+}
+
+

@@ -11,6 +11,7 @@ using Clc.Extensions;
 using Abp.Configuration;
 using Clc.Configuration;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Clc.Weixin
 {
@@ -140,6 +141,45 @@ namespace Clc.Weixin
                     task.Id, task.ArriveTime, type.Name, outlet.Id, outlet.Cn, outlet.Name, tm, task.Remark));
             }
             return (ret.Item1, sub);
+        }
+
+        #endregion
+
+        #region App04
+        public List<WeixinTaskDto> GetTodayTasks(int outletId)
+        {
+            var l = new List<WeixinTaskDto>();
+            foreach (var e in _routeAppService.GetTodayTasks(outletId))
+                l.Add(new WeixinTaskDto(e));
+
+            return l;           
+        }
+
+        public WxIdentifyDto GetLookupInfo(int taskId, int routeId)
+        {
+            var dto = new WxIdentifyDto();
+
+            var ret = _routeAppService.GetRouteForLookup(routeId);
+            var main = WorkManager.GetWorker(ret.Item1);
+            var sub = WorkManager.GetWorker(ret.Item2);
+            dto.Workers.Add(new WeixinWorkerDto() 
+                { 
+                    Cn = main.Cn, Name = main.Name, AdditiveInfo = main.AdditiveInfo, Photo = main.Photo == null ? null : Convert.ToBase64String(main.Photo)   
+                });
+            dto.Workers.Add(new WeixinWorkerDto()
+                { 
+                    Cn = sub.Cn, Name = sub.Name, AdditiveInfo = sub.AdditiveInfo, Photo = sub.Photo == null ? null : Convert.ToBase64String(sub.Photo)   
+                });
+
+            var v = _vehicleCache[ret.Item3];
+            dto.Vehicle = new WeixinVehicleDto() {Cn = v.Cn, License = v.License, Photo = v.Photo == null ? null : Convert.ToBase64String(v.Photo) };
+
+            return dto;
+        }
+
+        public void UpdateTaskRate(int taskId, int rated, string info)
+        {
+            _routeAppService.UpdateTaskRate(taskId, rated, info);
         }
 
         #endregion

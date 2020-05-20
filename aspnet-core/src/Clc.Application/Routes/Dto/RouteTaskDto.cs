@@ -41,6 +41,9 @@ namespace Clc.Routes.Dto
 
         public DateTime? IdentifyTime { get; set; }
 
+        public string Rated { get; set; }
+        public string OutletIdentifyInfo { get; set; }
+
         public string CreateWorkerCn { get; set; }
         public string CreateWorkerName { get; set; }
         public string InBoxList { get; set; }

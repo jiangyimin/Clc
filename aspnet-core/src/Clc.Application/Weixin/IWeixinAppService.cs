@@ -1,4 +1,5 @@
-﻿using Abp.Application.Services;
+﻿using System.Collections.Generic;
+using Abp.Application.Services;
 using Clc.DoorRecords.Dto;
 using Clc.Weixin.Dto;
 
@@ -23,5 +24,13 @@ namespace Clc.Weixin
         void InsertRouteArriveEvent(int taskId, string addresss);
         #endregion
 
+        #region App04
+        List<WeixinTaskDto> GetTodayTasks(int outletId);
+
+        WxIdentifyDto GetLookupInfo(int taskId, int routeId);
+
+        void UpdateTaskRate(int taskId, int rated, string info);
+
+        #endregion
     }
 }

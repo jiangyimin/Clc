@@ -99,6 +99,11 @@
             return row.outletCn + ' ' + row.outletName;
         },
 
+        rateFormatter: function (val, row, index) {
+            if (!row.rated)
+                return row.rated + '分 ' + row.outletIdentifyInfo;
+        },
+
         toExcel: function (tbl, title) {
             try {
                 var rows = $(tbl).datagrid('getRows');

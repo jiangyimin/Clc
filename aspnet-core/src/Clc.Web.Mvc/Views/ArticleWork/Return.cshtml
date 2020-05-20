@@ -86,16 +86,13 @@
             });
         }
 
-        var isClick = true;
-        function sendOpen() {           
-            if (isClick) {
-                isClick = false;
-                setTimeout(function(){ 
-                    isClick = true; 
+        function sendOpen() {
+            abp.message.confirm('确认要开柜吗?', '确认', function (r) {
+                if (r) {
                     abp.notify.info("将发送开柜指令");
-                }, 2000);
-                finput.openGunCabinet();
-            }
+                    finput.openGunCabinet();
+                }
+            });
         }            
     </script>
 }

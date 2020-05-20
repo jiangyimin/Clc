@@ -13,6 +13,7 @@ using Clc.Works;
 using Clc.Runtime;
 using Clc.Types;
 using Clc.Extensions;
+using Clc.Weixin.Dto;
 
 namespace Clc.Routes
 {
@@ -501,6 +502,43 @@ namespace Clc.Routes
             CurrentUnitOfWork.SaveChanges();
         }
 
+        [AbpAllowAnonymous]
+        public List<RouteTask> GetTodayTasks(int outletId)
+        {
+            var query = _taskRepository.GetAllIncluding(x => x.Route, x => x.TaskType).Where(e => e.Route.CarryoutDate == DateTime.Now.Date && e.Route.Status != "生成" && e.OutletId == outletId).OrderBy(e => e.ArriveTime);
+            
+            return query.ToList();
+        }
+
+        [AbpAllowAnonymous]
+        public (int, int, int) GetRouteForLookup(int routeId)
+        {
+            var query = _routeRepository.GetAllIncluding(x => x.Workers).Where(x => x.Id == routeId);
+            var route = query.First();
+            int main = 0;
+            int sub = 0;
+            foreach (RouteWorker rw in route.Workers)
+            {
+                var workRole = _workRoleCache[rw.WorkRoleId];
+                if (string.IsNullOrEmpty(workRole.Duties)) continue;
+
+                var names =  workRole.Duties.Split('|', ' ', ',');
+                if (names.Contains("交接")) main = rw.GetFactWorkerId();
+                if (names.Contains("辅助交接")) sub = rw.GetFactWorkerId();                    
+            }
+
+            return (main, sub, route.GetFactVehicleId());
+        }
+
+        [AbpAllowAnonymous]
+        public void UpdateTaskRate(int taskId, int rated, string info)
+        {
+            var task = _taskRepository.Get(taskId);
+            task.Rated = rated.ToString();
+            task.OutletIdentifyInfo = info;
+            _taskRepository.Update(task);
+         }
+         
         #endregion
         
         #region private

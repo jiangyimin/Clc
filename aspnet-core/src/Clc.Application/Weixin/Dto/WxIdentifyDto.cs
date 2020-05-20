@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Clc.Fields;
+using Clc.Routes;
 
 namespace Clc.Weixin.Dto
 {
@@ -35,6 +36,11 @@ namespace Clc.Weixin.Dto
 
         public string Remark { get; set; }
 
+        public string Rated { get; set; }
+
+        public string IdentifyInfo { get; set; }
+        public int RouteId { get; set; }
+
         public WeixinTaskDto(int taskId, string arriveTime, string taskType, int outletId, string outletCn, string outletName, string identifyTime, string remark)
         {
             TaskId = taskId;
@@ -46,6 +52,19 @@ namespace Clc.Weixin.Dto
             IdentifyTime = identifyTime;
             Remark = remark;
         }
+
+        public WeixinTaskDto(RouteTask task)
+        {
+            TaskId = task.Id;
+            ArriveTime = task.ArriveTime;
+            TaskType = task.TaskType.Name;
+            IdentifyTime = task.IdentifyTime?.ToString();
+            Remark = task.Remark;
+            RouteId = task.RouteId;
+            Rated = task.Rated;
+            IdentifyInfo = task.OutletIdentifyInfo;
+        }
+
     }
 
     public class WxIdentifyDto

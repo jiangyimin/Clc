@@ -67,7 +67,7 @@ var finput = finput || {};
     }
     
     // onWorker
-    finput.onWorkerByCn = function ()  { alert("不应出现此提示！") }
+    finput.onWorkerByCn = function ()  { alert("请用鼠标点一下此页面的刷新按钮！") }
     finput.onWorker = function (rfid) { 
         if (finput.dialogOpened == true) {
             if (finput.getWorkerRfid() == rfid) {

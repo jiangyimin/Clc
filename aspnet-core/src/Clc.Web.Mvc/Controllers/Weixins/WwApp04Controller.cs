@@ -9,6 +9,8 @@ using Clc.RealTime;
 using Clc.Weixin.Dto;
 using Clc.Fields;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using Clc.Weixin;
 
 namespace Clc.Web.Controllers
 {
@@ -22,9 +24,9 @@ namespace Clc.Web.Controllers
         private readonly string _secret;
         private readonly string _agentId;
 
-        private readonly IDoorRecordAppService _doorAppService;
+        private readonly IWeixinAppService _wxAppService;
 
-        public WwApp04Controller(IHostingEnvironment env, IHubContext<MyChatHub> context, IDoorRecordAppService doorAppService)
+        public WwApp04Controller(IHostingEnvironment env, IHubContext<MyChatHub> context, IWeixinAppService wxAppService)
         {
             var appConfiguration = env.GetAppConfiguration();
             _corpId = appConfiguration["SenparcWeixinSetting:CorpId"];
@@ -32,10 +34,10 @@ namespace Clc.Web.Controllers
             _agentId = appConfiguration[string.Format("SenparcWeixinSetting:{0}:AgentId", "App04")];
 
             _context = context;
-            _doorAppService = doorAppService;
+            _wxAppService = wxAppService;
         }
 
-        public ActionResult TaskList()
+        public ActionResult Index()
         {
             return View(); 
         }
@@ -45,24 +47,55 @@ namespace Clc.Web.Controllers
             return View();
         }
 
-        public ActionResult QrCode()
+        public ActionResult Grids()
         {
-            return View();
+            var cn = GetWeixinCn();
+            return View(WorkManager.GetOutletByCn(cn));
         }
 
-        public ActionResult ReceiveBox()
+        public ActionResult Lookup()
         {
-            var dto = new WxOutletDto();
-
-            Worker worker = WorkManager.GetWorkerByCn("10023");
-            dto.SetWorker(worker);
-            dto.SetWorker2(WorkManager.GetWorkerByCn("10024"));
-            dto.SetVehice(WorkManager.GetVehicle(3));
-
-            dto.TaskBoxs.Add(new WeixinTaskBoxDto("07", "7号柜员箱"));
-            dto.TaskBoxs.Add(new WeixinTaskBoxDto("12", "12号柜员箱"));
-            dto.TaskBoxs.Add(new WeixinTaskBoxDto("Q1", "1号清分箱"));
-            return View();
+            var cn = GetWeixinCn();
+            var outlet = WorkManager.GetOutletByCn(cn);
+            var tasks = _wxAppService.GetTodayTasks(outlet.Id);
+            
+            return View(tasks);
         }
+
+        public ActionResult Evaluate()
+        {
+            var cn = GetWeixinCn();
+            var outlet = WorkManager.GetOutletByCn(cn);
+            var tasks = _wxAppService.GetTodayTasks(outlet.Id);
+            
+            return View(tasks);
+        }
+
+        public ActionResult LookupTask(int taskId, int routeId)
+        {
+            WxIdentifyDto dto = _wxAppService.GetLookupInfo(taskId, routeId);
+
+            return View(dto);
+        }
+
+        public ActionResult EvaluateTask(int taskId, int routeId)
+        {
+            return View(taskId);
+        }
+
+        [HttpPost]
+        public ActionResult SubmitEvaluateTask(int taskId, int rated, string info)
+        {
+            _wxAppService.UpdateTaskRate(taskId, rated, info);
+
+            return RedirectToAction("WeixinNotify", "Error", new { Message = "成功提交评价" });
+        }
+
+        private string GetWeixinCn()
+        {
+            var claim = HttpContext.User.Claims.First(x => x.Type == "Cn");
+            return claim.Value;
+        }
+
     }
 }

@@ -30,6 +30,7 @@ namespace Clc.Web.Controllers
         static public readonly Dictionary<string, string> _appDict = new Dictionary<string, string>() {
             {"ApproveTempAskDoor", "App03"},
             {"ApproveEmergDoor", "App03"},
+            {"Grids", "App04"},
         };
 
         public WeixinAccountController(IHostingEnvironment env)

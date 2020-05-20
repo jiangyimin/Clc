@@ -1,0 +1,32 @@
+﻿@model int
+@{
+    ViewBag.Title = "评价";
+    Layout = "~/Views/Shared/_WeixinLayout.cshtml";
+}
+
+<form action ="/WwApp04/SubmitEvaluateTask" class="weui-panel weui-panel_access" method="post">
+   <div class="page__hd">
+        <h4 class="page__title">请评价此次任务</h4>
+    </div>
+    <div class="page__bd">
+        <!-- <div class="weui-cells__title">用户登录</div> -->
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">分数：</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" name="rated" type="number" pattern="[1-5]" placeholder="请输入1-5分的值"/>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">内容：</label></div>
+                <div class="weui-cell__bd">
+                    <textarea class="weui-textarea" name="info" placeholder="请描述你的情况" rows="5"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <input type="submit" value="提交" class="weui-btn weui-btn_primary" />
+        </div>
+    </div>
+    <input type="hidden" name="taskId" value="@Model"/>
+</form>
