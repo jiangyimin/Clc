@@ -11,6 +11,7 @@ using Clc.Fields;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using Clc.Weixin;
+using System.Collections.Generic;
 
 namespace Clc.Web.Controllers
 {
@@ -37,16 +38,6 @@ namespace Clc.Web.Controllers
             _wxAppService = wxAppService;
         }
 
-        public ActionResult Index()
-        {
-            return View(); 
-        }
-        
-        public ActionResult GetTaskInfo()
-        {
-            return View();
-        }
-
         public ActionResult Grids()
         {
             var cn = GetWeixinCn();
@@ -55,20 +46,27 @@ namespace Clc.Web.Controllers
 
         public ActionResult Lookup()
         {
-            var cn = GetWeixinCn();
-            var outlet = WorkManager.GetOutletByCn(cn);
-            var tasks = _wxAppService.GetTodayTasks(outlet.Id);
+            var id = GetWeixinUserId();            
+            // var outlet = WorkManager.GetOutlet(id);
+            var tasks = _wxAppService.GetTodayTasks(id);
             
             return View(tasks);
         }
 
         public ActionResult Evaluate()
         {
-            var cn = GetWeixinCn();
-            var outlet = WorkManager.GetOutletByCn(cn);
-            var tasks = _wxAppService.GetTodayTasks(outlet.Id);
+            try
+            {
+                //var cn = GetWeixinCn();
+                var outlet = WorkManager.GetOutletByCn("010102");
+                var tasks = _wxAppService.GetTodayTasks(outlet.Id);
             
-            return View(tasks);
+                return View(tasks);
+            }
+            catch (System.Exception e)
+            {
+                return Content(e.Message);
+            }
         }
 
         public ActionResult LookupTask(int taskId, int routeId)
@@ -95,6 +93,12 @@ namespace Clc.Web.Controllers
         {
             var claim = HttpContext.User.Claims.First(x => x.Type == "Cn");
             return claim.Value;
+        }
+        private int GetWeixinUserId()
+        {
+            var claim = HttpContext.User.Claims.First(x => x.Type == "UserId");
+            int id = int.Parse(claim.Value);
+            return id;
         }
 
     }

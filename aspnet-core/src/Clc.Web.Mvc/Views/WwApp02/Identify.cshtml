@@ -65,9 +65,10 @@
             wx.getLocation({
                 type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
                 success: function (res) {
+                    //alert(document.fm.taskId.value);
                     var params = 'taskId=' + document.fm.taskId.value + '&lat=' + res.latitude + '&lon=' + res.longitude;
                     myajax('/WwApp02/SendLocation', params, function () {
-                        weui.toast('发送成功', 3000)
+                        weui.toast('GPS地址发送成功', 3000)
                     });
                 }   
             });
@@ -86,7 +87,7 @@
         });
 
         wx.ready( function() {
-            weui.toast('配置正确', 1000);
+            // weui.toast('配置正确', 1000);
         });
 
     </script>

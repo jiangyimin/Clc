@@ -41,7 +41,7 @@ namespace Clc.Weixin.Dto
         public string IdentifyInfo { get; set; }
         public int RouteId { get; set; }
 
-        public WeixinTaskDto(int taskId, string arriveTime, string taskType, int outletId, string outletCn, string outletName, string identifyTime, string remark)
+        public WeixinTaskDto(int taskId, string arriveTime, string taskType, int outletId, string outletCn, string outletName, string identifyTime, string remark, int routeId, string rated, string info)
         {
             TaskId = taskId;
             ArriveTime = arriveTime;
@@ -51,18 +51,9 @@ namespace Clc.Weixin.Dto
             OutletName = outletName;
             IdentifyTime = identifyTime;
             Remark = remark;
-        }
-
-        public WeixinTaskDto(RouteTask task)
-        {
-            TaskId = task.Id;
-            ArriveTime = task.ArriveTime;
-            TaskType = task.TaskType.Name;
-            IdentifyTime = task.IdentifyTime?.ToString();
-            Remark = task.Remark;
-            RouteId = task.RouteId;
-            Rated = task.Rated;
-            IdentifyInfo = task.OutletIdentifyInfo;
+            RouteId = routeId;
+            Rated = rated;
+            IdentifyInfo = info;
         }
 
     }

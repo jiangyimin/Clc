@@ -50,7 +50,7 @@ namespace Clc.Web.Controllers
             if (string.IsNullOrEmpty(code))
             {
                 // 备案
-                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                //return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
 
             var vm = new LoginViewModel() {
@@ -59,9 +59,9 @@ namespace Clc.Web.Controllers
 
             try {
                 var accessToken = AccessTokenContainer.GetToken(_corpId, _secret);           
-                GetUserInfoResult userInfo = OAuth2Api.GetUserId(accessToken, code);
-                vm.WorkerCn = userInfo.UserId;
-                vm.DeviceId = userInfo.DeviceId;
+                //GetUserInfoResult userInfo = OAuth2Api.GetUserId(accessToken, code);
+                //vm.WorkerCn = userInfo.UserId;
+                //vm.DeviceId = userInfo.DeviceId;
             }
             catch {
                 Logger.Error("微信登录错误");
@@ -82,6 +82,12 @@ namespace Clc.Web.Controllers
         {
             int id = 0;
             string cn = null;
+            if (string.IsNullOrEmpty(vm.WorkerCn))
+            {
+                ModelState.AddModelError("", "用户名不能为空");
+                return View(vm);
+            }
+            
             if (vm.WorkerCn.Length >= 6) {
                 var outlet = WorkManager.GetOutletByCn(vm.WorkerCn.Substring(0, 6));
                 if (outlet == null || outlet.Password != vm.Password)

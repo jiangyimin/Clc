@@ -138,7 +138,7 @@ namespace Clc.Weixin
                 var type = _taskTypeCache[task.TaskTypeId];
                 string tm = task.IdentifyTime.HasValue ? task.IdentifyTime.Value.ToString("HH:mm") : "";
                 dto.Tasks.Add(new WeixinTaskDto(
-                    task.Id, task.ArriveTime, type.Name, outlet.Id, outlet.Cn, outlet.Name, tm, task.Remark));
+                    task.Id, task.ArriveTime, type.Name, outlet.Id, outlet.Cn, outlet.Name, tm, task.Remark, task.RouteId, task.Rated, task.OutletIdentifyInfo));
             }
             return (ret.Item1, sub);
         }
@@ -148,11 +148,18 @@ namespace Clc.Weixin
         #region App04
         public List<WeixinTaskDto> GetTodayTasks(int outletId)
         {
-            var l = new List<WeixinTaskDto>();
-            foreach (var e in _routeAppService.GetTodayTasks(outletId))
-                l.Add(new WeixinTaskDto(e));
+            var list = new List<WeixinTaskDto>();
+            var tasks = _routeAppService.GetTodayTasks(outletId);
+            if (tasks == null) return list;
+            foreach (var e in tasks)
+            {
+                string tm = e.IdentifyTime.HasValue ? e.IdentifyTime.Value.ToString("HH:mm") : "";
 
-            return l;           
+                list.Add(new WeixinTaskDto(
+                    e.Id, e.ArriveTime, e.TaskType.Name, e.OutletId, e.Outlet.Cn, e.Outlet.Name, tm, e.Remark, e.RouteId, e.Rated, e.OutletIdentifyInfo));
+            }
+            
+            return list;           
         }
 
         public WxIdentifyDto GetLookupInfo(int taskId, int routeId)

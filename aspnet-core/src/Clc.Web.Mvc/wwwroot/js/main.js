@@ -100,7 +100,7 @@
         },
 
         rateFormatter: function (val, row, index) {
-            if (!row.rated)
+            if (row.rated)
                 return row.rated + '分 ' + row.outletIdentifyInfo;
         },
 
