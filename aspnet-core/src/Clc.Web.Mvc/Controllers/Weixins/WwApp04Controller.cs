@@ -46,9 +46,9 @@ namespace Clc.Web.Controllers
 
         public ActionResult Lookup()
         {
-            var id = GetWeixinUserId();            
-            // var outlet = WorkManager.GetOutlet(id);
-            var tasks = _wxAppService.GetTodayTasks(id);
+            var cn = GetWeixinCn();            
+            var outlet = WorkManager.GetOutletByCn(cn);
+            var tasks = _wxAppService.GetTodayTasks(outlet.Id);
             
             return View(tasks);
         }
@@ -57,8 +57,8 @@ namespace Clc.Web.Controllers
         {
             try
             {
-                //var cn = GetWeixinCn();
-                var outlet = WorkManager.GetOutletByCn("010102");
+                var cn = GetWeixinCn();
+                var outlet = WorkManager.GetOutletByCn(cn);
                 var tasks = _wxAppService.GetTodayTasks(outlet.Id);
             
                 return View(tasks);

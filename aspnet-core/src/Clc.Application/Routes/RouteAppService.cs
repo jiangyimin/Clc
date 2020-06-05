@@ -505,7 +505,7 @@ namespace Clc.Routes
         [AbpAllowAnonymous]
         public List<RouteTask> GetTodayTasks(int outletId)
         {
-            var query = _taskRepository.GetAllIncluding(x => x.Route, x => x.TaskType).Where(e => e.Route.CarryoutDate == DateTime.Now.Date && e.Route.Status != "生成" && e.OutletId == outletId).OrderBy(e => e.ArriveTime);
+            var query = _taskRepository.GetAllIncluding(x => x.Route, x => x.TaskType, x => x.Outlet).Where(e => e.Route.CarryoutDate == DateTime.Now.Date && e.Route.Status != "生成" && e.OutletId == outletId).OrderBy(e => e.ArriveTime);
             
             return query.ToList();
         }

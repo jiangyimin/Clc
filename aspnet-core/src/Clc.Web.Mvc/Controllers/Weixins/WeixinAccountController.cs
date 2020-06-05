@@ -50,7 +50,7 @@ namespace Clc.Web.Controllers
             if (string.IsNullOrEmpty(code))
             {
                 // 备案
-                //return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
+                return Redirect(OAuth2Api.GetCode(_corpId, AbsoluteUri(), "STATE", _agentId));
             }
 
             var vm = new LoginViewModel() {
@@ -59,9 +59,9 @@ namespace Clc.Web.Controllers
 
             try {
                 var accessToken = AccessTokenContainer.GetToken(_corpId, _secret);           
-                //GetUserInfoResult userInfo = OAuth2Api.GetUserId(accessToken, code);
-                //vm.WorkerCn = userInfo.UserId;
-                //vm.DeviceId = userInfo.DeviceId;
+                GetUserInfoResult userInfo = OAuth2Api.GetUserId(accessToken, code);
+                vm.WorkerCn = userInfo.UserId;
+                vm.DeviceId = userInfo.DeviceId;
             }
             catch {
                 Logger.Error("微信登录错误");
