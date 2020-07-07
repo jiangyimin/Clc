@@ -52,6 +52,32 @@
             work.openActivateDialog('backRoute');
         })
 
+        $('#tb').children('a[name="backToLend"]').click(function (e) {
+            if (mds.masterCurrentRow === null ) {   
+                abp.notify.error("先选择线路");
+                return;
+            };
+
+            var rows = $('#dgWorker').datagrid('getRows');
+            if (rows != null) {
+                var ur = false;
+                for (var i = 0; i < rows.length; i++) {
+                    var al = rows[i].articleList;
+                    if (al != null && al.indexOf("未还") >= 0) {
+                        ur = true;
+                        break;
+                    }
+                }
+
+                if (!ur) {
+                    abp.notify.error("不需要回退到领用状态");
+                    return;
+                }
+            } 
+
+            work.openActivateDialog('backToLend');
+        })
+
         $('#tb').children('a[name="close"]').click(function (e) {
             var checkedRows = $('#dg').datagrid("getChecked");
             if (checkedRows.length === 0) {
@@ -132,6 +158,8 @@
             activate(style);
         if (verifyAction == 'backRoute')
             back(style);
+        if (verifyAction == 'backToLend')
+            backToLend(style);
     };
 
     function back(style) {
@@ -142,6 +170,18 @@
         }
 
         abp.services.app.route.back(mds.masterCurrentRow.id, style).done(function () {
+            mds.reload('');
+        });
+    };
+
+    function backToLend(style) {
+        var status = mds.masterCurrentRow.status;
+        if (status !== "还物") {
+            abp.notify.error('非还物状态不能回退');
+            return;
+        }
+
+        abp.services.app.route.backToLend(mds.masterCurrentRow.id, style).done(function () {
             mds.reload('');
         });
     };

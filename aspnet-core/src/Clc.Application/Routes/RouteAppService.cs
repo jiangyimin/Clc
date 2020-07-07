@@ -226,6 +226,21 @@ namespace Clc.Routes
             await _eventRepository.InsertAsync(ae);
         }
 
+        public async Task BackToLend(int id, bool finger)
+        {
+            var route = _routeRepository.Get(id);
+            route.Status = "领物";
+            await _routeRepository.UpdateAsync(route);
+
+            // for RouteEvent
+            int workerId = await GetCurrentUserWorkerIdAsync();
+            workerId = WorkManager.GetCaptainOrAgentId(workerId);     // Agent
+            var worker = WorkManager.GetWorker(workerId);
+            string issuer = string.Format("{0} {1}", worker.Cn, worker.Name);
+            var ae = new RouteEvent() { RouteId = route.Id, EventTime = DateTime.Now, Name = "回退到领物", Description = finger?"指纹":"密码", Issurer = issuer};
+            await _eventRepository.InsertAsync(ae);
+        }
+
         public async Task<int> CreateFrom(DateTime carryoutDate, DateTime fromDate)
         {
             int workerId = await GetCurrentUserWorkerIdAsync();

@@ -22,6 +22,7 @@ namespace Clc.Routes
         Task<(string, int)> Activate(List<int> ids, bool finger);
         Task<int> Close(List<int> ids);
         Task Back(int id, bool finger);
+        Task BackToLend(int id, bool finger);
 
         Task<int> CreateFrom(DateTime carryoutDate, DateTime fromDate);
         Task<int> CreateFromPre(DateTime carryoutDate);
